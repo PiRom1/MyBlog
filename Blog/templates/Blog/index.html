@@ -2,7 +2,13 @@
 
 <ul>
     {% for message in messages %}
-        <li>({{message.pub_date}}) {{message.writer.username}} : {{message.text}}</li>
+        
+        
+        <li>({{message.pub_date}}) {{message.writer.username}} : {{message.text}}    
+            &nbsp; &nbsp &nbsp; ( {{message.upvote}}  <a href = "/upvote/{{message.id}}">&#x1F44D;</a> )
+            &nbsp; &nbsp &nbsp; ( {{message.downvote}}  <a href = "/downvote/{{message.id}}">&#128078;</a> )   </li>
+               
+        
     {% endfor %}
 </ul>
 
@@ -15,7 +21,7 @@
     {% csrf_token %}
     
     {{ MessageForm }}
-    <input type="submit" value="Submit">
+    <input type="submit" value="Envoyer">
 </form>
 
 

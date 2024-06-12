@@ -17,4 +17,6 @@ class Message(models.Model):
     pub_date = models.DateTimeField("Date publication")
     writer = models.ForeignKey(User, on_delete = models.CASCADE)
     text = models.TextField("Texte")
+    upvote = models.IntegerField("upvote", default = 0)
+    downvote = models.IntegerField("downvote", default = 0)
 

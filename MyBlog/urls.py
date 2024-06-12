@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include("Blog.urls")),
     path('add_user/', include("Blog.urls")),
     path('admin/', admin.site.urls),
+    path('/vote/', include('Blog.urls')),
 ]

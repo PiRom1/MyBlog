@@ -2,10 +2,11 @@ from django.shortcuts import render
 #from rest_framework import viewsets
 from .models import Message
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import MessageForm, LoginForm
+from .forms import MessageForm, LoginForm, AddUserForm
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, get_user
 from django.contrib.auth.models import User
+from django.db.models import F
 
 # Create your views here.
 
@@ -49,7 +50,7 @@ def Index(request):
 
 def AddUser(request):
 
-    add_user_form = LoginForm(request.POST)
+    add_user_form = AddUserForm(request.POST)
 
     if add_user_form.is_valid():
         username = add_user_form['username'].value()
@@ -94,4 +95,22 @@ def connexion(request):
 
 
     return(render(request, "Blog/connexion.html", context))
+
+
+
+def upvote(request, message_id):
+    
+    message = Message.objects.filter(id = message_id)[0]
+    message.upvote = F("upvote") + 1
+    message.save()
+
+    return HttpResponseRedirect("/")
+
+def downvote(request, message_id):
+    
+    message = Message.objects.filter(id = message_id)[0]
+    message.downvote = F("downvote") + 1
+    message.save()
+
+    return HttpResponseRedirect("/")
 
