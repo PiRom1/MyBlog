@@ -2,7 +2,7 @@ from django.shortcuts import render
 #from rest_framework import viewsets
 from .models import Message
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import MessageForm, LoginForm, AddUserForm
+from .forms import MessageForm, LoginForm, AddUserForm, ColorForm
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, get_user
 from django.contrib.auth.models import User
@@ -28,21 +28,55 @@ def Index(request):
 
         if message_form.is_valid():
             new_message = message_form['message']
+            color = message_form['color'].value()
             #user = message_form['who']
             text = new_message.value()
             #user = user.get_username()
             #user = User.objects.filter(name = user)[0]
             print(text)
-            new_message = Message(writer = user, text = text, pub_date = timezone.now())  
+            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color)  
             new_message.save()
             print(1)
 
     
     message_form = MessageForm()
     
+    ### Get every dates : 
+    years = []   # Contient les différentes années existantes
+    month = []   # Contient les différents mois existants
+    day = []   # Contient les différents jours existants
+    dates = []
+
+    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
+
+    for message in Message.objects.all():
+        message_date = str(message.pub_date).split()[0]
+        message_date = message_date.split('-')
+
+        dict = {'year' : message_date[0], 
+                'month' : message_date[1],
+                'day' : message_date[2]}
+        
+        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
+                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
+
+        years.append(message_date[0])
+        month.append(months_num[message_date[1]])
+        day.append(message_date[2])
+
+        if dict not in dates:
+            when_new_date.append(True)
+        else:
+            when_new_date.append(False)
+        
+        dates.append(dict)
 
 
-    context = {"messages" : messages, "MessageForm" : message_form, "user" : user}
+
+
+
+
+    context = {"messages" : messages, "MessageForm" : message_form, "user" : user, "years" : years, "month" : month, "day" : day, "when_new_date" : when_new_date}
 
     return render(request, "Blog/index.html", context)
 

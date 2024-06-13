@@ -1,0 +1,33 @@
+h1 {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: darkcyan;
+}
+
+.black {
+    color: black;
+}
+
+.yellow {
+    color: goldenrod;
+}
+
+
+.hide {
+    display: none;
+  }
+  
+.shower:hover + .hide {
+    display: block;
+    color: red;
+  }

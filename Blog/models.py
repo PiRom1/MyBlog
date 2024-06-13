@@ -19,4 +19,5 @@ class Message(models.Model):
     text = models.TextField("Texte")
     upvote = models.IntegerField("upvote", default = 0)
     downvote = models.IntegerField("downvote", default = 0)
+    color = models.CharField("color", max_length = 50, default = "")
 
