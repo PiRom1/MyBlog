@@ -1,15 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
 # Create your models here.
-
- 
-# class User(models.Model):
-
-#     #id = models.AutoField("id")
-#     name = models.CharField("username", max_length = 50)
-#     nickname = models.CharField("nickname", max_length = 50, default = "")
-
+class Session(models.Model):
+    session_name = models.TextField("name", default = "")
+    session_id = models.IntegerField(default = 0)
 
 
 class Message(models.Model):
@@ -20,4 +15,16 @@ class Message(models.Model):
     upvote = models.IntegerField("upvote", default = 0)
     downvote = models.IntegerField("downvote", default = 0)
     color = models.CharField("color", max_length = 50, default = "")
+    session_id = models.IntegerField("session_id", default = 0)
 
+    def __str__(self):
+        return f"{self.writer} ({self.pub_date}) : {self.text}"
+
+    
+
+class History(models.Model):
+
+    pub_date = models.DateTimeField("Date modification")
+    writer = models.ForeignKey(User, on_delete = models.CASCADE)
+    text = models.TextField("Texte")
+    message = models.ForeignKey(Message, on_delete = models.CASCADE)

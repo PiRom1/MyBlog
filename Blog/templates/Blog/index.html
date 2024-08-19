@@ -1,48 +1,64 @@
+
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
 
-    <title>ZAP Webook</title>
+    <title>{{session.session_name}}</title>
+
     <link
       href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
       rel="stylesheet"
       type="text/css" />
-    <link rel="stylesheet" href="static/Blog/style.css" >
+    
+      {% load static %}
+    <link rel="stylesheet" href='{% static "Blog/style.css" %}'/>    
 
   </head>
 
 
 <body>
+<h1><u>{{session.session_name}}</u></h1>
 
-<h1><u>ZAP Webook Des Copains !</u></h1>
+
+
 
 <h2>Messages : </h2>
 
+<div class = messages>
 <ul>
     {% for message in messages %}
       
     {% if when_new_date|slice:forloop.counter|last %}
     <br>
-    <u>
-      {{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</u> : 
     
+      <div class="first_date">
+        <strong><u>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</u></strong> : 
+      </div>
     {% endif %}
         
-        <li>
+        
+          
+          
           <div class = "{{message.color}}">
-            ({{message.pub_date}}) {{message.writer.username}} : {{message.text}} 
+          <div class="{% if message.writer.username == user.username %}right{% else %}left{% endif %}">
+            <i>({{message.pub_date}})</i> <strong>{{message.writer.username}}</strong> : 
+            <!-- <a href = "/modify/{{message.id}}" style="text-decoration:none">--> <div class = message>{{message.text}}</div> </a>
           </div>
-        </li> 
+          </div>
+        
+        
 
-           
+           <!--
                 &nbsp; &nbsp &nbsp; ( {{message.upvote}}  <a href = "/upvote/{{message.id}}">&#x1F44D;</a> )
                        
                 &nbsp; &nbsp &nbsp; ( {{message.downvote}}  <a href = "/downvote/{{message.id}}">&#128078;</a> ) 
+      -->
       <br><br>
     {% endfor %}
 
 </ul>
+</div>
 
 
 
@@ -68,7 +84,11 @@
 <br>
 <br>
 
-<a href = "/add_user/">Add new user</a>, <a href = "/connexion/">Connexion</a> 
+<a href = "/add_user/">Add new user</a>, 
+<a href = "/connexion/">Connexion</a>, 
+<a href = "/">Change session</a>
+<!-- <a href = "/logout/">Log out</a> -->
+
 
 
 </body>

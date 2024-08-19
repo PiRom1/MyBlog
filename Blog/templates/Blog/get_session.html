@@ -1,0 +1,11 @@
+<h1>Rejoindre une session de discussion. </h1>
+
+Sessions disponibles : </br>
+
+{% for session in sessions %}
+
+<li><a href = "./{{session.session_id}}">{{session.session_name}}</a></li>
+
+{% endfor %}
+</br></br>
+Connecté en tant que <strong>{{user}}</strong>. <a href = "/connexion/">Connexion</a>

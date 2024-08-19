@@ -1,0 +1,17 @@
+<h1>Modification du message : </h1>
+
+Message actuel : {{message.text}}
+<br><br>
+Historique des messages : <ul>
+{% for message in history_message %}
+
+<li>({{message.pub_date}}) {{message.text}}</li>
+
+{% endfor %}
+</ul>
+<form action="" method="post">
+    {% csrf_token %}
+    
+    {{ form }}
+    <input type="submit" value="Modifier">
+</form>

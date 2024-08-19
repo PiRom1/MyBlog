@@ -1,5 +1,52 @@
 h1 {
-    color: red;
+    color: #e94f6b;
+    text-shadow: #122112 1px 0 10px;
+}
+
+body {
+    background-image: url("/static/img/bg_sheet.jpg");
+    
+}
+
+
+.darkmode {
+    font-size: 32px;
+}
+
+.first_date {
+    font-size : 20px;
+    
+}
+
+
+.message {
+    --r: 30px;  /* the radius */
+  --t: 1px; /* the size of the tail */
+  
+  max-width: 300px;
+  padding: 1em;
+  border-inline: var(--t) solid #0000;
+  border-radius: calc(var(--r) + var(--t))/var(--r);
+  mask: 
+    radial-gradient(100% 100% at var(--_p) 0,#0000 99%,#000 102%) 
+      var(--_p) 100%/var(--t) var(--t) no-repeat,
+    linear-gradient(#000 0 0) padding-box;
+  background: linear-gradient(100deg,#31394c,#6e78ffdb) border-box;
+  color: #fadaff;
+}
+
+.left {
+    margin-left: 200px;
+    margin-right: auto;
+}
+
+.right {
+    margin-left: auto;
+    margin-right: 100px;
+}
+
+li a {
+    color:black;
 }
 
 .green {
@@ -21,13 +68,3 @@ h1 {
 .yellow {
     color: goldenrod;
 }
-
-
-.hide {
-    display: none;
-  }
-  
-.shower:hover + .hide {
-    display: block;
-    color: red;
-  }

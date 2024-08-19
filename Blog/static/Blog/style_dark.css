@@ -1,0 +1,42 @@
+h1 {
+    background-color: blue;
+}
+
+h2 {
+    color: white;
+}
+
+.darkmode {
+    color: white;
+}
+
+body {
+    background-color: #effada;
+}
+
+.messages {
+    color:white;
+}
+
+
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: darkcyan;
+}
+
+.black {
+    color: white;
+}
+
+.yellow {
+    color: goldenrod;
+}
+

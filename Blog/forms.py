@@ -2,6 +2,11 @@ from django import forms
 from django.contrib.auth.models import User
 
 
+
+class ModifyForm(forms.Form):
+    modify = forms.CharField(label = "Modify")
+    
+
 class MessageForm(forms.Form):
 
     
@@ -21,7 +26,7 @@ class LoginForm(forms.Form):
 
     CHOICES = [(user.username, user.username) for user in User.objects.all()]
 
-    username = forms.ChoiceField(label = 'username', choices = CHOICES)
+    username = forms.CharField(label = 'username', max_length = 100)
     password = forms.CharField(label = 'password', widget = forms.PasswordInput, max_length = 100)
 
 
