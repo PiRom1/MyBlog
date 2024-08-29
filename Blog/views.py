@@ -87,6 +87,8 @@ def Index(request, id):
 
             new_message.save()
             history.save()
+
+            return HttpResponseRedirect('#bottom')
             
 
     
@@ -100,7 +102,7 @@ def Index(request, id):
 
     when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
 
-    for message in Message.objects.all():
+    for message in Message.objects.filter(session_id = id):
         message_date = str(message.pub_date).split()[0]
         message_date = message_date.split('-')
 

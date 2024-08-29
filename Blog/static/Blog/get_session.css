@@ -1,0 +1,46 @@
+/* Styles généraux */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    
+}
+
+h1 {
+    text-align: left;
+    vertical-align: top;
+    position: fixed;
+    top: 0;
+    left: 5px;
+}
+
+/* Conteneur principal pour les colonnes */
+.container {
+    display: flex;
+    height: 100vh; /* Hauteur pleine page */
+}
+
+/* Style pour les colonnes */
+.colonne {
+    display: flex;
+    justify-content: center; /* Centrer horizontalement le contenu */
+    align-items: center; /* Centrer verticalement le contenu */
+    color: white; /* Couleur du texte */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-wrap: break-word; /* Permet de casser les mots longs */
+    word-break: break-word; /* Ajoute un saut de ligne automatique */
+}
+
+/* Colonne gauche */
+.gauche {
+    background-color: #e74c3c; /* Couleur de fond bleue */
+    flex: 0 0 30%;
+}
+
+/* Colonne droite */
+.droite {
+    background-color: #fefeee; /* Couleur de fond rouge */
+    flex: 0 0 70%;
+    color: #120221
+}

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, AbstractUser
 # Create your models here.
 class Session(models.Model):
     session_name = models.TextField("name", default = "")
-    session_id = models.IntegerField(default = 0)
+    session_id = models.AutoField(primary_key=True)
 
 
 class Message(models.Model):
@@ -28,3 +28,9 @@ class History(models.Model):
     writer = models.ForeignKey(User, on_delete = models.CASCADE)
     text = models.TextField("Texte")
     message = models.ForeignKey(Message, on_delete = models.CASCADE)
+
+
+class Photo(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='Images/')

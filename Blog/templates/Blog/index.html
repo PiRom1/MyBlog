@@ -20,6 +20,12 @@
 <body>
 <h1><u>{{session.session_name}}</u></h1>
 
+<!-- Canvas où le cercle sera dessiné -->
+<canvas id="canvas2" width="800" height="700" style="border:0px solid #000000;" onmousemove="get_mouse_pos(event)"></canvas>
+
+<!-- Script JavaScript pour dessiner le cercle -->
+<script src = "{% static 'Blog/network.js' %}"></script>
+
 
 
 
@@ -41,8 +47,8 @@
           
           
           <div class = "{{message.color}}">
-          <div class="{% if message.writer.username == user.username %}right{% else %}left{% endif %}">
-            <i>({{message.pub_date}})</i> <strong>{{message.writer.username}}</strong> : 
+          <div class="{% if message.writer.username == user.username %}left{% else %}right{% endif %}">
+            <i>({{message.pub_date}})</i> <span class = author><strong>{{message.writer.username}}</strong></span> :
             <!-- <a href = "/modify/{{message.id}}" style="text-decoration:none">--> <div class = message>{{message.text}}</div> </a>
           </div>
           </div>
@@ -89,6 +95,11 @@
 <a href = "/">Change session</a>
 <!-- <a href = "/logout/">Log out</a> -->
 
+<div id="bottom"></div>
+
+<div class="wave"></div>
+<div class="wave"></div>
+<div class="wave"></div>
 
 
 </body>
