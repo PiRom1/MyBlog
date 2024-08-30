@@ -1,14 +1,36 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 #from rest_framework import viewsets
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import MessageForm, LoginForm, AddUserForm, ColorForm, ModifyForm
+from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.db.models import F
 
 # Create your views here.
+
+def connexion(request):
+    deconnexion(request)
+    print("Connexion ...")
+    login_form = LoginForm(request.POST)
+    
+    if login_form.is_valid():
+        username = login_form['username'].value()
+        password = login_form['password'].value()
+
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        if user is not None:
+            login(request, user)
+            print(user)
+            return HttpResponseRedirect("/")
+    
+    else:
+        login_form = LoginForm()
+    
+    context = {"login_form" : login_form}
+    return(render(request, "Blog/connexion.html", context))
 
 @login_required
 def deconnexion(request):
@@ -17,6 +39,10 @@ def deconnexion(request):
     
     logout(request)
     return HttpResponseRedirect("/login/")
+
+def InvalidUser(request):
+    context =  {}
+    return render(request, "Blog/invalid_user.html", context)
 
 @login_required
 def getSession(request):
@@ -35,10 +61,6 @@ def getSession(request):
     context = {"sessions" : sessions, "user" : user}
     return render(request, "Blog/get_session.html", context)
 
-
-def InvalidUser(request):
-    context =  {}
-    return render(request, "Blog/invalid_user.html", context)
 
 @login_required
 def Index(request, id):
@@ -130,6 +152,38 @@ def Index(request, id):
     return render(request, url, context)
 
 
+@login_required
+def ticket_list(request):
+    tickets = Ticket.objects.all()
+    return render(request, 'Blog/tickets/ticket_list.html', {'tickets': tickets})
+
+@login_required
+def create_ticket(request):
+    if request.method == 'POST':
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.created_by = request.user
+            ticket.save()
+            return redirect('ticket_list')
+    else:
+        form = TicketForm()
+    return render(request, 'Blog/tickets/create_ticket.html', {'form': form})
+
+@login_required
+def update_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = TicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            form.save()
+            return redirect('ticket_list')
+    else:
+        form = TicketForm(instance=ticket)
+    return render(request, 'Blog/tickets/update_ticket.html', {'form': form, 'ticket': ticket})
+
+
+
 
 # def Modify(request, message_id):
 #     message = Message.objects.filter(id = message_id)[0]
@@ -174,30 +228,6 @@ def Index(request, id):
 #     context = {"add_user_form" : add_user_form}
 
 #     return(render(request, "Blog/AddUser.html", context))
-
-
-def connexion(request):
-    deconnexion(request)
-    print("Connexion ...")
-    login_form = LoginForm(request.POST)
-    
-    if login_form.is_valid():
-        username = login_form['username'].value()
-        password = login_form['password'].value()
-
-        user = authenticate(request, username=username, password=password)
-        print(user)
-        if user is not None:
-            login(request, user)
-            print(user)
-            return HttpResponseRedirect("/")
-    
-    else:
-        login_form = LoginForm()
-    
-    context = {"login_form" : login_form}
-    return(render(request, "Blog/connexion.html", context))
-
 
 # def dark_mode(request):
 #     user = get_user(request)

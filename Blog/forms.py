@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import *
 
 
 
@@ -41,4 +41,8 @@ class ColorForm(forms.Form):
     CHOICES = [('red', 'red'), ('blue', 'blue'), ('green', 'green')]
 
     user_color = forms.ChoiceField(label = 'Ta couleur', choices = CHOICES)
-    
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ['title', 'description', 'assigned_to', 'status']

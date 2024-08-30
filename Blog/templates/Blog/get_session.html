@@ -16,20 +16,25 @@
   </head>
 
 <div class="container">
-  
-<div class = 'colonne gauche'>
-<h1>Rejoindre une session </br>de discussion. </h1>
-</div>
+    
+  <div class = 'colonne gauche'>
+    <h1>Rejoindre une session de discussion. </h1> 
+  </div>
 
-<div class = 'colonne droite'>
-Sessions disponibles : </br></br>
+  <div class = 'colonne droite'>
+    Sessions disponibles : </br></br>
 
-{% for session in sessions %}
+    {% for session in sessions %}
 
-<li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>
+    <li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>
 
-{% endfor %}
-<br/></br>
-Connecté en tant que <strong>{{user}}</strong>. <a href = "/logout/">Déconnexion</a>
-</div>
+    {% endfor %}
+    <br/></br>
+
+    <h1>Acceder aux tickets</h1>
+    <a href = "/tickets/">Tickets</a>
+
+    <br/></br>
+    Connecté en tant que <strong>{{user}}</strong>. <a href = "/logout/">Déconnexion</a>
+  </div>
 </div>

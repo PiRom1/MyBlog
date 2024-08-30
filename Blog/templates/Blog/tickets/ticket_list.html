@@ -1,0 +1,25 @@
+<!-- templates/ticket_list.html -->
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket List</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Ticket List</h1>
+    <a href="{% url 'create_ticket' %}">Create New Ticket</a>
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                <a href="{% url 'update_ticket' ticket.pk %}">{{ ticket.title }}</a> - {{ ticket.status }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'get_session' %}">Back to Home</a>
+</body>
+</html>
