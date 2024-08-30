@@ -27,7 +27,15 @@ SECRET_KEY = 'django-insecure-j4+x!m_ol(dkwjnrg-w=$212$mkm3p7d9k$8i!6&^e)_hwjm*i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['diplo.pythonanywhere.com', '127.0.0.1']
+# Configuration des tokens
+TOKEN_EXPIRE_HOURS = 24
+TOKEN_EXPIRED_AFTER_SECONDS = 3600  # Durée de vie du token en secondes (par exemple, 1 heure)
+
+ALLOWED_HOSTS = [
+    'diplo.pythonanywhere.com', 
+    '127.0.0.1', 
+    'localhost'
+]
 
 
 # Application definition
@@ -40,6 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'clearcache',
 ]
 
 MIDDLEWARE = [
@@ -80,12 +92,21 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'HOST': os.environ.get('DATABASE_DEFAULT_HOST'),
+        'PORT': os.environ.get('DATABASE_DEFAULT_PORT'),
+        'USER': os.environ.get('DATABASE_DEFAULT_USER'),
+        'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD'),
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'Blog.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = '/login/'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -100,6 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+     
 ]
 
 
@@ -127,3 +153,16 @@ STATIC_ROOT = './Blog/static'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+   'DEFAULT_PERMISSION_CLASSES': [
+    #    'apps.revue_impl.user_permission.GlobalDatePermission',
+       'rest_framework.permissions.IsAuthenticated',
+       
+   ],
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.SessionAuthentication',
+       'rest_framework.authentication.TokenAuthentication',
+       #'knox.auth.TokenAuthentication',
+   )
+}

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 # Create your models here.
 
@@ -29,18 +29,18 @@ class UserManager(BaseUserManager):
             **extra_fields
         )
 
-        user.is_admin = True
-        user.is_staff = True
         user.is_superuser = True
+        user.is_staff = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
 
 class User(AbstractUser):
     objects = UserManager()
-    is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Utilisateur'
@@ -51,10 +51,9 @@ class User(AbstractUser):
 
 class Session(models.Model):
     session_name = models.TextField("name", default = "")
-    session_id = models.AutoField(primary_key=True)
 
     def __str__(self):
-        return f"{self.session_name} ({self.session_id})"
+        return f"{self.session_name}"
 
 class SessionUser(models.Model):
     session = models.ForeignKey(Session, on_delete = models.CASCADE)
@@ -71,7 +70,7 @@ class Message(models.Model):
     upvote = models.IntegerField("upvote", default = 0)
     downvote = models.IntegerField("downvote", default = 0)
     color = models.CharField("color", max_length = 50, default = "")
-    session_id = models.IntegerField("session_id", default = 0)
+    session_id = models.ForeignKey(Session, on_delete = models.CASCADE)
 
     def __str__(self):
         return f"{self.writer} ({self.pub_date}) : {self.text}"

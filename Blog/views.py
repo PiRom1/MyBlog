@@ -1,47 +1,37 @@
 from django.shortcuts import render
 #from rest_framework import viewsets
-from .models import Message, History, Session
+from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import MessageForm, LoginForm, AddUserForm, ColorForm, ModifyForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
-from django.contrib.auth import authenticate, login, get_user, logout
-from django.contrib.auth.models import User
 from django.db.models import F
 
 # Create your views here.
 
-LEGAL_USERS = {
-    0 : ['romain', 'lise', 'paul', 'alice', 'mathieu', 'didier', 'admin', 'pierrick', 'emma'], 
-    1 : ['louis', 'theophile', 'saghar', 'melvin', 'leon', 'romain', 'admin']
-}
-
-
-
-
-def logout(request):
+@login_required
+def deconnexion(request):
     
     print("Logging out ... ")
     
     logout(request)
-    return HttpResponseRedirect("/connexion")
+    return HttpResponseRedirect("/login/")
 
-import numpy as np
+@login_required
 def getSession(request):
     
-    user = get_user(request)
-    user.is_authenticated
+    user = request.user
     connecte = user.is_authenticated
 
     if not connecte:
-        return HttpResponseRedirect("connexion")
+        return HttpResponseRedirect("/login/")
 
     print(connecte)
 
-    allowed = [user.username in LEGAL_USERS[i] for i in range(2)]
-    print(allowed)
-
-    sessions = Session.objects.all()
-    sessions = np.array(sessions)[allowed]
+    su = SessionUser.objects.filter(user = user)
+    sessions = Session.objects.filter(id__in = [session.session_id for session in su])
+    print(sessions)
     context = {"sessions" : sessions, "user" : user}
     return render(request, "Blog/get_session.html", context)
 
@@ -50,23 +40,24 @@ def InvalidUser(request):
     context =  {}
     return render(request, "Blog/invalid_user.html", context)
 
-
+@login_required
 def Index(request, id):
     """
     API Endpoint that shows overall data of the conformity percentage
     specific regulation data can be accessed with by passing the regulation id in the url parameters
     """
 
-    session = Session.objects.filter(session_id=id)[0]
+    session = Session.objects.get(id = id)
+    print(session)
 
-    messages = Message.objects.filter(session_id=id)
-    user = get_user(request)
+    messages = Message.objects.filter(session_id=session)
+    user = request.user
     user.is_authenticated
     print(type(user))
     print(user)
 
     # Vérification de l'autorisation d'accès
-    if user.username not in LEGAL_USERS[session.session_id]:
+    if not SessionUser.objects.get(user = user, session = session):
         return HttpResponseRedirect("/invalid_user/")
 
 
@@ -82,7 +73,7 @@ def Index(request, id):
             #user = user.get_username()
             #user = User.objects.filter(name = user)[0]
             print(text)
-            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = id)  
+            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
 
             new_message.save()
@@ -102,7 +93,7 @@ def Index(request, id):
 
     when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
 
-    for message in Message.objects.filter(session_id = id):
+    for message in Message.objects.filter(session_id = session):
         message_date = str(message.pub_date).split()[0]
         message_date = message_date.split('-')
 
@@ -140,57 +131,53 @@ def Index(request, id):
 
 
 
-def Modify(request, message_id):
-    message = Message.objects.filter(id = message_id)[0]
-    history_message = History.objects.filter(message = message)
-    user = get_user(request)
-    user.is_authenticated
-    print(type(user))
-    print(user)
-    if request.method == "POST":
-        modify_form = ModifyForm(request.POST)
-        modification = modify_form['modify']
-        message.text = modification.value()
-        message.save()
-        history = History(pub_date = timezone.now(), writer = message.writer, text = modification.value(), message = message)
-        history.save()
+# def Modify(request, message_id):
+#     message = Message.objects.filter(id = message_id)[0]
+#     history_message = History.objects.filter(message = message)
+#     user = request.user
+#     user.is_authenticated
+#     print(type(user))
+#     print(user)
+#     if request.method == "POST":
+#         modify_form = ModifyForm(request.POST)
+#         modification = modify_form['modify']
+#         message.text = modification.value()
+#         message.save()
+#         history = History(pub_date = timezone.now(), writer = message.writer, text = modification.value(), message = message)
+#         history.save()
 
-        return HttpResponseRedirect("/")
+#         return HttpResponseRedirect("/")
 
-    else:
-        modify_form = ModifyForm()
+#     else:
+#         modify_form = ModifyForm()
 
-    context = {"message" : message, "form" : modify_form, 'history_message' : history_message}
+#     context = {"message" : message, "form" : modify_form, 'history_message' : history_message}
                
-    return render(request, "Blog/modify.html", context)
+#     return render(request, "Blog/modify.html", context)
     
 
+# def AddUser(request):
 
+#     add_user_form = AddUserForm(request.POST)
 
-def AddUser(request):
+#     if add_user_form.is_valid():
+#         username = add_user_form['username'].value()
+#         password = add_user_form['password'].value()
 
-    add_user_form = AddUserForm(request.POST)
+#         user = User.objects.create_user(username = username, password = password)
+#         user = authenticate(request, username=username, password=password)
+#         login(request, user)
+#         print(user)
 
-    if add_user_form.is_valid():
-        username = add_user_form['username'].value()
-        password = add_user_form['password'].value()
-
-        user = User.objects.create_user(username = username, password = password)
-        user = authenticate(request, username=username, password=password)
-        login(request, user)
-        print(user)
-
-        return HttpResponseRedirect("/")
+#         return HttpResponseRedirect("/")
     
-    context = {"add_user_form" : add_user_form}
+#     context = {"add_user_form" : add_user_form}
 
-    return(render(request, "Blog/AddUser.html", context))
-
-
-
+#     return(render(request, "Blog/AddUser.html", context))
 
 
 def connexion(request):
+    deconnexion(request)
     print("Connexion ...")
     login_form = LoginForm(request.POST)
     
@@ -209,10 +196,6 @@ def connexion(request):
         login_form = LoginForm()
     
     context = {"login_form" : login_form}
-
-
-
-
     return(render(request, "Blog/connexion.html", context))
 
 

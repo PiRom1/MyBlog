@@ -26,10 +26,10 @@ Sessions disponibles : </br></br>
 
 {% for session in sessions %}
 
-<li><a href = "./{{session.session_id}}">{{session.session_name}}</a></li>
+<li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>
 
 {% endfor %}
 <br/></br>
-Connecté en tant que <strong>{{user}}</strong>. <a href = "/connexion/">Connexion</a>
+Connecté en tant que <strong>{{user}}</strong>. <a href = "/logout/">Déconnexion</a>
 </div>
 </div>
