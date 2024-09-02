@@ -14,7 +14,7 @@ class MessageForm(forms.Form):
 
     #who = forms.ChoiceField(label = 'Who', widget = forms.RadioSelect, choices = CHOICES)
 
-    CHOICES = [('black', 'Noir'), ('red', 'Rouge'), ('blue', 'Bleu'), ('green', 'Vert'), ('yellow', 'Jaune')]
+    CHOICES = [('black', 'Noir'), ('red', 'Rouge'), ('blue', 'Bleu'), ('green', 'Vert'), ('yellow', 'Jaune'), ('pink', 'Rose'), ('purple', 'Violet')]
 
     color = forms.ChoiceField(label = 'Ta couleur', choices = CHOICES)
 
