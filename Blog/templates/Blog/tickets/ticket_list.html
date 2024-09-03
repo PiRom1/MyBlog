@@ -14,21 +14,16 @@
     <h1>Ticket List</h1>
     <a href="/tickets/create/">Create New Ticket</a>
     <ul>
-        {% for ticket in tickets %}
-        {% if ticket.status == 'open' %}
-            <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
-        {% endif %}
+        {% for ticket in open_tickets %}
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
         {% endfor %}
-        {% for ticket in tickets %}
-        {% if ticket.status == 'in_progress' %}
-            <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
-        {% endif %}
+        {% for ticket in in_progress_tickets %}
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
         {% endfor %}
-        {% for ticket in tickets %}
-        {% if ticket.status == 'closed' %}
-            <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
-        {% endif %}
+        {% for ticket in closed_tickets %}
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
         {% endfor %}
+
     </ul>
 
     <a href="/">Back to Home</a>

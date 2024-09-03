@@ -159,7 +159,15 @@ def Index(request, id):
 @login_required
 def ticket_list(request):
     tickets = Ticket.objects.all()
-    return render(request, 'Blog/tickets/ticket_list.html', {'tickets': tickets})
+    open_tickets = tickets.filter(status='open')
+    closed_tickets = tickets.filter(status='closed')
+    in_progress_tickets = tickets.filter(status='in_progress')
+    print(tickets)
+    print(open_tickets)
+    return render(request, 'Blog/tickets/ticket_list.html', {'tickets': tickets,
+                                                             'open_tickets': open_tickets,
+                                                             'closed_tickets': closed_tickets,
+                                                             'in_progress_tickets': in_progress_tickets})
 
 @login_required
 def create_ticket(request):
