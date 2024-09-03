@@ -13,8 +13,8 @@ urlpatterns = [
     path("stats/<int:id>/", views.Stats, name="stats"),
     #path("dark_mode/", views.dark_mode, name = "dark_mode")
     # path("add_user/", views.AddUser, name = "add_user"),
-    #path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
-    #path("downvote/<int:message_id>/", views.downvote, name = "downvote"),
+    # path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
+    # path("downvote/<int:message_id>/", views.downvote, name = "downvote"),
     # path("modify/<int:message_id>/", views.Modify, name = "modify"),
 
     # TICKETS #

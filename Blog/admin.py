@@ -5,7 +5,8 @@ class UserAdmin(DefaultUserAdmin):
     model = User
     list_display = ['username', 'is_superuser']
     fieldsets = DefaultUserAdmin.fieldsets
-    add_fieldsets = DefaultUserAdmin.add_fieldsets
+    fieldsets[1][1]['fields'] += ('image',)
+    add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)
 
@@ -20,3 +21,7 @@ class SessionAdmin(admin.ModelAdmin):
 @admin.register(SessionUser)
 class SessionUserAdmin(admin.ModelAdmin):
     list_display = ('session', 'user')
+
+@admin.register(Photo)
+class PhotoAdmin(admin.ModelAdmin):
+    list_display = ('image',)
