@@ -10,10 +10,10 @@ urlpatterns = [
     path("login/", views.connexion, name = "login"),
     path("logout/", views.deconnexion, name = "logout"),
     path("invalid_user/", views.InvalidUser, name = "invalid_user"),
-    #path("dark_mode/", views.dark_mode, name = "dark_mode")
+    # path("dark_mode/", views.dark_mode, name = "dark_mode")
     # path("add_user/", views.AddUser, name = "add_user"),
-    #path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
-    #path("downvote/<int:message_id>/", views.downvote, name = "downvote"),
+    # path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
+    # path("downvote/<int:message_id>/", views.downvote, name = "downvote"),
     # path("modify/<int:message_id>/", views.Modify, name = "modify"),
 
     # TICKETS #
