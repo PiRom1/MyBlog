@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Ticket</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <a href="/tickets/" style="margin: 20px;"><i class="fa-regular fa-heart"></i>Back to Ticket List</a>
     <h1>Create Ticket</h1>
     <form method="post">
         {% csrf_token %}

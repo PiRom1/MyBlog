@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<!-- <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOG ACELYS</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head> -->
+
+<body>
+    {% if messages %}
+      <div class="modal-background active">
+        <div class="modal active">
+          <span class="modal-close">&times;</span>
+          {% for message in messages %}
+            <p class="modal-error">{{ message }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    
+
+    {% block content %}{% endblock %}
+    
+
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extrajs %}{% endblock %}
+
+</body>
+
+</html>

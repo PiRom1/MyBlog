@@ -1,11 +1,29 @@
-<h1>Page de connexion</h1>
+<head>
+    <meta charset="utf-8" />
 
-<form action="" method="post">
+    <title>{{session.session_name}}</title>
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
+        rel="stylesheet"
+        type="text/css" />
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+    <h1>Page de connexion</h1>
+
+    <form action="" method="post">
     {% csrf_token %}
-    
+
     {{ login_form }}
     <input type="submit" value="Submit">
 </form>
 
+</body>
 
 <!-- <a href = "/">Retour aux messages</a> -->
