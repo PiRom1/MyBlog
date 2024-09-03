@@ -23,7 +23,11 @@
     <br>
     <div class="bottom">
       <h3>Connecté en tant que <u>{{user}}</u></h3>
-      <a href = "./change_photo">Changer sa photo de profil</a>
+
+      {% if user.is_staff %}
+        <a href = "/admin">Acceder à l'admin</a>
+      {% endif %}
+      <a href = "/change_photo">Changer sa photo de profil</a>
       <a href = "/logout/">Déconnexion</a>
     </div>
   </div>
