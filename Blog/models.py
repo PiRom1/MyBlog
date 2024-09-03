@@ -39,6 +39,9 @@ class UserManager(BaseUserManager):
 
 class Photo(models.Model):
     image = models.ImageField(upload_to = 'Images/')
+
+    def __str__(self):
+        return f"{(self.image)}".replace("Images/", "")
     
 
 class User(AbstractUser):
