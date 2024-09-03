@@ -228,8 +228,14 @@ def change_photo(request):
 @login_required
 def Stats(request, id):
 
+    user = request.user
     session = Session.objects.get(id = id)
 
+
+    if not SessionUser.objects.get(user = user, session = session):
+        return HttpResponseRedirect("/invalid_user/")
+
+    
     stats = get_stats(session)
     url = "Blog/stats.html"
     context = {"stats" : stats,
