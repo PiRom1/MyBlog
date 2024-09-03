@@ -1,9 +1,26 @@
-Photo actuelle : <img src="{{ user.image.image.url }}" alt= "{{ user.image.image.name }}" width="50" height="50">
-</br></br></br>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+<head>
+    <meta charset="utf-8" />
 
-<a href="/">Retour aux messages</a>
+    <title>{{session.session_name}}</title>
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
+        rel="stylesheet"
+        type="text/css" />
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    Photo actuelle : <img src="{{ user.image.image.url }}" alt= "{{ user.image.image.name }}" width="50" height="50">
+    </br></br></br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+    
+    <a href="/">Retour aux messages</a>
+</body>
