@@ -193,15 +193,21 @@ def change_photo(request):
     photo_form = PhotoForm(request.POST, request.FILES)
     photo = None
 
+    print(photo_form.is_valid())
+
     if request.method == "POST":
-        print(1)
-        
-        photo = photo_form.data.get('photo')
-        print("Photo : ", type(photo), photo)
 
-        user.photo = photo
+        if photo_form.is_valid():
+                
+            photo = photo_form.cleaned_data['photo']
+            
 
-        user.save()
+            photo = Photo(image = photo)
+            photo.save()
+            
+            user.image = photo
+
+            user.save()
         
            
 
