@@ -15,13 +15,13 @@
     <a href="/tickets/create/">Create New Ticket</a>
     <ul>
         {% for ticket in open_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de {{ ticket.created_by }} | <strong>Ouvert</strong> | &#40assigné à {{ ticket.assigned_to }}&#41</li>
         {% endfor %}
         {% for ticket in in_progress_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de {{ ticket.created_by }} | <strong>En cours</strong> | &#40assigné à {{ ticket.assigned_to }}&#41</li>
         {% endfor %}
         {% for ticket in closed_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - <strong>{{ ticket.status }}</strong> - by {{ ticket.created_by }} - at {{ ticket.created_at }}</li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de {{ ticket.created_by }} | <strong>Fermé</strong></li>
         {% endfor %}
 
     </ul>
