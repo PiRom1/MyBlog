@@ -10,6 +10,7 @@ urlpatterns = [
     path("login/", views.connexion, name = "login"),
     path("logout/", views.deconnexion, name = "logout"),
     path("invalid_user/", views.InvalidUser, name = "invalid_user"),
+    path("stats/<int:id>/", views.Stats, name="stats"),
     #path("dark_mode/", views.dark_mode, name = "dark_mode")
     # path("add_user/", views.AddUser, name = "add_user"),
     #path("upvote/<int:message_id>/", views.upvote, name = "upvote"),

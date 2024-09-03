@@ -8,6 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.db.models import F
 
+from .utils.stats import *
+
 # Create your views here.
 
 def connexion(request):
@@ -223,7 +225,17 @@ def change_photo(request):
 
 
 
+@login_required
+def Stats(request, id):
 
+    session = Session.objects.get(id = id)
+
+    stats = get_stats(session)
+    url = "Blog/stats.html"
+    context = {"stats" : stats,
+               "session" : session}
+
+    return render(request, url, context)
 
 
 
