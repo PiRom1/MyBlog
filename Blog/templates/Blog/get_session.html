@@ -12,7 +12,7 @@
     
     {% load static %}
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-    <!-- <link rel="stylesheet" href='{% static "css/get_session.css" %}'/>     -->
+    <link rel="stylesheet" href='{% static "css/get_session.css" %}'/>    
 
   </head>
 
@@ -20,26 +20,29 @@
     
   <div class = 'colonne gauche'>
     <h1>Rejoindre une session de discussion. </h1> 
+    <br>
+    <div class="bottom">
+      <a>Connecté en tant que <strong>{{user}}</strong>.</a>
+      <a href = "/logout/">Déconnexion</a>
+    </div>
   </div>
 
   <div class = 'colonne droite'>
-    Sessions disponibles : </br></br>
+    <h3>Sessions disponibles : </h3>
+    <br><br>
 
     {% for session in sessions %}
-
-    <li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>
-
+      <li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>  
     {% endfor %}
-    <br/></br>
+    <br><br>
 
-    <h1>Acceder aux tickets</h1>
+    <h3>Acceder aux tickets</h3>
     <a href = "/tickets/">Tickets</a>
 
-    <br/></br>
-    Connecté en tant que <strong>{{user}}</strong>. <a href = "/logout/">Déconnexion</a>
+    <br><br>
   </div>
-  <br/></br>
-  <br/></br>
-  <br/></br>
+  <br><br>
+  <br><br>
+  <br><br>
   <a href = "./change_photo">Changer sa photo de profil</a>
 </div>

@@ -9,7 +9,7 @@ body, html {
 h1 {
     text-align: left;
     vertical-align: top;
-    position: fixed;
+    /* position: fixed; */
     top: 0;
     left: 5px;
 }
@@ -23,24 +23,40 @@ h1 {
 /* Style pour les colonnes */
 .colonne {
     display: flex;
-    justify-content: center; /* Centrer horizontalement le contenu */
-    align-items: center; /* Centrer verticalement le contenu */
+    justify-content: flex-start; /* Centrer horizontalement le contenu */
     color: white; /* Couleur du texte */
     padding: 20px;
     box-sizing: border-box;
     overflow-wrap: break-word; /* Permet de casser les mots longs */
     word-break: break-word; /* Ajoute un saut de ligne automatique */
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    align-items: flex-start;
 }
 
 /* Colonne gauche */
 .gauche {
+    align-items: flex-start;
     background-color: #e74c3c; /* Couleur de fond bleue */
     flex: 0 0 30%;
 }
 
 /* Colonne droite */
 .droite {
+    align-items: flex-start;
     background-color: #fefeee; /* Couleur de fond rouge */
     flex: 0 0 70%;
     color: #120221
+}
+
+/* Style pour les éléments qui se retrouvent en bas de la colonne
+les items doivent avoir un petit espace entre eux */
+.bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: left;
+    padding: auto;
 }
