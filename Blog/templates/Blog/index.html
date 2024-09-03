@@ -47,9 +47,14 @@
         
      
           
-    <img src="{{ message.writer.image.image.url }}" alt= "{{ message.writer.image.image.name }}" width="50" height="50">
+    
           <div class = "{{message.color}}">
+            <span class = "{% if message.writer.username == user.username %}photo_left{% else %}photo_right{% endif %}">
+            <img src="{{ message.writer.image.image.url }}" alt= "{{ message.writer.image.image.name }}" width="50" height="50">
+          </span>
           <div class="{% if message.writer.username == user.username %}left{% else %}right{% endif %}">
+            
+            
             <i>({{message.pub_date}})</i> <span class = author><strong>{{message.writer.username}}</strong></span> :
             <!-- <a href = "/modify/{{message.id}}" style="text-decoration:none">--> <div class = message>{{message.text}}</div> </a>
           </div>

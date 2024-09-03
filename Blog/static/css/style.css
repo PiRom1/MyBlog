@@ -96,6 +96,12 @@ body {
     font-size: 18px;
 }
 
+.photo_left {
+    position: absolute;
+    left: 170px;
+}
+
+
 
 .left {
     --r: 30px;  /* the radius */
