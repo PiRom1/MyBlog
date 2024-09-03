@@ -112,13 +112,14 @@ def Index(request, id):
     month = []   # Contient les différents mois existants
     day = []   # Contient les différents jours existants
     dates = []
-
+    
     when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
 
     for message in Message.objects.filter(session_id = session):
         message_date = str(message.pub_date).split()[0]
         message_date = message_date.split('-')
 
+        
         dict = {'year' : message_date[0], 
                 'month' : message_date[1],
                 'day' : message_date[2]}
@@ -147,7 +148,8 @@ def Index(request, id):
                "user" : user, "years" : years, 
                "month" : month, "day" : day, 
                "when_new_date" : when_new_date,
-               "session" : session}
+               "session" : session,
+               }
 
     return render(request, url, context)
 
@@ -181,6 +183,42 @@ def update_ticket(request, pk):
     else:
         form = TicketForm(instance=ticket)
     return render(request, 'Blog/tickets/update_ticket.html', {'form': form, 'ticket': ticket})
+
+
+@login_required
+def change_photo(request):
+    
+    user = request.user
+
+    photo_form = PhotoForm(request.POST, request.FILES)
+    photo = None
+
+    if request.method == "POST":
+        print(1)
+        
+        photo = photo_form.data.get('photo')
+        print("Photo : ", type(photo), photo)
+
+        user.photo = photo
+
+        user.save()
+        
+           
+
+
+    url = "Blog/change_photo.html"
+
+    context = {"use" : user,
+               "form" : photo_form,
+               "photo" : photo
+               }
+
+    return render(request, url, context)
+
+
+
+
+
 
 
 

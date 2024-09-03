@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 # Create your models here.
 
+
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
@@ -36,18 +37,23 @@ class UserManager(BaseUserManager):
         return user
 
 
+class Photo(models.Model):
+    image = models.ImageField(upload_to = 'Images/')
+    
+
 class User(AbstractUser):
     objects = UserManager()
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
-
+    image = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
+    
+    
     class Meta:
         verbose_name = 'Utilisateur'
 
     def __str__(self):
         return f'{self.username}'
-    
 
 class Session(models.Model):
     session_name = models.TextField("name", default = "")
@@ -61,7 +67,8 @@ class SessionUser(models.Model):
 
     def __str__(self):
         return f"{self.user} ({self.session})"
-    
+
+
 class Message(models.Model):
 
     pub_date = models.DateTimeField("Date publication")
@@ -82,11 +89,6 @@ class History(models.Model):
     text = models.TextField("Texte")
     message = models.ForeignKey(Message, on_delete = models.CASCADE)
 
-
-class Photo(models.Model):
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='Images/')
 
 class Ticket(models.Model):
     STATUS_CHOICES = [

@@ -12,7 +12,7 @@ admin.site.register(User, UserAdmin)
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('pub_date', 'writer', 'text')
-
+    
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     list_display = ('session_name',)

@@ -20,4 +20,5 @@ urlpatterns = [
     path('tickets/', views.ticket_list, name='ticket_list'),
     path('tickets/create/', views.create_ticket, name='create_ticket'),
     path('tickets/update/<int:pk>/', views.update_ticket, name='update_ticket'),
+    path('change_photo', views.change_photo, name = 'change_photo'),
 ]

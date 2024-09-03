@@ -35,6 +35,7 @@
 <ul>
     {% for message in messages %}
       
+  
     {% if when_new_date|slice:forloop.counter|last %}
     <br>
     
@@ -43,9 +44,9 @@
       </div>
     {% endif %}
         
-        
+     
           
-          
+    <img src="{{ message.writer.photo.url }}" alt= "{{ message.writer.photo.name }}" width="50" height="50">
           <div class = "{{message.color}}">
           <div class="{% if message.writer.username == user.username %}left{% else %}right{% endif %}">
             <i>({{message.pub_date}})</i> <span class = author><strong>{{message.writer.username}}</strong></span> :
