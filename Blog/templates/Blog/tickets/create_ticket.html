@@ -11,12 +11,14 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <a href="/tickets/" style="margin: 20px;"><i class="fa-regular fa-heart"></i>Back to Ticket List</a>
     <h1>Create Ticket</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Create</button>
     </form>
+    <div class="bottom">
+        <a href="/tickets/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Back to Ticket List</a>
+    </div>
 </body>
 </html>

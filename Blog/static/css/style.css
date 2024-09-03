@@ -101,7 +101,14 @@ body {
     left: 170px;
 }
 
-
+.bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: left;
+    padding: auto;
+}
 
 .left {
     --r: 30px;  /* the radius */
