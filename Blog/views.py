@@ -279,6 +279,7 @@ def UserView(request, id):
     session_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=user.id))]
     session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
     
+    n_messages = len(Message.objects.filter(writer=viewed_user))
 
     access = False
 
@@ -291,7 +292,8 @@ def UserView(request, id):
 
     
     url = "Blog/user.html"
-    context = {'viewed_user' : viewed_user}
+    context = {'viewed_user' : viewed_user,
+               'n_messages' : n_messages}
 
     return render(request, url, context)
 
