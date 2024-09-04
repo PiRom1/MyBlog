@@ -12,7 +12,8 @@
     
     {% load static %}
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-    <link rel="stylesheet" href='{% static "css/get_session.css" %}'/>    
+    <link rel="stylesheet" href='{% static "css/get_session.css" %}'/>
+    <link rel="stylesheet" href='{% static "css/utils.css" %}'/>
 
   </head>
 
@@ -22,7 +23,7 @@
     <h1>Rejoindre une session de discussion. </h1> 
     <br>
     <div class="bottom">
-      <h3>Connecté en tant que <u>{{user}}</u></h3>
+      <h3>Connecté en tant que <span class='name'><u>{{user}}</u></span></h3>
 
       {% if user.is_staff %}
         <a href = "/admin">Acceder à l'admin</a>
