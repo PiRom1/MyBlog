@@ -9,7 +9,7 @@ def get_stats(session):
     for message in messages:
         username = message.writer.username
         if username not in users:
-            users[username] = 0
+            users[username] = 1
         else:
             users[username] += 1
     
