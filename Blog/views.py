@@ -184,7 +184,7 @@ def create_ticket(request):
             email_from = settings.EMAIL_HOST_USER
             if ticket.assigned_to.email:
                 recipient_list = [ticket.assigned_to.email, ]
-                message = f'Hey {ticket.assigned_to.username}, un nouveau ticket t\'a été assigné !'
+                message = f'Hey {ticket.assigned_to.username}, un nouveau ticket t\'a été assigné par {ticket.created_by.username} !'
             else:
                 recipient_list = [ticket.created_by.email, ]
                 message = f'Hey {ticket.created_by.username}, malheureusement la personne à qui tu as assigné le ticket n\'a pas d\'adresse mail valide.'
