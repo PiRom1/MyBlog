@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.db.models import F
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .utils.stats import *
 
@@ -177,6 +179,17 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.created_by = request.user
             ticket.save()
+
+            subject = 'Nouveau ticket créé'
+            email_from = settings.EMAIL_HOST_USER
+            if ticket.assigned_to.email:
+                recipient_list = [ticket.assigned_to.email, ]
+                message = f'Hey {ticket.assigned_to.username}, un nouveau ticket t\'a été assigné !'
+            else:
+                recipient_list = [ticket.created_by.email, ]
+                message = f'Hey {ticket.created_by.username}, malheureusement la personne à qui tu as assigné le ticket n\'a pas d\'adresse mail valide.'
+            send_mail( subject, message, email_from, recipient_list )
+
             return redirect('ticket_list')
     else:
         form = TicketForm()
