@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <title>{{session.session_name}}</title>
+
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
+    rel="stylesheet"
+    type="text/css" />
+  
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/utils.css' %}">
+
+</head>
+
+<h1>Profil de <span class="name">{{viewed_user.username}}</span></h1>
+
+<a href="/">HOME</a>
+
+<ul>
+    <li><u>Prénom</u> : {{viewed_user.first_name}}</li>
+    <li><u>Nom</u> : {{viewed_user.last_name}}</li>
+    <li><u>Mail</u> : {{viewed_user.email}}</li>
+</ul>
+
+<br><br>
+<h2><u>Photo de profil</u> : </h2> <br>
+<img src="{{ viewed_user.image.image.url }}" alt= "{{ viewed_user.image.image.name }}">

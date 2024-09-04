@@ -51,12 +51,14 @@
     
           <div class = "{{message.color}}">
             <span class = "{% if message.writer.username == user.username %}photo_left{% else %}photo_right{% endif %}">
-            <img src="{{ message.writer.image.image.url }}" alt= "{{ message.writer.image.image.name }}" width="50" height="50">
-          </span>
+              <a href="/user/{{message.writer.id}}">
+                <img src="{{ message.writer.image.image.url }}" alt= "{{ message.writer.image.image.name }}" width="50" height="50">
+              </a>
+            </span>
           <div class="{% if message.writer.username == user.username %}left{% else %}right{% endif %}">
             
             
-            <i>({{message.pub_date}})</i> <span class = author><strong>{{message.writer.username}}</strong></span> :
+            <i>({{message.pub_date}})</i> <span class = author><strong><a href="/user/{{message.writer.id}}" style="text-decoration:none; color:inherit">{{message.writer.username}}</a></strong></span> :
             <!-- <a href = "/modify/{{message.id}}" style="text-decoration:none">--> <div class = message>{{message.text}}</div> </a>
           </div>
           </div>

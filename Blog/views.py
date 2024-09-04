@@ -265,6 +265,33 @@ def Stats(request, id):
     return render(request, url, context)
 
 
+@login_required
+def UserView(request, id):
+
+    user = request.user
+    viewed_user = User.objects.filter(id = id)[0]
+
+    # Condition si current user et viewed_user sont dans la même session
+    session_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=user.id))]
+    session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
+    
+
+    access = False
+
+    for user_id in session_user:
+        if user_id in session_viewed_user:
+            access = True
+
+    if not access:
+        return HttpResponseRedirect("/invalid_user/")
+
+    
+    url = "Blog/user.html"
+    context = {'viewed_user' : viewed_user}
+
+    return render(request, url, context)
+
+
 
 
 
