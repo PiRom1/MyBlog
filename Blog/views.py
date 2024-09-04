@@ -180,14 +180,18 @@ def create_ticket(request):
             ticket.created_by = request.user
             ticket.save()
 
-            subject = 'Nouveau ticket créé'
+            subject = 'Nouveau ticket : ' + ticket.title
             email_from = settings.EMAIL_HOST_USER
             if ticket.assigned_to.email:
                 recipient_list = [ticket.assigned_to.email, ]
-                message = f'Hey {ticket.assigned_to.username}, un nouveau ticket t\'a été assigné par {ticket.created_by.username} !'
-            else:
+                message = f"""Hey {ticket.assigned_to.username},\n\n
+                            Un nouveau ticket t\'a été assigné par {ticket.created_by.username} !\n
+                            Tu peux le consulter à l'adresse suivante : https://diplo.pythonanywhere.com/tickets/update/{ticket.id}/"""
+            elif ticket.created_by.email:
                 recipient_list = [ticket.created_by.email, ]
                 message = f'Hey {ticket.created_by.username}, malheureusement la personne à qui tu as assigné le ticket n\'a pas d\'adresse mail valide.'
+            else:
+                return redirect('ticket_list')
             send_mail( subject, message, email_from, recipient_list )
 
             return redirect('ticket_list')
