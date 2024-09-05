@@ -241,7 +241,7 @@ def change_photo(request):
 
     url = "Blog/change_photo.html"
 
-    context = {"use" : user,
+    context = {"user" : user,
                "form" : photo_form,
                "photo" : photo
                }

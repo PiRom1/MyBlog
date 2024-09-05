@@ -40,6 +40,9 @@
     <li><u>Mail</u> : {{viewed_user.email}} </li>
 </ul>
 </div>
+{% if user == viewed_user %}
+<a href = "/change_photo">Changer sa photo de profil</a>
+{% endif %}
 <br><br>
 
 
