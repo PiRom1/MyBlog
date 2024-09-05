@@ -16,13 +16,13 @@
     <a href="/tickets/create/">Create New Ticket</a>
     <ul>
         {% for ticket in open_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de <span class='name'>{{ ticket.created_by }}</span> | <strong>Ouvert</strong> | &#40assigné à <span class='name'>{{ ticket.assigned_to }}</span>&#41</li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> [{{ticket.category}}] - de <span class='name'>{{ ticket.created_by }}</span> | <strong>Ouvert</strong> | &#40assigné à <span class='name'>{{ ticket.assigned_to }}</span>&#41</li>
         {% endfor %}
         {% for ticket in in_progress_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de <span class='name'>{{ ticket.created_by }}</span> | <strong>En cours</strong> | &#40assigné à <span class='name'>{{ ticket.assigned_to }}</span>&#41</li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> [{{ticket.category}}] - de <span class='name'>{{ ticket.created_by }}</span> | <strong>En cours</strong> | &#40assigné à <span class='name'>{{ ticket.assigned_to }}</span>&#41</li>
         {% endfor %}
         {% for ticket in closed_tickets %}
-        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> - de <span class='name'>{{ ticket.created_by }}</span> | <strong>Fermé</strong></li>
+        <li><a href="/tickets/update/{{ ticket.pk }}">{{ ticket.title }}</a> [{{ticket.category}}] - de <span class='name'>{{ ticket.created_by }}</span> | <strong>Fermé</strong></li>
         {% endfor %}
 
     </ul>

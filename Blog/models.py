@@ -100,11 +100,18 @@ class Ticket(models.Model):
         ('closed', 'Closed'),
     ]
 
+    CATEGORIES = [
+        ('undefined', 'Undefined'),
+        ('feature', 'Feature'),
+        ('fix', 'Fix')
+    ]
+
     title = models.CharField(max_length=100)
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(User, related_name='assigned_tickets', on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
+    category = models.CharField(max_length=20, choices = CATEGORIES, default = 'undefined')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -52,7 +52,7 @@ class ColorForm(forms.Form):
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'assigned_to', 'status']
+        fields = ['title', 'category', 'description', 'assigned_to', 'status']
 
 
 class PhotoForm(forms.Form):
