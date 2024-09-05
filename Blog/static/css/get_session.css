@@ -15,6 +15,11 @@ h1 {
 }
 
 
+.canvas2 {
+    position:absolute;
+    left:-30px;
+}
+
 
 /* Conteneur principal pour les colonnes */
 .container {

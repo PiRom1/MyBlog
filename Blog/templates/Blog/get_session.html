@@ -17,11 +17,20 @@
 
   </head>
 
+
+
+
 <div class="container">
     
   <div class = 'colonne gauche'>
+    
     <h1>Rejoindre une session de discussion. </h1> 
     <br>
+
+    <canvas id="canvas2" style="border:0px solid #000000;" onmousemove="get_mouse_pos(event)" width="580" height="500"></canvas>
+      <script src = "{% static 'js/network.js' %}"></script>
+
+
     <div class="bottom">
       <h3>Connecté en tant que <span class='name'><u><a href="/user/{{user.id}}" style="text-decoration:none; color:inherit">{{ user }}</a></u></span></h3>
 
