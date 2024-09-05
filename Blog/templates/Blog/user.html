@@ -15,18 +15,38 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/utils.css' %}">
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
-<h1>Profil de <span class="name">{{viewed_user.username}}</span></h1>
 
 <a href="/">HOME</a>
 
+<h1>Profil de <span class="name">{{viewed_user.username}} </span></h1>
+{% if user == viewed_user %} <span id="ouvrirFormulaire" style="color: blue; cursor: pointer;">✏️</span>{% endif %}
+
+
+<div id="formContainer" style="display: none;">
+  <form action="" method="post" id="monFormulaire">
+      {% csrf_token %}
+      
+      {{ form }}
+      <button type="submit">Envoyer</button>
+  </form>
+</div>
+
+<div id="fieldsContainer" style="display: block;">
 <ul>
-    <li><u>Prénom</u> : {{viewed_user.first_name}}</li>
-    <li><u>Nom</u> : {{viewed_user.last_name}}</li>
-    <li><u>Mail</u> : {{viewed_user.email}}</li>
+    <li><u>Prénom</u> : {{viewed_user.first_name}} </li>
+    <li><u>Nom</u> : {{viewed_user.last_name}} </li>
+    <li><u>Mail</u> : {{viewed_user.email}} </li>
 </ul>
+</div>
 <br><br>
+
+
+
+<script src = "{% static 'js/modify_info.js' %}"></script>
+
+
 A écrit {{n_messages}} messages
 
 <br><br>

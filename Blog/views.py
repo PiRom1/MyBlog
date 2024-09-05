@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 #from rest_framework import viewsets
 from .models import *
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -271,7 +271,7 @@ def Stats(request, id):
 
 @login_required
 def UserView(request, id):
-
+    
     user = request.user
     viewed_user = User.objects.filter(id = id)[0]
 
@@ -290,13 +290,39 @@ def UserView(request, id):
     if not access:
         return HttpResponseRedirect("/invalid_user/")
 
+    form = ModifyUserForm(initial={'last_name' : user.last_name,
+                                   'first_name' : user.first_name,
+                                   'email' : user.email})
+    if request.method == 'POST':
+
+        form = ModifyUserForm(request.POST)
+        
+        if form.is_valid():
+            
+            data = form.data            
+            first_name = data['first_name']
+            last_name = data['last_name']
+            email = data['email']
+
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+
+            user.save()
+
+            return HttpResponseRedirect('.')
+
+        
+
+
     
     url = "Blog/user.html"
     context = {'viewed_user' : viewed_user,
-               'n_messages' : n_messages}
+               'n_messages' : n_messages,
+               'form' : form
+               }
 
     return render(request, url, context)
-
 
 
 

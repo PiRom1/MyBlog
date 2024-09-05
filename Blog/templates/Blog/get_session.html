@@ -23,7 +23,7 @@
     <h1>Rejoindre une session de discussion. </h1> 
     <br>
     <div class="bottom">
-      <h3>Connecté en tant que <span class='name'><u>{{user}}</u></span></h3>
+      <h3>Connecté en tant que <span class='name'><u><a href="/user/{{user.id}}" style="text-decoration:none; color:inherit">{{ user }}</a></u></span></h3>
 
       {% if user.is_staff %}
         <a href = "/admin">Acceder à l'admin</a>

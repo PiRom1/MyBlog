@@ -5,6 +5,13 @@ from .models import *
 
 class ModifyForm(forms.Form):
     modify = forms.CharField(label = "Modify")
+
+
+class ModifyUserForm(forms.Form):
+    first_name = forms.CharField(label = "Prénom", required = False)
+    last_name = forms.CharField(label = "Nom", required = False)
+    email = forms.EmailField(label = "Mail", required = False)
+
     
 
 class MessageForm(forms.Form):
