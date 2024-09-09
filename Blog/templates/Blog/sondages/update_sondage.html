@@ -1,0 +1,30 @@
+<!-- templates/update_ticket.html -->
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Ticket</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Update Sondage: {{ sondage.question }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        {% for choice in formset %}
+        {{ choice.as_p }}
+        {% endfor %}
+
+        <button type="submit">Update</button>
+    </form>
+    
+    <div class="bottom">
+        <a href="/sondages/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Back to Sondage List</a>
+    </div>
+</body>
+</html>

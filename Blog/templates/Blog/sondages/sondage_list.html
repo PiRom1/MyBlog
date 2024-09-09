@@ -1,0 +1,27 @@
+<!-- templates/ticket_list.html -->
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket List</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utils.css' %}">
+</head>
+<body>
+    <h1>Sondage List</h1>
+    <a href="/sondages/create/">Create New Sondage</a>
+    <ul>
+        {% for sondage in sondages %}
+        <li>[{{ sondage.pub_date }}] - <a href="/sondages/detail/{{ sondage.pk }}">{{ sondage.question }} {% if sondage.current %}</a><strong>[ Current ]</strong>{% endif %}
+            (<a href = "/sondages/update/{{ sondage.pk }}">Modify</a> / <a href = "/sondages/delete/{{ sondage.pk }}">Delete</a>)</li>
+        {% endfor %}
+
+    </ul>
+
+    <a href="/">Back to Home</a>
+</body>
+</html>

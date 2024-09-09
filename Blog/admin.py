@@ -35,3 +35,15 @@ class TicketAdmin(admin.ModelAdmin):
 
     def get_ordering(self, request):
         return ['-status']
+
+@admin.register(Sondage)
+class SondageAdmin(admin.ModelAdmin):
+    list_display = ('question', 'pub_date')
+
+@admin.register(SondageChoice)
+class SondageChoiceAdmin(admin.ModelAdmin):
+    list_display = ('choice','sondage','votes')
+
+@admin.register(ChoiceUser)
+class ChoiceUserAdmin(admin.ModelAdmin):
+    list_display = ('choice','user')

@@ -12,6 +12,7 @@ urlpatterns = [
     path("invalid_user/", views.InvalidUser, name = "invalid_user"),
     path("stats/<int:id>/", views.Stats, name="stats"),
     path("user/<int:id>/", views.UserView, name="user"),
+    path('change_photo', views.change_photo, name = 'change_photo'),
     #path("dark_mode/", views.dark_mode, name = "dark_mode")
     # path("add_user/", views.AddUser, name = "add_user"),
     # path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
@@ -22,5 +23,14 @@ urlpatterns = [
     path('tickets/', views.ticket_list, name='ticket_list'),
     path('tickets/create/', views.create_ticket, name='create_ticket'),
     path('tickets/update/<int:pk>/', views.update_ticket, name='update_ticket'),
-    path('change_photo', views.change_photo, name = 'change_photo'),
+   
+
+    # SONDAGES #
+    path('sondages/', views.sondage_list, name='sondage_list'),
+    path('sondages/create/', views.create_sondage, name='create_sondage'),
+    path('sondages/update/<int:pk>/', views.update_sondage, name='update_sondage'),
+    path('sondages/delete/<int:pk>/', views.delete_sondage, name='delete_sondage'),
+    path('sondages/detail/<int:pk>/', views.detail_sondage, name='detail_sondage'),
+    path('sondages/vote/<int:sondage_id>/<int:choice_id>/', views.vote_sondage, name = 'vote_sondage'),
+    
 ]

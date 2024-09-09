@@ -146,6 +146,13 @@ def Index(request, id):
 
     url = "Blog/index.html"
 
+    sondage = Sondage.objects.filter(current=True)
+    choices = None
+    if sondage:
+        sondage = sondage[0]
+        choices = list(SondageChoice.objects.filter(sondage=sondage))
+
+    request.session['previous_url'] = request.get_full_path()
 
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
@@ -153,6 +160,8 @@ def Index(request, id):
                "month" : month, "day" : day, 
                "when_new_date" : when_new_date,
                "session" : session,
+               "sondage" : sondage,
+               "choices" : choices,
                }
 
     return render(request, url, context)
@@ -325,7 +334,126 @@ def UserView(request, id):
     return render(request, url, context)
 
 
+@login_required
+def sondage_list(request):
+    sondages = Sondage.objects.all()
+    current_sondages = sondages.filter(current=True)
+    older_sondages = sondages.filter(current=False)
 
+    context = {'sondages' : sondages,
+               'current_sondages' : current_sondages,
+               'older_sondages' : older_sondages}
+    
+    return render(request, 'Blog/sondages/sondage_list.html', context)
+
+
+@login_required
+def update_sondage(request, pk):
+    sondage = Sondage.objects.get(pk=pk)
+    choices = SondageChoice.objects.filter(sondage=sondage)
+
+    
+    if request.method == 'POST':
+        form = SondageForm(request.POST, instance=sondage)
+        formset = ChoiceFormSet0(request.POST, queryset=choices)
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+
+            # Si nouveau current et qu'il y en avait un autre : devient le seul nouveau current. 
+            for _sondage in Sondage.objects.all():
+                if _sondage.current and _sondage != sondage:
+                    _sondage.current = False
+                    _sondage.save()
+
+
+            return redirect('sondage_list')
+        
+            
+    else:
+        
+        form = SondageForm(instance=sondage)
+        formset = ChoiceFormSet0(queryset=choices)
+    return render(request, 'Blog/sondages/update_sondage.html', {'form': form, 'sondage': sondage, 'formset' : formset})
+
+
+
+@login_required
+def create_sondage(request):
+    
+    if request.method == 'POST':
+        form = SondageForm(request.POST)
+        formset = ChoiceFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            
+            for choice_form in formset:
+                choice_data = choice_form.cleaned_data
+                print(choice_data)
+                if choice_data:
+                    choice = choice_data['choice']
+                    new_choice = SondageChoice(choice = choice, sondage = Sondage.objects.filter(id=form.instance.id)[0])
+                    new_choice.save()
+
+            # Si nouveau current et qu'il y en avait un autre : devient le seul nouveau current. 
+            sondage = Sondage.objects.filter(id=form.instance.id)[0]
+            for _sondage in Sondage.objects.all():
+                if _sondage.current and _sondage != sondage:
+                    _sondage.current = False
+                    _sondage.save()
+
+
+            return redirect('sondage_list')
+    else:
+        form = SondageForm()
+        formset = ChoiceFormSet()
+
+    return render(request, 'Blog/sondages/create_sondage.html', {'form': form, 'choice_forms' : formset})
+
+
+@login_required
+def delete_sondage(request, pk):
+    Sondage.objects.filter(pk=pk)[0].delete()
+
+    return HttpResponseRedirect('/sondages')
+
+
+@login_required
+def detail_sondage(request, pk):
+    sondage = Sondage.objects.filter(pk = pk)[0]
+    choices = SondageChoice.objects.filter(sondage = sondage)
+
+    context = {'sondage' : sondage,
+               'choices' : choices}
+    
+    url = 'Blog/sondages/detail_sondage.html'
+
+    return render(request, url, context)
+
+
+@login_required
+def vote_sondage(request, sondage_id, choice_id):
+    
+    sondage = Sondage.objects.filter(id=sondage_id)[0]
+    choice = SondageChoice.objects.filter(id=choice_id)[0]
+    user = request.user
+    can_vote = True
+    for choice_user in ChoiceUser.objects.filter(user=user):
+        if choice_user.choice.sondage.id == sondage_id:
+            choice_user.delete()
+            if choice_user.choice_id == choice_id:
+                can_vote = False
+    
+    print("User : ", user.id)
+    if can_vote:
+        choice_user = ChoiceUser(choice = choice, user = user)
+        choice_user.save()
+
+
+    return HttpResponseRedirect(f"{request.session.get('previous_url', '/')}#bottom")
+    
+    
 
 # def Modify(request, message_id):
 #     message = Message.objects.filter(id = message_id)[0]

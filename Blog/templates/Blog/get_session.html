@@ -55,5 +55,14 @@
     <a href = "/tickets/">Tickets</a>
 
     <br><br>
+
+    {% if user.is_staff %}
+      <h3>Accéder aux sondages</h3>
+      <a href = "/sondages/">Sondage</a>
+
+      <br><br>
+    {% endif %}
+
+
   </div>
 </div>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket List</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utils.css' %}">
+</head>
+<body>
+
+<h1>Détail du sondage {{sondage.question}}</h1>
+
+<h2>Liste des choix : </h2>
+<ul>
+{% for choice in choices %}
+<li>{{choice.choice}} ({{choice.votes}} {% if choice.votes < 2 %}vote{% else %}votes{% endif %})</li>
+{% endfor %}
+</ul>
+
+
+<a href="/sondages/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Back to Sondage List</a>
+
+</body>

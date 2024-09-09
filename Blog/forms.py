@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import modelformset_factory
 from .models import *
 
 
@@ -53,6 +54,35 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['title', 'category', 'description', 'assigned_to', 'status']
+
+
+class SondageForm(forms.ModelForm):
+    class Meta:
+        model = Sondage
+        fields = ['question', 'current']
+
+    
+    
+class ChoiceForm(forms.ModelForm):
+    class Meta:
+        model = SondageChoice
+        fields = ['choice']
+        
+        widgets = {
+            'choice': forms.TextInput(attrs={
+            'style': 'width: 300px; height: 40px;',  # Vous pouvez ajuster ces valeurs selon vos besoins
+            }),
+        }
+
+from django.forms import formset_factory
+from django.forms import modelformset_factory
+
+# Créer un formset pour les choix du sondage
+ChoiceFormSet = formset_factory(ChoiceForm, extra=5)
+ChoiceFormSet0 = modelformset_factory(SondageChoice, ChoiceForm, extra=0)
+
+
+
 
 
 class PhotoForm(forms.Form):

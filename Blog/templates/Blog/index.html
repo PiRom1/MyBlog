@@ -83,7 +83,18 @@
 
 <br>
 
-
+<h3>Sondage de la semaine :</h3>
+- {{sondage.question}} - <br>
+<ol>
+  {% for choice in choices %}
+    <li>
+      <a href = "/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
+        {{choice.choice}}
+      </a> - {{choice.votes}} votes
+      
+    </li>
+  {% endfor %}
+</ol>
 
 
 
