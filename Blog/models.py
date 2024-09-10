@@ -126,6 +126,9 @@ class Sondage(models.Model):
     question = models.TextField()
     pub_date = models.DateField("Date publication", default = datetime.date.today)
     current = models.BooleanField(default = False)
+
+    def __str__(self):
+        return self.question
     
 
 class SondageChoice(models.Model):
@@ -133,7 +136,12 @@ class SondageChoice(models.Model):
     sondage = models.ForeignKey(Sondage, on_delete = models.CASCADE)
     votes = models.IntegerField(default = 0)
 
+    def __str__(self):
+        return self.choice
+
 
 class ChoiceUser(models.Model):
     choice = models.ForeignKey(SondageChoice, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    

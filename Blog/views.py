@@ -324,11 +324,13 @@ def UserView(request, id):
         
 
 
-    
+    messages = Message.objects.filter(writer=viewed_user)
+
     url = "Blog/user.html"
     context = {'viewed_user' : viewed_user,
                'n_messages' : n_messages,
-               'form' : form
+               'form' : form,
+               'messages' : messages
                }
 
     return render(request, url, context)
