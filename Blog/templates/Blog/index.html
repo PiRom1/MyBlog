@@ -23,6 +23,10 @@
 <h1><u>{{session.session_name}}</u></h1>
 
 
+<div class="container">
+
+<div class="colonne gauche">
+
 <h2>Messages : </h2>
 
 <div class = messages>
@@ -80,9 +84,13 @@
     {{ MessageForm }}
     <input type="submit" value="Envoyer">
 </form>
+</div>
 
 <br>
 
+<div class="colonne droite">
+
+<div class="sondage">
 <h3>Sondage de la semaine :</h3>
 - {{sondage.question}} - <br>
 <ol>
@@ -95,6 +103,9 @@
     </li>
   {% endfor %}
 </ol>
+</div>
+</div>
+</div>
 
 
 
