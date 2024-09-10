@@ -1,8 +1,4 @@
-h1 {
-    color: #feeffe;
-    /* text-shadow: #122112 1px 0 10px; */
-    line-break: auto;
-}
+
 
 body {
     margin: auto;
@@ -97,8 +93,7 @@ body {
 }
 
 .photo_left {
-    position: absolute;
-    left: 170px;
+    margin-left: 200px;
 }
 
 .bottom {
@@ -141,7 +136,7 @@ body {
       linear-gradient(#000 0 0) padding-box;
     background: linear-gradient(100deg,rgba(250, 252, 253, 0.7), rgba(250, 248, 253, 0.8)) border-box;
     /* color: #fadaff; */
-    position: relative;
+    /* position: relative; */
     left:10px;
 }
 
@@ -181,42 +176,6 @@ li a {
     color: #ffd797;
 }
 
-
-/* Style pour le conteneur principal */
-.container {
-    display: flex;  /* Affiche les colonnes l'une à côté de l'autre */
-    width: 100%;    /* Prend toute la largeur de la page */
-    padding: 20px;  /* Ajoute un peu de padding autour du contenu */
-}
-
-/* Style pour chaque colonne */
-.colonne {
-    flex: 1;            /* Les deux colonnes prennent la même largeur */
-    padding: 20px;      /* Ajoute un peu de padding autour du contenu dans chaque colonne */
-    display: flex;      /* Utilisation de flexbox pour gérer le positionnement interne */
-    flex-direction: column;
-}
-
-/* Style spécifique pour la colonne gauche */
-.gauche {
-    flex: 0 0 55%;
-      
-}
-
-/* Style spécifique pour la colonne droite */
-.droite {
-    flex: 0 0 45%;
-    justify-content: flex-end;  /* Couleur de fond pour la colonne droite */
-    margin-bottom: 100px;
-}
-
-
-.sondage {
-    border: 2px dashed rgba(0,0,0,0.2);
-    padding: 10px;
-    width: 300px;
-    margin-bottom: 150px;
-}
 
 .sondage:hover {
     background-color: rgba(32,43,12,0.1);
