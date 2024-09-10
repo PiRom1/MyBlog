@@ -123,9 +123,8 @@ body {
       linear-gradient(#000 0 0) padding-box;
     background: linear-gradient(100deg,rgba(250, 232, 253, 0.7), rgba(250, 248, 253, 0.8)) border-box;
     /* color: #fadaff; */
-    position: relative;
-    left: 100px;
-    bottom: -20px;
+    margin-left: 200px;
+    margin-right: auto;
 
 }
 
