@@ -1,136 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
 
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{session.session_name}}</title>
 
-    <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
-      rel="stylesheet"
-      type="text/css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
     
     {% load static %}
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}"> 
     <link rel="stylesheet" href="{% static 'css/utils.css' %}">
-
-  </head>
-
+</head>
 
 <body>
+    <div class="container">
+        <header>
+            <h1>{{session.session_name}}</h1>
+        </header>
 
-<div class="header">
-  <h1><u>{{session.session_name}}</u></h1>
-</div>
+        <main>
+            <section class="messages-section">
+                <h2>Messages</h2>
 
-<div class="container">
+                <div class="messages">
+                    {% for message in messages %}
+                        {% if when_new_date|slice:forloop.counter|last %}
+                            <div class="message-date">
+                                <strong>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</strong>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="{% if message.writer.username == user.username %}right{% else %}left{% endif %}">
 
-<div class="colonne gauche">
+                          <div class="message">
+                              <a href="/user/{{message.writer.id}}" class="user-avatar">
+                                  <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}">
+                              </a>
 
-<h2>Messages : </h2>
+                              <div class="message-content {{message.color}}">
+                                  <span class="message-meta">
+                                      <i>{{message.pub_date}}</i> 
+                                      <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
+                                  </span>
+                                  <p>{{message.text}}</p>
+                                  
+                              </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                </div>
 
-<div class = messages>
-<ul>
-    {% for message in messages %}
-      
-  
-    {% if when_new_date|slice:forloop.counter|last %}
-    <br>
-    
-      <div class="first_date">
-        <strong><u>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</u></strong> : 
-      </div>
-    {% endif %}
-        
-     
+                {% if user is not None %}
+                    <div class="user-info">
+                        Connecté en tant que <span class="name">{{user.username}}</span>.
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="message-form-section">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ MessageForm }}
+                    <button type="submit">Envoyer</button>
+                </form>
+            </section>
+
+            <section class="poll-section">
+              <div class="poll-container">
+                  <h3>Sondage de la semaine :</h3>
+                  <p class="poll-question">{{sondage.question}}</p>
+                  
+                  <div class="poll-options">
+                      {% for choice in choices %}
+                          <a href="/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
+                            <div class="poll-option">
+                              
+                                {{choice.choice}}
+                              
+                              <span class="poll-votes">{{choice.votes}} votes</span>
+                            
+                            </div>
+                          </a>
+                      {% endfor %}
+                  </div>
+              </div>
+          </section>
           
-    
-          <div class = "{{message.color}}">
-            <span class = "{% if message.writer.username == user.username %}photo_left{% else %}photo_right{% endif %}">
-              <a href="/user/{{message.writer.id}}">
-                <img src="{{ message.writer.image.image.url }}" alt= "{{ message.writer.image.image.name }}" width="50" height="50">
-              </a>
-            </span>
-          <div class="{% if message.writer.username == user.username %}left{% else %}right{% endif %}">
-            
-            
-            <i>({{message.pub_date}})</i> <span class = author><strong><a href="/user/{{message.writer.id}}" style="text-decoration:none; color:inherit">{{message.writer.username}}</a></strong></span> :
-            <!-- <a href = "/modify/{{message.id}}" style="text-decoration:none">--> <div class = message>{{message.text}}</div> </a>
-          </div>
-          </div>
-        
-        
+        </main>
 
-           <!--
-                &nbsp; &nbsp &nbsp; ( {{message.upvote}}  <a href = "/upvote/{{message.id}}">&#x1F44D;</a> )
-                       
-                &nbsp; &nbsp &nbsp; ( {{message.downvote}}  <a href = "/downvote/{{message.id}}">&#128078;</a> ) 
-      -->
-      <br><br>
-    {% endfor %}
-
-</ul>
-</div>
-
-
-
-{% if user is not None %}
-    Connecté en tant que <span class='name'>{{user}}</span>.
-{% endif %}
-
-<form action="" method="post">
-    {% csrf_token %}
-    
-    {{ MessageForm }}
-    <input type="submit" value="Envoyer">
-</form>
-</div>
-
-<br>
-
-<div class="colonne droite">
-
-<div class="sondage">
-<h3>Sondage de la semaine :</h3>
-- {{sondage.question}} - <br>
-<ul>
-  {% for choice in choices %}
-    <li>
-      <a href = "/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
-        {{choice.choice}}
-      </a> - {{choice.votes}} votes
-      
-    </li>
-  {% endfor %}
-</ul>
-</div>
-</div>
-</div>
-
-
-
-
-<br>
-<br>
-<br>
-
-<a href = "/stats/{{session.id}}">Statistiques</a>
-<br>
-<!-- <a href = "/add_user/">Add new user</a>,  -->
-<!-- <a href = "/logout/">Déconnexion</a>,  -->
-<a href = "/">Home</a>
-<!-- <a href = "/logout/">Log out</a> -->
-
-<div id="bottom"></div>
-
-<div class="wave"></div>
-<div class="wave"></div>
-<div class="wave"></div>
-
-
+        <footer>
+            <a href="/stats/{{session.id}}">Statistiques</a> | <a href="/">Home</a>
+        </footer>
+    </div>
+  <div id="bottom"></div>
 </body>
 
-
+</html>
