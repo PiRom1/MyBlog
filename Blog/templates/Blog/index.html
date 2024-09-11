@@ -81,7 +81,7 @@
                               
                                 {{choice.choice}}
                               
-                              <span class="poll-votes">{{choice.votes}} votes</span>
+                              <span class="poll-votes">{{choice.votes}} {% if choice.votes > 1 %}votes{% else %}vote{% endif %}</span>
                             
                             </div>
                           </a>
