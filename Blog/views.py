@@ -154,6 +154,18 @@ def Index(request, id):
 
     request.session['previous_url'] = request.get_full_path()
 
+    user_choices = ChoiceUser.objects.filter(user_id=user.id)
+
+    vote = None
+
+    # Detect user cote
+    for user_choice in user_choices:
+        for choice in choices:
+            print("user choice : ", user_choice.choice_id)
+            print("choice : ", choice.id)
+            if user_choice.choice_id == choice.id:
+                vote = choice
+
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
                "user" : user, "years" : years, 
@@ -162,6 +174,7 @@ def Index(request, id):
                "session" : session,
                "sondage" : sondage,
                "choices" : choices,
+               "vote" : vote,
                }
 
     return render(request, url, context)

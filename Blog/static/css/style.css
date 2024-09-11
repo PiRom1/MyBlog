@@ -221,7 +221,9 @@ footer a:hover {
 }
 
 
-
+.my_vote {
+    background-color: aliceblue;
+}
 
 .green {
     color: green;
