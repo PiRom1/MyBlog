@@ -9,6 +9,13 @@ from django.utils import timezone
 from django.db.models import F
 from django.core.mail import send_mail
 from django.conf import settings
+import string
+import re
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import nltk
+nltk.download('stopwords')
+from nltk.stem.snowball import FrenchStemmer
 
 from .utils.stats import *
 
@@ -25,7 +32,34 @@ def can_access(user, viewed_user):
             access = True
 
     return access
+
+
+def normalize_answer(s):
+    """Lower text and remove punctuation, articles and extra whitespace."""
+    def remove_articles(text):
+        regex = stopwords.words('french')
+        regex = re.compile(r'\b({})\b'.format('|'.join(regex)))
+        return re.sub(regex, ' ', text)
+    def white_space_fix(text):
+        return ' '.join(text.split())
+    def remove_punc(text):
+        text = text.replace("'", " ")  # Remplacement apostrophe par espace
+        exclude = set(string.punctuation)
+        return ''.join(ch for ch in text if ch not in exclude)
+    def lower(text):
+        return text.lower()
+    def accents(text):
+        accents = [('é','e'), ('è','e'), ('à', 'a'), ('ù', 'u'), ('ê', 'e'), ('ô', 'o'), ('î', 'i'), ('ï', 'i'), ('ë', 'e'), ('â', 'a'), ('û', 'u'), ('ü', 'u'), ('ç', 'c')]
+        for accent in accents:
+            text = text.replace(accent[0], accent[1])
+        return text
     
+    return white_space_fix(accents(remove_articles(remove_punc(lower(s)))))
+
+def get_tokens(s):
+  if not s: return [""]
+  rep = normalize_answer(s).split()
+  return rep if rep!=[] else [""]
 
 
 
@@ -376,7 +410,29 @@ def UserView(request, id):
     session_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=user.id))]
     session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
     
-    n_messages = len(Message.objects.filter(writer=viewed_user))
+    messages = Message.objects.filter(writer=viewed_user)
+    n_messages = len(messages)
+
+    messages = ' '.join([message.text for message in messages])
+    messages = get_tokens(messages)
+    messages = ' '.join(messages)
+    messages = messages.split()
+    words = list(set(messages))
+    count_words = {}
+
+    
+
+    for word in words:
+        count_words[word] = messages.count(word)
+    
+    n_max = 0
+
+    for k,v in count_words.items():
+        if v > n_max and len(k) >= 5:
+            n_max = v
+            max_word = k
+    
+    
 
     access = False
 
@@ -418,7 +474,8 @@ def UserView(request, id):
     context = {'viewed_user' : viewed_user,
                'n_messages' : n_messages,
                'form' : form,
-               'messages' : messages
+               'messages' : messages,
+               'max_word' : max_word
                }
 
     return render(request, url, context)
