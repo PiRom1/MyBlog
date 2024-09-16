@@ -40,6 +40,9 @@
     <li><u>Mail</u> : {{viewed_user.email}} </li>
 </ul>
 </div>
+
+<a href="/user/{{viewed_user.id}}/messages#bottom">Voir les messages de {{viewed_user.username}}</a>
+<br><br>
 {% if user == viewed_user %}
 <a href = "/change_photo">Changer sa photo de profil</a>
 {% endif %}

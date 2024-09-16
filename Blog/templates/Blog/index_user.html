@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{session.session_name}}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utils.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>{{viewed_user.username}}</h1>
+        </header>
+
+        <main>
+            <section class="messages-section">
+                <h2>Messages</h2>
+
+                <div class="messages">
+                    {% for message in messages %}
+                        {% if when_new_date|slice:forloop.counter|last %}
+                            <div class="message-date">
+                                <strong>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</strong>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="message">
+                            <a href="/user/{{message.writer.id}}" class="user-avatar">
+                                <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}">
+                            </a>
+
+                            <div class="message-content {{message.color}}">
+                                <span class="message-meta">
+                                    <i>{{message.pub_date}}</i> 
+                                    <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
+                                </span>
+                                <p>{{message.text}}</p>
+                            </div>
+                        </div>
+                       
+
+                    {% endfor %}
+                </div>
+
+            </section>
+
+          
+        </main>
+        <a href="/user/{{viewed_user.id}}">Retour à la page profil</a>
+        <footer>
+            <a href="/">Home</a>
+        </footer>
+    </div>
+  <div id="bottom"></div>
+</body>
+
+</html>
