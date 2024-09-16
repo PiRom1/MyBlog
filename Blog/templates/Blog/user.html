@@ -41,7 +41,12 @@
 </ul>
 </div>
 <br>
-Mot le plus utilisé : <strong>{{max_word}}</strong>
+Mot les plus utilisés : <br>
+{% for word, nb in words %}
+<ol>  
+    <li>{{forloop.counter}} - <strong>{{word}}</strong> ({{nb}})</li>
+</ol>
+{% endfor %}
 <br><br>
 
 <a href="/user/{{viewed_user.id}}/messages#bottom">Voir les messages de {{viewed_user.username}}</a>

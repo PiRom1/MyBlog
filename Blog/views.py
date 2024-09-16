@@ -418,6 +418,9 @@ def UserView(request, id):
     messages = ' '.join(messages)
     messages = messages.split()
     words = list(set(messages))
+    for word in words:
+        if len(word) < 5:
+            words.remove(word)
     count_words = {}
 
     
@@ -427,11 +430,15 @@ def UserView(request, id):
     
     n_max = 0
 
-    for k,v in count_words.items():
-        if v > n_max and len(k) >= 5:
-            n_max = v
-            max_word = k
+    words = list(count_words.keys())
+    nb = list(count_words.values())
+
+    argsorts = np.argsort(nb)[-1: -6: -1]
+
+    words = np.array(words)[argsorts]
+    nb = np.array(nb)[argsorts]
     
+    words = zip(words, nb)
     
 
     access = False
@@ -475,7 +482,7 @@ def UserView(request, id):
                'n_messages' : n_messages,
                'form' : form,
                'messages' : messages,
-               'max_word' : max_word
+               'words' : words
                }
 
     return render(request, url, context)
