@@ -345,6 +345,7 @@ def IndexUserMessage(request, id, word):
                "user" : user, "years" : years, 
                "month" : month, "day" : day, 
                "when_new_date" : when_new_date,
+               "word" : word
                }
 
     return render(request, url, context)

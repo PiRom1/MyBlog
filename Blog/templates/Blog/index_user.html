@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="{% static 'css/utils.css' %}">
 </head>
 
+{% load custom_filters %}
+
 <body>
     <div class="container">
         <header>
@@ -44,7 +46,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text}}</p>
+                                <p>{{message.text|highlight:word|safe}}</p>
                             </div>
                         </div>
                        
