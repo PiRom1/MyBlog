@@ -290,6 +290,68 @@ def IndexUser(request, id):
 
 
 @login_required
+def IndexUserMessage(request, id, word):
+    
+
+    viewed_user = User.objects.get(id = id)
+    user = request.user
+    user.is_authenticated
+
+    if not can_access(user, viewed_user):
+        return HttpResponseRedirect("/invalid_user/")
+    
+    messages = list(Message.objects.filter(writer=viewed_user))
+   
+    messages = [message for message in messages if word in message.text]
+
+
+    
+    ### Get every dates : 
+    years = []   # Contient les différentes années existantes
+    month = []   # Contient les différents mois existants
+    day = []   # Contient les différents jours existants
+    dates = []
+    
+    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
+
+    for message in messages:
+        message_date = str(message.pub_date).split()[0]
+        message_date = message_date.split('-')
+
+        
+        dict = {'year' : message_date[0], 
+                'month' : message_date[1],
+                'day' : message_date[2]}
+        
+        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
+                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
+
+        years.append(message_date[0])
+        month.append(months_num[message_date[1]])
+        day.append(message_date[2])
+
+        if dict not in dates:
+            when_new_date.append(True)
+        else:
+            when_new_date.append(False)
+        
+        dates.append(dict)
+
+   
+    url = "Blog/index_user.html"
+
+    context = {"messages" : messages, 
+               "viewed_user" : viewed_user,
+               "user" : user, "years" : years, 
+               "month" : month, "day" : day, 
+               "when_new_date" : when_new_date,
+               }
+
+    return render(request, url, context)
+
+
+
+@login_required
 def ticket_list(request):
     tickets = Ticket.objects.all()
     open_tickets = tickets.filter(status='open')

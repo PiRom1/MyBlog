@@ -44,7 +44,7 @@
 Mot les plus utilisés : <br>
 {% for word, nb in words %}
 <ol>  
-    <li>{{forloop.counter}} - <strong>{{word}}</strong> ({{nb}})</li>
+    <li>{{forloop.counter}} - <strong><a href="/user/{{viewed_user.id}}/messages/{{word}}">{{word}}</a></strong> ({{nb}})</li>
 </ol>
 {% endfor %}
 <br><br>

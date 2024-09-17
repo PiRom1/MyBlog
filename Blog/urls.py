@@ -13,6 +13,7 @@ urlpatterns = [
     path("stats/<int:id>/", views.Stats, name="stats"),
     path("user/<int:id>/", views.UserView, name="user"),
     path("user/<int:id>/messages", views.IndexUser, name="index_user"),
+    path("user/<int:id>/messages/<str:word>", views.IndexUserMessage, name="index_user_message"),
     path('change_photo', views.change_photo, name = 'change_photo'),
     #path("dark_mode/", views.dark_mode, name = "dark_mode")
     # path("add_user/", views.AddUser, name = "add_user"),
