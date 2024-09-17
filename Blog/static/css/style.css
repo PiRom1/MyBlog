@@ -85,7 +85,10 @@ header h1 {
     font-size: 0.9rem;
     color: #FF7043;
     margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
 }
+
 
 .message p {
     font-size: 1rem;
@@ -97,7 +100,9 @@ header h1 {
     margin: 20px 0 10px;
     font-weight: bold;
     color: #FF7043;
+    text-align: center;
 }
+
 
 /* Formulaire d'envoi de message */
 .message-form-section {
