@@ -41,7 +41,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text}}</p>
+                                <p>{{message.text|linebreaks}}</p>
                             </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -58,7 +58,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text}}</p>
+                                <p>{{message.text|linebreaks}}</p>
                             </div>
                         </div>
                         {% endif %}
@@ -74,7 +74,7 @@
             </section>
 
             <section class="message-form-section">
-                <form action="" method="post">
+                <form action="" method="post" id="message_form">
                     {% csrf_token %}
                     {{ MessageForm }}
                     <button type="submit">Envoyer</button>
@@ -109,5 +109,22 @@
     </div>
   <div id="bottom"></div>
 </body>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Sélectionne le textarea
+        var textarea = document.querySelector('textarea[name="message"]');
+        
+        // Ajoute un écouteur d'événements pour capturer "Ctrl + Enter"
+        textarea.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault(); // Empêche le saut de ligne par défaut
+                document.getElementById('message_form').submit(); // Soumet le formulaire
+            }
+        });
+    });
+</script>
+
 
 </html>

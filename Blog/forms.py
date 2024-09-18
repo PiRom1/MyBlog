@@ -27,7 +27,7 @@ class MessageForm(forms.Form):
     color = forms.ChoiceField(label = 'Ta couleur', choices = CHOICES)
 
     message = forms.CharField(label="Message",
-                              widget=forms.TextInput(attrs={'size':100}))
+                              widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 
 
 
 class LoginForm(forms.Form):
