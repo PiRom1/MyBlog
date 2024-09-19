@@ -148,13 +148,14 @@ def Index(request, id):
             #user = user.get_username()
             #user = User.objects.filter(name = user)[0]
             print(text)
-            if text[0:16] == "Nouveau ticket :":
+            code = (text.split(':')[0]).lower().strip()
+            if code == "nouveauticket":
                 # Redirection vers la page de création de ticket avec le message pré-rempli
                 new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
                 new_message.save()
                 return redirect('create_ticket')
             
-            if text[0:9] == "Sondage :":
+            if code == "sondage":
                 # Redirection vers la page de création de sondage avec le message pré-rempli
                 new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
                 new_message.save()
@@ -405,8 +406,9 @@ def create_ticket(request):
         form = TicketForm()
         # préremplir le champ titre avec le texte du dernier message si il commence par "Nouveau ticket :"
         last_message = Message.objects.last()
-        if last_message.text[0:16] == "Nouveau ticket :":
-            form.fields['title'].initial = last_message.text[16:]
+        code = (last_message.text.split(':')[0]).lower().strip()
+        if code == "nouveauticket":
+            form.fields['title'].initial = last_message.text.split(':',1)[1]
             last_message.delete()
     return render(request, 'Blog/tickets/create_ticket.html', {'form': form})
 
@@ -644,8 +646,9 @@ def create_sondage(request):
         form = SondageForm()
         formset = ChoiceFormSet()
         last_message = Message.objects.last()
-        if last_message.text[0:9] == "Sondage :":
-            form.fields['question'].initial = last_message.text[9:]
+        code = (last_message.text.split(':')[0]).lower().strip()
+        if code == "sondage":
+            form.fields['question'].initial = last_message.text.split(':',1)[1]
             last_message.delete()
 
     return render(request, 'Blog/sondages/create_sondage.html', {'form': form, 'choice_forms' : formset})
