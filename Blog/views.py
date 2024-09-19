@@ -401,6 +401,7 @@ def create_ticket(request):
         last_message = Message.objects.last()
         if last_message.text[0:16] == "Nouveau ticket :":
             form.fields['title'].initial = last_message.text[16:]
+            last_message.delete()
     return render(request, 'Blog/tickets/create_ticket.html', {'form': form})
 
 @login_required
