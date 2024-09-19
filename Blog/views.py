@@ -382,7 +382,7 @@ def create_ticket(request):
 
             subject = 'Nouveau ticket : ' + ticket.title
             email_from = settings.EMAIL_HOST_USER
-            if ticket.assigned_to.email:
+            if ticket.assigned_to and ticket.assigned_to.email:
                 recipient_list = [ticket.assigned_to.email, ]
                 message = f"""Hey {ticket.assigned_to.username},\n\n
                             Un nouveau ticket t\'a été assigné par {ticket.created_by.username} !\n
