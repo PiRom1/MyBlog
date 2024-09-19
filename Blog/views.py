@@ -153,6 +153,12 @@ def Index(request, id):
                 new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
                 new_message.save()
                 return redirect('create_ticket')
+            
+            if text[0:9] == "Sondage :":
+                # Redirection vers la page de création de sondage avec le message pré-rempli
+                new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
+                new_message.save()
+                return redirect('create_sondage')
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
@@ -637,6 +643,10 @@ def create_sondage(request):
     else:
         form = SondageForm()
         formset = ChoiceFormSet()
+        last_message = Message.objects.last()
+        if last_message.text[0:9] == "Sondage :":
+            form.fields['question'].initial = last_message.text[9:]
+            last_message.delete()
 
     return render(request, 'Blog/sondages/create_sondage.html', {'form': form, 'choice_forms' : formset})
 
