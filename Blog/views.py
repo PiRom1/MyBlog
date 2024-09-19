@@ -148,6 +148,12 @@ def Index(request, id):
             #user = user.get_username()
             #user = User.objects.filter(name = user)[0]
             print(text)
+            if text[0:16] == "Nouveau ticket :":
+                # Redirection vers la page de création de ticket avec le message pré-rempli
+                new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
+                new_message.save()
+                return redirect('create_ticket')
+
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
 
@@ -391,6 +397,10 @@ def create_ticket(request):
             return redirect('ticket_list')
     else:
         form = TicketForm()
+        # préremplir le champ titre avec le texte du dernier message si il commence par "Nouveau ticket :"
+        last_message = Message.objects.last()
+        if last_message.text[0:16] == "Nouveau ticket :":
+            form.fields['title'].initial = last_message.text[16:]
     return render(request, 'Blog/tickets/create_ticket.html', {'form': form})
 
 @login_required
