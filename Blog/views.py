@@ -19,6 +19,8 @@ from nltk.stem.snowball import FrenchStemmer
 
 from .utils.stats import *
 
+VERBS = ['accepter', 'acheter', 'affaiblir', 'agir', 'aimer', 'aller', 'appartenir', 'appeler', 'apprendre', 'arriver', 'attaquer', 'attendre', 'avoir', 'baisser', 'blanchir', 'boire', 'briser', 'bâtir', 'causer', 'chanter', 'chercher', 'choisir', 'commencer', 'comprendre', 'confondre', 'connaître', 'contenir', 'contredire', 'contrevenir', 'convenir', 'correspondre', 'couper', 'croire', 'danser', 'demander', 'descendre', 'devenir', 'deviner', 'devoir', 'dire', 'donner', 'défendre', 'démolir', 'dépendre', 'désobéir', 'détenir', 'entendre', 'entrer', 'explorer', 'faire', 'falloir', 'fermer', 'finir', 'fondre', 'fournir', 'fumer', 'gagner', 'garder', 'gaspiller', 'grandir', 'habiller', 'habiter', 'hésiter', 'ignorer', 'indiquer', 'interdire', 'inviter', 'jaunir', 'jouer', 'jurer', 'justifier', 'klaxonner', 'laisser', 'laver', 'lire', 'louer', 'maigrir', 'manger', 'marcher', 'mesurer', 'mettre', 'monter', 'montrer', 'mourir', 'médire', 'naître', 'nier', 'noter', 'nourrir', 'obéir', 'oublier', 'paraître', 'parler', 'partir', 'passer', 'payer', 'pendre', 'penser', 'perdre', 'pouvoir', 'prendre', 'prédire', 'qualifier', 'quitter', 'raconter', 'ralentir', 'redire', 'regarder', 'remplir', 'rendre', 'rentrer', 'rester', 'retenir', 'retourner', 'revenir', 'rougir', 'réfléchir', 'répondre', 'réunir', 'réussir', 'saisir', 'salir', 'sauter', 'savoir', 'sentir', 'signer', 'sortir', 'subir', 'tendre', 'tenir', 'tenter', 'tomber', 'tondre', 'tordre', 'travailler', 'traverser', 'trouver', 'unir', 'user', 'utiliser', 'vendre', 'venir', 'vieillir', 'vivre', 'voir', 'voler', 'vouloir', 'vérifier', 'écouter', 'écrire', 'étendre', 'être']
+
 def can_access(user, viewed_user):
     
     # Condition si current user et viewed_user sont dans la même session
@@ -160,6 +162,11 @@ def Index(request, id):
                 new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
                 new_message.save()
                 return redirect('create_sondage')
+
+            text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
+            if user.username == "theophile":
+                pattern = r'\b(?:' + '|'.join(map(re.escape, VERBS)) + r')\b'
+                text = re.sub(pattern, 'picoler', text, flags=re.IGNORECASE)
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
