@@ -158,7 +158,7 @@ def Index(request, id):
     session = Session.objects.get(id = id)
     print(session)
 
-    messages = Message.objects.filter(session_id=session)
+    messages = Message.objects.filter(session_id=session).order_by('-id')[:20:-1]
     user = request.user
     user.is_authenticated
     print(type(user))
@@ -218,7 +218,7 @@ def Index(request, id):
     
     when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
 
-    for message in Message.objects.filter(session_id = session):
+    for message in messages:
         message_date = str(message.pub_date).split()[0]
         message_date = message_date.split('-')
 
