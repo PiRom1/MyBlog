@@ -31,8 +31,10 @@ class MessageForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-
-    CHOICES = [(user.username, user.username) for user in User.objects.all()]
+    try:
+        CHOICES = [(user.username, user.username) for user in User.objects.all()]
+    except Exception as e:
+        CHOICES = []
 
     username = forms.CharField(label = 'username', max_length = 100)
     password = forms.CharField(label = 'password', widget = forms.PasswordInput, max_length = 100)
