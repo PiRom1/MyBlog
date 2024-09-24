@@ -15,6 +15,7 @@
 <body>
     <h1>Sondage List</h1>
     <a href="/sondages/create/">Create New Sondage</a>
+    <br><br>
     <ul>
         {% for sondage in sondages %}
         <li>[{{ sondage.pub_date }}] - <a href="/sondages/detail/{{ sondage.pk }}">{{ sondage.question }} {% if sondage.current %}</a><strong>[ Current ]</strong>{% endif %}
@@ -22,7 +23,7 @@
         {% endfor %}
 
     </ul>
-
+    <br><br><br><br>
     <a href="/">Back to Home</a>
 </body>
 </html>

@@ -13,14 +13,13 @@ class ModifyUserForm(forms.Form):
     last_name = forms.CharField(label = "Nom", required = False)
     email = forms.EmailField(label = "Mail", required = False)
 
-    
+
+class CharForm(forms.Form):
+    message = forms.CharField(label="Message")    
+
 
 class MessageForm(forms.Form):
-
-    
-    #CHOICES = [(user.name, user.name) for user in User.objects.all()]
-
-    #who = forms.ChoiceField(label = 'Who', widget = forms.RadioSelect, choices = CHOICES)
+   
 
     CHOICES = [('black', 'Noir'), ('red', 'Rouge'), ('blue', 'Bleu'), ('green', 'Vert'), ('yellow', 'Jaune'), ('pink', 'Rose'), ('purple', 'Violet')]
 
@@ -30,9 +29,19 @@ class MessageForm(forms.Form):
                               widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 
 
 
-class LoginForm(forms.Form):
 
-    CHOICES = [(user.username, user.username) for user in User.objects.all()]
+class MessageForm2(forms.Form):
+   
+
+    message = forms.CharField(label="Message",
+                              widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 
+
+
+class LoginForm(forms.Form):
+    try:
+        CHOICES = [(user.username, user.username) for user in User.objects.all()]
+    except Exception as e:
+        CHOICES = []
 
     username = forms.CharField(label = 'username', max_length = 100)
     password = forms.CharField(label = 'password', widget = forms.PasswordInput, max_length = 100)

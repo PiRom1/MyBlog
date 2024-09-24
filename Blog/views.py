@@ -18,6 +18,8 @@ nltk.download('stopwords')
 from nltk.stem.snowball import FrenchStemmer
 
 from .utils.stats import *
+import random
+import bleach
 
 VERBS = ['accepter', 'acheter', 'affaiblir', 'agir', 'aimer', 'aller', 'appartenir', 'appeler', 'apprendre', 'arriver', 'attaquer', 'attendre', 'avoir', 'baisser', 'blanchir', 'boire', 'briser', 'bâtir', 'causer', 'chanter', 'chercher', 'choisir', 'commencer', 'comprendre', 'confondre', 'connaître', 'contenir', 'contredire', 'contrevenir', 'convenir', 'correspondre', 'couper', 'croire', 'danser', 'demander', 'descendre', 'devenir', 'deviner', 'devoir', 'dire', 'donner', 'défendre', 'démolir', 'dépendre', 'désobéir', 'détenir', 'entendre', 'entrer', 'explorer', 'faire', 'falloir', 'fermer', 'finir', 'fondre', 'fournir', 'fumer', 'gagner', 'garder', 'gaspiller', 'grandir', 'habiller', 'habiter', 'hésiter', 'ignorer', 'indiquer', 'interdire', 'inviter', 'jaunir', 'jouer', 'jurer', 'justifier', 'klaxonner', 'laisser', 'laver', 'lire', 'louer', 'maigrir', 'manger', 'marcher', 'mesurer', 'mettre', 'monter', 'montrer', 'mourir', 'médire', 'naître', 'nier', 'noter', 'nourrir', 'obéir', 'oublier', 'paraître', 'parler', 'partir', 'passer', 'payer', 'pendre', 'penser', 'perdre', 'pouvoir', 'prendre', 'prédire', 'qualifier', 'quitter', 'raconter', 'ralentir', 'redire', 'regarder', 'remplir', 'rendre', 'rentrer', 'rester', 'retenir', 'retourner', 'revenir', 'rougir', 'réfléchir', 'répondre', 'réunir', 'réussir', 'saisir', 'salir', 'sauter', 'savoir', 'sentir', 'signer', 'sortir', 'subir', 'tendre', 'tenir', 'tenter', 'tomber', 'tondre', 'tordre', 'travailler', 'traverser', 'trouver', 'unir', 'user', 'utiliser', 'vendre', 'venir', 'vieillir', 'vivre', 'voir', 'voler', 'vouloir', 'vérifier', 'écouter', 'écrire', 'étendre', 'être']
 VERBS_PRE = ["j'accepte", "j'achète", "j'affaiblis", "j'agis", "j'aime", "je vais", "j'appartiens", "j'appelle", "j'apprends", "j'arrive", "j'attaque", "j'attends", "j'ai", "je baisse", "je blanchis", "je bois", "je brise", "je bâtis", "je cause", "je chante", "je cherche", "je choisis", "je commence", "je comprends", "je confonds", "je connais", "je contiens", "je contredis", "je contreviens", "je conviens", "je corresponds", "je coupe", "je crois", "je danse", "je demande", "je descends", "je deviens", "je devine", "je dois", "je dis", "je donne", "je défends", "je démolis", "je dépends", "je désobéis", "je détiens", "j'entends", "j'entre", "j'explore", "je fais", "il faut", "je ferme", "je finis", "je fonds", "je fournis", "je fume", "je gagne", "je garde", "je gaspille", "je grandis", "je m'habille", "j'habite", "j'hésite", "j'ignore", "j'indique", "j'interdis", "j'invite", "je jaunis", "je joue", "je jure", "je justifie", "je klaxonne", "je laisse", "je lave", "je lis", "je loue", "je maigris", "je mange", "je marche", "je mesure", "je mets", "je monte", "je montre", "je meurs", "je médit", "je nais", "je nie", "je note", "je nourris", "j'obéis", "j'oublie", "je parais", "je parle", "je pars", "je passe", "je paie", "je pends", "je pense", "je perds", "je peux", "je prends", "je prédis", "je qualifie", "je quitte", "je raconte", "je ralentis", "je redis", "je regarde", "je remplis", "je rends", "je rentre", "je reste", "je retiens", "je retourne", "je reviens", "je rougis", "je réfléchis", "je réponds", "je réunis", "je réussis", "je saisis", "je salis", "je saute", "je sais", "je sens", "je signe", "je sors", "je subis", "je tends", "je tiens", "je tente", "je tombe", "je tonds", "je tords", "je travaille", "je traverse", "je trouve", "j'unis", "j'use", "j'utilise", "je vends", "je viens", "je vieillis", "je vis", "je vois", "je vole", "je veux", "je vérifie", "j'écoute", "j'écris", "j'étends", "je suis"]
@@ -194,10 +196,15 @@ def Index(request, id):
                 new_message.save()
                 return redirect('create_sondage')
 
-            text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
-            if user.username == "theophile":
+            if random.random() < 0.10:
+                text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
+            if user.username == "theophile" and len(text) < 200 and random.random() < 0.05:
                 text = theophile(text)
 
+            # url parsing
+            text = bleach.linkify(text)
+            text = bleach.clean(text, tags=settings.ALLOWED_TAGS)
+                
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
 
@@ -619,6 +626,78 @@ def sondage_list(request):
                'older_sondages' : older_sondages}
     
     return render(request, 'Blog/sondages/sondage_list.html', context)
+
+
+@login_required
+def recit_list(request):
+    recits = Recit.objects.all()
+    nb_textes = []
+
+    for recit in recits:
+        texte = Texte.objects.filter(recit=recit)
+        nb_textes.append(len(texte))
+    
+
+    context = {'recits' : zip(recits, nb_textes),
+               }
+    
+    return render(request, 'Blog/recits/recit_list.html', context)
+
+@login_required
+def create_recit(request):
+        
+    if request.method == "POST":
+        message_form = CharForm(request.POST)
+
+        if message_form.is_valid():
+            new_recit = Recit(name = message_form['message'].value())
+            new_recit.save()
+
+            return HttpResponseRedirect(f"/recits/detail/{new_recit.id}")
+    
+    message_form = CharForm()
+
+    context = {'form' : message_form,
+    }
+    
+    return render(request, 'Blog/recits/create_recit.html', context)
+
+
+@login_required
+def detail_recit(request, pk):
+    
+    recit = Recit.objects.get(pk=pk)
+    texts = Texte.objects.filter(recit = recit)
+    user = request.user
+
+    if request.method == 'POST':
+        form = MessageForm2(request.POST)
+
+        if form.is_valid():
+
+            texte = form['message'].value()
+            texte = Texte(text = texte, user = user, recit = recit)
+            texte.save()
+
+            return HttpResponseRedirect('.')
+    
+    form = MessageForm2()
+
+    if not texts:
+        is_last_writer = False
+    else:
+        is_last_writer = list(texts)[-1].user == user
+    
+    
+    print(is_last_writer)
+    context = {'form' : form, 
+               'recit' : recit,
+               'texts' : texts,
+               'is_last_writer' : is_last_writer}
+    
+    return render(request, 'Blog/recits/detail_recit.html', context)
+
+
 
 
 @login_required

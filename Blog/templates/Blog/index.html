@@ -41,7 +41,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text|linebreaks}}</p>
+                                <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
                             </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -58,7 +58,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text|linebreaks}}</p>
+                                <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
                             </div>
                         </div>
                         {% endif %}

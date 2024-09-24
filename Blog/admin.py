@@ -47,3 +47,11 @@ class SondageChoiceAdmin(admin.ModelAdmin):
 @admin.register(ChoiceUser)
 class ChoiceUserAdmin(admin.ModelAdmin):
     list_display = ('choice','user')
+
+@admin.register(Recit)
+class Recitadmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+@admin.register(Texte)
+class TexteAdmin(admin.ModelAdmin):
+    list_display = ('text', 'user', 'recit')
