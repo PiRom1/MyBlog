@@ -23,7 +23,7 @@
     {% for text in texts %}
     <li class="timeline-item {% cycle 'left' 'right' %}">
         <h3><a href="/user/{{text.user.id}}">{{ text.user }}</a></h3>
-        <p>{{ text.text }}</p>
+        <p>{{ text.text|linebreaks }}</p>
     </li>
     {% endfor %}
 </ul>
@@ -36,7 +36,7 @@
 Attendez que quelqu'un prolonge votre récit avant d'y participer à nouveau ! 
 {% else %}
 Participez à la création de l'histoire ! 
-<form method="post">
+<form method="post" id="form">
     {% csrf_token %}
 
     {{ form.as_p }}
@@ -50,3 +50,20 @@ Participez à la création de l'histoire !
 <a href="/recits/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Retour à la liste des récits</a>
 
 </body>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Sélectionne le textarea
+        var textarea = document.querySelector('textarea[name="message"]');
+        
+        // Ajoute un écouteur d'événements pour capturer "Ctrl + Enter"
+        textarea.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault(); // Empêche le saut de ligne par défaut
+                document.getElementById('form').submit(); // Soumet le formulaire
+            }
+        });
+    });
+</script>
