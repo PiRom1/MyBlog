@@ -683,9 +683,17 @@ def detail_recit(request, pk):
     
     form = MessageForm2()
 
+    if not texts:
+        is_last_writer = False
+    else:
+        is_last_writer = list(texts)[-1].user == user
+    
+    
+    print(is_last_writer)
     context = {'form' : form, 
                'recit' : recit,
-               'texts' : texts}
+               'texts' : texts,
+               'is_last_writer' : is_last_writer}
     
     return render(request, 'Blog/recits/detail_recit.html', context)
 

@@ -32,6 +32,9 @@
 
 
 <br><br>
+{% if is_last_writer %} Vous venez déjà d'écrire dans cette histoire. <br>
+Attendez que quelqu'un prolonge votre récit avant d'y participer à nouveau ! 
+{% else %}
 Participez à la création de l'histoire ! 
 <form method="post">
     {% csrf_token %}
@@ -40,6 +43,8 @@ Participez à la création de l'histoire !
             
     <button type="submit">Envoyer</button>
 </form>
+
+{% endif %}
 
 <br><br><br><br>
 <a href="/recits/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Retour à la liste des récits</a>
