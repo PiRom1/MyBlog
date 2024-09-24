@@ -629,6 +629,70 @@ def sondage_list(request):
 
 
 @login_required
+def recit_list(request):
+    recits = Recit.objects.all()
+    nb_textes = []
+
+    for recit in recits:
+        texte = Texte.objects.filter(recit=recit)
+        nb_textes.append(len(texte))
+    
+
+    context = {'recits' : zip(recits, nb_textes),
+               }
+    
+    return render(request, 'Blog/recits/recit_list.html', context)
+
+@login_required
+def create_recit(request):
+        
+    if request.method == "POST":
+        message_form = CharForm(request.POST)
+
+        if message_form.is_valid():
+            new_recit = Recit(name = message_form['message'].value())
+            new_recit.save()
+
+            return HttpResponseRedirect(f"/recits/detail/{new_recit.id}")
+    
+    message_form = CharForm()
+
+    context = {'form' : message_form,
+    }
+    
+    return render(request, 'Blog/recits/create_recit.html', context)
+
+
+@login_required
+def detail_recit(request, pk):
+    
+    recit = Recit.objects.get(pk=pk)
+    texts = Texte.objects.filter(recit = recit)
+    user = request.user
+
+    if request.method == 'POST':
+        form = MessageForm2(request.POST)
+
+        if form.is_valid():
+
+            texte = form['message'].value()
+            texte = Texte(text = texte, user = user, recit = recit)
+            texte.save()
+
+            return HttpResponseRedirect('.')
+    
+    form = MessageForm2()
+
+    context = {'form' : form, 
+               'recit' : recit,
+               'texts' : texts}
+    
+    return render(request, 'Blog/recits/detail_recit.html', context)
+
+
+
+
+@login_required
 def update_sondage(request, pk):
     sondage = Sondage.objects.get(pk=pk)
     choices = SondageChoice.objects.filter(sondage=sondage)

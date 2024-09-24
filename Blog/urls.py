@@ -34,5 +34,10 @@ urlpatterns = [
     path('sondages/delete/<int:pk>/', views.delete_sondage, name='delete_sondage'),
     path('sondages/detail/<int:pk>/', views.detail_sondage, name='detail_sondage'),
     path('sondages/vote/<int:sondage_id>/<int:choice_id>/', views.vote_sondage, name = 'vote_sondage'),
+
+    # Récits
+    path('recits/', views.recit_list, name='recit_list'),
+    path('recits/create/', views.create_recit, name='create_recit'),
+    path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
     
 ]

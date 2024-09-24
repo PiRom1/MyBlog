@@ -13,18 +13,25 @@ class ModifyUserForm(forms.Form):
     last_name = forms.CharField(label = "Nom", required = False)
     email = forms.EmailField(label = "Mail", required = False)
 
-    
+
+class CharForm(forms.Form):
+    message = forms.CharField(label="Message")    
+
 
 class MessageForm(forms.Form):
-
-    
-    #CHOICES = [(user.name, user.name) for user in User.objects.all()]
-
-    #who = forms.ChoiceField(label = 'Who', widget = forms.RadioSelect, choices = CHOICES)
+   
 
     CHOICES = [('black', 'Noir'), ('red', 'Rouge'), ('blue', 'Bleu'), ('green', 'Vert'), ('yellow', 'Jaune'), ('pink', 'Rose'), ('purple', 'Violet')]
 
     color = forms.ChoiceField(label = 'Ta couleur', choices = CHOICES)
+
+    message = forms.CharField(label="Message",
+                              widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 
+
+
+
+class MessageForm2(forms.Form):
+   
 
     message = forms.CharField(label="Message",
                               widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 

@@ -1,0 +1,29 @@
+<!-- templates/create_ticket.html -->
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un récit</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Initiation du récit</h1>
+    <br><br>
+    Nommez votre récit !
+    <br><br>
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+                
+        <button type="submit">Envoyer</button>
+    </form>
+    <div class="bottom">
+        <a href="/recits/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Retourner à la liste des récits</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récit</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'css/recits.css' %}">
+</head>
+<body>
+
+<h1>{{recit.name}}</h1>
+<br><br>
+<h2>Votre récit : </h2>
+<br><br>
+
+{% if not texts %} Votre histoire n'a de limite que par votre imagination ! 
+    {% else %} 
+<ul class="timeline">
+    {% for text in texts %}
+    <li class="timeline-item {% cycle 'left' 'right' %}">
+        <h3><a href="/user/{{text.user.id}}">{{ text.user }}</a></h3>
+        <p>{{ text.text }}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<br><br>
+Participez à la création de l'histoire ! 
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+            
+    <button type="submit">Envoyer</button>
+</form>
+
+<br><br><br><br>
+<a href="/recits/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Retour à la liste des récits</a>
+
+</body>

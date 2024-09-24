@@ -144,4 +144,18 @@ class ChoiceUser(models.Model):
     choice = models.ForeignKey(SondageChoice, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
 
-    
+
+class Recit(models.Model): # Texte en mode cadavre exquis
+    name = models.CharField(default = None, max_length = 100)
+
+    def __str__(self):
+        return self.name
+
+class Texte(models.Model): # Texte composant un récit
+    text = models.TextField("Texte")
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    recit = models.ForeignKey(Recit, on_delete = models.CASCADE)
+
+    def __str__(self):
+        return(f"{self.user} : {self.text}")
+
