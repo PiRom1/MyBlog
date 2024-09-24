@@ -1,4 +1,5 @@
 *.pyc
 *.sqlite3
 media/*
-!media/noone.png
+!media/Images/noone.png
+!media/86_icon.svg
