@@ -679,7 +679,7 @@ def detail_recit(request, pk):
             texte = Texte(text = texte, user = user, recit = recit)
             texte.save()
 
-            return HttpResponseRedirect('.')
+            return HttpResponseRedirect('.#bottom')
     
     form = MessageForm2()
 
