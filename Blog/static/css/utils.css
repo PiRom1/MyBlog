@@ -17,3 +17,8 @@
 .fix {
     color: #f393ae;
 }
+
+.bottom {
+    position: fixed;
+    bottom: 20px;
+}
