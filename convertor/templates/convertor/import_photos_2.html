@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{session.session_name}}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+      
+    
+</head>
+
+
+<style>
+    /* Styles pour le spinner */
+    #loader {
+        display: none;  /* Caché par défaut */
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid cornflowerblue;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+   
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<body>
+
+    <h1>Convertir ses CR2 en PNG</h1>
+
+   
+    <form method="POST" enctype="multipart/form-data" multiple="True" id="form">
+        {% csrf_token %}
+        <input type="file"  multiple name="files" />
+        <div>
+        <button id="bouton" type="submit" class="btn btn-outline-primary ">Submit</button>
+    </div>
+    </form>
+
+<br><br>
+
+<div id="loader"></div>
+ 
+
+
+</body>
+
+<script>
+    // Afficher le loader lors du survol du bouton
+    $('#bouton').on('click', function() {
+        $('#loader').css('display', 'flex');
+    });
+
+</script>

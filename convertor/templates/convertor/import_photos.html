@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{session.session_name}}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+      
+    
+</head>
+
+<body>
+
+    <h1>Convertir ses CR2 en PNG</h1>
+
+   
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Upload Files Here</label>
+          {{form}}
+        </div>
+        <button type="submit" class="btn btn-outline-primary ">Submit</button>
+    </form>
+
+</body>
