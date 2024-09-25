@@ -60,7 +60,8 @@ def import_photos_2(request):
                     
                     is_valid = True
                     file_path = os.path.join('media/images/cr2', file.name)
-                    print("Liste : ", os.listdir('media/images/cr2'))
+                    print("Liste1 : ", os.listdir('media'))
+                    print("Liste : ", os.listdir('/MyBlog/media/images/cr2'))
                     # Sauvegarder le fichier en utilisant les chunks (utile pour les gros fichiers)
                     with open(file_path, 'wb+') as destination:
                         for chunk in file.chunks():
