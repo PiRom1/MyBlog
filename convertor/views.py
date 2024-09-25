@@ -106,8 +106,8 @@ def convert(request):
 
 progress = 0
 def convert_2(request):
-    CR2_PATH = 'media/images/cr2'
-    PNG_PATH = 'media/images/png'
+    CR2_PATH = 'MyBlog/media/Images/cr2'
+    PNG_PATH = 'MyBlog/media/Images/png'
 
     images = os.listdir(CR2_PATH)
     
@@ -141,7 +141,7 @@ from io import BytesIO
 
 def download_zip(request):
     # Chemin vers le dossier contenant les fichiers que tu veux zipper
-    folder_path = 'media/images/png'
+    folder_path = 'MyBlog/media/Images/png'
     print("download")
     # Crée un fichier en mémoire
     zip_buffer = BytesIO()
