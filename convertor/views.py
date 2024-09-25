@@ -59,7 +59,7 @@ def import_photos_2(request):
                 if file.name.split('.')[-1].lower() == 'cr2':
                     
                     is_valid = True
-                    file_path = os.path.join('/media/Images/cr2', file.name)
+                    file_path = os.path.join('MyBlog/media/Images/cr2', file.name)
                     
                     # Sauvegarder le fichier en utilisant les chunks (utile pour les gros fichiers)
                     with open(file_path, 'wb+') as destination:
@@ -106,8 +106,8 @@ def convert(request):
 
 progress = 0
 def convert_2(request):
-    CR2_PATH = '/media/Images/cr2'
-    PNG_PATH = '/media/Images/png'
+    CR2_PATH = 'MyBlog/media/Images/cr2'
+    PNG_PATH = 'MyBlog/media/Images/png'
 
     images = os.listdir(CR2_PATH)
     
@@ -141,7 +141,7 @@ from io import BytesIO
 
 def download_zip(request):
     # Chemin vers le dossier contenant les fichiers que tu veux zipper
-    folder_path = '/media/Images/png'
+    folder_path = 'MyBlog/media/Images/png'
     print("download")
     # Crée un fichier en mémoire
     zip_buffer = BytesIO()
