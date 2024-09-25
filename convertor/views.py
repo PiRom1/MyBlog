@@ -59,8 +59,8 @@ def import_photos_2(request):
                 if file.name.split('.')[-1].lower() == 'cr2':
                     
                     is_valid = True
-                    file_path = os.path.join('MyBlog/media/images/cr2', file.name)
-                    print("liste : ", os.listdir('MyBlog'))
+                    file_path = os.path.join('MyBlog/media/Images/cr2', file.name)
+                    print("liste : ", os.listdir('MyBlog/media'))
                     # Sauvegarder le fichier en utilisant les chunks (utile pour les gros fichiers)
                     with open(file_path, 'wb+') as destination:
                         for chunk in file.chunks():
