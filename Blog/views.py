@@ -359,8 +359,8 @@ def IndexUserMessage(request, id, word):
     
     messages = list(Message.objects.filter(writer=viewed_user))
    
-    messages = [message for message in messages if word in message.text]
-
+    messages = [message for message in messages if word in get_tokens(message.text)]
+    
 
     
     ### Get every dates : 
