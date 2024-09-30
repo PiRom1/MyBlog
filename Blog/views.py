@@ -195,6 +195,7 @@ def Index(request, id):
                 new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)
                 new_message.save()
                 return redirect('create_sondage')
+            
 
             if random.random() < 0.10:
                 text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
@@ -204,7 +205,17 @@ def Index(request, id):
             # url parsing
             text = bleach.linkify(text)
             text = bleach.clean(text, tags=settings.ALLOWED_TAGS)
-                
+
+            ytb_addon = ''
+            for i in range(text.count("\"https://www.youtube.com/watch")):
+                code = text.split('\"https://www.youtube.com/watch?v=')[i+1]
+                code = code.split("\"")[0]
+
+                ytb_addon += f"<br><br><iframe width='420' height='345' src='https://www.youtube.com/embed/{code}'></iframe>"
+             
+            
+            text += ytb_addon
+
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
 
