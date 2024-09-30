@@ -6,6 +6,13 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.enjoy {
+    /* display: flex; */
+    position: fixed;
+    bottom: 5px;
+}
+
+
 body {
     /* background-color: #FFF6E5; */
     background: url('/static/img/wood_bg.png');
