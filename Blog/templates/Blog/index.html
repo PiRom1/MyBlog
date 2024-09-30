@@ -17,10 +17,19 @@
 </head>
 
 <body>
+
+    
     <div class="container">
         <header>
             <h1>{{session.session_name}}</h1>
         </header>
+
+        <a href="./?page={{page_number_next}}">
+            <button id="load-more" data-next-page="{{ messages.next_page_number }}">
+                Charger plus
+            </button>
+        </a>
+        
 
         <main>
             <section class="messages-section">
@@ -126,5 +135,32 @@
     });
 </script>
 
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#load-more').on('click', function() {
+            var nextPage = $(this).attr('data-next-page');
+            $.ajax({
+                url: '?page=' + nextPage,
+                type: 'GET',
+                success: function(response) {
+                    // Extraire les nouveaux messages du contenu de la réponse
+                    var newMessages = $(response).find('#messages').html();
+                    $('#messages').append(newMessages);
+
+                    // Mettre à jour le bouton si d'autres messages sont disponibles
+                    var newNextPage = $(response).find('#load-more').attr('data-next-page');
+                    if (newNextPage) {
+                        $('#load-more').attr('data-next-page', newNextPage);
+                    } else {
+                        $('#load-more').hide();
+                    }
+                }
+            });
+        });
+    });
+</script>
 
 </html>

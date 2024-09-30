@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.db.models import F
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.conf import settings
 import string
 import re
@@ -155,12 +156,21 @@ def getSession(request):
 
 @login_required
 def Index(request, id):
+
+    offset = int(request.GET.get('offset', 0))
+    print("offset : ", offset)
     
 
     session = Session.objects.get(id = id)
     print(session)
 
-    messages = Message.objects.filter(session_id=session).order_by('-id')[:20:-1]
+    
+    messages = Message.objects.filter(session_id=session).order_by('-id')
+
+    
+
+
+
     user = request.user
     user.is_authenticated
     print(type(user))
@@ -285,6 +295,16 @@ def Index(request, id):
             if user_choice.choice_id == choice.id:
                 vote = choice
 
+    page_number = request.GET.get('page', 1)
+    
+    n_messages_par_page = 20
+
+
+    print(int(int(page_number) * n_messages_par_page))
+    messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
+    #messages = list(messages)[len(messages) : len(messages) - int(int(page_number) * n_messages_par_page):-1]
+    
+
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
                "user" : user, "years" : years, 
@@ -294,6 +314,8 @@ def Index(request, id):
                "sondage" : sondage,
                "choices" : choices,
                "vote" : vote,
+               "page_number" : page_number,
+               "page_number_next" : str(int(page_number)+1),
                }
 
     return render(request, url, context)
