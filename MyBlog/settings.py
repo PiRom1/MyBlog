@@ -173,5 +173,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "diplowebchat@gmail.com"
 EMAIL_HOST_PASSWORD = "flbibuimwrhdyltu"
-
+ 
 ALLOWED_TAGS = ['br', 'i', 'strong', 'ul', 'li', 'a', 'u', 'del'] 
