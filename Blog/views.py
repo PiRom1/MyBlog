@@ -204,7 +204,9 @@ def Index(request, id):
 
             # url parsing
             text = bleach.linkify(text)
-            text = bleach.clean(text, tags=settings.ALLOWED_TAGS)
+            text = bleach.clean(text, tags=settings.ALLOWED_TAGS, attributes=settings.ALLOWED_ATTRIBUTES)
+                
+           
 
             ytb_addon = ''
             for i in range(text.count("\"https://www.youtube.com/watch")):
