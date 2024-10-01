@@ -201,6 +201,8 @@ def Index(request, id):
             
             for enjoy_pattern in ENJOY_PATTERNS:
                 if enjoy_pattern in text.lower().replace('-',' '):
+                    new_message = Message(writer = user, text = "[A demandé l'heure à Enjoy]", pub_date = timezone.now(), color = color, session_id = session)
+                    new_message.save()
                     return HttpResponseRedirect('http://www.quelleheureestilenjoy.com/')
 
 
