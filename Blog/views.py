@@ -157,15 +157,15 @@ def getSession(request):
 @login_required
 def Index(request, id):
 
-    offset = int(request.GET.get('offset', 0))
-    print("offset : ", offset)
-    
+   
 
     session = Session.objects.get(id = id)
     print(session)
 
+    page_number = request.GET.get('page', 1)
     
-    messages = Message.objects.filter(session_id=session).order_by('-id')
+    n_messages_par_page = 20
+    messages = Message.objects.filter(session_id=session).order_by('-id')[:20:-1]#[int(int(page_number)*n_messages_par_page) :  : -1]
 
     
 
@@ -295,14 +295,12 @@ def Index(request, id):
             if user_choice.choice_id == choice.id:
                 vote = choice
 
-    page_number = request.GET.get('page', 1)
     
-    n_messages_par_page = 20
 
 
     print(int(int(page_number) * n_messages_par_page))
-    messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
-    #messages = list(messages)[len(messages) : len(messages) - int(int(page_number) * n_messages_par_page):-1]
+   # messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
+    
     
 
     context = {"messages" : messages, 
