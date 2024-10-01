@@ -31,6 +31,13 @@ VERBS_F = ["j'accepterai", "j'achèterai", "j'affaiblirai", "j'agirai", "j'aimer
 VERBS_COND = ["j'accepterais", "j'achèterais", "j'affaiblirais", "j'agirais", "j'aimerais", "j'irais", "j'appartiendrais", "j'appellerais", "j'apprendrais", "j'arriverais", "j'attaquerais", "j'attendrais", "j'aurais",  "je baisserais", "je blanchirais", "je boirais", "je briserais", "je bâtirais", "je causerais", "je chanterais", "je chercherais", "je choisirais", "je commencerais", "je comprendrais", "je confondrais",  "je connaîtrais", "je contiendrais", "je contredirais", "je contreviendrais", "je conviendrais", "je correspondrais", "je couperais", "je croirais", "je danserais", "je demanderais", "je descendrais",  "je deviendrais", "je devinerais", "je devrais", "je dirais", "je donnerais", "je défendrais", "je démolirais", "je dépendrais", "je désobéirais", "je détiendrais", "j'entendrais", "j'entrerais",  "j'explorerais", "je ferais", "il faudrait", "je fermerais", "je finirais", "je fondrais", "je fournirais", "je fumerais", "je gagnerais", "je garderais", "je gaspillerais", "je grandirais", "je m'habillerais",  "j'habiterais", "j'hésiterais", "j'ignorerais", "j'indiquerais", "j'interdirais", "j'inviterais", "je jaunirais", "je jouerais", "je jurerais", "je justifierais", "je klaxonnerais", "je laisserais", "je laverais",  "je lirais", "je louerais", "je maigrirais", "je mangerais", "je marcherais", "je mesurerais", "je mettrais", "je monterais", "je montrerais", "je mourrais", "je médirais", "je naîtrais", "je nierais", "je noterais",  "je nourrirais", "j'obéirais", "j'oublierais", "je paraîtrais", "je parlerais", "je partirais", "je passerais", "je paierais", "je pendrais", "je penserais", "je perdrais", "je pourrais", "je prendrais", "je prédirais",  "je qualifierais", "je quitterais", "je raconterais", "je ralentirais", "je redirais", "je regarderais", "je remplirais", "je rendrais", "je rentrerais", "je resterais", "je retiendrais", "je retournerais",  "je reviendrais", "je rougirais", "je réfléchirais", "je répondrais", "je réunirais", "je réussirais", "je saisirais", "je salirais", "je sauterais", "je saurais", "je sentirais", "je signerais", "je sortirais",  "je subirais", "je tendrais", "je tiendrais", "je tenterais", "je tomberais", "je tondrais", "je tordrais", "je travaillerais", "je traverserais", "je trouverais", "j'unirais", "j'userais", "j'utiliserais", "je vendrais",  "je viendrais", "je vieillirais", "je vivrais", "je verrais", "je volerais", "je voudrais", "je vérifierais", "j'écouterais", "j'écrirais", "j'étendrais", "je serais"]
 
 
+ENJOY_PATTERNS = ["quelle heure est il enjoy",
+                  "quelle heure il est enjoy",
+                  "enjoy il est quelle heure",
+                  "enjoy quelle heure est il"]
+
+
+
 def theophile(text):
     # Infinitif
     pattern = r'\b(?:' + '|'.join(map(re.escape, VERBS)) + r')\b'
@@ -190,6 +197,13 @@ def Index(request, id):
             color = message_form['color'].value()
             #user = message_form['who']
             text = new_message.value()
+
+            
+            for enjoy_pattern in ENJOY_PATTERNS:
+                if enjoy_pattern in text.lower().replace('-',' '):
+                    return HttpResponseRedirect('http://www.quelleheureestilenjoy.com/')
+
+
             #user = user.get_username()
             #user = User.objects.filter(name = user)[0]
             print(text)
