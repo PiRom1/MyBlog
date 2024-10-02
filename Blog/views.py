@@ -51,6 +51,8 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' Pour ', ' Pour(boire) ')
                        ]
 
+SENTENCE_CALEMBOUR = "<br><br>Vous avez été corrompu par le <strong>bot-ade</strong>, roi de la boutade !"
+
 
 
 def theophile(text):
@@ -258,11 +260,15 @@ def Index(request, id):
              
             
             text += ytb_addon
-
+            callembour = False
             for pattern in CALEMBOURS_PATTERNS:
                 
                 if pattern[0] in text:
                     text = text.replace(pattern[0], pattern[1])
+                    callembour = True
+            
+            if callembour:
+                text += SENTENCE_CALEMBOUR
 
 
 
