@@ -37,6 +37,21 @@ ENJOY_PATTERNS = ["quelle heure est il enjoy",
                   "enjoy quelle heure est il"]
 
 
+CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
+                       (' oui ', ' oui(stiti) '),
+                       (' Oui ', ' Oui(stiti) '),
+                       (' Quoi ', ' Quoi(feur) '),
+                       (' qui ', ' qui(quette) ' ),
+                       (' Qui ', ' Qui(quette) '),
+                       (' où ', ' où(lligan) '),
+                       (' Où ', ' Où(lligan) '),
+                       (' mais ', ' mais(on) '),
+                       (' Mais ', ' Mais(on) '),
+                       (' pour ', ' pour(boire) '),
+                       (' Pour ', ' Pour(boire) ')
+                       ]
+
+
 
 def theophile(text):
     # Infinitif
@@ -243,6 +258,13 @@ def Index(request, id):
              
             
             text += ytb_addon
+
+            for pattern in CALEMBOURS_PATTERNS:
+                
+                if pattern[0] in text:
+                    text = text.replace(pattern[0], pattern[1])
+
+
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)

@@ -12,6 +12,13 @@
     bottom: 5px;
 }
 
+.yoda {
+    /* display: flex; */
+    position: fixed;
+    bottom: 5px;
+    right: 10px;
+}
+
 
 body {
     /* background-color: #FFF6E5; */
