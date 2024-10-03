@@ -10,6 +10,7 @@ from django.db.models import F
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.templatetags.static import static
 import string
 import re
 import os
@@ -346,11 +347,11 @@ def Index(request, id):
     print(int(int(page_number) * n_messages_par_page))
    # messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
     
-    yoda_path = os.path.join(settings.MEDIA_ROOT, "Yoda")
-    yoda_path = 'MyBlog/media/Yoda'
-    print(os.listdir('.'))
+    yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda')
+    print(yoda_path)
+    
     yoda_sounds = os.listdir(yoda_path)
-    yoda_sounds = [os.path.join('Yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
+    yoda_sounds = [os.path.join('yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
     print(yoda_sounds)
 
 

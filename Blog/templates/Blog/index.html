@@ -119,11 +119,11 @@
   <div id="bottom"></div>
 
   <div class="enjoy">
-     <a href="http://www.quelleheureestilenjoy.com/" target="_blank"><img src="/media/Enjoy/enjoy_courage.png"/></a>
+     <a href="http://www.quelleheureestilenjoy.com/" target="_blank"><img src="{% static 'img/Enjoy/enjoy_courage.png' %}"/></a>
   </div>
 
   <div class="yoda" id="yoda">
-    <img src="/media/Yoda/yoda.png"/>
+    <img src="{% static 'img/yoda.png' %}"/>
  </div>
 
  <div id="random-number", class="yoda"></div>
@@ -142,6 +142,7 @@
         <script>     
 
             var yoda_sounds = {{ yoda_sounds|safe }};
+
         
             function generateRandomNumber() {
                 var randomNumber = Math.floor(Math.random() * yoda_sounds.length);
@@ -149,8 +150,10 @@
                 var sound = yoda_sounds[randomNumber];
                 var audioPlayer = document.getElementById('audio-player');
                 var audioSource = document.getElementById('audio-source');
-                
-                audioSource.src = sound;
+                // console.log("TEST !");
+                // console.log("{% static '' %}" + sound);
+                audioSource.src = "{% static '' %}" + sound;
+                // console.log(audioSource.src);
                 
                 // Recharger et jouer le nouveau fichier audio
                 audioPlayer.load();
