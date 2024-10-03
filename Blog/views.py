@@ -41,16 +41,11 @@ ENJOY_PATTERNS = ["quelle heure est il enjoy",
 
 CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' oui ', ' oui(stiti) '),
-                       (' Oui ', ' Oui(stiti) '),
-                       (' Quoi ', ' Quoi(feur) '),
                        (' qui ', ' qui(quette) ' ),
-                       (' Qui ', ' Qui(quette) '),
-                       (' où ', ' où(lligan) '),
-                       (' Où ', ' Où(lligan) '),
+                       (' ou ', ' ou(lligan) '),
                        (' mais ', ' mais(on) '),
-                       (' Mais ', ' Mais(on) '),
                        (' pour ', ' pour(boire) '),
-                       (' Pour ', ' Pour(boire) ')
+                       (' romain ', ' romain(tello) '),
                        ]
 
 SENTENCE_CALEMBOUR = "<br><br>Vous avez été corrompu par le <strong>bot-ade</strong>, roi de la boutade !"
@@ -261,12 +256,14 @@ def Index(request, id):
             text += ytb_addon
 
             # Calembours
-            if random.random() < 0.05:
+            if random.random() < 0.1:
                 calembour = False
                 for pattern in CALEMBOURS_PATTERNS:    
-                    if pattern[0] in text:
-                        text = text.replace(pattern[0], pattern[1])
+                    index = text.lower().find(pattern[0])
+                    while index != -1:
+                        text = text.replace(text[index:index+len(pattern[0])], pattern[1])
                         calembour = True
+                        index = text.lower().find(pattern[0])
                 if calembour:
                     text += SENTENCE_CALEMBOUR
 
