@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 import string
 import re
+import os
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import nltk
@@ -345,7 +346,12 @@ def Index(request, id):
     print(int(int(page_number) * n_messages_par_page))
    # messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
     
-    
+    yoda_path = os.path.join(settings.MEDIA_ROOT, "Yoda")
+    yoda_path = 'media/Yoda'
+    yoda_sounds = os.listdir(yoda_path)
+    yoda_sounds = [os.path.join(yoda_path, sound) for sound in yoda_sounds if sound.endswith('mp3')]
+    print(yoda_sounds)
+
 
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
@@ -358,6 +364,7 @@ def Index(request, id):
                "vote" : vote,
                "page_number" : page_number,
                "page_number_next" : str(int(page_number)+1),
+               "yoda_sounds" : yoda_sounds
                }
 
     return render(request, url, context)
