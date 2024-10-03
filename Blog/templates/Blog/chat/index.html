@@ -14,6 +14,13 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+
+    <script>
+        const static_url = "{% static '' %}"
+    </script>
+    
+    
+
 </head>
 
 <body>
@@ -122,13 +129,16 @@
      <a href="http://www.quelleheureestilenjoy.com/" target="_blank"><img src="{% static 'img/Enjoy/enjoy_courage.png' %}"/></a>
   </div>
 
+<div id="yoda_sounds">{{yoda_sounds}}</div>
+
   <div class="yoda" id="yoda">
     <img src="{% static 'img/yoda.png' %}"/>
  </div>
 
  <div id="random-number", class="yoda"></div>
 
- <audio id="audio-player" controls style="display:none;">
+
+ <audio id="audio-player" controls style="display:none;" >
     <source id="audio-source" src="" type="audio/mp3">
     Your browser does not support the audio element.
 </audio>
@@ -137,77 +147,8 @@
 
 </body>
 
+<script src="{% static 'Blog/js/yoda.js' %}"></script>
+<script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
 
-
-        <script>     
-
-            var yoda_sounds = {{ yoda_sounds|safe }};
-
-        
-            function generateRandomNumber() {
-                var randomNumber = Math.floor(Math.random() * yoda_sounds.length);
-                
-                var sound = yoda_sounds[randomNumber];
-                var audioPlayer = document.getElementById('audio-player');
-                var audioSource = document.getElementById('audio-source');
-                // console.log("TEST !");
-                // console.log("{% static '' %}" + sound);
-                audioSource.src = "{% static '' %}" + sound;
-                // console.log(audioSource.src);
-                
-                // Recharger et jouer le nouveau fichier audio
-                audioPlayer.load();
-                audioPlayer.play();
-        }
-
-        // Ajout d'un écouteur d'événement au clic sur l'image
-        document.getElementById('yoda').addEventListener('click', generateRandomNumber);
-            
-        </script>
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Sélectionne le textarea
-        var textarea = document.querySelector('textarea[name="message"]');
-        
-        // Ajoute un écouteur d'événements pour capturer "Ctrl + Enter"
-        textarea.addEventListener('keydown', function (e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                e.preventDefault(); // Empêche le saut de ligne par défaut
-                document.getElementById('message_form').submit(); // Soumet le formulaire
-            }
-        });
-    });
-</script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#load-more').on('click', function() {
-            var nextPage = $(this).attr('data-next-page');
-            $.ajax({
-                url: '?page=' + nextPage,
-                type: 'GET',
-                success: function(response) {
-                    // Extraire les nouveaux messages du contenu de la réponse
-                    var newMessages = $(response).find('#messages').html();
-                    $('#messages').append(newMessages);
-
-                    // Mettre à jour le bouton si d'autres messages sont disponibles
-                    var newNextPage = $(response).find('#load-more').attr('data-next-page');
-                    if (newNextPage) {
-                        $('#load-more').attr('data-next-page', newNextPage);
-                    } else {
-                        $('#load-more').hide();
-                    }
-                }
-            });
-        });
-    });
-</script>
 
 </html>
