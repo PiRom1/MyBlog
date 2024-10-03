@@ -41,16 +41,11 @@ ENJOY_PATTERNS = ["quelle heure est il enjoy",
 
 CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' oui ', ' oui(stiti) '),
-                       (' Oui ', ' Oui(stiti) '),
-                       (' Quoi ', ' Quoi(feur) '),
                        (' qui ', ' qui(quette) ' ),
-                       (' Qui ', ' Qui(quette) '),
-                       (' où ', ' où(lligan) '),
-                       (' Où ', ' Où(lligan) '),
+                       (' ou ', ' ou(lligan) '),
                        (' mais ', ' mais(on) '),
-                       (' Mais ', ' Mais(on) '),
                        (' pour ', ' pour(boire) '),
-                       (' Pour ', ' Pour(boire) ')
+                       (' romain ', ' romain(tello) '),
                        ]
 
 SENTENCE_CALEMBOUR = "<br><br>Vous avez été corrompu par le <strong>bot-ade</strong>, roi de la boutade !"
@@ -241,9 +236,9 @@ def Index(request, id):
                 new_message.save()
                 return redirect('create_sondage')
             
-
+            # theophile
             if random.random() < 0.10:
-                text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
+                text = re.sub(r'théophile|theophile|théo|theo', "l'alcoolo de service", text, flags=re.IGNORECASE)
             if user.username == "theophile" and len(text) < 200 and random.random() < 0.05:
                 text = theophile(text)
 
@@ -251,28 +246,26 @@ def Index(request, id):
             text = bleach.linkify(text)
             text = bleach.clean(text, tags=settings.ALLOWED_TAGS, attributes=settings.ALLOWED_ATTRIBUTES)
                 
-           
-
+            # youtube parsing
             ytb_addon = ''
             for i in range(text.count("\"https://www.youtube.com/watch")):
                 code = text.split('\"https://www.youtube.com/watch?v=')[i+1]
                 code = code.split("\"")[0]
 
                 ytb_addon += f"<br><br><iframe width='420' height='345' src='https://www.youtube.com/embed/{code}'></iframe>"
-             
-            
             text += ytb_addon
-            callembour = False
-            for pattern in CALEMBOURS_PATTERNS:
-                
-                if pattern[0] in text:
-                    text = text.replace(pattern[0], pattern[1])
-                    callembour = True
-            
-            if callembour:
-                text += SENTENCE_CALEMBOUR
 
-
+            # Calembours
+            if random.random() < 0.1:
+                calembour = False
+                for pattern in CALEMBOURS_PATTERNS:    
+                    index = text.lower().find(pattern[0])
+                    while index != -1:
+                        text = text.replace(text[index:index+len(pattern[0])], pattern[1])
+                        calembour = True
+                        index = text.lower().find(pattern[0])
+                if calembour:
+                    text += SENTENCE_CALEMBOUR
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
@@ -921,7 +914,7 @@ def vote_sondage(request, sondage_id, choice_id):
 
 #     context = {"message" : message, "form" : modify_form, 'history_message' : history_message}
                
-#     return render(request, "Blog/modify.html", context)
+#     return render(request, "Blog/chat/modify.html", context)
     
 
 # def AddUser(request):
@@ -941,7 +934,7 @@ def vote_sondage(request, sondage_id, choice_id):
     
 #     context = {"add_user_form" : add_user_form}
 
-#     return(render(request, "Blog/AddUser.html", context))
+#     return(render(request, "Blog/user/AddUser.html", context))
 
 # def dark_mode(request):
 #     user = get_user(request)
