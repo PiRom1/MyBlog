@@ -319,7 +319,7 @@ def Index(request, id):
 
     print(user.is_staff)
 
-    url = "Blog/index.html"
+    url = "Blog/chat/index.html"
 
     sondage = Sondage.objects.filter(current=True)
     choices = None
@@ -419,7 +419,7 @@ def IndexUser(request, id):
         dates.append(dict)
 
    
-    url = "Blog/index_user.html"
+    url = "Blog/chat/index_user.html"
 
     context = {"messages" : messages, 
                "viewed_user" : viewed_user,
@@ -481,7 +481,7 @@ def IndexUserMessage(request, id, word):
         dates.append(dict)
 
    
-    url = "Blog/index_user.html"
+    url = "Blog/chat/index_user.html"
 
     context = {"messages" : messages, 
                "viewed_user" : viewed_user,
@@ -582,7 +582,7 @@ def change_photo(request):
            
 
 
-    url = "Blog/change_photo.html"
+    url = "Blog/user/change_photo.html"
 
     context = {"user" : user,
                "form" : photo_form,
@@ -605,7 +605,7 @@ def Stats(request, id):
 
     
     stats = get_stats(session)
-    url = "Blog/stats.html"
+    url = "Blog/chat/stats.html"
     context = {"stats" : stats,
                "session" : session}
 
@@ -690,7 +690,7 @@ def UserView(request, id):
 
     messages = Message.objects.filter(writer=viewed_user)
 
-    url = "Blog/user.html"
+    url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
                'n_messages' : n_messages,
                'form' : form,
@@ -921,7 +921,7 @@ def vote_sondage(request, sondage_id, choice_id):
 
 #     context = {"message" : message, "form" : modify_form, 'history_message' : history_message}
                
-#     return render(request, "Blog/modify.html", context)
+#     return render(request, "Blog/chat/modify.html", context)
     
 
 # def AddUser(request):
@@ -941,7 +941,7 @@ def vote_sondage(request, sondage_id, choice_id):
     
 #     context = {"add_user_form" : add_user_form}
 
-#     return(render(request, "Blog/AddUser.html", context))
+#     return(render(request, "Blog/user/AddUser.html", context))
 
 # def dark_mode(request):
 #     user = get_user(request)
