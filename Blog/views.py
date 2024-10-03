@@ -347,7 +347,7 @@ def Index(request, id):
    # messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
     
     yoda_path = os.path.join(settings.MEDIA_ROOT, "Yoda")
-    yoda_path = 'media/Yoda'
+    yoda_path = '/MyBlog/media/Yoda'
     yoda_sounds = os.listdir(yoda_path)
     yoda_sounds = [os.path.join(yoda_path, sound) for sound in yoda_sounds if sound.endswith('mp3')]
     print(yoda_sounds)
