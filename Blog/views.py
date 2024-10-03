@@ -241,9 +241,9 @@ def Index(request, id):
                 new_message.save()
                 return redirect('create_sondage')
             
-
+            # theophile
             if random.random() < 0.10:
-                text = re.sub(r'Théo|Theo|théo|theo|Théophile|Theophile|théophile|theophile', "l'alcoolo de service", text)
+                text = re.sub(r'théophile|theophile|théo|theo', "l'alcoolo de service", text, flags=re.IGNORECASE)
             if user.username == "theophile" and len(text) < 200 and random.random() < 0.05:
                 text = theophile(text)
 
@@ -251,28 +251,24 @@ def Index(request, id):
             text = bleach.linkify(text)
             text = bleach.clean(text, tags=settings.ALLOWED_TAGS, attributes=settings.ALLOWED_ATTRIBUTES)
                 
-           
-
+            # youtube parsing
             ytb_addon = ''
             for i in range(text.count("\"https://www.youtube.com/watch")):
                 code = text.split('\"https://www.youtube.com/watch?v=')[i+1]
                 code = code.split("\"")[0]
 
                 ytb_addon += f"<br><br><iframe width='420' height='345' src='https://www.youtube.com/embed/{code}'></iframe>"
-             
-            
             text += ytb_addon
-            callembour = False
-            for pattern in CALEMBOURS_PATTERNS:
-                
-                if pattern[0] in text:
-                    text = text.replace(pattern[0], pattern[1])
-                    callembour = True
-            
-            if callembour:
-                text += SENTENCE_CALEMBOUR
 
-
+            # Calembours
+            if random.random() < 0.05:
+                calembour = False
+                for pattern in CALEMBOURS_PATTERNS:    
+                    if pattern[0] in text:
+                        text = text.replace(pattern[0], pattern[1])
+                        calembour = True
+                if calembour:
+                    text += SENTENCE_CALEMBOUR
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
