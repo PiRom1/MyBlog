@@ -1,0 +1,37 @@
+{% for message in messages %}
+    {% if when_new_date|slice:forloop.counter|last %}
+        <div class="message-date">
+            <strong>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</strong>
+        </div>
+    {% endif %}
+    
+    {% if message.writer.username == user.username %}
+    <div class="message">
+        <div class="message-content {{message.color}}">
+            <span class="message-meta">
+                <i>{{message.pub_date}}</i> 
+                <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
+            </span>
+            <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
+        </div>
+        <a href="/user/{{message.writer.id}}" class="user-avatar">
+            <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
+        </a>
+    </div>
+    {% else %}
+    <div class="message">
+        <a href="/user/{{message.writer.id}}" class="user-avatar">
+            <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}">
+        </a>
+
+        <div class="message-content {{message.color}}">
+            <span class="message-meta">
+                <i>{{message.pub_date}}</i> 
+                <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
+            </span>
+            <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
+        </div>
+    </div>
+    {% endif %}
+
+{% endfor %}

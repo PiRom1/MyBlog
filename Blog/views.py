@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.templatetags.static import static
+from django.template.loader import render_to_string
 import string
 import re
 import os
@@ -118,6 +119,32 @@ def get_tokens(s):
   rep = normalize_answer(s).split()
   return rep if rep!=[] else [""]
 
+def get_dates(messages):
+    ### Get every dates : 
+    years = []   # Contient les différentes années existantes
+    month = []   # Contient les différents mois existants
+    day = []   # Contient les différents jours existants
+    
+    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
+
+    for message in messages:
+        message_date = str(message.pub_date).split()[0]
+        message_date = message_date.split('-')
+
+        
+        dict = {'year' : message_date[0], 
+                'month' : message_date[1],
+                'day' : message_date[2]}
+        
+        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
+                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
+
+        years.append(message_date[0])
+        month.append(months_num[message_date[1]])
+        day.append(message_date[2])
+
+    return years, month, day, when_new_date
+
 
 
 
@@ -178,30 +205,32 @@ def getSession(request):
 @login_required
 def Index(request, id):
 
-   
-
     session = Session.objects.get(id = id)
-    print(session)
 
-    page_number = request.GET.get('page', 1)
-    
+    page_number = int(request.GET.get('page', 1))
+    print(page_number)
+
     n_messages_par_page = 20
-    messages = Message.objects.filter(session_id=session).order_by('-id')[:20:-1]#[int(int(page_number)*n_messages_par_page) :  : -1]
-
-    
-
-
+    messages = Message.objects.filter(session_id=session).order_by('-id')[:n_messages_par_page*page_number:-1]
 
     user = request.user
-    user.is_authenticated
-    print(type(user))
-    print(user)
 
     # Vérification de l'autorisation d'accès
     if not SessionUser.objects.get(user = user, session = session):
         return HttpResponseRedirect("/invalid_user/")
+    
+    years, month, day, when_new_date = get_dates(messages)
 
-
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        # Si la requête est une requête AJAX, on retourne les messages sous forme de JSON   
+        messages_html = render_to_string('Blog\chat\messages.html', {
+            'messages': messages,
+            'user': user,
+            'years': years,
+            'month': month,
+            'day': day,
+            'when_new_date': when_new_date,})
+        return JsonResponse({'messages_html': messages_html})
 
     if request.method == "POST":
         message_form = MessageForm(request.POST)
@@ -274,43 +303,8 @@ def Index(request, id):
             history.save()
 
             return HttpResponseRedirect('#bottom')
-            
 
-    
     message_form = MessageForm()
-    
-    ### Get every dates : 
-    years = []   # Contient les différentes années existantes
-    month = []   # Contient les différents mois existants
-    day = []   # Contient les différents jours existants
-    dates = []
-    
-    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
-
-    for message in messages:
-        message_date = str(message.pub_date).split()[0]
-        message_date = message_date.split('-')
-
-        
-        dict = {'year' : message_date[0], 
-                'month' : message_date[1],
-                'day' : message_date[2]}
-        
-        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
-                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
-
-        years.append(message_date[0])
-        month.append(months_num[message_date[1]])
-        day.append(message_date[2])
-
-        if dict not in dates:
-            when_new_date.append(True)
-        else:
-            when_new_date.append(False)
-        
-        dates.append(dict)
-
-    print(user.is_staff)
 
     url = "Blog/chat/index.html"
 
@@ -329,25 +323,13 @@ def Index(request, id):
     # Detect user cote
     for user_choice in user_choices:
         for choice in choices:
-            print("user choice : ", user_choice.choice_id)
-            print("choice : ", choice.id)
             if user_choice.choice_id == choice.id:
                 vote = choice
-
     
-
-
-    print(int(int(page_number) * n_messages_par_page))
-   # messages = messages[int(int(page_number)*n_messages_par_page) :  : -1]
-    
-    yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda')
-    print(yoda_path)
-    
+    yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda') 
     yoda_sounds = os.listdir(yoda_path)
     yoda_sounds = [os.path.join('yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
-    print(yoda_sounds)
-
-
+ 
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
                "user" : user, "years" : years, 
@@ -358,7 +340,7 @@ def Index(request, id):
                "choices" : choices,
                "vote" : vote,
                "page_number" : page_number,
-               "page_number_next" : str(int(page_number)+1),
+               "page_number_next" : page_number+1,
                "yoda_sounds" : yoda_sounds
                }
 
@@ -379,39 +361,8 @@ def IndexUser(request, id):
     
     messages = Message.objects.filter(writer=viewed_user)
 
-    
-    ### Get every dates : 
-    years = []   # Contient les différentes années existantes
-    month = []   # Contient les différents mois existants
-    day = []   # Contient les différents jours existants
-    dates = []
-    
-    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
+    years, month, day, when_new_date = get_dates(messages)
 
-    for message in messages:
-        message_date = str(message.pub_date).split()[0]
-        message_date = message_date.split('-')
-
-        
-        dict = {'year' : message_date[0], 
-                'month' : message_date[1],
-                'day' : message_date[2]}
-        
-        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
-                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
-
-        years.append(message_date[0])
-        month.append(months_num[message_date[1]])
-        day.append(message_date[2])
-
-        if dict not in dates:
-            when_new_date.append(True)
-        else:
-            when_new_date.append(False)
-        
-        dates.append(dict)
-
-   
     url = "Blog/chat/index_user.html"
 
     context = {"messages" : messages, 
@@ -422,8 +373,6 @@ def IndexUser(request, id):
                }
 
     return render(request, url, context)
-
-
 
 @login_required
 def IndexUserMessage(request, id, word):
@@ -440,39 +389,7 @@ def IndexUserMessage(request, id, word):
    
     messages = [message for message in messages if word in get_tokens(message.text)]
     
-
-    
-    ### Get every dates : 
-    years = []   # Contient les différentes années existantes
-    month = []   # Contient les différents mois existants
-    day = []   # Contient les différents jours existants
-    dates = []
-    
-    when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
-
-    for message in messages:
-        message_date = str(message.pub_date).split()[0]
-        message_date = message_date.split('-')
-
-        
-        dict = {'year' : message_date[0], 
-                'month' : message_date[1],
-                'day' : message_date[2]}
-        
-        months_num = {'01' : 'Janvier', '02' : 'Février', '03' : 'Mars', '04' : 'Avril' , '05' : 'Mai', '06' : 'juin',
-                      '07' : 'Juillet', '08' : 'Août', '09' : 'Septembre', '10' : 'Octobre', '11' : 'Novembre', '12' : 'Décembre'}
-
-        years.append(message_date[0])
-        month.append(months_num[message_date[1]])
-        day.append(message_date[2])
-
-        if dict not in dates:
-            when_new_date.append(True)
-        else:
-            when_new_date.append(False)
-        
-        dates.append(dict)
-
+    years, month, day, when_new_date = get_dates(messages)
    
     url = "Blog/chat/index_user.html"
 

@@ -24,45 +24,41 @@
 </head>
 
 <body>
+    <div class="enjoy">
+        <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
+            <img src="{% static 'img/Enjoy/enjoy_courage.png' %}" width="300"/>
+            
+        </a>
+    </div>
 
-    
-  <div class="enjoy">
-    <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
-       <img src="{% static 'img/Enjoy/enjoy_courage.png' %}" width="300"/>
-     
-   </a>
- </div>
+    <div class="yoda_img" id="yoda">
+        <img src="{% static 'img/yoda.png' %}" width="150"/>
+    </div>
 
-
-<div class="yoda_img" id="yoda">
-       <img src="{% static 'img/yoda.png' %}" width="150"/>
-</div>
-
-<div id="random-number", class="yoda"></div>
+    <div id="random-number", class="yoda"></div>
 
 
-<audio id="audio-player" controls style="display:none;" >
-   <source id="audio-source" src="" type="audio/mp3">
-   Your browser does not support the audio element.
-</audio>
+    <audio id="audio-player" controls style="display:none;" >
+    <source id="audio-source" src="" type="audio/mp3">
+    Your browser does not support the audio element.
+    </audio>
 
 
     
-    <div class="container">
+    <div class="container" id="{{session.id}}">
         <header>
             <h1>{{session.session_name}}</h1>
         </header>
 
-        <a href="./?page={{page_number_next}}">
-            <button id="load-more" data-next-page="{{ messages.next_page_number }}">
-                Charger plus
-            </button>
-        </a>
-        
-
         <main>
             <section class="messages-section">
+
                 <h2>Messages</h2>
+                <div id="load-more-container">
+                    <button id="load-more" data-next-page="{{ page_number_next }}">
+                        Charger plus
+                    </button>
+                </div>
 
                 <div class="messages">
                     {% for message in messages %}
@@ -100,7 +96,6 @@
                             </div>
                         </div>
                         {% endif %}
-
                     {% endfor %}
                 </div>
 
@@ -120,25 +115,25 @@
             </section>
 
             <section class="poll-section">
-              <div class="poll-container">
-                  <h3>Sondage du jour :</h3>
-                  <p class="poll-question">{{sondage.question}}</p>
-                  
-                  <div class="poll-options">
-                      {% for choice in choices %}
-                          <a href="/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
-                            <div class="poll-option{% if choice == vote %} my_vote{% endif %}">                              
-                                {{choice.choice}}
-                              
-                              <span class="poll-votes">{{choice.votes}} {% if choice.votes > 1 %}votes{% else %}vote{% endif %}</span>
-                            
-                            </div>
-                          </a>
-                      {% endfor %}
-                  </div>
-              </div>
-          </section>
-          
+                <div class="poll-container">
+                    <h3>Sondage du jour :</h3>
+                    <p class="poll-question">{{sondage.question}}</p>
+                    
+                    <div class="poll-options">
+                        {% for choice in choices %}
+                            <a href="/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
+                                <div class="poll-option{% if choice == vote %} my_vote{% endif %}">                              
+                                    {{choice.choice}}
+                                
+                                <span class="poll-votes">{{choice.votes}} {% if choice.votes > 1 %}votes{% else %}vote{% endif %}</span>
+                                
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        
         </main>
 
         <footer>
@@ -151,7 +146,7 @@
 
 </body>
 
-<script src="{% static 'Blog/js/yoda.js' %}"></script>
+<script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
 <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
 
 
