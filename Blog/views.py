@@ -350,7 +350,7 @@ def Index(request, id):
     yoda_path = 'MyBlog/media/Yoda'
     print(os.listdir('.'))
     yoda_sounds = os.listdir(yoda_path)
-    yoda_sounds = [os.path.join(yoda_path, sound) for sound in yoda_sounds if sound.endswith('mp3')]
+    yoda_sounds = [os.path.join('Yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
     print(yoda_sounds)
 
 
