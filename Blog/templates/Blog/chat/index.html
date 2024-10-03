@@ -15,11 +15,10 @@
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
 
-    <script>
-        const static_url = "{% static '' %}"
-    </script>
-    
-<div id="yoda_sounds" style="display: None;">{{yoda_sounds}}</div>    
+    <!-- JS -->
+    <script src="{% static 'Blog/chat/js/index.js' %}"></script> 
+    <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
+    <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
 
 </head>
 
@@ -35,12 +34,10 @@
         <img src="{% static 'img/yoda.png' %}" width="150"/>
     </div>
 
-    <div id="random-number", class="yoda"></div>
-
-
+    <div id="yoda_sounds" url="{% static '' %}" style="display: None;">{{yoda_sounds}}</div> 
     <audio id="audio-player" controls style="display:none;" >
-    <source id="audio-source" src="" type="audio/mp3">
-    Your browser does not support the audio element.
+        <source id="audio-source" src="" type="audio/mp3">
+        Your browser does not support the audio element.
     </audio>
 
 
@@ -142,12 +139,6 @@
     </div>
   <div id="bottom"></div>
 
- 
-
 </body>
-
-<script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
-<script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
-
 
 </html>
