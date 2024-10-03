@@ -26,6 +26,28 @@
 <body>
 
     
+  <div class="enjoy">
+    <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
+       <img src="{% static 'img/Enjoy/enjoy_courage.png' %}" width="300"/>
+     
+   </a>
+ </div>
+
+
+<div class="yoda_img" id="yoda">
+       <img src="{% static 'img/yoda.png' %}" width="150"/>
+</div>
+
+<div id="random-number", class="yoda"></div>
+
+
+<audio id="audio-player" controls style="display:none;" >
+   <source id="audio-source" src="" type="audio/mp3">
+   Your browser does not support the audio element.
+</audio>
+
+
+    
     <div class="container">
         <header>
             <h1>{{session.session_name}}</h1>
@@ -125,24 +147,6 @@
     </div>
   <div id="bottom"></div>
 
-  <div class="enjoy">
-     <a href="http://www.quelleheureestilenjoy.com/" target="_blank"><img src="{% static 'img/Enjoy/enjoy_courage.png' %}"/></a>
-  </div>
-
-<div id="yoda_sounds">{{yoda_sounds}}</div>
-
-  <div class="yoda" id="yoda">
-    <img src="{% static 'img/yoda.png' %}"/>
- </div>
-
- <div id="random-number", class="yoda"></div>
-
-
- <audio id="audio-player" controls style="display:none;" >
-    <source id="audio-source" src="" type="audio/mp3">
-    Your browser does not support the audio element.
-</audio>
-{{ MEDIA_URL }}
  
 
 </body>
