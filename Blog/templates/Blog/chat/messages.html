@@ -1,7 +1,14 @@
+{% load static %}
 {% for message in messages %}
     {% if when_new_date|slice:forloop.counter|last %}
         <div class="message-date">
             <strong>{{ day|slice:forloop.counter|last }} {{ month|slice:forloop.counter|last }} {{ years|slice:forloop.counter|last }}</strong>
+        </div>
+    {% endif %}
+
+    {% if new_message == False %}
+        <div class="new-message">
+            <strong>Nouveaux messages</strong>
         </div>
     {% endif %}
     

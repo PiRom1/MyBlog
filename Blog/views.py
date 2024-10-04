@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 #from rest_framework import viewsets
 from .models import *
@@ -228,16 +229,35 @@ def Index(request, id):
     
     years, month, day, when_new_date = get_dates(messages)
 
+    last_message_id = messages[-1].id if messages else 0
+
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        # Si la requête est une requête AJAX, on retourne les messages sous forme de JSON   
+        # Si la requête est une requête AJAX, on retourne les messages sous forme de JSON 
+        if request.method == "POST":
+            post_data = json.loads(request.body.decode("utf-8"))
+            last_message_id = post_data['last_message_id']
+            new_message = post_data['new_message']
+            print(last_message_id)
+            print(new_message)
+            if int(last_message_id) < messages[-1].id:
+                messages = Message.objects.filter(id__gt = last_message_id, session_id = session).order_by('-id')[:n_messages_par_page:-1]
+                years, month, day, when_new_date = get_dates(messages)
+                when_new_date = []
+                last_message_id = messages[-1].id
+            else:
+                return JsonResponse({'messages_html': '',
+                                     'last_message_id': last_message_id})
+        
         messages_html = render_to_string('Blog\chat\messages.html', {
             'messages': messages,
             'user': user,
             'years': years,
             'month': month,
             'day': day,
-            'when_new_date': when_new_date,})
-        return JsonResponse({'messages_html': messages_html})
+            'when_new_date': when_new_date,
+            'new_message': new_message})
+        return JsonResponse({'messages_html': messages_html,
+                             'last_message_id': last_message_id})
 
     if request.method == "POST":
         message_form = MessageForm(request.POST)
@@ -348,7 +368,8 @@ def Index(request, id):
                "vote" : vote,
                "page_number" : page_number,
                "page_number_next" : page_number+1,
-               "yoda_sounds" : yoda_sounds
+               "yoda_sounds" : yoda_sounds,
+               "last_message_id" : last_message_id
                }
 
     return render(request, url, context)

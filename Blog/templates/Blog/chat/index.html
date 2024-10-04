@@ -57,7 +57,7 @@
                     </button>
                 </div>
 
-                <div class="messages">
+                <div class="messages" last-message-id="{{last_message_id}}">
                     {% for message in messages %}
                         {% if when_new_date|slice:forloop.counter|last %}
                             <div class="message-date">
