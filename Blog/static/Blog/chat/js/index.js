@@ -32,3 +32,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+function getCSRFToken() {
+    let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    return csrfToken;
+}
+
+
+
+function incrementCounter() {
+    
+    fetch('/increment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()  // Récupération du token CSRF
+        },
+        body: JSON.stringify({})
+    }).then(response => response.json())
+      .then(data => console.log(data));
+}

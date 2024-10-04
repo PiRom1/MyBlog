@@ -51,6 +51,7 @@ class User(AbstractUser):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     image = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
+    yoda_counter = models.IntegerField("Yoda_counter", default = 0)
     
     
     class Meta:
