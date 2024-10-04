@@ -27,6 +27,9 @@ def get_stats(session):
         users[keys[i]] = values[i]
 
 
+    print(users)
 
+    yoda_stats = [User.objects.get(username=user).yoda_counter for user in users.keys()]
+    print(yoda_stats)
 
-    return users
+    return users, yoda_stats

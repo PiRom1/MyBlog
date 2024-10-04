@@ -12,16 +12,22 @@
     type="text/css" />
   
   {% load static %}
+  
   <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
   <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
 
 </head>
-
+{% load custom_filters %}
 <body>
   <h1>Statistiques sur la session {{session.session_name}}</h1>
-  {% for user,stat in stats.items %}
-    <ul><li>{% if stat > 1 %}<strong><span class='name'>{{user}}</span></strong> a envoyé {{stat}} messages{% else %}<strong><span class='name'>{{user}}</span></strong> a envoyé {{stat}} message{% endif %}</li></ul>    
+  {% for user,stat in message_stats.items %}
+    <ul><li>
+      <strong><span class='name'>{{user}}</span></strong> a envoyé <strong>{{stat}}</strong> {% if stat > 1 %}messages{% else %}message{% endif %}
+      - <strong>{{yoda_stats|index:forloop.counter0}}</strong> clics sur Maître Yoda
+      
+    </li><br></ul>    
+        
   {% endfor %}
   <br><br>
   <a href = "/{{session.id}}/#bottom">Retour aux messages</a>

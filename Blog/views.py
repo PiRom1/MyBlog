@@ -521,9 +521,14 @@ def Stats(request, id):
         return HttpResponseRedirect("/invalid_user/")
 
     
-    stats = get_stats(session)
+    message_stats, yoda_stats = get_stats(session)
+
+    print(message_stats)
+    print(yoda_stats)
+
     url = "Blog/chat/stats.html"
-    context = {"stats" : stats,
+    context = {"message_stats" : message_stats,
+               "yoda_stats" : yoda_stats,
                "session" : session}
 
     return render(request, url, context)
