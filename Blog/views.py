@@ -124,7 +124,7 @@ def get_dates(messages):
     years = []   # Contient les différentes années existantes
     month = []   # Contient les différents mois existants
     day = []   # Contient les différents jours existants
-    
+    dates = []
     when_new_date = []   # Liste de booléens. True si nouvelle date, False sinon. Permet de savoir quand on passe à un nouveau jour
 
     for message in messages:
@@ -142,6 +142,13 @@ def get_dates(messages):
         years.append(message_date[0])
         month.append(months_num[message_date[1]])
         day.append(message_date[2])
+        
+        if dict not in dates:
+            when_new_date.append(True)
+            dates.append(dict)
+        else:
+            when_new_date.append(False)
+        
 
     return years, month, day, when_new_date
 
