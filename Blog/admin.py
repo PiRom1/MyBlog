@@ -9,6 +9,7 @@ class UserAdmin(DefaultUserAdmin):
     list_display = ['username', 'is_superuser']
     fieldsets = DefaultUserAdmin.fieldsets
     fieldsets[1][1]['fields'] += ('image',)
+    fieldsets[1][1]['fields'] += ('yoda_counter',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)

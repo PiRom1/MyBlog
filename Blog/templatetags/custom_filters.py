@@ -46,3 +46,9 @@ def highlight_tag(value, tag):
         # Utilisation des expressions régulières pour mettre en gras le mot
         return re.sub(f'({re.escape(tag)})', r'<strong>\1</strong>', value, flags=re.IGNORECASE)
     return value
+
+
+
+@register.filter(name='index')
+def index(indexable, i):
+    return indexable[i]

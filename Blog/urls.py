@@ -39,5 +39,8 @@ urlpatterns = [
     path('recits/', views.recit_list, name='recit_list'),
     path('recits/create/', views.create_recit, name='create_recit'),
     path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
+
+    # Other
+    path('increment/', views.increment_view, name='increment_view'),
     
 ]
