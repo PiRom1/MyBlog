@@ -479,7 +479,7 @@ def UserView(request, id):
     words = list(set(messages))
     w = words.copy()
     for word in w:
-        if len(word) < 4:
+        if len(word) < 5:
             words.remove(word)
     count_words = {}
 
