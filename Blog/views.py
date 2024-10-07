@@ -232,6 +232,7 @@ def Index(request, id):
     last_message_id = messages[-1].id if messages else 0
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        new_message = True
         # Si la requête est une requête AJAX, on retourne les messages sous forme de JSON 
         if request.method == "POST":
             post_data = json.loads(request.body.decode("utf-8"))
@@ -256,6 +257,7 @@ def Index(request, id):
             'day': day,
             'when_new_date': when_new_date,
             'new_message': new_message})
+        
         return JsonResponse({'messages_html': messages_html,
                              'last_message_id': last_message_id})
 
