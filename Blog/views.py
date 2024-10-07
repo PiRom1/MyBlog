@@ -571,11 +571,12 @@ def UserView(request, id):
     messages = ' '.join([message.text for message in messages])
     messages = get_tokens(messages)
     messages = ' '.join(messages)
+    messages = messages.lower()
     messages = messages.split()
     words = list(set(messages))
     w = words.copy()
     for word in w:
-        if len(word) < 5:
+        if len(word) < 4:
             words.remove(word)
     count_words = {}
 
