@@ -42,5 +42,6 @@ urlpatterns = [
 
     # Other
     path('increment/', views.increment_view, name='increment_view'),
+    path('tkt/', views.tkt_view, name='tkt'),
     
 ]

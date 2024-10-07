@@ -23,6 +23,11 @@
 </head>
 
 <body>
+
+    
+    
+
+
     <div class="enjoy">
         <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
             <img src="{% static 'img/Enjoy/enjoy_courage.png' %}" width="300"/>
@@ -34,11 +39,20 @@
         <img src="{% static 'img/yoda.png' %}" width="150" onclick="incrementCounter()"/>
     </div>
 
+
+
     <div id="yoda_sounds" url="{% static '' %}" style="display: None;">{{yoda_sounds}}</div> 
     <audio id="audio-player" controls style="display:none;">
         <source id="audio-source" src="" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
+
+
+    <div class="tkt" style="position:fixed; cursor:pointer;">
+        <a href="/tkt/?session={{session.id}}">
+            <img src="{% static 'img/clique.png' %}" width="150" onclick="clique_tkt()"/>
+        </a>
+    </div>
 
 
     
