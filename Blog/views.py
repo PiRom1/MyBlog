@@ -322,6 +322,10 @@ def Index(request, id):
                         index = text.lower().find(pattern[0])
                 if calembour:
                     text += SENTENCE_CALEMBOUR
+            
+            # Reglys
+            text = text.replace('reglys', '<del>reglys</del> ConformIA')
+            text = text.replace('Reglys', '<del>Reglys</del> ConformIA')
 
             new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
