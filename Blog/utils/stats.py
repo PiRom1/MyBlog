@@ -48,13 +48,19 @@ def get_messages_plot(messages, user):
 
         return f"{date.day}/{date.month}/{date.year}"
 
-    dates = [message.pub_date.date() for message in messages]
-    uniq_dates = sorted(list(set(dates)))
-    
-    dates = np.array([formate_date(date) for date in dates])
-    uniq_dates = np.array([formate_date(date) for date in uniq_dates])
-    
-    n_messages = [np.sum(dates == date) for date in uniq_dates]
+    date0 = messages[0].pub_date
+    # date0 = datetime.datetime.replace(tzinfo=None)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    delta = (now - date0).days
+    print("delta : ", delta)
+
+    dates = [(date0 + datetime.timedelta(days=x)).date() for x in range(int(delta + 1))]
+
+    message_dates = np.array([formate_date(message.pub_date) for message in messages])
+
+    dates = [formate_date(date) for date in dates]
+  
+    n_messages = [np.sum(message_dates == date) for date in dates]
 
     params = {"ytick.color" : "w",
             "xtick.color" : "w",
@@ -63,9 +69,9 @@ def get_messages_plot(messages, user):
             "text.color" : "w"}
     plt.rcParams.update(params)
 
-    plot = plt.plot(uniq_dates, n_messages, color='#ffc067')
+    plot = plt.plot(dates, n_messages, color='#ffc067')
     plt.title(f"Nombre de messages envoyés par jour par {user.username.capitalize()}")
-    plt.xticks(uniq_dates[::10], rotation=20)
+    plt.xticks(dates[::10], rotation=20)
     plt.xlabel("Date")
     plt.ylabel("Nombre de messages")
 
