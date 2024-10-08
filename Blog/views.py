@@ -539,12 +539,17 @@ def UserView(request, id):
 
     messages = Message.objects.filter(writer=viewed_user)
 
+    plot = get_messages_plot(messages, viewed_user)
+
+
+
     url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
                'n_messages' : n_messages,
                'form' : form,
                'messages' : messages,
-               'words' : words
+               'words' : words,
+               'plot' : plot,
                }
 
     return render(request, url, context)
