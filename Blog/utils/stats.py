@@ -75,7 +75,7 @@ def get_messages_plot(messages, user):
     plt.xlabel("Date")
     plt.ylabel("Nombre de messages")
 
-    buffer = BytesIO()
+    buffer = BytesIO() 
     plt.savefig(buffer, format='png', transparent=True)
     buffer.seek(0)
     image_png = buffer.getvalue()
