@@ -1,4 +1,19 @@
+//Import Class Badger from badger.js
+import Badger from './badger.js';
+
 document.addEventListener('DOMContentLoaded', function () {
+    // Créer une instance de la classe Badger
+    const badger = new Badger({
+        size: 0.6,
+        color: 'white',
+        position: 'ne',
+        //src: '/static/Blog/chat/img/86_icon.svg',
+        onChange: function () {
+            this._draw();
+        }
+    });
+    badger.value = 0;
+
     var loadMoreBtn = document.getElementById('load-more');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -11,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(page);
 
         // Requête AJAX pour obtenir plus de messages
-        url = `/${session}/?page=${page}`;
+        var url = `/${session}/?page=${page}`;
 
         fetch(url, {
             method: 'GET',
@@ -35,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var session = document.querySelector('.container').id;
         var messagesContainer = document.querySelector('.messages');
         var new_message = document.querySelector('.new-message');
-        console.log('new_message', new_message);
-        url = `/${session}/#bottom`;
+        var last_message_id = messagesContainer.getAttribute('last-message-id');
+        var url = `/${session}/#bottom`;
 
         fetch(url, {
             method: 'POST',
@@ -48,22 +63,29 @@ document.addEventListener('DOMContentLoaded', function () {
             mode: 'same-origin',
             body: JSON.stringify({
                 reload: true,
-                last_message_id: messagesContainer.getAttribute('last-message-id'),
-                new_message: document.querySelector('.new-message') !== null
+                last_message_id: last_message_id,
+                new_message: new_message !== null
             })
         })
         .then(response => response.json())
         .then(data => {
-            // messagesContainer.innerHTML = '';
-            // Ajouter les nouveaux messages au début
-            messagesContainer.insertAdjacentHTML('beforeend', data.messages_html);
+            if (data.messages_html !== '') {
+                console.log('New message received');
+                var nb_new_msg = data.last_message_id - last_message_id;
+                badger.value += nb_new_msg;
+                // Ajouter les nouveaux messages au début
+                messagesContainer.insertAdjacentHTML('beforeend', data.messages_html);
 
-            // Met à jour l'offset
-            var loadMoreBtn = document.getElementById('load-more');
-            loadMoreBtn.setAttribute('data-next-page', 2);
+                // Met à jour l'offset
+                var loadMoreBtn = document.getElementById('load-more');
+                loadMoreBtn.setAttribute('data-next-page', 2);
 
-            // Met à jour l'id du dernier message
-            messagesContainer.setAttribute('last-message-id', data.last_message_id);
+                // Met à jour l'id du dernier message
+                messagesContainer.setAttribute('last-message-id', data.last_message_id);
+            }
+            else {
+                console.log('No new messages');
+            }
         });
     };
 
@@ -71,4 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     setInterval(reloadMessages, 60000);
+    window.onfocus = function () {
+        reloadMessages();
+        badger.value = 0;
+    };
 });
