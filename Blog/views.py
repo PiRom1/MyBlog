@@ -167,7 +167,6 @@ def Index(request, id):
     session = Session.objects.get(id = id)
 
     page_number = int(request.GET.get('page', 1))
-    print(page_number)
 
     n_messages_par_page = 20
     messages = Message.objects.filter(session_id=session).order_by('-id')[:n_messages_par_page*page_number:-1]
@@ -189,8 +188,6 @@ def Index(request, id):
             post_data = json.loads(request.body.decode("utf-8"))
             last_message_id = post_data['last_message_id']
             new_message = post_data['new_message']
-            print(last_message_id)
-            print(new_message)
             if int(last_message_id) < messages[-1].id:
                 messages = Message.objects.filter(id__gt = last_message_id, session_id = session).order_by('-id')[:n_messages_par_page:-1]
                 years, month, day, when_new_date = get_dates(messages)
@@ -199,8 +196,6 @@ def Index(request, id):
             else:
                 return JsonResponse({'messages_html': '',
                                      'last_message_id': last_message_id})
-
-        print(messages)            
             
         messages_html = render_to_string('Blog/chat/messages.html', {
             'messages': messages,
@@ -210,8 +205,6 @@ def Index(request, id):
             'day': day,
             'when_new_date': when_new_date,
             'new_message': new_message})
-        
-        print(messages_html)
         
         return JsonResponse(data={'messages_html': messages_html,
                                   'last_message_id': last_message_id})

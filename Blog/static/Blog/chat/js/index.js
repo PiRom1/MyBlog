@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
    
     
 
-    setInterval(reloadMessages, 60000);
+    setInterval(reloadMessages, 10000);
     window.onfocus = function () {
         reloadMessages();
         badger.value = 0;

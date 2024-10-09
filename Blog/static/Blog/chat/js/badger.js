@@ -76,8 +76,9 @@ class Badger {
     _setup(el) {
       this.img = el.img;
       this.src = el.src;
-      
       this.faviconSize = this.img.naturalWidth;
+      if (this.faviconSize === 0) {
+        this.faviconSize = 150;};
       this.badgeSize = this.faviconSize * this.size;
       this.canvas.width = this.faviconSize;
       this.canvas.height = this.faviconSize;
