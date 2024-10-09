@@ -199,6 +199,8 @@ def Index(request, id):
             else:
                 return JsonResponse({'messages_html': '',
                                      'last_message_id': last_message_id})
+
+        print(messages)            
             
         messages_html = render_to_string('Blog\chat\messages.html', {
             'messages': messages,
@@ -208,6 +210,8 @@ def Index(request, id):
             'day': day,
             'when_new_date': when_new_date,
             'new_message': new_message})
+        
+        print(messages_html)
         
         return JsonResponse(data={'messages_html': messages_html,
                                   'last_message_id': last_message_id})
