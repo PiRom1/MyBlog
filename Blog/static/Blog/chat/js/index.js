@@ -79,5 +79,5 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => console.log(data));
     }
 
-    setInterval(reloadMessages, 1000);
+    setInterval(reloadMessages, 60000);
 });
