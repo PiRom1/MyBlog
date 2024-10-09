@@ -788,11 +788,12 @@ def tkt_view(request):
 def update_plot(request):
 
     value = int(request.GET.get('value', 1))  # Obtention de la valeur du slider
-    print(value)
-    user = request.user
+    user = request.GET.get('user', 1)  # Obtention de la valeur du slider
+    
+    user = User.objects.get(username=user)
     messages = Message.objects.filter(writer=user)
     plot = get_messages_plot(messages, user, lissage = value)
-    #print(plot)
+    
     return JsonResponse({'plot': plot})
 
 

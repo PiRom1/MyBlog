@@ -70,7 +70,7 @@ A écrit {{n_messages}} messages
 <input type="range" id="slider" min="1" max="7" value="1" step="1"> Moyenner sur une fenêtre glissante de <span id="slider_value">1</span>
 <br>
 <div style="background-color: rgba(131,106,83,0.8); text-align: center; display:inline-block; margin-left: 12px;" >
-  <img src="data:image/png;base64,{{ plot|safe }}" style="display:block" id="graph">
+  <img src="data:image/png;base64,{{ plot|safe }}" style="display:block" id="graph" viewed_user="{{viewed_user}}">
 </div>
 
 <br><br>
