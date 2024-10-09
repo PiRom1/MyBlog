@@ -3,11 +3,12 @@
 // Ajout d'un écouteur d'événement au clic sur l'image
 document.addEventListener('DOMContentLoaded', function () {
     var yoda = document.getElementById('yoda');
+    var enjoy = document.getElementById('enjoy');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    function incrementCounter() {
+    function incrementCounter(link) {
         
-        fetch('/increment/', {
+        fetch('/'+link +'/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,8 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     
     
-
-    yoda.addEventListener('click', incrementCounter);
+    enjoy.addEventListener('click', function() {incrementCounter('increment_enjoy')});
+    yoda.addEventListener('click', function() {incrementCounter('increment_yoda')});
     yoda.addEventListener('click', playYodaSound);
 });
 

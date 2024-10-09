@@ -37,7 +37,10 @@ def get_stats(session):
     yoda_stats = [User.objects.get(username=user).yoda_counter for user in users.keys()]
     print(yoda_stats)
 
-    return users, yoda_stats
+    enjoy_stats = [User.objects.get(username=user).enjoy_counter for user in users.keys()]
+    print(enjoy_stats)
+
+    return users, yoda_stats, enjoy_stats
 
 
 

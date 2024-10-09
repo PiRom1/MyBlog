@@ -447,7 +447,7 @@ def Stats(request, id):
         return HttpResponseRedirect("/invalid_user/")
 
     
-    message_stats, yoda_stats = get_stats(session)
+    message_stats, yoda_stats, enjoy_stats = get_stats(session)
 
     print(message_stats)
     print(yoda_stats)
@@ -455,6 +455,7 @@ def Stats(request, id):
     url = "Blog/chat/stats.html"
     context = {"message_stats" : message_stats,
                "yoda_stats" : yoda_stats,
+               "enjoy_stats" : enjoy_stats,
                "session" : session}
 
     return render(request, url, context)
@@ -752,12 +753,21 @@ def vote_sondage(request, sondage_id, choice_id):
     return HttpResponseRedirect(f"{request.session.get('previous_url', '/')}#bottom")
 
 
-def increment_view(request):
+def increment_yoda(request):
     if request.method == 'POST':
         user = request.user  # Récupérer l'objet
         user.yoda_counter += 1  # Incrémenter le compteur
         user.save()  # Sauvegarder en base
         return JsonResponse({'status': 'ok', 'new_value': user.yoda_counter})
+
+
+
+def increment_enjoy(request):
+    if request.method == 'POST':
+        user = request.user  # Récupérer l'objet
+        user.enjoy_counter += 1  # Incrémenter le compteur
+        user.save()  # Sauvegarder en base
+        return JsonResponse({'status': 'ok', 'new_value': user.enjoy_counter})
 
 
 def tkt_view(request):

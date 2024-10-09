@@ -41,7 +41,8 @@ urlpatterns = [
     path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
 
     # Other
-    path('increment/', views.increment_view, name='increment_view'),
+    path('increment_yoda/', views.increment_yoda, name='increment_yoda'),
+    path('increment_enjoy/', views.increment_enjoy, name='increment_enjoy'),
     path('tkt/', views.tkt_view, name='tkt'),
     
 ]
