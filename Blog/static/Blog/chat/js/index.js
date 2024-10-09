@@ -17,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-Requested-With': 'XMLHttpRequest'  // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
             }
         })
-        .then(response => {
-            console.log(response);
-        })
         .then(response => response.json())
         .then(data => {
             var messagesContainer = document.querySelector('.messages');
@@ -82,5 +79,5 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => console.log(data));
     }
 
-    setInterval(reloadMessages, 60000);
+    setInterval(reloadMessages, 1000);
 });

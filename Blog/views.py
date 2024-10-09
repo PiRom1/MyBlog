@@ -199,7 +199,7 @@ def Index(request, id):
             else:
                 return JsonResponse({'messages_html': '',
                                      'last_message_id': last_message_id})
-        
+            
         messages_html = render_to_string('Blog\chat\messages.html', {
             'messages': messages,
             'user': user,
@@ -209,8 +209,8 @@ def Index(request, id):
             'when_new_date': when_new_date,
             'new_message': new_message})
         
-        return JsonResponse({'messages_html': messages_html,
-                             'last_message_id': last_message_id})
+        return JsonResponse(data={'messages_html': messages_html,
+                                  'last_message_id': last_message_id})
 
     if request.method == "POST":
         message_form = MessageForm(request.POST)
