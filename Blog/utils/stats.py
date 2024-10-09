@@ -44,12 +44,18 @@ def get_stats(session):
 
 
 
-def get_messages_plot(messages, user):
+def get_messages_plot(messages, user, lissage = 1):
 
     def formate_date(date):
         
-
         return f"{date.day}/{date.month}/{date.year}"
+
+    def lisser(l, fenetre):
+        L = []
+        for i in range(len(l) - fenetre + 1):
+            value = np.mean(l[i : (i+fenetre)])
+            L.append(value)
+        return(L)
 
     date0 = messages[0].pub_date
     # date0 = datetime.datetime.replace(tzinfo=None)
@@ -64,6 +70,10 @@ def get_messages_plot(messages, user):
     dates = [formate_date(date) for date in dates]
 
     n_messages = [np.sum(message_dates == date) for date in dates]
+    n_messages = lisser(n_messages, lissage)
+    dates = dates[lissage-1:]
+
+
 
     params = {"ytick.color" : "w",
             "xtick.color" : "w",

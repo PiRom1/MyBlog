@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'Blog/user/js/slider.js' %}"></script>
 </head>
 
 <a href="/">HOME</a>
@@ -62,10 +63,14 @@ Mot les plus utilisés : <br>
 <script src = "{% static 'Blog/user/js/modify_info.js' %}"></script>
 
 
+
 A écrit {{n_messages}} messages
 <br><br>
+
+<input type="range" id="slider" min="1" max="7" value="1" step="1"> Moyenner sur une fenêtre glissante de <span id="slider_value">1</span>
+<br>
 <div style="background-color: rgba(131,106,83,0.8); text-align: center; display:inline-block; margin-left: 12px;" >
-  <img src="data:image/png;base64,{{ plot|safe }}" style="display:block">
+  <img src="data:image/png;base64,{{ plot|safe }}" style="display:block" id="graph">
 </div>
 
 <br><br>

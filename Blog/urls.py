@@ -44,5 +44,6 @@ urlpatterns = [
     path('increment_yoda/', views.increment_yoda, name='increment_yoda'),
     path('increment_enjoy/', views.increment_enjoy, name='increment_enjoy'),
     path('tkt/', views.tkt_view, name='tkt'),
+    path('update_plot/', views.update_plot, name='update_plot'),
     
 ]

@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var loadMoreBtn = document.getElementById('load-more');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+    
+
     loadMoreBtn.addEventListener('click', function () {
         console.log('Load more button clicked');
         var page = parseInt(loadMoreBtn.getAttribute('data-next-page'), 10);
@@ -63,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Met à jour l'id du dernier message
             messagesContainer.setAttribute('last-message-id', data.last_message_id);
         });
-    }
+    };
 
-
+   
     
 
     setInterval(reloadMessages, 60000);

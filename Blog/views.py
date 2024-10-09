@@ -788,6 +788,17 @@ def tkt_view(request):
     return HttpResponseRedirect(f'/{session_id}#bottom')
 
 
+def update_plot(request):
+
+    value = int(request.GET.get('value', 1))  # Obtention de la valeur du slider
+    print(value)
+    user = request.user
+    messages = Message.objects.filter(writer=user)
+    plot = get_messages_plot(messages, user, lissage = value)
+    #print(plot)
+    return JsonResponse({'plot': plot})
+
+
 
 # def Modify(request, message_id):
 #     message = Message.objects.filter(id = message_id)[0]
