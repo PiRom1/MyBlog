@@ -42,6 +42,8 @@ def enjoy(text, user, color, session):
                         print('ouiii')
                         new_message = Message(writer = user, text = "[A demandé l'heure à Enjoy]", pub_date = timezone.now(), color = color, session_id = session)
                         new_message.save()
+                        user.enjoy_counter += 1
+                        user.save()
                         return HttpResponseRedirect('http://www.quelleheureestilenjoy.com/')
 
 
