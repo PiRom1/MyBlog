@@ -25,7 +25,7 @@ from nltk.stem.snowball import FrenchStemmer
 from .utils.process_text import process_text
 
 from .utils.stats import *
-import random
+import random as rd
 import bleach
 
 
@@ -539,12 +539,17 @@ def UserView(request, id):
 
     messages = Message.objects.filter(writer=viewed_user)
 
+    plot = get_messages_plot(messages, viewed_user)
+
+
+
     url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
                'n_messages' : n_messages,
                'form' : form,
                'messages' : messages,
-               'words' : words
+               'words' : words,
+               'plot' : plot,
                }
 
     return render(request, url, context)
@@ -753,7 +758,26 @@ def increment_view(request):
         user.yoda_counter += 1  # Incrémenter le compteur
         user.save()  # Sauvegarder en base
         return JsonResponse({'status': 'ok', 'new_value': user.yoda_counter})
+
+
+def tkt_view(request):
+    print('ici')
     
+    texts = ["Je ramène les chocolatines demain !", 
+                "Je ramène plein de croissants demain matin !", 
+                "Je vous invite au restau ce midi les p'tits potes, ça me fait plaisir :)",
+                "Les gars demain matin c'est moi qui ramène le p'tit dèj ;)",
+                ]
+    print(175)
+
+    session_id = request.GET.get('session')
+    session = Session.objects.get(id=session_id)
+    message = Message(writer = request.user, text = rd.choice(texts), pub_date = timezone.now(), color = 'black', session_id = session)  
+    message.save()
+
+    return HttpResponseRedirect(f'/{session_id}#bottom')
+
+
 
 # def Modify(request, message_id):
 #     message = Message.objects.filter(id = message_id)[0]
