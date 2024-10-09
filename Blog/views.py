@@ -202,7 +202,7 @@ def Index(request, id):
 
         print(messages)            
             
-        messages_html = render_to_string('Blog\chat\messages_inexistants.html', {
+        messages_html = render_to_string('Blog/chat/messages.html', {
             'messages': messages,
             'user': user,
             'years': years,
