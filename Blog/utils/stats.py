@@ -59,7 +59,7 @@ def get_messages_plot(messages, user):
     message_dates = np.array([formate_date(message.pub_date) for message in messages])
 
     dates = [formate_date(date) for date in dates]
-  
+
     n_messages = [np.sum(message_dates == date) for date in dates]
 
     params = {"ytick.color" : "w",

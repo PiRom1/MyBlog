@@ -64,20 +64,9 @@ document.addEventListener('DOMContentLoaded', function () {
             messagesContainer.setAttribute('last-message-id', data.last_message_id);
         });
     }
-    
 
-    function incrementCounter() {
-        
-        fetch('/increment/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken  // Récupération du token CSRF
-            },
-            body: JSON.stringify({})
-        }).then(response => response.json())
-        .then(data => console.log(data));
-    }
+
+    
 
     setInterval(reloadMessages, 60000);
 });
