@@ -29,7 +29,7 @@ body {
   border: none !important;
   margin-right: 5px;
   width: 200px;
-  height: 200px;
+  height: 150px;
   background: rgb(42, 54, 96) !important;
   position: relative;
   text-align: center;
@@ -44,9 +44,7 @@ body {
 
 .animationAreaItems {
   max-width: 2000px;
-  min-height: 200px;
-  max-height: 200px;
-  height: 200px !important;
+  height: 150px !important;
   position: relative;
   text-align: center;
   display: inline-block;
