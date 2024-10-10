@@ -40,6 +40,9 @@ urlpatterns = [
     path('recits/create/', views.create_recit, name='create_recit'),
     path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
 
+    # Lootbox
+    path('lootbox/open', views.open_lootbox, name='open_lootbox'),
+
     # Other
     path('increment_yoda/', views.increment_yoda, name='increment_yoda'),
     path('increment_enjoy/', views.increment_enjoy, name='increment_enjoy'),

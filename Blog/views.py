@@ -749,6 +749,10 @@ def vote_sondage(request, sondage_id, choice_id):
 
     return HttpResponseRedirect(f"{request.session.get('previous_url', '/')}#bottom")
 
+@login_required
+def open_lootbox(request):
+    url = 'Blog/lootbox/openning.html'
+    return render(request, url)
 
 def increment_yoda(request):
     if request.method == 'POST':
