@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var audioPlayer = document.getElementById('audio-player');
         var audioSource = document.getElementById('audio-source');
         var yoda_sounds = document.getElementById("yoda_sounds").innerHTML;
-        var static_url = document.getElementById("yoda_sounds").getAttribute("url");
+        
     
         yoda_sounds = yoda_sounds.replace(/'/g, '"');
         yoda_sounds = JSON.parse(yoda_sounds);
@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var sound = yoda_sounds[randomNumber];
         console.log("Sound : ", sound);
     
-        audioSource.src = static_url + sound;
-    
+        audioSource.src = sound;
+        console.log(audioSource.src);
     
         // Recharger et jouer le nouveau fichier audio
         audioPlayer.load();

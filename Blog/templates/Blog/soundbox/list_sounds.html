@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="csrf-token" content="{{ csrf_token }}">
+        <title>List sounds</title>
+        <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+        <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    </head>
+
+    <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
+    <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script>
+
+    <body>
+       
+        <h1>Paramètres de la soundbox </h1>
+        <img src="{% static 'img/yoda.png' %}" width="150" id="yoda" nb_sounds={{nb_sounds}}/>
+        <br><br>
+        <h2>Liste des sons disponibles</h2>
+        <a href="/add_sounds">Ajouter un son</a>
+        <br><br>
+        <ul>
+        <span id="url" url={{ media_path }}></span>
+        {% for sound, checked in all_sounds %}
+            <li> 
+                - {{sound.name}}
+                <span style = "cursor:pointer;" id="id_{{forloop.counter}}" sound={{sound}} sound_id={{sound.id}} url={{sound.sound.url}}>&#128266</span>
+                <input type="checkbox" sound={{sound}} id="input_{{forloop.counter}}" {% if checked %}checked{% endif %}>
+                <audio id="sound_{{forloop.counter}}" controls style="display:none;">
+                    <source src="" type="audio/mp3" id="source_{{forloop.counter}}">
+                    Your browser does not support the audio element.
+                </audio>
+            </li>
+        {% endfor %}
+        </ul>
+    <br><br>
+    <a href="/">HOME</a>
+
+    </body>
+
+</html>

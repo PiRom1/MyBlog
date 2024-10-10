@@ -255,9 +255,15 @@ def Index(request, id):
             if user_choice.choice_id == choice.id:
                 vote = choice
     
-    yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda') 
-    yoda_sounds = os.listdir(yoda_path)
-    yoda_sounds = [os.path.join('yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
+    # yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda') 
+    # yoda_sounds = os.listdir(yoda_path)
+    # yoda_sounds = [os.path.join('yoda', sound) for sound in yoda_sounds if sound.endswith('mp3')]
+
+
+    yoda_sounds = list(UserSound.objects.filter(user=user))
+    
+    yoda_sounds = [sound.sound.sound.url for sound in yoda_sounds]
+    print(yoda_sounds)
  
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
@@ -552,6 +558,66 @@ def UserView(request, id):
 
     return render(request, url, context)
 
+@login_required
+def list_sounds(request):
+
+    all_sounds = Sound.objects.all()
+    user = request.user
+    print(all_sounds)
+    checks = []
+    for sound in all_sounds:
+        
+        is_checked = UserSound.objects.filter(sound=sound).filter(user=user)
+        checks.append(len(is_checked) >= 1)
+
+    print(checks)
+
+    
+    url = "Blog/soundbox/list_sounds.html"
+
+    context = {'all_sounds' : zip(all_sounds, checks),
+               "media_path" : settings.MEDIA_URL,
+               "nb_sounds" : len(all_sounds),
+               }
+
+    return render(request, url, context)
+
+
+def add_sounds(request):
+
+    
+    if request.method == "POST":
+        sound_form = SoundForm(request.POST, request.FILES)
+        print(sound_form)
+
+        if sound_form.is_valid():
+            instance = sound_form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+
+            sound_id = instance.id
+            sound = Sound.objects.get(id=sound_id)
+            for user in User.objects.all():
+                UserSound(user=user, sound = sound).save()
+
+
+
+            return HttpResponseRedirect('/list_sounds')
+        else:
+            print(sound_form.errors)
+    
+    sound_form = SoundForm()
+
+
+    url = "Blog/soundbox/add_sounds.html"
+
+    context = {'sound_form' : sound_form,
+               }
+
+    return render(request, url, context)
+
+
+
 
 @login_required
 def sondage_list(request):
@@ -795,6 +861,38 @@ def update_plot(request):
     plot = get_messages_plot(messages, user, lissage = value)
     
     return JsonResponse({'plot': plot})
+
+
+def update_soundbox(request):
+    
+    user = request.user
+    print("available sounds : ")
+    print(UserSound.objects.filter(user=user))
+    print(1)
+    sound = request.GET.get('sound',1)
+    sound = Sound.objects.get(id=sound)
+    print(sound)
+    
+
+    soundForUser = UserSound.objects.filter(user=user).filter(sound=sound)
+
+    if soundForUser:
+        soundForUser.delete()
+    else:
+        new_soundForUser = UserSound(sound = sound, user = user).save()
+
+    print(soundForUser)
+
+
+    json = {'attribute' : 1,
+            'checked' : True}
+    
+    return JsonResponse(json, status=400)
+
+
+
+
+
 
 
 

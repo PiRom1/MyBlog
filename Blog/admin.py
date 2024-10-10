@@ -56,3 +56,13 @@ class Recitadmin(admin.ModelAdmin):
 @admin.register(Texte)
 class TexteAdmin(admin.ModelAdmin):
     list_display = ('text', 'user', 'recit')
+
+
+@admin.register(Sound)
+class SoundAdmin(admin.ModelAdmin):
+    list_display = ('name', 'sound', 'user', 'pub_date', 'tags')
+
+
+@admin.register(UserSound)
+class UserSoundAdmin(admin.ModelAdmin):
+    list_display = ('sound', 'user')
