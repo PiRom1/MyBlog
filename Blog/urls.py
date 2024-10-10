@@ -40,6 +40,9 @@ urlpatterns = [
     path('recits/create/', views.create_recit, name='create_recit'),
     path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
 
+    # Lootbox
+    path('lootbox/open', views.open_lootbox, name='open_lootbox'),  
+
     # Soundbox
     path('list_sounds', views.list_sounds, name='list_sounds'),
     path('add_sounds', views.add_sounds, name='add_sounds'),
