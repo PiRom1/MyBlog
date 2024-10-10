@@ -1,6 +1,7 @@
 *.pyc
 *.sqlite3
 media/*
+!media/Soundbox
 !media/Soundbox/*
 !media/Images/noone.png
 !media/86_icon.svg
