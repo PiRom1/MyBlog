@@ -60,7 +60,7 @@ class TexteAdmin(admin.ModelAdmin):
 
 @admin.register(Sound)
 class SoundAdmin(admin.ModelAdmin):
-    list_display = ('name', 'sound', 'user', 'pub_date', 'tags')
+    list_display = ('name', 'sound', 'user', 'counter', 'pub_date', 'tags')
 
 
 @admin.register(UserSound)
