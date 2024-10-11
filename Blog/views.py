@@ -891,7 +891,28 @@ def update_soundbox(request):
     json = {'attribute' : 1,
             'checked' : True}
     
-    return JsonResponse(json, status=400)
+    return JsonResponse(json, status=200)
+
+
+def increment_sound(request):
+    print(1)
+    sound = request.GET.get('sound',1)
+
+    if '/' in sound: # Si lien
+        sound = sound.split('/')[-1]
+        sound = "Soundbox/" + sound
+        print("name : ", sound)
+        sound = Sound.objects.filter(sound=sound)[0]
+
+    else: # Si int (id)
+        sound = Sound.objects.get(id=sound)
+
+    sound.counter += 1
+    sound.save()
+    print(sound.counter)
+
+    return JsonResponse({'sound' : sound.name,
+                        'counter' : sound.counter}, status=200)
 
 
 

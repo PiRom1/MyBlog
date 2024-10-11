@@ -168,6 +168,7 @@ class Sound(models.Model): # Sound of the soundbox
     user = models.ForeignKey(User, on_delete=models.CASCADE) # L'utilisateur qui a fourni le son
     pub_date = models.DateField("Date publication", default = datetime.date.today) # Date d'enregistrement 
     tags = models.TextField('tags', default = '')
+    counter = models.IntegerField(default=0)
 
     def __str__(self):
         return(f"{self.name}")
