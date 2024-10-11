@@ -83,6 +83,7 @@ class ChoiceForm(forms.ModelForm):
             }),
         }
 
+
 from django.forms import formset_factory
 from django.forms import modelformset_factory
 
@@ -96,3 +97,9 @@ ChoiceFormSet0 = modelformset_factory(SondageChoice, ChoiceForm, extra=0)
 
 class PhotoForm(forms.Form):
     photo = forms.ImageField(label = "Choisissez votre photo de profil")
+
+
+class SoundForm(forms.ModelForm):
+    class Meta:
+        model = Sound
+        fields = ['name', 'sound', 'tags']

@@ -41,12 +41,17 @@ urlpatterns = [
     path('recits/detail/<int:pk>/', views.detail_recit, name='detail_recit'),
 
     # Lootbox
-    path('lootbox/open', views.open_lootbox, name='open_lootbox'),
+    path('lootbox/open', views.open_lootbox, name='open_lootbox'),  
+
+    # Soundbox
+    path('list_sounds', views.list_sounds, name='list_sounds'),
+    path('add_sounds', views.add_sounds, name='add_sounds'),
 
     # Other
     path('increment_yoda/', views.increment_yoda, name='increment_yoda'),
     path('increment_enjoy/', views.increment_enjoy, name='increment_enjoy'),
     path('tkt/', views.tkt_view, name='tkt'),
     path('update_plot/', views.update_plot, name='update_plot'),
+    path('update_soundbox/', views.update_soundbox, name='update_soundbox'),
     
 ]

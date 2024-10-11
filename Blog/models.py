@@ -161,3 +161,21 @@ class Texte(models.Model): # Texte composant un récit
     def __str__(self):
         return(f"{self.user} : {self.text}")
 
+
+class Sound(models.Model): # Sound of the soundbox
+    name = models.CharField("name", max_length=64)
+    sound = models.FileField(upload_to="Soundbox/") 
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # L'utilisateur qui a fourni le son
+    pub_date = models.DateField("Date publication", default = datetime.date.today) # Date d'enregistrement 
+    tags = models.TextField('tags', default = '')
+
+    def __str__(self):
+        return(f"{self.name}")
+
+
+class UserSound(models.Model):
+    sound = models.ForeignKey(Sound, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return(f"{self.sound} : {self.user}")

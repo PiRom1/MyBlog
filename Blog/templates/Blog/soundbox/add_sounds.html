@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load static %}
+
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="csrf-token" content="{{ csrf_token }}">
+        <title>Add sounds</title>
+        <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+        <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    </head>
+
+    <!-- <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
+    <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script> -->
+
+    <body>
+       
+        <h1>Ajouter un son à la soundbox </h1>
+
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ sound_form }}
+            <input type="submit">Envoyer</input>
+        </form>
+
+        
+    </body>
+
+</html>
