@@ -36,6 +36,18 @@ document.addEventListener('DOMContentLoaded', function () {
     
         audioSource.src = sound;
         console.log(audioSource.src);
+
+        fetch('/increment_sound/?sound='+sound, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken  // Récupération du token CSRF
+            },
+            body: JSON.stringify({})
+        }).then(response => response.json())
+        .then(data => console.log(data));
+    
+
     
         // Recharger et jouer le nouveau fichier audio
         audioPlayer.load();

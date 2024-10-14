@@ -26,9 +26,22 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' oui ', ' oui(stiti) '),
                        (' qui ', ' qui(quette) ' ),
                        (' ou ', ' ou(lligan) '),
-                       (' mais ', ' mais(on) '),
+                       (' mais ', ' mais(téo) '),
                        (' pour ', ' pour(boire) '),
                        (' romain ', ' romain(tello) '),
+                       (' louis' , ' (actua)louis '),
+                       (' léon ', ' (accord)léon '),
+                       (' melvin ',' melvin(asse) '),
+                       (' antony ',' antony(ktmaère) '),
+                       (' rachid ',' (a)rachid '),
+                       (' donc ',' (pé)donc(ule) '),
+                       (' philippe ', ' (jen)philippe(er vite monslip) '),
+                       (' salwa ', ' salwa(naconda) ' ),
+                       (' très ', ' très(te négrière) '),
+                       (' champignon ', ' cham(bragaz)pignon '),
+                       (' tant ', ' tant(dinite) '),
+                       (' ordi ', ' ordi(nosaure) '),
+
                        ]
 
 SENTENCE_CALEMBOUR = "<br><br>Vous avez été corrompu par le <strong>bot-ade</strong>, roi de la boutade !"
