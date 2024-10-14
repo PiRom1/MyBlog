@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+        <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
     </head>
 
     <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
@@ -29,7 +30,8 @@
         <span id="url" url={{ media_path }}></span>
         {% for sound, checked in all_sounds %}
             <li> 
-                - {{sound.name}}
+                - <div class="tooltip">{{sound.name}}<span class="tooltiptext">cliqué {{sound.counter}} fois</span></div>
+                
                 <span style = "cursor:pointer;" id="id_{{forloop.counter}}" sound={{sound}} sound_id={{sound.id}} url={{sound.sound.url}}>&#128266</span>
                 <input type="checkbox" sound={{sound}} id="input_{{forloop.counter}}" {% if checked %}checked{% endif %}>
                 <audio id="sound_{{forloop.counter}}" controls style="display:none;">

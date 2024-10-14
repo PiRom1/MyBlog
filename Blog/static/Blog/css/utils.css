@@ -22,3 +22,32 @@
     position: fixed;
     bottom: 20px;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltiptext {
+    visibility: hidden; /* Cache le tooltip par défaut */
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Positionne le tooltip au-dessus de l'élément */
+    left: 50%;
+    margin-left: -60px; /* Centre le tooltip */
+    opacity: 0;
+    transition: opacity 0.5s; /* Transition de l'opacité */
+    transition-delay: 0.5s; /* Délai avant l'apparition */
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible; /* Rendre le tooltip visible au survol */
+    opacity: 1; /* Change l'opacité pour le rendre visible */
+  }
+  
