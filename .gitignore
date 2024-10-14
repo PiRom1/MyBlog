@@ -1,4 +1,6 @@
 *.pyc
 *.sqlite3
+media/*
+Blog/static/yoda/*
 !media/Images/noone.png
 !media/86_icon.svg
