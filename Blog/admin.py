@@ -10,6 +10,8 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets = DefaultUserAdmin.fieldsets
     fieldsets[1][1]['fields'] += ('image',)
     fieldsets[1][1]['fields'] += ('yoda_counter',)
+    fieldsets[1][1]['fields'] += ('enjoy_counter',)
+    fieldsets[1][1]['fields'] += ('coins',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)
@@ -66,3 +68,19 @@ class SoundAdmin(admin.ModelAdmin):
 @admin.register(UserSound)
 class UserSoundAdmin(admin.ModelAdmin):
     list_display = ('sound', 'user')
+
+@admin.register(Boxes)
+class BoxesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image', 'price')
+
+@admin.register(Skins)
+class SkinsAdmin(admin.ModelAdmin):
+    list_display = ('box', 'name', 'image', 'pattern')
+
+@admin.register(UserInventory)
+class UserInventoryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'type', 'item_id', 'status')
+
+@admin.register(Market)
+class MarketAdmin(admin.ModelAdmin):
+    list_display = ('seller', 'type', 'item_id', 'price')

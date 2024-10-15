@@ -53,7 +53,7 @@ class User(AbstractUser):
     image = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
     yoda_counter = models.IntegerField("Yoda_counter", default = 0)
     enjoy_counter = models.IntegerField("Enjoy_counter", default = 0)
-    
+    coins = models.IntegerField("Diplodocoins", default = 0)    
     
     class Meta:
         verbose_name = 'Utilisateur'
@@ -180,3 +180,32 @@ class UserSound(models.Model):
 
     def __str__(self):
         return(f"{self.sound} : {self.user}")
+    
+class Boxes(models.Model):
+    name = models.CharField("name", max_length=64)
+    image = models.ImageField()
+    price = models.IntegerField("price", default = 200)
+
+    def __str__(self):
+        return self.name
+    
+class Skins(models.Model):
+    box = models.ForeignKey(Boxes, on_delete = models.CASCADE, null=True, blank=True)
+    name = models.CharField("name", max_length=64)
+    image = models.ImageField()
+    pattern = models.CharField("pattern", max_length=7, blank=True)
+
+class UserInventory(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    TYPES = [('skin', 'Skin'), ('box', 'Box')]
+    type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
+    item_id = models.IntegerField("item_id", default = -1)
+    STATUS = [('equipped', 'Equipped'), ('unequipped', 'Unequipped'), ('locked', 'Locked')]
+    status = models.CharField("status", max_length=10, choices = STATUS, default = 'unequipped')
+
+class Market(models.Model):
+    seller = models.ForeignKey(User, on_delete = models.CASCADE)
+    TYPES = [('skin', 'Skin'), ('box', 'Box')]
+    type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
+    item_id = models.IntegerField("item_id", default = -1)
+    price = models.IntegerField("price", default = 100)
