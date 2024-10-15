@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  // itemAttr();
+  itemAttr();
   $("#openCase").click(function(){
     
 
@@ -32,10 +32,11 @@ function startRoll(){
 }
 
 function itemAttr(){
-  var item = $(".itemBoxAn");
-  var img_array = ['1'];
-  for (var i = 0; i < item.length; i++) {
-    item[i].append('<img src="/static/Blog/lootbox/img/1.png" />');
-  }    
-  console.log(item);
+  var items = $(".itemBoxAn");
+  var img_array = ['1','2','3'];
+  items.each(function() {
+      var random = img_array[Math.floor(Math.random() * img_array.length)];
+      $(this).append('<img src="/static/Blog/lootbox/box1/'+random+'.png" alt="'+random+'">');
+  });
+  console.log(items);
 }
