@@ -184,7 +184,7 @@ class UserSound(models.Model):
 class Boxes(models.Model):
     name = models.CharField("name", max_length=64)
     image = models.ImageField()
-    price = models.IntegerField("price", default = 200)
+    open_price = models.IntegerField("Open price", default = 200)
 
     def __str__(self):
         return self.name
@@ -193,19 +193,29 @@ class Skins(models.Model):
     box = models.ForeignKey(Boxes, on_delete = models.CASCADE, null=True, blank=True)
     name = models.CharField("name", max_length=64)
     image = models.ImageField()
+
+class Item(models.Model):
+    TYPES = [('skin', 'Skin'), ('box', 'Box')]
+    type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
     pattern = models.CharField("pattern", max_length=7, blank=True)
 
 class UserInventory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    TYPES = [('skin', 'Skin'), ('box', 'Box')]
-    type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
-    item_id = models.IntegerField("item_id", default = -1)
+    item = models.ForeignKey(Item, on_delete = models.CASCADE)
     STATUS = [('equipped', 'Equipped'), ('unequipped', 'Unequipped'), ('locked', 'Locked')]
     status = models.CharField("status", max_length=10, choices = STATUS, default = 'unequipped')
+    obtained_date = models.DateField("Date d'obtention", default = datetime.date.today)
 
 class Market(models.Model):
     seller = models.ForeignKey(User, on_delete = models.CASCADE)
-    TYPES = [('skin', 'Skin'), ('box', 'Box')]
-    type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
-    item_id = models.IntegerField("item_id", default = -1)
+    item = models.ForeignKey(Item, on_delete = models.CASCADE)
     price = models.IntegerField("price", default = 100)
+
+class MarketHistory(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    item = models.ForeignKey(Item, on_delete = models.CASCADE)
+    price = models.IntegerField("price", default = 100)
+    date = models.DateField("Date de vente", default = datetime.date.today)
+    ACTION = [('buy', 'Buy'), ('sell', 'Sell')]
+    action = models.CharField("action", max_length=4, choices = ACTION, default = 'sell')
+    

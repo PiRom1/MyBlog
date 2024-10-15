@@ -71,16 +71,24 @@ class UserSoundAdmin(admin.ModelAdmin):
 
 @admin.register(Boxes)
 class BoxesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image', 'price')
+    list_display = ('name', 'image', 'open_price')
 
 @admin.register(Skins)
 class SkinsAdmin(admin.ModelAdmin):
-    list_display = ('box', 'name', 'image', 'pattern')
+    list_display = ('box', 'name', 'image')
+    
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('type', 'pattern')
 
 @admin.register(UserInventory)
 class UserInventoryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'type', 'item_id', 'status')
+    list_display = ('user', 'item', 'obtained_date', 'status')
 
 @admin.register(Market)
 class MarketAdmin(admin.ModelAdmin):
-    list_display = ('seller', 'type', 'item_id', 'price')
+    list_display = ('seller', 'item', 'price')
+
+@admin.register(MarketHistory)
+class MarketHistoryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'item', 'price', 'date', 'action')
