@@ -1,0 +1,146 @@
+/* Styles de base */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('/static/img/wood_bg.png');
+    background-size: 100vw 100vh; /* L'image prend exactement la taille de l'écran */
+    background-position: center; /* Centre l'image */
+    background-repeat: no-repeat; /* L'image ne se répète pas */
+    background-attachment: fixed; /* L'image reste fixe lors du défilement */
+    height: 100vh; /* La page couvre toute la hauteur de l'écran */
+    color: #feefeb;
+    font-size: 16px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+/* Grille pour afficher les items */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+/* Style pour chaque item */
+.inventory-item {
+    border: 2px solid rgb(86, 86, 86); /* Fine bordure grise semi-transparente */
+    border-radius: 8px;
+    text-align: center;
+    padding: 2px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fond semi-transparent */
+    backdrop-filter: blur(2px); /* Applique le flou sur le fond */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombre légère */
+    transition: box-shadow 0.3s ease;
+}
+
+.inventory-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 1); /* Ombre plus prononcée au survol */
+}
+
+/* Style des images dans les items */
+.inventory-item img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Style des titres dans les items */
+.inventory-item h3 {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Style des paragraphes dans les items */
+.inventory-item p {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Styles du menu contextuel */
+.context-menu {
+    position: absolute;
+    background-color: rgba(86, 86, 86, 0.8); /* Fond semi-transparent */
+    backdrop-filter: blur(2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: none;
+}
+
+.context-menu.active {
+    display: block;
+}
+
+.context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* Flou de fond lorsque la modale est active */
+.blur-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); /* Couche sombre semi-transparente */
+    backdrop-filter: blur(5px); /* Applique un flou sur l'arrière-plan */
+    z-index: 1000;
+    display: none;
+}
+
+/* Afficher le flou lorsque la classe "active" est ajoutée */
+.blur-background.active {
+    display: block;
+}
+
+/* Styles de la modale */
+.info-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(86, 86, 86, 0.8); /* Fond semi-transparent */
+    backdrop-filter: blur(2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1001; /* Assurez-vous que la modale soit au-dessus du flou */
+    display: none;
+}
+
+.info-modal.active {
+    display: block;
+}
+
+.modal-content {
+    position: relative;
+    text-align: left;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Masquer le menu contextuel et la modale par défaut */
+.context-menu, .info-modal {
+    display: none;
+}

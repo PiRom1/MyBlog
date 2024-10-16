@@ -181,7 +181,7 @@ class UserSound(models.Model):
     def __str__(self):
         return(f"{self.sound} : {self.user}")
     
-class Boxes(models.Model):
+class Box(models.Model):
     name = models.CharField("name", max_length=64)
     image = models.ImageField()
     open_price = models.IntegerField("Open price", default = 200)
@@ -189,33 +189,58 @@ class Boxes(models.Model):
     def __str__(self):
         return self.name
     
-class Skins(models.Model):
-    box = models.ForeignKey(Boxes, on_delete = models.CASCADE, null=True, blank=True)
+class Rarity(models.Model):
+    name = models.CharField("name", max_length=64)
+    color = models.CharField("color", max_length=7, default = "#99E9E9")
+    probability = models.FloatField("probability", default = 0.69)
+    
+    def __str__(self):
+        return self.name
+    
+class Skin(models.Model):
+    box = models.ForeignKey(Box, on_delete = models.CASCADE, null=True, blank=True)
     name = models.CharField("name", max_length=64)
     image = models.ImageField()
+    rarity = models.ForeignKey(Rarity, on_delete = models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Item(models.Model):
     TYPES = [('skin', 'Skin'), ('box', 'Box')]
     type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
     pattern = models.CharField("pattern", max_length=7, blank=True)
+    item_id = models.IntegerField("item_id", default = 0)
+
+    def __str__(self):
+        return f"{self.type} {self.item_id} | {self.pattern}"
 
 class UserInventory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    item = models.ForeignKey(Item, on_delete = models.CASCADE)
+    item = models.OneToOneField(Item, on_delete = models.CASCADE)
     STATUS = [('equipped', 'Equipped'), ('unequipped', 'Unequipped'), ('locked', 'Locked')]
     status = models.CharField("status", max_length=10, choices = STATUS, default = 'unequipped')
     obtained_date = models.DateField("Date d'obtention", default = datetime.date.today)
 
+    def __str__(self):
+        return f"{self.user} : {self.item} ({self.status})"
+
 class Market(models.Model):
     seller = models.ForeignKey(User, on_delete = models.CASCADE)
-    item = models.ForeignKey(Item, on_delete = models.CASCADE)
+    item = models.OneToOneField(Item, on_delete = models.CASCADE)
     price = models.IntegerField("price", default = 100)
+
+    def __str__(self):
+        return f"{self.seller} : {self.item} ({self.price})"
 
 class MarketHistory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    item = models.ForeignKey(Item, on_delete = models.CASCADE)
+    item = models.OneToOneField(Item, on_delete = models.CASCADE)
     price = models.IntegerField("price", default = 100)
     date = models.DateField("Date de vente", default = datetime.date.today)
     ACTION = [('buy', 'Buy'), ('sell', 'Sell')]
     action = models.CharField("action", max_length=4, choices = ACTION, default = 'sell')
+
+    def __str__(self):
+        return f"{self.user} : {self.action} {self.item} ({self.price})"
     
