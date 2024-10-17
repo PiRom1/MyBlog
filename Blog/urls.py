@@ -40,7 +40,7 @@ urlpatterns = [
     path('recits/detail/<int:pk>/', recits_views.detail_recit, name='detail_recit'),
 
     # Lootbox
-    path('lootbox/open/<int:pk>', lootbox_views.view_lootbox, name='open_lootbox'),  
+    path('lootbox/<int:pk>', lootbox_views.view_lootbox, name='open_lootbox'),  
 
     # Inventory
     path('inventory/', inventory_views.user_inventory_view, name='inventory'),
