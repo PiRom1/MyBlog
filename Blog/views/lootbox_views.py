@@ -22,18 +22,21 @@ def open_lootbox(request, pk):
     item = rd.choice(skins)
     print("Item : ", item)
     random_color = get_random_hexa_color()
-    item = Item(type="skin", pattern = random_color)
-    user_item = UserInventory(user = request.user, 
-                              item = item,
-                              status = 'unequipped',
-                              )
-    item.save()
-    user_item.save()
+
+    # Pas d'attribution tant que tout n'est pas dev
+
+    # item = Item(type="skin", pattern = random_color)
+    # user_item = UserInventory(user = request.user, 
+    #                           item = item,
+    #                           status = 'unequipped',
+    #                           )
+    # item.save()
+    # user_item.save()
 
     url = 'Blog/lootbox/openning.html'
     return render(request, url)
 
-
+@login_required
 def view_lootbox(request, pk):
     box = Box.objects.get(pk=pk)
     skins = list(Skin.objects.filter(box_id=box.id))
