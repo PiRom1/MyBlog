@@ -7,25 +7,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     let selectedItem = null;
 
-    // Récupérer l'élément "Ouvrir" du menu contextuel
-    const openOption = document.getElementById('open-option');
-    // Récupérer l'élément pour l'option "Équiper/Déséquiper"
+    // Récupérer les éléments du menu contextuel
+    const infoOption = document.getElementById('info-option');
+    const sellOption = document.getElementById('sell-option');
+    const tradeOption = document.getElementById('trade-option');
     const equipOption = document.getElementById('equip-option');
+    const openOption = document.getElementById('open-option');
 
-    // Mettre à jour l'événement de clic sur les items pour afficher l'option "Ouvrir" si c'est une boîte
+    // Mettre à jour l'événement de clic sur les items pour afficher les options du menu contextuel
     items.forEach(item => {
         item.addEventListener('click', function (e) {
             e.preventDefault();
             selectedItem = item;
+    
+            const itemType = selectedItem.getAttribute('data-type');
+            const itemStatus = selectedItem.getAttribute('data-status');
             
-            // Vérifier le type de l'item (boîte ou skin)
-            const itemType = item.getAttribute('data-type');
-            if (itemType === 'box') {
-                openOption.style.display = 'block'; 
-                equipOption.style.display = 'none'; 
-            } else if (itemType === 'skin') {
-                openOption.style.display = 'none';
+            // Toujours afficher l'option "Infos"
+            infoOption.style.display = 'block';
+            
+            // Gérer l'affichage des options Vendre et Échanger, sauf si l'item est "locked"
+            if (itemStatus !== 'locked') {
+                sellOption.style.display = 'block';
+                tradeOption.style.display = 'block';
+            } else {
+                sellOption.style.display = 'none';
+                tradeOption.style.display = 'none';
+            }
+    
+            // Gérer les options spécifiques aux skins
+            if (itemType === 'skin') {
                 equipOption.style.display = 'block';
+                equipOption.textContent = itemStatus === 'equipped' ? 'Déséquiper' : 'Équiper';
+            } else {
+                equipOption.style.display = 'none';
+            }
+    
+            // Gérer l'option "Ouvrir" pour les boîtes
+            if (itemType === 'box' && itemStatus !== 'locked') {
+                openOption.style.display = 'block';
+            } else {
+                openOption.style.display = 'none';
             }
 
             // Positionner le menu contextuel à l'endroit du clic
@@ -62,14 +84,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('info-option').addEventListener('click', function () {
         if (selectedItem) {
             const name = selectedItem.getAttribute('data-name');
-            const status = selectedItem.getAttribute('data-status');
             const date = selectedItem.getAttribute('data-date');
             const type = selectedItem.getAttribute('data-type');
             let additionalInfo = '';
 
             if (type === 'skin') {
                 const pattern = selectedItem.getAttribute('data-pattern');
+                const status = selectedItem.getAttribute('data-status');
+                const skin_type = selectedItem.getAttribute('data-skin-type');
                 additionalInfo = `<strong>Pattern:</strong> ${pattern}<br>
+                                  <strong>Type:</strong> ${skin_type}<br>
                                   <strong>Statut:</strong> ${status}`;
             } else if (type === 'box') {
                 const openPrice = selectedItem.getAttribute('data-open-price');

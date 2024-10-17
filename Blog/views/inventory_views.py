@@ -36,7 +36,8 @@ def user_inventory_view(request):
                 'image': skin.image.url,
                 'pattern': item.pattern,
                 'status': inventory.status,
-                'obtained_date': inventory.obtained_date
+                'obtained_date': inventory.obtained_date,
+                'skin_type': skin.type,
             })
     
     context = {

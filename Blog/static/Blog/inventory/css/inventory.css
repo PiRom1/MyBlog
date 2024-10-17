@@ -90,6 +90,12 @@ h1 {
     cursor: pointer;
 }
 
+/* les éléments vendre et échanger du context-menu doivent être grisés et non-clicables */
+.context-menu li.disabled {
+    color: #000000;
+    pointer-events: none;
+}
+
 /* Flou de fond lorsque la modale est active */
 .blur-background {
     position: fixed;

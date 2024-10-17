@@ -79,7 +79,7 @@ class RarityAdmin(admin.ModelAdmin):
 
 @admin.register(Skin)
 class SkinAdmin(admin.ModelAdmin):
-    list_display = ('box', 'name', 'image', 'rarity')
+    list_display = ('box', 'name', 'image', 'rarity', 'type')
     
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

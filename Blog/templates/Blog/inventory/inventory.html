@@ -19,7 +19,7 @@
         {% for item in items %}
         <div class="inventory-item" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-status="{{ item.status }}" 
              data-date="{{ item.obtained_date }}" data-type="{{ item.type }}"
-             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}"{% endif %}
+             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
 
             <img src="{{ item.image }}" alt="{{ item.name }}">
@@ -32,8 +32,15 @@
     {% csrf_token %}
     <div id="context-menu" class="context-menu">
         <ul>
+            <!-- Tous les items ont ces options -->
             <li id="info-option">Infos</li>
-            <li id="equip-option">Équiper/Déséquiper</li>
+            <li id="sell-option" class="disabled" style="display: none;">Vendre</li>
+            <li id="trade-option" class="disabled" style="display: none;">Échanger</li>
+            
+            <!-- Spécifique aux skins -->
+            <li id="equip-option" style="display: none;"></li>
+    
+            <!-- Spécifique aux boîtes -->
             <li id="open-option" style="display: none;">Ouvrir</li>
         </ul>
     </div>
