@@ -40,7 +40,7 @@ urlpatterns = [
     path('recits/detail/<int:pk>/', recits_views.detail_recit, name='detail_recit'),
 
     # Lootbox
-    path('lootbox/open', lootbox_views.open_lootbox, name='open_lootbox'),  
+    path('lootbox/open/<int:pk>', lootbox_views.view_lootbox, name='open_lootbox'),  
 
     # Soundbox
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),

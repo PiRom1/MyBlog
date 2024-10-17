@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2d2d2d;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    text-align: center;
+    width: 70%;
+    background-color: rgba(255, 254, 250, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.lootbox {
+    margin-bottom: 20px;
+}
+
+.lootbox img {
+    width: 200px;
+}
+
+.items {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 10px;
+    border-top: 2px solid #555;
+}
+
+.items img {
+    width: 70px;
+    margin: 5px;
+    transition: transform 0.3s ease;
+}
+
+.items img:hover {
+    transform: scale(1.1);
+}
+
+/* Correction ici : */
+.item-container {
+    position: relative;
+    display: inline-block;
+}
+
+.item-container .name {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.item-container:hover .name {
+    visibility: visible;
+    opacity: 1;
+}

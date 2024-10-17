@@ -204,6 +204,10 @@ def Index(request, id):
     
     yoda_sounds = [sound.sound.sound.url for sound in yoda_sounds]
     print(yoda_sounds)
+
+
+    items = UserInventory.objects.filter(user=request.user).filter(status = 'equipped')
+    print("items :", items)
  
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
@@ -217,7 +221,8 @@ def Index(request, id):
                "page_number" : page_number,
                "page_number_next" : page_number+1,
                "yoda_sounds" : yoda_sounds,
-               "last_message_id" : last_message_id
+               "last_message_id" : last_message_id,
+               "items" : items,
                }
 
     return render(request, url, context)

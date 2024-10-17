@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>View lootbox</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'Blog/lootbox/css/openning.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/lootbox/css/view.css' %}">
+
+  <!-- JS -->
+  <script src="{% static 'Blog/lootbox/js/openning.js' %}"></script>
+
+</head>
+
+
+  <body>
+    <div class="container">
+        <!-- Section pour la lootbox au centre -->
+        <div class="lootbox">
+            <img src="{% static 'Blog/lootbox/box1/3.png' %}" alt="Lootbox">
+        </div>
+
+        <!-- Section pour les items en bas -->
+        <div class="items">
+          {% for skin in skins %}
+            
+            <img src="{% static 'Blog/lootbox/box1/1.png' %}" alt="Item {{forloop.counter}}">
+            
+             
+          {% endfor %}
+        </div>
+    </div>
+
+    <input type="button" class=""b value="Ouvrir"/>
+
+
+  </body>
+
+</html>
+
