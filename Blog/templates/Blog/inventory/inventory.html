@@ -21,6 +21,7 @@
              data-date="{{ item.obtained_date }}" data-type="{{ item.type }}"
              {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
+
             <img src="{{ item.image }}" alt="{{ item.name }}">
             <!-- <h3>{{ item.name }}</h3> -->
         </div>
