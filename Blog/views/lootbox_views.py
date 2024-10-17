@@ -24,7 +24,7 @@ def open_lootbox(request, pk):
     random_color = get_random_hexa_color()
 
     # Pas d'attribution tant que tout n'est pas dev
-    
+
     # item = Item(type="skin", pattern = random_color)
     # user_item = UserInventory(user = request.user, 
     #                           item = item,
@@ -38,8 +38,8 @@ def open_lootbox(request, pk):
 
 @login_required
 def view_lootbox(request, pk):
-    box = Boxes.objects.get(pk=pk)
-    skins = list(Skins.objects.filter(box_id=box.id))
+    box = Box.objects.get(pk=pk)
+    skins = list(Skin.objects.filter(box_id=box.id))
     print("Skins : ", skins)
 
     context = {'skins' : skins,
