@@ -24,7 +24,12 @@
 
 
   <body>
+
+
+    <h1><u>Ouverture de la lootbox</u></h1>
+
     <div class="container">
+      
         <!-- Section pour la lootbox au centre -->
         <div class="lootbox">
             <img src="{% static 'Blog/lootbox/box1/3.png' %}" alt="Lootbox">
@@ -32,17 +37,28 @@
 
         <!-- Section pour les items en bas -->
         <div class="items">
-          {% for skin in skins %}
+          {% for skin_name, skin_image in skins %}
             
-            <img src="{% static 'Blog/lootbox/box1/1.png' %}" alt="Item {{forloop.counter}}">
+            <div class="image">
+              <img src="{{skin_image}}" alt="Item {{forloop.counter}}">
+              <span class="text"><strong><i>{{skin_name}}</i></strong></span>
+            </div>
             
              
           {% endfor %}
         </div>
     </div>
 
-    <input type="button" class=""b value="Ouvrir"/>
-
+   
+    
+      
+        <button role="button" class="button">
+          <a href="/lootbox/open/{{box_id}}">
+            Ouvrir
+          </a>
+        </button>
+      
+  
 
   </body>
 

@@ -44,33 +44,39 @@
   </div>
 
   <div class = 'colonne droite'>
-    <h3>Sessions disponibles : </h3>
+    <h3>Sessions disponibles &#9887; </h3>
     <br><br>
 
     {% for session in sessions %}
       <li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>  
     {% endfor %}
     <br><br>
+
+
+    <h3>Inventaire &#9874;</h3>
+    <br><br>
+    <a href="/inventory">Accéder à l'inventaire</a> 
+    <br><br>
  
-    <h3>Accéder aux tickets</h3>
+    <h3>Accéder aux tickets &#9742;</h3>
     <a href = "/tickets/">Tickets</a>
 
     <br><br>
 
-    <h3>Accéder aux Récits collaboratifs</h3>
+    <h3>Accéder aux Récits collaboratifs &#9999;</h3>
     <a href = "/recits/">Récits</a>
 
     <br><br>
 
     {% if user.is_staff %}
-      <h3>Accéder aux sondages</h3>
+      <h3>Accéder aux sondages &#9878;</h3>
       <a href = "/sondages/">Sondage</a>
 
       <br><br>
     {% endif %}
 
     <br><br><br><br>
-    <h3>Contribuez au site !</h3>
+    <h3>Contribuez au site ! &#9773;</h3>
     <a href="https://github.com/PiRom1/MyBlog" target="_blank">GitHub</a>
 
     

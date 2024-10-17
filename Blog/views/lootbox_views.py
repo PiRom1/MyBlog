@@ -38,10 +38,11 @@ def open_lootbox(request, pk):
 
 @login_required
 def view_lootbox(request, pk):
-    box = Box.objects.get(pk=pk)
-    skins = list(Skin.objects.filter(box_id=box.id))
+    box = Boxes.objects.get(pk=pk)
+    skins = list(Skins.objects.filter(box_id=box.id))
     print("Skins : ", skins)
 
-    context = {'skins' : skins}
+    context = {'skins' : skins,
+               'box_id': pk}
     url = 'Blog/lootbox/view_box.html'
     return render(request, url, context)

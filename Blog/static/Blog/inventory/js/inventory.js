@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const boxId = selectedItem.getAttribute('data-id'); // Récupérer l'ID de la boîte
             if (boxId) {
                 // Rediriger vers l'URL '/lootbox/(box_id)'
-                window.location.href = `/lootbox/${boxId}`;
+                window.location.href = `/lootbox/view/${boxId}`;
             }
             contextMenu.classList.remove('active');
         }
