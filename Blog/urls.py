@@ -41,8 +41,7 @@ urlpatterns = [
 
     # Lootbox
     path('lootbox/view/<int:pk>', lootbox_views.view_lootbox, name='open_lootbox'),  
-    path('lootbox/open/<int:pk>', lootbox_views.open_lootbox, name='open_lootbox'),  
-
+    path('lootbox/open/<int:pk>', lootbox_views.open_lootbox, name='open_lootbox'),
     # Inventory
     path('inventory/', inventory_views.user_inventory_view, name='inventory'),
     path('inventory/toggle_item_status', inventory_views.toggle_item_status, name='toggle_item_status'),

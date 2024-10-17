@@ -35,9 +35,8 @@ def open_lootbox(request, pk):
 
 
 def view_lootbox(request, pk):
-    box = Box.objects.get(pk=pk)
-    skins = list(Skin.objects.filter(box_id=box.id))
-    skins = zip([skin.name for skin in skins], [skin.image.url for skin in skins])
+    box = Boxes.objects.get(pk=pk)
+    skins = list(Skins.objects.filter(box_id=box.id))
     print("Skins : ", skins)
 
     context = {'skins' : skins,
