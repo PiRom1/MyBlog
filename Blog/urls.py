@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -41,6 +41,10 @@ urlpatterns = [
 
     # Lootbox
     path('lootbox/open/<int:pk>', lootbox_views.view_lootbox, name='open_lootbox'),  
+
+    # Inventory
+    path('inventory/', inventory_views.user_inventory_view, name='inventory'),
+    path('inventory/toggle_item_status', inventory_views.toggle_item_status, name='toggle_item_status'),
 
     # Soundbox
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),
