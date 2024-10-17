@@ -35,8 +35,13 @@ function itemAttr(){
   var items = $(".itemBoxAn");
   var img_array = ['1','2','3'];
   items.each(function() {
+    // si l'item est l'objet itemBoxAnW, on ne fait rien
+    if($(this).hasClass('itemBoxAnW')){
+    }
+    else{
       var random = img_array[Math.floor(Math.random() * img_array.length)];
       $(this).append('<img src="/static/Blog/lootbox/box1/'+random+'.png" alt="'+random+'">');
+    }
   });
   console.log(items);
 }

@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from ..models import UserInventory, Item, Skin, Box
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def user_inventory_view(request):
     # Récupérer l'inventaire de l'utilisateur connecté
     user_inventory = UserInventory.objects.filter(user=request.user).order_by('obtained_date')  # Trier par date d'obtention
@@ -43,6 +45,7 @@ def user_inventory_view(request):
     
     return render(request, 'Blog/inventory/inventory.html', context)
 
+@login_required
 def toggle_item_status(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
