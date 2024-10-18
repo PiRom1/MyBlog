@@ -202,6 +202,11 @@ class Skin(models.Model):
     name = models.CharField("name", max_length=64)
     image = models.ImageField()
     rarity = models.ForeignKey(Rarity, on_delete = models.CASCADE, null=True, blank=True)
+    TYPE = [('text_color', 'Text color'), ('border_color', 'Border color'), ('avatar_color', 'Avatar color'),
+            ('name_color', 'Name color'), ('background_color', 'Background color'), ('background_image', 'Background image'),
+            ('font', 'Font'), ('emoji', 'Emoji'), ('border_image', 'Border image'),
+            ('other', 'Other')]
+    type = models.CharField("type", max_length=64, choices = TYPE, default = 'other')
 
     def __str__(self):
         return self.name
@@ -209,7 +214,7 @@ class Skin(models.Model):
 class Item(models.Model):
     TYPES = [('skin', 'Skin'), ('box', 'Box')]
     type = models.CharField("type", max_length=4, choices = TYPES, default = 'box')
-    pattern = models.CharField("pattern", max_length=7, blank=True)
+    pattern = models.CharField("pattern", max_length=64, blank=True)
     item_id = models.IntegerField("item_id", default = 0)
 
     def __str__(self):
