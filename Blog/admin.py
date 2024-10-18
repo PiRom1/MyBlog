@@ -79,15 +79,15 @@ class RarityAdmin(admin.ModelAdmin):
 
 @admin.register(Skin)
 class SkinAdmin(admin.ModelAdmin):
-    list_display = ('box', 'name', 'image', 'rarity')
+    list_display = ('id', 'box', 'name', 'image', 'rarity')
     
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('type', 'item_id', 'pattern')
+    list_display = ('id', 'type', 'item_id', 'pattern')
 
 @admin.register(UserInventory)
 class UserInventoryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'item', 'obtained_date', 'status')
+    list_display = ('id', 'user', 'item', 'obtained_date', 'status')
 
 @admin.register(Market)
 class MarketAdmin(admin.ModelAdmin):

@@ -15,18 +15,21 @@
 
   {% load static %}
   <link rel="stylesheet" href="{% static 'Blog/lootbox/css/openning.css' %}">
-  <link rel="stylesheet" href="{% static 'Blog/lootbox/css/view.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/lootbox/css/view.css' %}" id="css_1">
 
   <!-- JS -->
   <script src="{% static 'Blog/lootbox/js/openning.js' %}"></script>
-
+  <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 
 
   <body>
 
+    <div id="box_id" box_id={{box_id}}></div>
 
     <h1><u>Ouverture de la lootbox</u></h1>
+
+    
 
     <div class="container">
       
@@ -55,6 +58,10 @@
         <button role="button" class="button" id="button">
           Ouvrir
         </button>
+
+
+        <a href="/inventory" style="position:absolute; bottom:5%; left:1%; color:antiquewhite; " >Retour à l'inventaire</a>
+  
       
   
 

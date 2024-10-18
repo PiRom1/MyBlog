@@ -31,7 +31,7 @@ def user_inventory_view(request):
             skin = Skin.objects.get(id=item.item_id)
             items.append({
                 'type': 'skin',
-                'item_id': item.item_id,
+                'item_id': item.id,
                 'name': skin.name,
                 'image': skin.image.url,
                 'pattern': item.pattern,
@@ -53,9 +53,11 @@ def toggle_item_status(request):
         item_id = request.POST.get('item_id')
         new_status = request.POST.get('status')
 
+        print("id ; ", item_id)
+
         # Trouver l'item dans l'inventaire de l'utilisateur connecté
         try:
-            inventory_item = UserInventory.objects.get(id=item_id, user=request.user)
+            inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
             inventory_item.status = new_status
             inventory_item.save()
             return JsonResponse({'success': True, 'message': 'Statut mis à jour avec succès.'})
