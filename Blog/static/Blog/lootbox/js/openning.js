@@ -44,7 +44,7 @@ function startRoll(win_id){
     .then(data => {
         console.log(data);
         // Redirection après une réponse réussie
-        window.location.href = '/inventory';
+        window.location.href = '/inventory_2';
     })
     .catch(error => console.error('Erreur:', error));  // Gestion des erreurs
 }, 1000);

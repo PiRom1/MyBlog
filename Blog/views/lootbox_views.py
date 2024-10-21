@@ -100,4 +100,4 @@ def get_lootbox(request):
     box.save()
     box_user.save()
 
-    return HttpResponseRedirect('/inventory')
+    return HttpResponseRedirect('/inventory_2')

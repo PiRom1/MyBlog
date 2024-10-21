@@ -58,7 +58,7 @@ def user_inventory_view(request):
         'items' : non_equipped_items + equipped_items,
     }
     
-    return render(request, 'Blog/inventory/inventory.html', context)
+    return render(request, 'Blog/inventory_2/inventory_2.html', context)
 
 @login_required
 def toggle_item_status(request):
