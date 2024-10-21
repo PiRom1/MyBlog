@@ -72,9 +72,22 @@ def toggle_item_status(request):
 
         # Trouver l'item dans l'inventaire de l'utilisateur connecté
         try:
+
+            inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
+            
+            if new_status == 'equipped':
+                equipped_item = UserInventory.objects.filter(status='equipped').filter(item_id__item_id=inventory_item.item.item_id)
+                print("equipped : ", equipped_item)
+                for item in equipped_item:
+                    item.status = 'unequipped'
+                    item.save()
+
             inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
             inventory_item.status = new_status
             inventory_item.save()
+
+            
+
             return JsonResponse({'success': True, 'message': 'Statut mis à jour avec succès.'})
         except UserInventory.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Item non trouvé.'})
