@@ -225,7 +225,7 @@ class UserInventory(models.Model):
     item = models.OneToOneField(Item, on_delete = models.CASCADE)
     STATUS = [('equipped', 'Equipped'), ('unequipped', 'Unequipped'), ('locked', 'Locked')]
     status = models.CharField("status", max_length=10, choices = STATUS, default = 'unequipped')
-    obtained_date = models.DateField("Date d'obtention", default = datetime.date.today)
+    obtained_date = models.DateTimeField("obtained_date", default = datetime.datetime.now)
 
     def __str__(self):
         return f"{self.user} : {self.item} ({self.status})"

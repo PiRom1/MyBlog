@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'Blog/inventory/css/inventory.css' %}">
+    <script src="{% static 'Blog/inventory/js/inventory.js' %}"></script>
+</head>
+<body>
+    <h1>Inventaire de l'utilisateur</h1>
+    <div class="inventory-grid">
+        <!-- Boucle pour tous les items mélangés -->
+        {% for item in items %}
+        <div class="inventory-item" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-status="{{ item.status }}" 
+             data-date="{{ item.obtained_date }}" data-type="{{ item.type }}"
+             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}"{% endif %}
+             {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
+
+            <img src="{{ item.image }}" alt="{{ item.name }}">
+            <!-- <h3>{{ item.name }}</h3> -->
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Menu contextuel caché par défaut -->
+    {% csrf_token %}
+    <div id="context-menu" class="context-menu">
+        <ul>
+            <!-- Tous les items ont ces options -->
+            <li id="info-option">Infos</li>
+            <li id="sell-option" class="disabled" style="display: none;">Vendre</li>
+            <li id="trade-option" class="disabled" style="display: none;">Échanger</li>
+            
+            <!-- Spécifique aux skins -->
+            <li id="equip-option" style="display: none;"></li>
+    
+            <!-- Spécifique aux boîtes -->
+            <li id="open-option" style="display: none;">Ouvrir</li>
+        </ul>
+    </div>
+
+    <!-- Flou de fond -->
+    <div class="blur-background" id="blur-background"></div>
+
+    <!-- Modale pour afficher les informations de l'item -->
+    <div id="info-modal" class="info-modal">
+        <div class="modal-content">
+            <h2>Informations sur l'item</h2>
+            <p id="item-info"></p>
+        </div>
+    </div>
+
+   
+    <a href="/" style="position:absolute; bottom:5%; left:1%; color:antiquewhite; " >HOME</a>
+    <a href="/lootbox/get" style="position:absolute; bottom:2%; left:1%; color:antiquewhite; " >Get Lootbox</a>
+
+</body>
+</html>

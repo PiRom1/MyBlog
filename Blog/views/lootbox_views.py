@@ -2,42 +2,42 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from ..models import *
 import random as rd
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 import json
 
 
 
 def get_random_hexa_color():
 
-    caracs = [str(i) for i in range(10)] + ['a', 'b', 'c', 'd', 'e', 'f']
+    caracs = [str(i) for i in range(10)] + ['A', 'B', 'C', 'D', 'E', 'F']
     choices = rd.choices(caracs, k = 6)
 
     return '#' + ''.join(choices)
 
 
-@login_required
-def open_lootbox(request, pk):
+# @login_required
+# def open_lootbox(request, pk):
 
-    box = Box.objects.get(pk=pk)
-    skins = list(Skin.objects.filter(box_id=box.id))
-    print("Skins : ", skins)
-    # Choix de l'item : (pour l'instant proba uniforme, mais à terme need probas définies)
-    item = rd.choice(skins)
-    print("Item : ", item)
-    random_color = get_random_hexa_color()
+#     box = Box.objects.get(pk=pk)
+#     skins = list(Skin.objects.filter(box_id=box.id))
+#     print("Skins : ", skins)
+#     # Choix de l'item : (pour l'instant proba uniforme, mais à terme need probas définies)
+#     item = rd.choice(skins)
+#     print("Item : ", item)
+#     random_color = get_random_hexa_color()
 
-    # Pas d'attribution tant que tout n'est pas dev
+#     # Pas d'attribution tant que tout n'est pas dev
 
-    # item = Item(type="skin", pattern = random_color)
-    # user_item = UserInventory(user = request.user, 
-    #                           item = item,
-    #                           status = 'unequipped',
-    #                           )
-    # item.save()
-    # user_item.save()
+#     # item = Item(type="skin", pattern = random_color)
+#     # user_item = UserInventory(user = request.user, 
+#     #                           item = item,
+#     #                           status = 'unequipped',
+#     #                           )
+#     # item.save()
+#     # user_item.save()
 
-    url = 'Blog/lootbox/openning.html'
-    return render(request, url)
+#     url = 'Blog/lootbox/openning.html'
+#     return render(request, url)
 
 @login_required
 def view_lootbox(request, pk):
@@ -54,12 +54,16 @@ def view_lootbox(request, pk):
 
 @login_required
 def open_lootbox(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
     url = "Blog/lootbox/openning.html"
     return render(request, url)
 
 
 @login_required
 def drop_item(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
 
     # Get data
     data = json.loads(request.body)

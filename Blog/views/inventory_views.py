@@ -9,8 +9,7 @@ def user_inventory_view(request):
     # Trier par date d'obtention inverse
     user_inventory = UserInventory.objects.filter(user=request.user).order_by('-obtained_date')
     
-    non_equipped_items = []
-    equipped_items = []
+    items = []
     
     # Récupérer les informations pour chaque item d'inventaire
     for inventory in user_inventory:
@@ -19,7 +18,7 @@ def user_inventory_view(request):
         # Si l'item est un box
         if item.type == 'box':
             box = Box.objects.get(id=item.item_id)
-            non_equipped_items.append({
+            items.append({
                 'type': 'box',
                 'item_id': item.item_id,
                 'name': box.name,
@@ -30,36 +29,23 @@ def user_inventory_view(request):
             })
         # Si l'item est un skin
         elif item.type == 'skin':
-
-            
-
             skin = Skin.objects.get(id=item.item_id)
-
-            item = {
-                        'type': 'skin',
-                        'item_id': item.id,
-                        'name': skin.name,
-                        'image': skin.image.url,
-                        'pattern': item.pattern,
-                        'status': inventory.status,
-                        'obtained_date': inventory.obtained_date,
-                        'skin_type': skin.type,
-                    }
-
-
-            if inventory.status == 'unequipped':
-                non_equipped_items.append(item)
-            
-            else:
-                equipped_items.append(item)
+            items.append({
+                'type': 'skin',
+                'item_id': item.id,
+                'name': skin.name,
+                'image': skin.image.url,
+                'pattern': item.pattern,
+                'status': inventory.status,
+                'obtained_date': inventory.obtained_date,
+                'skin_type': skin.type,
+            })
     
     context = {
-        'non_equipped_items': non_equipped_items,
-        'equipped_items' : equipped_items,
-        'items' : non_equipped_items + equipped_items,
+        'items': items
     }
     
-    return render(request, 'Blog/inventory_2/inventory_2.html', context)
+    return render(request, 'Blog/inventory/inventory.html', context)
 
 @login_required
 def toggle_item_status(request):
@@ -73,22 +59,9 @@ def toggle_item_status(request):
 
         # Trouver l'item dans l'inventaire de l'utilisateur connecté
         try:
-
-            inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
-            
-            if new_status == 'equipped':
-                equipped_item = UserInventory.objects.filter(status='equipped').filter(item_id__item_id=inventory_item.item.item_id)
-                print("equipped : ", equipped_item)
-                for item in equipped_item:
-                    item.status = 'unequipped'
-                    item.save()
-
             inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
             inventory_item.status = new_status
             inventory_item.save()
-
-            
-
             return JsonResponse({'success': True, 'message': 'Statut mis à jour avec succès.'})
         except UserInventory.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Item non trouvé.'})
