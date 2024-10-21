@@ -48,7 +48,7 @@ function startRoll(win_id){
     })
     .catch(error => console.error('Erreur:', error));  // Gestion des erreurs
 }, 1000);
-  
+   
 
 }
 
