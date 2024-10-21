@@ -14,33 +14,51 @@
 </head>
 <body>
     <h1>Inventaire de l'utilisateur</h1>
-    <div class="inventory-grid">
-        <!-- Boucle pour tous les items mélangés -->
-        {% for item in items %}
-        <div class="inventory-item" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-status="{{ item.status }}" 
-             data-date="{{ item.obtained_date }}" data-type="{{ item.type }}"
-             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}"{% endif %}
-             {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
+    
+    <div class="inventory-container">
+        <!-- Section des items non équipés -->
+        <div class="non-equipped-section">
+            <h2>Items non équipés</h2>
+            <div class="inventory-grid">
+                {% for non_equipped_item in non_equipped_items %}
+                <div class="inventory-item" data-id="{{ non_equipped_item.item_id }}" data-name="{{ non_equipped_item.name }}" data-status="{{ non_equipped_item.status }}" 
+                    data-date="{{ non_equipped_item.obtained_date }}" data-type="{{ non_equipped_item.type }}"
+                    {% if non_equipped_item.type == 'skin' %}data-pattern="{{ non_equipped_item.pattern }}" data-skin-type="{{ non_equipped_item.skin_type }}"{% endif %}
+                    {% if non_equipped_item.type == 'box' %}data-open-price="{{ non_equipped_item.open_price }}"{% endif %}>
 
-            <img src="{{ item.image }}" alt="{{ item.name }}">
-            <!-- <h3>{{ item.name }}</h3> -->
+                    <img src="{{ non_equipped_item.image }}" alt="{{ non_equipped_item.name }}">
+                    <!-- <h3>{{ non_equipped_item.name }}</h3> -->
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+
+        <!-- Section des items équipés -->
+        <div class="equipped-section">
+            <h2>Items équipés</h2>
+            <div class="inventory-grid">
+                {% for equipped_item in equipped_items %}
+                <div class="inventory-item" data-id="{{ equipped_item.item_id }}" data-name="{{ equipped_item.name }}" data-status="{{ equipped_item.status }}" 
+                    data-date="{{ equipped_item.obtained_date }}" data-type="{{ equipped_item.type }}"
+                    {% if equipped_item.type == 'skin' %}data-pattern="{{ equipped_item.pattern }}" data-skin-type="{{ equipped_item.skin_type }}"{% endif %}
+                    {% if equipped_item.type == 'box' %}data-open-price="{{ equipped_item.open_price }}"{% endif %}>
+
+                    <img src="{{ equipped_item.image }}" alt="{{ equipped_item.name }}">
+                    <!-- <h3>{{ equipped_item.name }}</h3> -->
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
     <!-- Menu contextuel caché par défaut -->
     {% csrf_token %}
     <div id="context-menu" class="context-menu">
         <ul>
-            <!-- Tous les items ont ces options -->
             <li id="info-option">Infos</li>
             <li id="sell-option" class="disabled" style="display: none;">Vendre</li>
             <li id="trade-option" class="disabled" style="display: none;">Échanger</li>
-            
-            <!-- Spécifique aux skins -->
             <li id="equip-option" style="display: none;"></li>
-    
-            <!-- Spécifique aux boîtes -->
             <li id="open-option" style="display: none;">Ouvrir</li>
         </ul>
     </div>
@@ -56,9 +74,8 @@
         </div>
     </div>
 
-   
-    <a href="/" style="position:absolute; bottom:5%; left:1%; color:antiquewhite; " >HOME</a>
-    <a href="/lootbox/get" style="position:absolute; bottom:2%; left:1%; color:antiquewhite; " >Get Lootbox</a>
+    <a href="/" style="position:absolute; bottom:5%; left:1%; color:antiquewhite;">HOME</a>
+    <a href="/lootbox/get" style="position:absolute; bottom:2%; left:1%; color:antiquewhite;">Get Lootbox</a>
 
 </body>
 </html>

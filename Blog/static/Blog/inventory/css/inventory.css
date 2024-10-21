@@ -13,18 +13,43 @@ body {
     font-size: 16px;
 }
 
+/* Titres */
 h1 {
     text-align: center;
     margin-top: 20px;
     font-size: 2rem;
 }
 
-/* Grille pour afficher les items */
+/* Conteneur global qui contient les deux sections (items non équipés et équipés) */
+.inventory-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Sections des items non équipés et équipés */
+.non-equipped-section, .equipped-section {
+    flex: 1;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3); /* Fond semi-transparent */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombre pour l'effet de profondeur */
+}
+
+/* Titres pour chaque section */
+.non-equipped-section h2, .equipped-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #feefeb;
+}
+
+/* Grille pour afficher les items dans chaque section */
 .inventory-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 15px;
 }
 
 /* Style pour chaque item */
@@ -34,7 +59,7 @@ h1 {
     text-align: center;
     padding: 2px;
     background-color: rgba(255, 255, 255, 0.1); /* Fond semi-transparent */
-    backdrop-filter: blur(2px); /* Applique le flou sur le fond */
+    backdrop-filter: blur(2px); /* Applique un léger flou sur le fond */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombre légère */
     transition: box-shadow 0.3s ease;
 }
@@ -90,7 +115,7 @@ h1 {
     cursor: pointer;
 }
 
-/* les éléments vendre et échanger du context-menu doivent être grisés et non-clicables */
+/* Les éléments "vendre" et "échanger" du menu contextuel doivent être grisés et non-clicables */
 .context-menu li.disabled {
     color: #000000;
     pointer-events: none;
@@ -109,7 +134,6 @@ h1 {
     display: none;
 }
 
-/* Afficher le flou lorsque la classe "active" est ajoutée */
 .blur-background.active {
     display: block;
 }
@@ -138,6 +162,7 @@ h1 {
     text-align: left;
 }
 
+/* Bouton de fermeture de la modale */
 .close {
     position: absolute;
     top: 10px;
@@ -149,4 +174,14 @@ h1 {
 /* Masquer le menu contextuel et la modale par défaut */
 .context-menu, .info-modal {
     display: none;
+}
+
+
+/* Style des images dans les items */
+.inventory-item img {
+    width: 100%;              /* L'image prend toute la largeur du conteneur */
+    height: auto;             /* Ajuste la hauteur en fonction de la largeur pour garder le ratio */
+    max-height: 150px;        /* Fixe une hauteur maximale pour éviter qu'elle ne soit trop grande */
+    object-fit: cover;        /* Assure que l'image couvre bien l'espace sans déformer */
+    border-radius: 4px;
 }

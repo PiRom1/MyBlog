@@ -8,7 +8,8 @@ def user_inventory_view(request):
     # Récupérer l'inventaire de l'utilisateur connecté
     user_inventory = UserInventory.objects.filter(user=request.user).order_by('obtained_date')  # Trier par date d'obtention
     
-    items = []
+    non_equipped_items = []
+    equipped_items = []
     
     # Récupérer les informations pour chaque item d'inventaire
     for inventory in user_inventory:
@@ -17,7 +18,7 @@ def user_inventory_view(request):
         # Si l'item est un box
         if item.type == 'box':
             box = Box.objects.get(id=item.item_id)
-            items.append({
+            non_equipped_items.append({
                 'type': 'box',
                 'item_id': item.item_id,
                 'name': box.name,
@@ -28,20 +29,33 @@ def user_inventory_view(request):
             })
         # Si l'item est un skin
         elif item.type == 'skin':
+
+            
+
             skin = Skin.objects.get(id=item.item_id)
-            items.append({
-                'type': 'skin',
-                'item_id': item.id,
-                'name': skin.name,
-                'image': skin.image.url,
-                'pattern': item.pattern,
-                'status': inventory.status,
-                'obtained_date': inventory.obtained_date,
-                'skin_type': skin.type,
-            })
+
+            item = {
+                        'type': 'skin',
+                        'item_id': item.id,
+                        'name': skin.name,
+                        'image': skin.image.url,
+                        'pattern': item.pattern,
+                        'status': inventory.status,
+                        'obtained_date': inventory.obtained_date,
+                        'skin_type': skin.type,
+                    }
+
+
+            if inventory.status == 'unequipped':
+                non_equipped_items.append(item)
+            
+            else:
+                equipped_items.append(item)
     
     context = {
-        'items': items
+        'non_equipped_items': non_equipped_items,
+        'equipped_items' : equipped_items,
+        'items' : non_equipped_items + equipped_items,
     }
     
     return render(request, 'Blog/inventory/inventory.html', context)

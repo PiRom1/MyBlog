@@ -161,7 +161,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.success) {
                     // Mettre à jour le statut dans l'attribut de l'élément
                     selectedItem.setAttribute('data-status', newStatus);
+                    
+                    // updateItemUI(itemId, data.is_equipped);
                     alert(`${selectedItem.getAttribute('data-name')} a été ${newStatus === 'equipped' ? 'équipé' : 'déséquipé'}.`);
+                    window.location.href = '/inventory';
+
                 } else {
                     alert('Erreur lors de la mise à jour du statut : ' + data.message);
                 }
