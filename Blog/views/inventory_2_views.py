@@ -2,6 +2,8 @@ from django.shortcuts import render
 from ..models import UserInventory, Item, Skin, Box
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+
 
 @login_required
 def user_inventory_view(request):
@@ -57,6 +59,7 @@ def user_inventory_view(request):
         'non_equipped_items': non_equipped_items,
         'equipped_items' : equipped_items,
         'items' : non_equipped_items + equipped_items,
+        'item_types' : settings.ITEM_TYPES,
     }
     
     return render(request, 'Blog/inventory_2/inventory_2.html', context)

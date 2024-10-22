@@ -14,6 +14,15 @@
 </head>
 <body>
     <h1>Inventaire de l'utilisateur</h1>
+
+    Filtrer <br>
+    <select name="item type" id="item-selecter">
+        <option value="all">All</option>
+        {% for item_type in item_types %}
+            <option value="{{item_type}}">{{item_type}}</option>
+        {% endfor %}
+    </select>
+
     
     <div class="inventory-container">
         <!-- Section des items non équipés -->
@@ -21,6 +30,7 @@
             <h2>Items non équipés</h2>
             <div class="inventory-grid">
                 {% for non_equipped_item in non_equipped_items %}
+                
                 <div class="inventory-item" data-id="{{ non_equipped_item.item_id }}" data-name="{{ non_equipped_item.name }}" data-status="{{ non_equipped_item.status }}" 
                     data-date="{{ non_equipped_item.obtained_date }}" data-type="{{ non_equipped_item.type }}"
                     {% if non_equipped_item.type == 'skin' %}data-pattern="{{ non_equipped_item.pattern }}" data-skin-type="{{ non_equipped_item.skin_type }}"{% endif %}

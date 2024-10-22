@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -181,3 +182,15 @@ EMAIL_HOST_PASSWORD = "flbibuimwrhdyltu"
 ALLOWED_TAGS = ['br', 'i', 'strong', 'ul', 'li', 'a', 'u', 'del', 'iframe']
 ALLOWED_ATTRIBUTES = {'a': ['href', 'title'],
                       'iframe': ['src', 'name']}
+
+
+ITEM_TYPES = ['text_color', 
+              'border_color', 
+              'avatar_color', 
+              'name_color', 
+              'background_color', 
+              'background_image', 
+              'font',
+              'emoji',
+              'border_image',
+              'other',]
