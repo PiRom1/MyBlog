@@ -13,28 +13,174 @@ body {
     font-size: 16px;
 }
 
+.blurred-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(2px); /* Appliquer le flou */
+    z-index: -1; /* Derrière tout le contenu */
+  }
+
+/* Conteneur pour le titre, la barre de recherche et le bouton de filtre */
+.inventory-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 90%;
+}
+
 h1 {
-    text-align: center;
-    margin-top: 20px;
+    position: relative;
     font-size: 2rem;
 }
+/* Style de la barre de recherche */
+.search-container {
+    position: absolute;
+    right: 150px; /* Décale la barre de recherche à droite du titre */
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(86, 86, 86);  /* Fond rgb(86,86,86) */
+    color: white;  /* Couleur du texte blanche */
+    position: relative;
+}
+
+/* Icône de la croix pour annuler le filtre */
+.clear-filter {
+    position: relative;
+    left: -10px; /* Positionne l'icône à gauche et en dehors de la barre */
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+}
+
+/* Conteneur pour les suggestions */
+.autocomplete-items {
+    position: absolute;
+    top: 100%; /* Positionne les suggestions juste en dessous de la barre de recherche */
+    left: 0;
+    background-color: rgb(86, 86, 86); /* Fond rgb(86,86,86) */
+    color: white;  /* Texte blanc */
+    max-height: 150px;
+    width: 100%;
+    overflow-y: auto; /* Compense la largeur de la croix à gauche */
+    box-sizing: border-box; /* Inclure les bordures dans la largeur totale */
+    z-index: 1000;
+    border-radius: 4px;
+}
+
+/* Style des suggestions */
+.autocomplete-items div {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: rgb(86, 86, 86);  /* Fond rgb(86,86,86) */
+    border-bottom: 1px solid #ccc;
+    color: white;
+}
+
+
+/* Survol des suggestions */
+.autocomplete-items div:hover {
+    background-color: #6b6b6b;  /* Changement de couleur au survol */
+}
+
+/* Mettre en surbrillance la suggestion active */
+.autocomplete-active {
+    background-color: #6b6b6b !important; /* Suggestion active en surbrillance */
+}
+
+/* Style du bouton de filtre */
+.filter-button {
+    position: absolute;
+    right: 20px; /* Positionner le bouton tout à droite */
+    padding: 5px 10px;
+    background-color: #d3d3d3; /* Gris quand pas sélectionné */
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Effet au survol */
+.filter-button:hover {
+    background-color: #bbb;
+}
+
+/* État activé (filtre sélectionné) */
+.filter-button.active {
+    background-color: #ff6b6b; /* Rouge quand sélectionné */
+    color: white;
+}
+
 
 /* Grille pour afficher les items */
 .inventory-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+/* Style pour le cercle en haut à gauche */
+.color-circle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff; /* Optionnel : bordure blanche pour plus de visibilité */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère pour l'effet de relief */
+}
+
+.heart-circle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ff3030; /* Optionnel : bordure blanche pour plus de visibilité */
+    background-color: rgba(86, 86, 86, 0.8); /* Fond rouge translucide */
+    color: #ff3030; /* Couleur du coeur */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px; /* Taille du coeur */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère pour l'effet de relief */
 }
 
 /* Style pour chaque item */
 .inventory-item {
+    position: relative;
     border: 2px solid rgb(86, 86, 86); /* Fine bordure grise semi-transparente */
     border-radius: 8px;
     text-align: center;
-    padding: 2px;
+    width: 170px;
+    height: 122px;
+    padding: 0px;
     background-color: rgba(255, 255, 255, 0.1); /* Fond semi-transparent */
-    backdrop-filter: blur(2px); /* Applique le flou sur le fond */
+    backdrop-filter: blur(3px); /* Applique le flou sur le fond */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombre légère */
     transition: box-shadow 0.3s ease;
 }
@@ -45,10 +191,10 @@ h1 {
 
 /* Style des images dans les items */
 .inventory-item img {
-    width: 200px;
-    height: 150px;
+    width: 170px;
+    height: 122px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 /* Style des titres dans les items */

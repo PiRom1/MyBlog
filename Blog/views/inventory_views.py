@@ -69,3 +69,21 @@ def toggle_item_status(request):
             return JsonResponse({'success': False, 'message': 'Item non trouvé.'})
 
     return JsonResponse({'success': False, 'message': 'Requête invalide.'})
+
+
+@login_required
+def get_equipped_skins(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    user = request.user
+    items = UserInventory.objects.filter(user=user).filter(status = 'equipped')
+    equipped_items = []
+    for item in items:
+        skin = Skin.objects.get(id=item.item.item_id)
+        equipped_items.append({
+            'name': skin.name,
+            'skinType': skin.type,
+            'pattern': item.item.pattern
+        })
+
+    return JsonResponse({'equipped_items': equipped_items})
