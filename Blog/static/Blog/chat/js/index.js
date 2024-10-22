@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var text_color = document.getElementById('items').getAttribute('text-color');
     var border_color = document.getElementById('items').getAttribute('border-color');
-    console.log("text_color : ", text_color);
-    console.log("border_color : ", border_color);
 
     // document.getElementById('message-meta').style.font-size=45;
 
@@ -94,14 +92,84 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('No new messages');
             }
         });
-    };
-
-   
-    
+    }; 
 
     setInterval(reloadMessages, 10000);
     window.onfocus = function () {
         reloadMessages();
         badger.value = 0;
     };
+
+    const skinsButton = document.getElementById('skins-button');
+    const skinsPopup = document.getElementById('skins-popup');
+    const closeSkinsPopup = document.getElementById('close-skins-popup');
+    const skinsList = document.getElementById('skins-list');
+    // On récupère les skins équipés avec un fetch
+    let equippedItems = [];
+    fetch('/inventory/equipped', {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        equippedItems = data.equipped_items;
+        displaySkins();
+    });
+
+    // Fonction pour afficher les skins par 'data-skin-type'
+    function displaySkins() {
+        const skinGroups = {};
+        skinsList.innerHTML = ''; // Vider la liste avant d'ajouter
+
+        equippedItems.forEach(item => {
+            if (!skinGroups[item.skinType]) {
+                skinGroups[item.skinType] = [];
+            }
+            skinGroups[item.skinType].push(item);
+        });
+
+        for (const skinType in skinGroups) {
+            const groupDiv = document.createElement('div');
+            groupDiv.classList.add('skin-category');
+            groupDiv.innerHTML = `<h3>${skinType}</h3>`;
+
+            skinGroups[skinType].forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('skin-item');
+                // Vérifier si le pattern commence par '#', auquel cas on affiche un cercle de couleur
+                const colorCircle = item.pattern.startsWith('#') ? `<span class="color-circle" style="background-color:${item.pattern};"></span>` : '';
+                // Ajouter le rond de sélection (input radio personnalisé)
+                itemDiv.innerHTML = `
+                    <label class="skin-label">
+                        <input type="radio" name="${skinType}" class="skin-radio" ${index === 0 ? 'checked' : ''}>
+                        <span class="custom-radio"></span>
+                        ${item.name} - ${item.pattern} ${colorCircle}
+                    </label>
+                `;
+                groupDiv.appendChild(itemDiv);
+            });
+
+            skinsList.appendChild(groupDiv);
+        }
+    }
+
+
+    // Ouvrir la popup des skins
+    skinsButton.addEventListener('click', function () {
+        skinsPopup.style.display = 'flex';
+    });
+
+    // Fermer la popup des skins
+    closeSkinsPopup.addEventListener('click', function () {
+        skinsPopup.style.display = 'none';
+    });
+
+    // Fermer la popup en cliquant à l'extérieur
+    window.addEventListener('click', function (event) {
+        if (event.target === skinsPopup) {
+            skinsPopup.style.display = 'none';
+        }
+    });
 });

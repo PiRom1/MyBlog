@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render, redirect
 
 from ..models import *
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from ..forms import *
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -246,9 +246,6 @@ def Index(request, id):
 
 
     return render(request, url, context)
-
-
-
 
 @login_required
 def IndexUser(request, id):

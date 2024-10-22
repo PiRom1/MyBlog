@@ -139,8 +139,131 @@ header h1 {
     text-align: center;
 }
 
-button[type="submit"] {
+/* Styles pour le bouton skins */
+.skins-btn {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 20px;
+}
+
+.skins-btn:hover {
+    background-color: #FF7043;
+}
+
+/* Styles de la popup des skins */
+.skins-popup {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skins-popup-content {
+    color: #000;
+    background-color: rgba(248, 202, 168, 1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+}
+
+.skins-popup-content h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    color: #ff0000;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.skins-popup-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff6b6b;
+    cursor: pointer;
+}
+
+.skins-popup-content .close:hover {
+    color: #FF7043;
+}
+
+/* Style des items de skins dans la popup */
+#skins-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.skin-category {
+    padding: 10px;
+    border: 1px solid #ff6b6b;
+    border-radius: 8px;
+    background-color: #FFEDE1;
+}
+
+/* Styles pour la skin-item */
+.skin-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Styles pour le label du skin */
+.skin-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Masquer le bouton radio par défaut */
+.skin-radio {
+    display: none;
+}
+
+/* Style du rond de sélection */
+.custom-radio {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #FF8A80;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+}
+
+/* Si le bouton radio est sélectionné */
+.skin-radio:checked + .custom-radio {
     background-color: #FF8A80;
+}
+
+/* Cercle de couleur pour le pattern hexadécimal */
+.color-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-left: 5px;
+    border: 1px solid #ddd;
+}
+
+button[type="submit"] {
+    background-color: #ff6b6b;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -157,7 +280,7 @@ button[type="submit"]:hover {
 .poll-section h3 {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.6rem;
-    color: #FF8A80;
+    color: #ff6b6b;
 }
 
 .poll-section ul {
@@ -208,7 +331,7 @@ footer a:hover {
 .poll-question {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.5rem;
-    color: #FF8A80;
+    color: #ff6b6b;
     margin-bottom: 20px;
 }
 
@@ -223,7 +346,7 @@ footer a:hover {
     justify-content: space-between;
     align-items: center;
     background-color: #FFF6E5;
-    color: #FF8A80;
+    color: #ff6b6b;
     border-radius: 8px;
     padding: 10px 20px;
     transition: all 0.3s ease;
@@ -247,7 +370,7 @@ footer a:hover {
 
 .poll-votes {
     font-size: 0.9rem;
-    color: #FF8A80;
+    color: #ff6b6b;
 }
 
 .poll-option:hover .poll-votes {

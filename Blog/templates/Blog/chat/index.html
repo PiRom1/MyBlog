@@ -119,6 +119,17 @@
             </section>
 
             <section class="message-form-section">
+                <!-- Bouton 'skins' pour ouvrir la popup -->
+                <button id="skins-button" class="skins-btn">Skins favoris</button>
+
+                <!-- Popup des skins -->
+                <div id="skins-popup" class="skins-popup" style="display:none;">
+                    <div class="skins-popup-content">
+                        <span id="close-skins-popup" class="close">&times;</span>
+                        <h2>Vos skins équipés</h2>
+                        <div id="skins-list"></div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
+                    </div>
+                </div>
                 <form action="" method="post" id="message_form">
                     {% csrf_token %}
                     {{ MessageForm }}
