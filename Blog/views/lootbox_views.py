@@ -84,8 +84,7 @@ def drop_item(request):
                 item_id=item)
     
     itemUser = UserInventory(user=request.user,
-                             item=item,
-                             status='unequipped')
+                             item=item)
     
     item.save()
     itemUser.save()

@@ -206,12 +206,12 @@ def Index(request, id):
     print(yoda_sounds)
 
 
-    items = UserInventory.objects.filter(user=request.user).filter(status = 'equipped')
+    items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
     
 
     types = {}
     for skin in Skin.objects.all():
-        item = UserInventory.objects.filter(user=request.user).filter(status='equipped').filter(item__item_id=skin.id)
+        item = UserInventory.objects.filter(user=request.user).filter(equipped=True).filter(item__item_id=skin.id)
         if item:
             # print("item : ", item[0].item.pattern)
             types[skin.type] = item[0].item.pattern

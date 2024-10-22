@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeSkinsPopup = document.getElementById('close-skins-popup');
     const skinsList = document.getElementById('skins-list');
     // On récupère les skins équipés avec un fetch
-    let equippedItems = [];
-    fetch('/inventory/equipped', {
+    let favoriteItems = [];
+    fetch('/inventory/favorite', {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(response => response.json())
     .then(data => {
-        equippedItems = data.equipped_items;
+        favoriteItems = data.favorite_items;
         displaySkins();
     });
 
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const skinGroups = {};
         skinsList.innerHTML = ''; // Vider la liste avant d'ajouter
 
-        equippedItems.forEach(item => {
+        favoriteItems.forEach(item => {
             if (!skinGroups[item.skinType]) {
                 skinGroups[item.skinType] = [];
             }
