@@ -43,9 +43,11 @@ function autocomplete(input, items) {
         if (e.keyCode === 40) {  // Flèche bas
             currentFocus++;
             addActive(items);
+            ensureVisible(items[currentFocus], list);
         } else if (e.keyCode === 38) {  // Flèche haut
             currentFocus--;
             addActive(items);
+            ensureVisible(items[currentFocus], list);
         } else if (e.keyCode === 13) {  // Entrée
             e.preventDefault();
             if (currentFocus > -1 && items[currentFocus]) {
@@ -74,6 +76,20 @@ function autocomplete(input, items) {
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
     });
+
+    // Fonction pour s'assurer que l'élément actif est visible dans la liste des suggestions
+    function ensureVisible(activeItem, list) {
+        const rect = activeItem.getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+
+        if (rect.bottom > listRect.bottom) {
+            // Si l'élément dépasse en bas, faire défiler vers le bas
+            list.scrollTop = activeItem.offsetTop - listRect.height + activeItem.offsetHeight;
+        } else if (rect.top < listRect.top) {
+            // Si l'élément dépasse en haut, faire défiler vers le haut
+            list.scrollTop = activeItem.offsetTop;
+        }
+    }
 }
 
 // Fonction pour filtrer les items de l'inventaire
