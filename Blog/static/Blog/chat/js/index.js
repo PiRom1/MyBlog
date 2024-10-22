@@ -17,6 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var loadMoreBtn = document.getElementById('load-more');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+    var text_color = document.getElementById('items').getAttribute('text-color');
+    var border_color = document.getElementById('items').getAttribute('border-color');
+    console.log("text_color : ", text_color);
+    console.log("border_color : ", border_color);
+
+    // document.getElementById('message-meta').style.font-size=45;
+
     
 
     loadMoreBtn.addEventListener('click', function () {

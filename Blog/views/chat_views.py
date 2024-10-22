@@ -207,8 +207,17 @@ def Index(request, id):
 
 
     items = UserInventory.objects.filter(user=request.user).filter(status = 'equipped')
-    print("items :", items)
- 
+
+    types = {}
+    for skin in Skin.objects.all():
+        item = UserInventory.objects.filter(user=request.user).filter(status='equipped').filter(item__item_id=skin.id)
+        if item:
+            types[skin.type] = item[0]
+        else:
+            types[skin.type] = None
+    
+
+    
     context = {"messages" : messages, 
                "MessageForm" : message_form, 
                "user" : user, "years" : years, 
@@ -224,6 +233,17 @@ def Index(request, id):
                "last_message_id" : last_message_id,
                "items" : items,
                }
+    
+    # rappel
+    '''TYPE = [('text_color', 'Text color'), ('border_color', 'Border color'), ('avatar_color', 'Avatar color'),
+            ('name_color', 'Name color'), ('background_color', 'Background color'), ('background_image', 'Background image'),
+            ('font', 'Font'), ('emoji', 'Emoji'), ('border_image', 'Border image'),
+            ('other', 'Other')]
+    '''
+
+
+    context = dict(context, **types)
+
 
     return render(request, url, context)
 

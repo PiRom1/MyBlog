@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const equipOption = document.getElementById('equip-option');
     const openOption = document.getElementById('open-option');
 
+    let item_filter = document.getElementById('item-selecter');
+
     // Mettre à jour l'événement de clic sur les items pour afficher les options du menu contextuel
     items.forEach(item => {
         item.addEventListener('click', function (e) {
@@ -144,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Bascule entre "equipped" et "unequipped"
             const newStatus = (status === 'equipped') ? 'unequipped' : 'equipped';
 
-            var url = `/inventory/toggle_item_status`;
+            var url = `/inventory_2/toggle_item_status`;
 
             // Envoyer la requête pour mettre à jour le statut en base de données
             fetch(url, {
@@ -164,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     // updateItemUI(itemId, data.is_equipped);
                     alert(`${selectedItem.getAttribute('data-name')} a été ${newStatus === 'equipped' ? 'équipé' : 'déséquipé'}.`);
-                    window.location.href = '/inventory';
+                    window.location.href = '/inventory_2';
 
                 } else {
                     alert('Erreur lors de la mise à jour du statut : ' + data.message);
@@ -184,4 +186,42 @@ document.addEventListener('DOMContentLoaded', function () {
     equipOption.addEventListener('click', function () {
         toggleEquipStatus();
     });
+
+    item_filter.addEventListener('change', function() {
+        console.log(item_filter.value);
+        
+
+                // Sélectionner tous les éléments avec l'attribut data-skin-type
+        const allItems = document.querySelectorAll('div[data-skin-type]');
+
+        // Filtrer ceux qui sont différents de la valeur de item_filter.value
+        let falseItemDivs = Array.from(allItems).filter(item => item.getAttribute('data-skin-type') !== item_filter.value);
+        let trueItemDivs = Array.from(allItems).filter(item => item.getAttribute('data-skin-type') == item_filter.value);
+
+        if (item_filter.value === 'all') {
+            trueItemDivs = allItems;
+            falseItemDivs = Array();
+        }
+        
+        console.log(trueItemDivs);
+
+        if (trueItemDivs.length > 0) {
+            trueItemDivs.forEach(item => {
+                // Ajouter chaque élément trouvé dans le conteneur de résultats
+                item.style.display = 'block';
+            });
+        } 
+
+        
+        console.log(falseItemDivs);
+
+        if (falseItemDivs.length > 0) {
+            falseItemDivs.forEach(item => {
+                // Ajouter chaque élément trouvé dans le conteneur de résultats
+                item.style.display = 'none';
+            });
+        } 
+
+    })
+
 });

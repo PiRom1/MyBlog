@@ -3,6 +3,8 @@ from ..models import UserInventory, Item, Skin, Box
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 
+
+
 @login_required
 def user_inventory_view(request):
     # Récupérer l'inventaire de l'utilisateur connecté
@@ -39,7 +41,7 @@ def user_inventory_view(request):
                 'status': inventory.status,
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
-            })
+                })
     
     context = {
         'items': items
