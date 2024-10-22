@@ -10,10 +10,27 @@
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <!-- <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}"> -->
     <link rel="stylesheet" href="{% static 'Blog/inventory/css/inventory.css' %}">
-    <script src="{% static 'Blog/inventory/js/inventory.js' %}"></script>
+    <script src="{% static 'Blog/inventory/js/inventory.js' %}" type="module"></script>
+    <script src="{% static 'Blog/inventory/js/autocomplete.js' %}" type="module"></script>
 </head>
 <body>
-    <h1>Inventaire de l'utilisateur</h1>
+    <div class="blurred-background"></div>
+    <!-- Conteneur pour le titre, la barre de recherche et le bouton de filtre -->
+    <div class="inventory-header">
+        <h1>Inventaire</h1>
+
+        <!-- Barre de recherche avec auto-complétion -->
+        <div class="search-container">
+            <i id="clear-filter" class="fas fa-times clear-filter" style="display: none;"></i> <!-- Icône FontAwesome -->
+            <input type="text" id="search-bar" class="search-bar" placeholder="Filtrer les items...">
+            <div id="autocomplete-list" class="autocomplete-items"></div>
+        </div>
+
+
+        <!-- Filtre pour afficher uniquement les items équipés -->
+        <button id="filter-equipped" class="filter-button">Equipés</button>
+    </div>
+
     <div class="inventory-grid">
         <!-- Boucle pour tous les items mélangés -->
         {% for item in items %}
