@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var text_color = document.getElementById('items').getAttribute('text-color');
     var border_color = document.getElementById('items').getAttribute('border-color');
+    var skinRadios = document.querySelectorAll('.skin-radio');
+    var previousPerCategory = {};
 
     // document.getElementById('message-meta').style.font-size=45;
 
@@ -136,6 +138,9 @@ document.addEventListener('DOMContentLoaded', function () {
             groupDiv.innerHTML = `<h3>${skinType}</h3>`;
 
             skinGroups[skinType].forEach((item, index) => {
+                if (previousPerCategory[skinType] == null) {
+                    previousPerCategory[skinType] = item.id;
+                }
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add('skin-item');
                 // Vérifier si le pattern commence par '#', auquel cas on affiche un cercle de couleur
@@ -143,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Ajouter le rond de sélection (input radio personnalisé)
                 itemDiv.innerHTML = `
                     <label class="skin-label">
-                        <input type="radio" name="${skinType}" class="skin-radio" ${index === 0 ? 'checked' : ''}>
+                        <input type="radio" name="${skinType}" class="skin-radio" data-item-id="${item.id}"  ${item.equipped? 'checked' : ''}>
                         <span class="custom-radio"></span>
                         ${item.name} - ${item.pattern} ${colorCircle}
                     </label>
@@ -153,12 +158,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             skinsList.appendChild(groupDiv);
         }
+
+        skinRadios = document.querySelectorAll('.skin-radio');
     }
 
 
     // Ouvrir la popup des skins
     skinsButton.addEventListener('click', function () {
         skinsPopup.style.display = 'flex';
+        update_equipped(skinRadios);
     });
 
     // Fermer la popup des skins
@@ -172,4 +180,39 @@ document.addEventListener('DOMContentLoaded', function () {
             skinsPopup.style.display = 'none';
         }
     });
+
+    function update_equipped(skinRadios) {
+        skinRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const itemId = this.getAttribute('data-item-id'); // Récupérer l'ID du nouvel item sélectionné
+                const skinType = this.getAttribute('name'); // Récupérer le nom de la catégorie (skinType)
+                console.log('Item ID : ', itemId);
+                // Trouver l'ancien élément sélectionné dans la même catégorie (skinType)
+                const previousItemId = previousPerCategory[skinType];
+    
+                // Envoi d'une requête AJAX pour mettre à jour l'attribut 'favoris' en backend
+                fetch('/inventory/update_equipped', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken // Assurez-vous d'ajouter le token CSRF ici
+                    },
+                    body: JSON.stringify({ 'item_id': itemId,
+                                            'previous_item_id': previousItemId
+                    }) // Envoyer l'ID de l'item
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Item favori mis à jour');
+                        previousPerCategory[skinType] = itemId;
+                    } else {
+                        console.log('Erreur : ', data.message);
+                    }
+                });
+            });
+        });
+    }
+    
 });

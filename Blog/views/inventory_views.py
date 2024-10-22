@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from ..models import UserInventory, Item, Skin, Box
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -86,7 +87,28 @@ def get_favorite_skins(request):
         favorite_items.append({
             'name': skin.name,
             'skinType': skin.type,
-            'pattern': item.item.pattern
+            'pattern': item.item.pattern,
+            'id': item.item.id,
+            'equipped': item.equipped
         })
-
     return JsonResponse({'favorite_items': favorite_items})
+
+@login_required
+def update_equipped(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        old_equipped = data.get('previous_item_id')
+        print("item_id : ", item_id)
+        print("old_equipped : ", old_equipped)
+        try:
+            item = UserInventory.objects.get(user=request.user, item_id=item_id)
+            item.equipped = True
+            item.save()
+            old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
+            old_item.equipped = False
+            old_item.save()
+            return JsonResponse({'status': 'success'})
+        except UserInventory.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+    return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
