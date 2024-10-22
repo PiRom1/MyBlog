@@ -26,7 +26,8 @@ def user_inventory_view(request):
                 'name': box.name,
                 'image': box.image.url,
                 'open_price': box.open_price,
-                'status': inventory.status,
+                'equipped': inventory.equipped,
+                'favorite': inventory.favorite,
                 'obtained_date': inventory.obtained_date
             })
         # Si l'item est un skin
@@ -38,7 +39,8 @@ def user_inventory_view(request):
                 'name': skin.name,
                 'image': skin.image.url,
                 'pattern': item.pattern,
-                'status': inventory.status,
+                'equipped': inventory.equipped,
+                'favorite': inventory.favorite,
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
                 })
@@ -50,19 +52,20 @@ def user_inventory_view(request):
     return render(request, 'Blog/inventory/inventory.html', context)
 
 @login_required
-def toggle_item_status(request):
+def toggle_item_favorite(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
-        new_status = request.POST.get('status')
+        new_favorite = request.POST.get('favorite')
 
         print("id ; ", item_id)
 
         # Trouver l'item dans l'inventaire de l'utilisateur connecté
         try:
             inventory_item = UserInventory.objects.get(item_id=item_id, user=request.user)
-            inventory_item.status = new_status
+            inventory_item.favorite = (new_favorite == 'True')
+            print("new_favorite : ", new_favorite)
             inventory_item.save()
             return JsonResponse({'success': True, 'message': 'Statut mis à jour avec succès.'})
         except UserInventory.DoesNotExist:
@@ -72,18 +75,18 @@ def toggle_item_status(request):
 
 
 @login_required
-def get_equipped_skins(request):
+def get_favorite_skins(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
     user = request.user
-    items = UserInventory.objects.filter(user=user).filter(status = 'equipped')
-    equipped_items = []
+    items = UserInventory.objects.filter(user=user).filter(favorite=True)
+    favorite_items = []
     for item in items:
         skin = Skin.objects.get(id=item.item.item_id)
-        equipped_items.append({
+        favorite_items.append({
             'name': skin.name,
             'skinType': skin.type,
             'pattern': item.item.pattern
         })
 
-    return JsonResponse({'equipped_items': equipped_items})
+    return JsonResponse({'favorite_items': favorite_items})

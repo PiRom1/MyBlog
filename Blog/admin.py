@@ -88,7 +88,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(UserInventory)
 class UserInventoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'item', 'obtained_date', 'status')
+    list_display = ('id', 'user', 'item', 'obtained_date', 'favorite', 'equipped')
 
 @admin.register(Market)
 class MarketAdmin(admin.ModelAdmin):

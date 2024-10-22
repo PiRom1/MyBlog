@@ -47,8 +47,8 @@ urlpatterns = [
 
     # Inventory
     path('inventory/', inventory_views.user_inventory_view, name='inventory'),
-    path('inventory/toggle_item_status', inventory_views.toggle_item_status, name='toggle_item_status'),
-    path('inventory/equipped', inventory_views.get_equipped_skins, name='get_equipped_skins'),
+    path('inventory/toggle_item_favorite', inventory_views.toggle_item_favorite, name='toggle_item_favorite'),
+    path('inventory/favorite', inventory_views.get_favorite_skins, name='get_favorite_skins'),
     
     # Inventory_2
     path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory'),

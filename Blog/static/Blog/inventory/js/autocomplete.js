@@ -53,6 +53,11 @@ function autocomplete(input, items) {
             if (currentFocus > -1 && items[currentFocus]) {
                 items[currentFocus].click();
             }
+            else if (items.length === 0) {
+                filterItems('');
+                closeAllLists();
+                clearFilterButton.style.display = 'None';
+            }
         }
     });
 
@@ -100,11 +105,15 @@ function filterItems(value) {
         const dataType = item.getAttribute('data-type');
         const dataSkinType = item.getAttribute('data-skin-type');
         const dataName = item.getAttribute('data-name');
-        const dataStatus = item.getAttribute('data-status');
-        const attribute_list = [dataType, dataSkinType, dataName, dataStatus];
+        const dataFavorite = item.getAttribute('data-favorite');
+        const dataEquipped = item.getAttribute('data-equipped');
+        const attribute_list = [dataType, dataSkinType, dataName];
 
         // Vérifier si l'une des valeurs correspond à la valeur recherchée
-        if (attribute_list.includes(value)) {
+        if (attribute_list.includes(value) || 
+        (dataFavorite === 'True' && value === 'Favori') || 
+        (dataEquipped === 'True' && value === 'Equipé') || 
+        (value === 'Tous') || (value === '')) {
             item.style.display = 'block';  // Afficher l'item
         } else {
             item.style.display = 'none';   // Masquer l'item

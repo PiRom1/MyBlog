@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoOption = document.getElementById('info-option');
     const sellOption = document.getElementById('sell-option');
     const tradeOption = document.getElementById('trade-option');
-    const equipOption = document.getElementById('equip-option');
+    const favoriteOption = document.getElementById('favorite-option');
     const openOption = document.getElementById('open-option');
     
     // Récupérer les noms des items
-    const searchList = ['equipped', 'unequipped', 'locked', 'box', 'skin'];
+    const searchList = ['Tous', 'Equipé', 'Favori', 'box', 'skin'];
 
     function addHeartCircle(item) {
         // Créer un élément div pour le cercle avec le coeur
@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const itemName = item.getAttribute('data-name');
         const itemType = item.getAttribute('data-type');
-        const itemStatus = item.getAttribute('data-status');
+        const itemFavorite = item.getAttribute('data-favorite');
+        const itemEquipped = item.getAttribute('data-equipped');
         const itemSkinType = item.getAttribute('data-skin-type');
 
         if (itemName && !searchList.includes(itemName)) {searchList.push(itemName);}
@@ -56,37 +57,31 @@ document.addEventListener('DOMContentLoaded', function () {
             item.appendChild(colorCircle);
         }
 
-        // Vérifier si l'item est équipé
-        if (itemStatus === 'equipped') {
+        // Vérifier si l'item est favori
+        if (itemFavorite === 'True') {
             addHeartCircle(item)
         }
 
         item.addEventListener('click', function (e) {
             e.preventDefault();
             selectedItem = item;
+            const itemFavorite = item.getAttribute('data-favorite');
             
-            // Toujours afficher l'option "Infos"
+            // Toujours afficher l'option "Infos", "Vendre" et "Échanger"
             infoOption.style.display = 'block';
-            
-            // Gérer l'affichage des options Vendre et Échanger, sauf si l'item est "locked"
-            if (itemStatus !== 'locked') {
-                sellOption.style.display = 'block';
-                tradeOption.style.display = 'block';
-            } else {
-                sellOption.style.display = 'none';
-                tradeOption.style.display = 'none';
-            }
+            sellOption.style.display = 'block';
+            tradeOption.style.display = 'block';
     
             // Gérer les options spécifiques aux skins
             if (itemType === 'skin') {
-                equipOption.style.display = 'block';
-                equipOption.textContent = itemStatus === 'equipped' ? 'Déséquiper' : 'Équiper';
+                favoriteOption.style.display = 'block';
+                favoriteOption.textContent = itemFavorite === 'True' ? 'Retirer des favoris' : 'Ajouter en favori';
             } else {
-                equipOption.style.display = 'none';
+                favoriteOption.style.display = 'none';
             }
     
             // Gérer l'option "Ouvrir" pour les boîtes
-            if (itemType === 'box' && itemStatus !== 'locked') {
+            if (itemType === 'box') {
                 openOption.style.display = 'block';
             } else {
                 openOption.style.display = 'none';
@@ -132,11 +127,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (type === 'skin') {
                 const pattern = selectedItem.getAttribute('data-pattern');
-                const status = selectedItem.getAttribute('data-status');
+                const favorite = selectedItem.getAttribute('data-favorite');
                 const skin_type = selectedItem.getAttribute('data-skin-type');
                 additionalInfo = `<strong>Pattern:</strong> ${pattern}<br>
                                   <strong>Type:</strong> ${skin_type}<br>
-                                  <strong>Statut:</strong> ${status}`;
+                                  <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}`;
             } else if (type === 'box') {
                 const openPrice = selectedItem.getAttribute('data-open-price');
                 additionalInfo = `<strong>Prix d'ouverture:</strong> ${openPrice} crédits`;
@@ -177,16 +172,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Fonction pour équiper ou déséquiper l'item
-    function toggleEquipStatus() {
+    function toggleFavStatus() {
         if (selectedItem) {
             // Récupérer l'ID de l'item et le statut actuel
             const itemId = selectedItem.getAttribute('data-id');
-            let status = selectedItem.getAttribute('data-status');
+            let favorite = selectedItem.getAttribute('data-favorite');
             
             // Bascule entre "equipped" et "unequipped"
-            const newStatus = (status === 'equipped') ? 'unequipped' : 'equipped';
+            const newFavorite = (favorite === 'True') ? 'False' : 'True';
 
-            var url = `/inventory/toggle_item_status`;
+            var url = `/inventory/toggle_item_favorite`;
 
             // Envoyer la requête pour mettre à jour le statut en base de données
             fetch(url, {
@@ -196,15 +191,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
                 },
-                body: `item_id=${itemId}&status=${newStatus}`
+                body: `item_id=${itemId}&favorite=${newFavorite}`
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Mettre à jour le statut dans l'attribut de l'élément
-                    selectedItem.setAttribute('data-status', newStatus);
+                    selectedItem.setAttribute('data-favorite', newFavorite);
                     // Ajouter ou supprimer le cercle avec le coeur
-                    if (newStatus === 'equipped') {
+                    if (newFavorite === 'True') {
                         addHeartCircle(selectedItem);
                     } else {
                         const heartCircle = selectedItem.querySelector('.heart-circle');
@@ -228,28 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Ajouter un événement de clic pour l'option "Équiper/Déséquiper"
-    equipOption.addEventListener('click', function () {
-        toggleEquipStatus();
-    });
-
-    // Récupérer l'élément de filtre
-    const filterButton = document.getElementById('filter-equipped');
-    // Ajouter un événement de clic pour activer ou désactiver le filtre
-    filterButton.addEventListener('click', function() {
-        // Basculer la classe "active" pour changer la couleur du bouton
-        filterButton.classList.toggle('active');
-        const showEquippedOnly = filterButton.classList.contains('active');
-        // Parcourir tous les items
-        items.forEach(item => {
-            const itemStatus = item.getAttribute('data-status');
-            // Si le filtre est activé et l'item n'est pas équipé, on le cache
-            if (showEquippedOnly && itemStatus !== 'equipped') {
-                item.style.display = 'none';
-            } else {
-                // Sinon, on affiche l'item
-                item.style.display = 'block';
-            }
-        });
+    favoriteOption.addEventListener('click', function () {
+        toggleFavStatus();
     });
 
     // Récupérer l'élément de recherche

@@ -223,12 +223,12 @@ class Item(models.Model):
 class UserInventory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     item = models.OneToOneField(Item, on_delete = models.CASCADE)
-    STATUS = [('equipped', 'Equipped'), ('unequipped', 'Unequipped'), ('locked', 'Locked')]
-    status = models.CharField("status", max_length=10, choices = STATUS, default = 'unequipped')
     obtained_date = models.DateTimeField("obtained_date", default = datetime.datetime.now)
+    favorite = models.BooleanField("favorite", default = False)
+    equipped = models.BooleanField("equipped", default = False)
 
     def __str__(self):
-        return f"{self.user} : {self.item} ({self.status})"
+        return f"{self.user} : {self.item}"
 
 class Market(models.Model):
     seller = models.ForeignKey(User, on_delete = models.CASCADE)

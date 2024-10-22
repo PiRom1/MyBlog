@@ -40,8 +40,8 @@ h1 {
 /* Style de la barre de recherche */
 .search-container {
     position: absolute;
-    right: 150px; /* Décale la barre de recherche à droite du titre */
-    max-width: 300px;
+    right: 0px; /* Décale la barre de recherche à droite du titre */
+    max-width: 400px;
     display: flex;
     align-items: center;
 }
@@ -50,7 +50,7 @@ h1 {
     width: 100%;
     padding: 5px 10px;
     font-size: 14px;
-    border: none;
+    border: 1px solid white; 
     border-radius: 4px;
     background-color: rgb(86, 86, 86);  /* Fond rgb(86,86,86) */
     color: white;  /* Couleur du texte blanche */
@@ -85,6 +85,7 @@ h1 {
     box-sizing: border-box; /* Inclure les bordures dans la largeur totale */
     z-index: 1000;
     border-radius: 4px;
+    border: 1px solid white; /* Bordure blanche */
 }
 
 /* Style des suggestions */
@@ -106,32 +107,6 @@ h1 {
 .autocomplete-active {
     background-color: #6b6b6b !important; /* Suggestion active en surbrillance */
 }
-
-/* Style du bouton de filtre */
-.filter-button {
-    position: absolute;
-    right: 20px; /* Positionner le bouton tout à droite */
-    padding: 5px 10px;
-    background-color: #d3d3d3; /* Gris quand pas sélectionné */
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    color: #333;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Effet au survol */
-.filter-button:hover {
-    background-color: #bbb;
-}
-
-/* État activé (filtre sélectionné) */
-.filter-button.active {
-    background-color: #ff6b6b; /* Rouge quand sélectionné */
-    color: white;
-}
-
 
 /* Grille pour afficher les items */
 .inventory-grid {
