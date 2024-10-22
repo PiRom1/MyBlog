@@ -21,6 +21,7 @@
         {% for item_type in item_types %}
             <option value="{{item_type}}">{{item_type}}</option>
         {% endfor %}
+        <option value="lootbox">lootbox</option>
     </select>
 
     
@@ -34,7 +35,7 @@
                 <div class="inventory-item" data-id="{{ non_equipped_item.item_id }}" data-name="{{ non_equipped_item.name }}" data-status="{{ non_equipped_item.status }}" 
                     data-date="{{ non_equipped_item.obtained_date }}" data-type="{{ non_equipped_item.type }}"
                     {% if non_equipped_item.type == 'skin' %}data-pattern="{{ non_equipped_item.pattern }}" data-skin-type="{{ non_equipped_item.skin_type }}"{% endif %}
-                    {% if non_equipped_item.type == 'box' %}data-open-price="{{ non_equipped_item.open_price }}"{% endif %}>
+                    {% if non_equipped_item.type == 'box' %}data-open-price="{{ non_equipped_item.open_price }}" data-skin-type="lootbox"{% endif %}>
 
                     <img src="{{ non_equipped_item.image }}" alt="{{ non_equipped_item.name }}">
                     <!-- <h3>{{ non_equipped_item.name }}</h3> -->
