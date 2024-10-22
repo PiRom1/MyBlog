@@ -207,12 +207,14 @@ def Index(request, id):
 
 
     items = UserInventory.objects.filter(user=request.user).filter(status = 'equipped')
+    
 
     types = {}
     for skin in Skin.objects.all():
         item = UserInventory.objects.filter(user=request.user).filter(status='equipped').filter(item__item_id=skin.id)
         if item:
-            types[skin.type] = item[0]
+            # print("item : ", item[0].item.pattern)
+            types[skin.type] = item[0].item.pattern
         else:
             types[skin.type] = None
     
@@ -241,7 +243,7 @@ def Index(request, id):
             ('other', 'Other')]
     '''
 
-
+    
     context = dict(context, **types)
 
 
