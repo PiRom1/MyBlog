@@ -19,14 +19,15 @@
     <script src="{% static 'Blog/chat/js/index.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
     <script src="{% static 'Blog/chat/js/badger.js' %}" type="module"></script>
+    <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
 
 </head>
 
 <body>
 
-    {{text_color}}
-    <div id="items" text-color="{{text_color}}" border-color="{{border_color}}"></div>
+    
+    <div id="items" text-color="{{text_color}}" border-color="{{border_color}}" background-color="{{background_color}}"></div>
 
 
     <div class="enjoy" id="enjoy">
@@ -82,13 +83,13 @@
                         
                         {% if message.writer.username == user.username %}
                         <div class="message">
-                            <div class="message-content {{message.color}}">
+                            <div class="message-content">
                                 <span class="message-meta">
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
-                            </div>
+                                    <p>{% autoescape off %}<div class="text">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
+                                </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
                             </a>
@@ -147,6 +148,9 @@
             </section>
         
         </main>
+
+        
+       
 
         <footer>
             <a href="/stats/{{session.id}}">Statistiques</a> | <a href="/">Home</a> | <a href="/list_sounds">Paramètres de la Soundbox</a>
