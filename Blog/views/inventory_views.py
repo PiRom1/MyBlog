@@ -102,8 +102,11 @@ def update_equipped(request):
         print("item_id : ", item_id)
         print("old_equipped : ", old_equipped)
         try:
-            old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
-            if old_item is not None:
+            try :
+                old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
+            except :
+                pass
+            else :
                 old_item.equipped = False
                 old_item.save()
             item = UserInventory.objects.get(user=request.user, item_id=item_id)

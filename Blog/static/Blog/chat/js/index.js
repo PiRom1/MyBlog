@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
             groupDiv.innerHTML = `<h3>${skinType}</h3>`;
 
             skinGroups[skinType].forEach((item, index) => {
-                if (previousPerCategory[skinType] == null) {
+                if (item.equipped){
                     previousPerCategory[skinType] = item.id;
                 }
                 const itemDiv = document.createElement('div');

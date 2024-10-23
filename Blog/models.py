@@ -84,6 +84,7 @@ class Message(models.Model):
     downvote = models.IntegerField("downvote", default = 0)
     color = models.CharField("color", max_length = 50, default = "")
     session_id = models.ForeignKey(Session, on_delete = models.CASCADE)
+    skin = models.TextField("message_skin", default ="{}")
 
     def __str__(self):
         return f"{self.writer} ({self.pub_date}) : {self.text}"

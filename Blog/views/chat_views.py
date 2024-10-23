@@ -104,6 +104,17 @@ def get_dates(messages):
 @login_required
 def Index(request, id):
 
+    
+
+    # types = {}
+    # for skin in Skin.objects.all():
+    #     item = UserInventory.objects.filter(user=request.user).filter(equipped=True).filter(item__item_id=skin.id)
+    #     if item:
+    #         # print("item : ", item[0].item.pattern)
+    #         types[skin.type] = item[0].item.pattern
+    #     else:
+    #         types[skin.type] = None
+
     session = Session.objects.get(id = id)
 
     page_number = int(request.GET.get('page', 1))
@@ -153,6 +164,18 @@ def Index(request, id):
         message_form = MessageForm(request.POST)
 
         if message_form.is_valid():
+
+            # Get items
+            items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
+            item_ids = [item.item.item_id for item in items]
+
+            dict_items = {}
+
+            for i,item_id in enumerate(item_ids):
+                skin = Skin.objects.get(id=item_id).type
+                dict_items[skin] = items[i].item.pattern
+            
+
             new_message = message_form['message']
             color = message_form['color'].value()
             #user = message_form['who']
@@ -162,8 +185,9 @@ def Index(request, id):
 
             if not isinstance(text, str):  # Si text est un HttpResponseRedirect
                 return text
+            
 
-            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session)  
+            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session, skin = str(dict_items))  
             history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
 
             new_message.save()
@@ -206,18 +230,6 @@ def Index(request, id):
     print(yoda_sounds)
 
 
-    items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
-    
-
-    types = {}
-    for skin in Skin.objects.all():
-        item = UserInventory.objects.filter(user=request.user).filter(equipped=True).filter(item__item_id=skin.id)
-        if item:
-            # print("item : ", item[0].item.pattern)
-            types[skin.type] = item[0].item.pattern
-        else:
-            types[skin.type] = None
-    
 
     
     context = {"messages" : messages, 
@@ -233,7 +245,7 @@ def Index(request, id):
                "page_number_next" : page_number+1,
                "yoda_sounds" : yoda_sounds,
                "last_message_id" : last_message_id,
-               "items" : items,
+               "skins" : [message.skin for message in messages]
                }
     
     # rappel
@@ -242,10 +254,6 @@ def Index(request, id):
             ('font', 'Font'), ('emoji', 'Emoji'), ('border_image', 'Border image'),
             ('other', 'Other')]
     '''
-
-    
-    context = dict(context, **types)
-
 
     return render(request, url, context)
 

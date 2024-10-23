@@ -27,7 +27,7 @@ def user_inventory_view(request):
                 'name': box.name,
                 'image': box.image.url,
                 'open_price': box.open_price,
-                'status': inventory.status,
+                'equipped': inventory.equipped,
                 'obtained_date': inventory.obtained_date
             })
         # Si l'item est un skin
@@ -43,13 +43,13 @@ def user_inventory_view(request):
                         'name': skin.name,
                         'image': skin.image.url,
                         'pattern': item.pattern,
-                        'status': inventory.status,
+                        'equipped': inventory.equipped,
                         'obtained_date': inventory.obtained_date,
                         'skin_type': skin.type,
                     }
 
 
-            if inventory.status == 'unequipped':
+            if not inventory.equipped:
                 non_equipped_items.append(item)
             
             else:
