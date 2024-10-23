@@ -84,12 +84,12 @@
                         
                         {% if message.writer.username == user.username %}
                         <div class="message">
-                            <div class="message-content">
+                            <div class="message-content {{message.color}}">
                                 <span class="message-meta">
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                    <p>{% autoescape off %}<div class="text" style="color : black" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
+                                    <p>{% autoescape off %}<div class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
