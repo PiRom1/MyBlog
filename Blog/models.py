@@ -211,6 +211,26 @@ class Skin(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Emojis(models.Model):
+    name = models.CharField("name", max_length=64)
+    image = models.ImageField(upload_to = 'Emojis/')
+
+    def __str__(self):
+        return self.name
+
+class Background(models.Model):
+    name = models.CharField("name", max_length=64)
+    image = models.ImageField(upload_to = 'Backgrounds/')
+
+    def __str__(self):
+        return self.name
+    
+class Font(models.Model):
+    name = models.CharField("name", max_length=64)
+    
+    def __str__(self):
+        return self.name
 
 class Item(models.Model):
     TYPES = [('skin', 'Skin'), ('box', 'Box')]
