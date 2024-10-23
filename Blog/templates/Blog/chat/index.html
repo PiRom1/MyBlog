@@ -23,7 +23,8 @@
     <script src="{% static 'Blog/chat/js/badger.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
-
+    
+    {% load custom_filters %}
 </head>
 
 <body>
@@ -34,7 +35,7 @@
 
     <div class="enjoy" id="enjoy">
         <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
-            <img src="{% static 'img/Enjoy/enjoy_aled.png' %}" width="300"/>
+            <img src="{% static 'img/Enjoy/enjoy_maite.png' %}" width="200"/>
             
         </a>
     </div>
@@ -85,12 +86,12 @@
                         
                         {% if message.writer.username == user.username %}
                         <div class="message">
-                            <div class="message-content">
+                            <div class="message-content {{message.color}}">
                                 <span class="message-meta">
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                    <p>{% autoescape off %}<div class="text">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
+                                    <p>{% autoescape off %}<div class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -107,7 +108,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
+                                <p>{% autoescape off %}<div class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
                             </div>
                         </div>
                         {% endif %}
@@ -170,6 +171,9 @@
         </footer>
     </div>
   <div id="bottom"></div>
+
+
+  
 
 </body>
 

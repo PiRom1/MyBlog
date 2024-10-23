@@ -102,12 +102,16 @@ def update_equipped(request):
         print("item_id : ", item_id)
         print("old_equipped : ", old_equipped)
         try:
+            try :
+                old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
+            except :
+                pass
+            else :
+                old_item.equipped = False
+                old_item.save()
             item = UserInventory.objects.get(user=request.user, item_id=item_id)
             item.equipped = True
             item.save()
-            old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
-            old_item.equipped = False
-            old_item.save()
             return JsonResponse({'status': 'success'})
         except UserInventory.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
