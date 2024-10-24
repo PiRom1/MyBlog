@@ -4,6 +4,20 @@ from ..models import UserInventory, Item, Skin, Box
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 
+def get_skin_type(type):
+    if type == 'text_color':
+        return 'Couleur de texte'
+    if type == 'background_color':
+        return 'Couleur de fond'
+    if type == 'avatar_color':
+        return 'Couleur d\'avatar'
+    if type == 'name_color' or type == 'name_rgb':
+        return 'Couleur de nom'
+    if type == 'border_color' or type == 'border_image' or type == 'border_rgb':
+        return 'Bordure de message'
+    if type == 'font':
+        return 'Police'
+    return 'Autre'
 
 
 @login_required
@@ -86,7 +100,7 @@ def get_favorite_skins(request):
         skin = Skin.objects.get(id=item.item.item_id)
         favorite_items.append({
             'name': skin.name,
-            'skinType': skin.type,
+            'skinType': get_skin_type(skin.type),
             'pattern': item.item.pattern,
             'id': item.item.id,
             'equipped': item.equipped

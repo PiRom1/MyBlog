@@ -190,6 +190,7 @@ class Box(models.Model):
     def __str__(self):
         return self.name
     
+########### IL faudra suppr lors d'une prochaine migration ############
     def get_id(self):
         return self.id
     
@@ -216,6 +217,8 @@ class Skin(models.Model):
     def __str__(self):
         return self.name
     
+
+########### IL faudra changer le nom vers "Emoji" lors d'une prochaine migration ############
 class Emojis(models.Model):
     name = models.CharField("name", max_length=64, unique=True)
     image = models.ImageField(upload_to = 'Emojis/')
