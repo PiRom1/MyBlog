@@ -126,10 +126,12 @@ document.addEventListener('DOMContentLoaded', function () {
         skinsList.innerHTML = ''; // Vider la liste avant d'ajouter
 
         favoriteItems.forEach(item => {
-            if (!skinGroups[item.skinType]) {
-                skinGroups[item.skinType] = [];
+            if (item.skinType !== 'Autre'){
+                if (!skinGroups[item.skinType]) {
+                    skinGroups[item.skinType] = [];
+                }
+                skinGroups[item.skinType].push(item);
             }
-            skinGroups[item.skinType].push(item);
         });
 
         for (const skinType in skinGroups) {

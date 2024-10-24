@@ -1,0 +1,33 @@
+.rainbow {
+	position: relative;
+	z-index: 0;
+    width:100%;
+}
+
+.rainbow:before, .rainbow:after {
+	content: '';
+	border-radius: 10px;
+	position: absolute;
+	left: -2px;
+	top: -2px;
+	background: linear-gradient(10deg, #fb0094, #0000ff, #00ff00,#ffff00, #ff0000, #fb0094,
+							   #0000ff, #00ff00,#ffff00, #ff0000, #fb0094, #0000ff, #00ff00);
+	background-size: 1100%;
+	width: calc(100% + 5px);
+	height: calc(100% + 4px);
+	z-index: -1;
+	animation: steam 12s linear infinite;
+}
+
+@keyframes steam {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 96% 0%;
+	}
+}
+
+.rainbow:after {
+	filter: blur(20px);
+}
