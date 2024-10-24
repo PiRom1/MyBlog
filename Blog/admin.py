@@ -97,3 +97,17 @@ class MarketAdmin(admin.ModelAdmin):
 @admin.register(MarketHistory)
 class MarketHistoryAdmin(admin.ModelAdmin):
     list_display = ('user', 'item', 'price', 'date', 'action')
+
+
+@admin.register(Emojis)
+class EmojisAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image')
+
+@admin.register(Background)
+class BackgroundAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image')
+
+
+@admin.register(Font)
+class FontAdmin(admin.ModelAdmin):
+    list_display = ('name',)
