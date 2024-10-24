@@ -1,6 +1,9 @@
 *.pyc
 *.sqlite3
 media/*
+media/Images/*
+media/Soundbox/*
+Blog/static/yoda/*
 media/Backgrounds/*
 media/Emojis/*
 media/BorderImages/*
