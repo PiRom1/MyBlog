@@ -1,5 +1,3 @@
-
-
 // Ajout d'un écouteur d'événement au clic sur l'image
 document.addEventListener('DOMContentLoaded', function () {
     
@@ -9,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const boxes = document.querySelectorAll('.message-content');
     const names = document.querySelectorAll('.name a');
     const user_avatars = document.querySelectorAll('.user-avatar img');
+    const font_tab = []
 
     console.log("boxes : ", boxes);
 
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // border color
-            if (key === "border_color") {
+            else if (key === "border_color") {
                 
                 box.style.setProperty('border-style', 'solid', 'important')
                 box.style.setProperty('border-width', '2px', 'important')
@@ -45,36 +44,45 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // background color
-            if (key === "background_color") {
+            else if (key === "background_color") {
                 
                 box.style.setProperty('background', skins[key], 'important')
                 console.log(skins[key]);
             }
 
             // name color
-            if (key === "name_color") {
+            else if (key === "name_color") {
                 console.log(name);
                 name.style.setProperty('color', skins[key], 'important');
-                console.log(name);
                 }
 
             // avatar color
-            if (key === "avatar_color") {
+            else if (key === "avatar_color") {
                 console.log(name);
                 user_avatar.style.setProperty('border-style', 'solid', 'important');
                 user_avatar.style.setProperty('border-width', '3px', 'important');
                 user_avatar.style.setProperty('border-radius', '50%', 'important');
                 user_avatar.style.setProperty('border-color', skins[key], 'important');
-                
-
                 }
-            
+
+            // font
+            else if (key === "font") {
+                message.childNodes[1].style.setProperty('font-family', skins[key], 'important');
+                console.log('to push :',skins[key]);
+                if (font_tab.includes(skins[key]) === false) {
+                    font_tab.push(skins[key]);
+                }
+            }
+        });
+        i = i+1;
     });
-    
-    i = i+1;
-
-    });
-
-
+    var font = document.createElement('link');
+    font.rel = 'stylesheet';
+    font.href = 'https://fonts.googleapis.com/css2?' 
+    for (var f in font_tab) {
+        font.href += 'family=' + font_tab[f].replace(/ /g, '+') + '&';
+    }
+    font.href += 'display=swap';
+    document.head.appendChild(font);
 });
 
