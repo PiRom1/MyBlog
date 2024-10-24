@@ -77,14 +77,11 @@ def drop_item(request):
         item = Item(type='skin',
                     pattern=Font.objects.get(id=rd.randint(1,1112)).name,
                     item_id=item)
-    elif skin.type == 'emoji':
+    elif skin.type == 'emoji' or skin.type == 'background_image':
         item = Item(type='skin',
-                    pattern=Emojis.objects.last().name,
+                    pattern='',
                     item_id=item)
-    elif skin.type == 'background_image':
-        item = Item(type='skin',
-                    pattern=Background.objects.last().name,
-                    item_id=item)
+    # Il manque Border image
     else:
         item = Item(type='skin',
                     pattern=get_random_hexa_color(),
