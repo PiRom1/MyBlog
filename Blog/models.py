@@ -204,7 +204,7 @@ class Rarity(models.Model):
 class Skin(models.Model):
     box = models.ForeignKey(Box, on_delete = models.CASCADE, null=True, blank=True)
     name = models.CharField("name", max_length=64)
-    image = models.ImageField(upload_to='Skins/Box'+str(box)+'/')
+    image = models.ImageField(upload_to='Skins/')
     rarity = models.ForeignKey(Rarity, on_delete = models.CASCADE, null=True, blank=True)
     TYPE = [('text_color', 'Text color'), ('border_color', 'Border color'), ('avatar_color', 'Avatar color'),
             ('name_color', 'Name color'), ('background_color', 'Background color'), ('background_image', 'Background image'),
