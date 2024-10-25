@@ -8,10 +8,8 @@ import json
 
 
 def get_random_hexa_color():
-
     caracs = [str(i) for i in range(10)] + ['A', 'B', 'C', 'D', 'E', 'F']
     choices = rd.choices(caracs, k = 6)
-
     return '#' + ''.join(choices)
 
 
@@ -64,28 +62,33 @@ def open_lootbox(request):
 def drop_item(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
-
     # Get data
     data = json.loads(request.body)
-    item = data.get('item')
-    
+    item = data.get('item') 
     # Delete box in user inventory
     box = UserInventory.objects.filter(item_id__type='box').filter(user_id=request.user).first()
     box_id = box.item_id
     box.delete()
-
     # Delete box in items
     Item.objects.get(id=box_id).delete()
-    
-
     # Instantiate new item
-    item = Item(type='skin',
-                pattern=get_random_hexa_color(),
-                item_id=item)
-    
+    skin = Skin.objects.get(id=item)
+    if skin.type == 'font':
+        item = Item(type='skin',
+                    pattern=Font.objects.get(id=rd.randint(1,1112)).name,
+                    item_id=item)
+    elif skin.type == 'emoji' or skin.type == 'background_image':
+        item = Item(type='skin',
+                    pattern='',
+                    item_id=item)
+    # Il manque Border image
+    else:
+        item = Item(type='skin',
+                    pattern=get_random_hexa_color(),
+                    item_id=item)
+        
     itemUser = UserInventory(user=request.user,
-                             item=item)
-    
+                             item=item)   
     item.save()
     itemUser.save()
 

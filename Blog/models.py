@@ -184,11 +184,15 @@ class UserSound(models.Model):
     
 class Box(models.Model):
     name = models.CharField("name", max_length=64)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='Boxes/')
     open_price = models.IntegerField("Open price", default = 200)
 
     def __str__(self):
         return self.name
+    
+########### IL faudra suppr lors d'une prochaine migration ############
+    def get_id(self):
+        return self.id
     
 class Rarity(models.Model):
     name = models.CharField("name", max_length=64)
@@ -201,34 +205,44 @@ class Rarity(models.Model):
 class Skin(models.Model):
     box = models.ForeignKey(Box, on_delete = models.CASCADE, null=True, blank=True)
     name = models.CharField("name", max_length=64)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='Skins/')
     rarity = models.ForeignKey(Rarity, on_delete = models.CASCADE, null=True, blank=True)
     TYPE = [('text_color', 'Text color'), ('border_color', 'Border color'), ('avatar_color', 'Avatar color'),
             ('name_color', 'Name color'), ('background_color', 'Background color'), ('background_image', 'Background image'),
             ('font', 'Font'), ('emoji', 'Emoji'), ('border_image', 'Border image'),
+            ('name_rgb', 'Name RGB'), ('border_rgb', 'Border RGB'), 
             ('other', 'Other')]
     type = models.CharField("type", max_length=64, choices = TYPE, default = 'other')
 
     def __str__(self):
         return self.name
     
+
+########### IL faudra changer le nom vers "Emoji" lors d'une prochaine migration ############
 class Emojis(models.Model):
-    name = models.CharField("name", max_length=64)
+    name = models.CharField("name", max_length=64, unique=True)
     image = models.ImageField(upload_to = 'Emojis/')
 
     def __str__(self):
         return self.name
 
 class Background(models.Model):
-    name = models.CharField("name", max_length=64)
+    name = models.CharField("name", max_length=64, unique=True)
     image = models.ImageField(upload_to = 'Backgrounds/')
 
     def __str__(self):
         return self.name
     
 class Font(models.Model):
-    name = models.CharField("name", max_length=64)
+    name = models.CharField("name", max_length=64, unique=True)
     
+    def __str__(self):
+        return self.name
+    
+class BorderImage(models.Model):
+    name = models.CharField("name", max_length=64, unique=True)
+    image = models.ImageField(upload_to = 'BorderImages/')
+
     def __str__(self):
         return self.name
 

@@ -47,12 +47,12 @@ document.addEventListener('DOMContentLoaded', function () {
           window.location.href = '/inventory';
       })
       .catch(error => console.error('Erreur:', error));  // Gestion des erreurs
-    }, 10500);
+    }, 10000);
  }
 
   function itemAttr(){
     var items = $(".itemBoxAn");
-    var img_array = ['1', '2'];//, '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+    var img_array = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
     var win_id = img_array[Math.floor(Math.random() * img_array.length)];
     items.each(function() {
       // si l'item est l'objet itemBoxAnW, on ne fait rien
