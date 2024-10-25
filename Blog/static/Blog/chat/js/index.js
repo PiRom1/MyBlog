@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var loadMoreBtn = document.getElementById('load-more');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const messageForm = document.getElementById('message_content');
+
 
     var text_color = document.getElementById('items').getAttribute('text-color');
     var border_color = document.getElementById('items').getAttribute('border-color');
@@ -106,6 +108,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const skinsPopup = document.getElementById('skins-popup');
     const closeSkinsPopup = document.getElementById('close-skins-popup');
     const skinsList = document.getElementById('skins-list');
+
+    const emojisButton = document.getElementById('emojis-button');
+    const emojisPopup = document.getElementById('emojis-popup');
+    const closeEmojisPopup = document.getElementById('close-emojis-popup');
+
     // On récupère les skins équipés avec un fetch
     let favoriteItems = [];
     fetch('/inventory/favorite', {
@@ -174,12 +181,86 @@ document.addEventListener('DOMContentLoaded', function () {
         skinsPopup.style.display = 'none';
     });
 
+
+    // Ouvrir la popup des emojis
+    emojisButton.addEventListener('click', function() {
+        console.log('Appuyé');
+        if (emojisPopup.style.display == 'block') {
+            emojisPopup.style.display = 'none'
+        }
+        else {
+            emojisPopup.style.display = 'block';
+        }
+        
+
+    });
+
+    
+
+
+
     // Fermer la popup en cliquant à l'extérieur
     window.addEventListener('click', function (event) {
         if (event.target === skinsPopup) {
             skinsPopup.style.display = 'none';
         }
     });
+    
+    const emojis = document.querySelectorAll('[emoji_name]');
+    console.log("form : ", messageForm);
+    emojis.forEach(emoji => {
+        console.log("emoji : ", emoji);  // Ou faire autre chose avec chaque élément
+        emoji.addEventListener('click', function() {
+            console.log(emoji);
+            
+            const emojiHTML = `<img src="${emoji.getAttribute('src')}" width="30" height="30" style="display:inline;">`;
+
+            insertAtCursor(messageForm, emojiHTML);
+            cleanUpBreaks(messageForm);
+            
+            // let img = document.createElement('img');
+            // img.src = emoji.getAttribute('src');
+            // img.width = 30;  // Ajuste la taille de l'image si nécessaire
+            // img.height = 30;
+            // img.style.display = 'inline-block';  // Pour éviter le saut de ligne
+            // messageForm.appendChild(img);
+            // console.log('message form : ', messageForm);
+            
+
+        })
+    });
+
+
+    function insertAtCursor(editableDiv, html) {
+        editableDiv.focus();
+        const range = window.getSelection().getRangeAt(0);
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+        const fragment = document.createDocumentFragment();
+        
+        while (tempDiv.firstChild) {
+            fragment.appendChild(tempDiv.firstChild);
+        }
+        range.deleteContents();
+        range.insertNode(fragment);
+        range.collapse(false);
+        
+
+    }
+    
+    function cleanUpBreaks(editableDiv) {
+        // Supprime les <br> indésirables à la fin de la div éditable
+        const children = editableDiv.childNodes;
+        for (let i = children.length - 1; i >= 0; i--) {
+            const node = children[i];
+            if (node.nodeName === "BR" && (i === children.length - 1 || children[i + 1].nodeName === "BR")) {
+                editableDiv.removeChild(node);
+            }
+        }
+    }
+
+
+
 
     function update_equipped(skinRadios) {
         skinRadios.forEach(radio => {

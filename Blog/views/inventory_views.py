@@ -1,9 +1,9 @@
 import json
 from django.shortcuts import render
 from ..models import UserInventory, Item, Skin, Box
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-
+from ..forms import EmojiForm
 
 
 @login_required
@@ -116,3 +116,33 @@ def update_equipped(request):
         except UserInventory.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
     return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+
+
+
+def use_emoji(request, pk):
+
+    emoji = UserInventory.objects.get(id=pk)
+    
+
+    if request.method == 'POST':
+    
+        emoji_form = EmojiForm(request.POST, request.FILES)
+
+        if emoji_form.is_valid():
+            
+            instance = emoji_form.save()
+            print(instance.id)
+            print(instance.name, instance.image)
+
+            emoji.item.pattern = instance.id
+            emoji.item.save()
+
+            return HttpResponseRedirect('/inventory')
+    
+    emoji_form = EmojiForm()
+
+    url = "Blog/inventory/emoji.html"
+
+    context = {'emoji_form' : emoji_form}
+
+    return render(request, url, context)

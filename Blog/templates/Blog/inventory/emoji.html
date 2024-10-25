@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create emoji</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    
+</head>
+
+<body>
+
+
+    <form action="" method="post" id="emoji_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ emoji_form }}
+        <button type="submit">Envoyer</button>
+    </form>
+
+</body>

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tradeOption = document.getElementById('trade-option');
     const favoriteOption = document.getElementById('favorite-option');
     const openOption = document.getElementById('open-option');
+    const useOption = document.getElementById('use-option');
     
     // Récupérer les noms des items
     const searchList = ['Tous', 'Equipé', 'Favori', 'box', 'skin'];
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemFavorite = item.getAttribute('data-favorite');
         const itemEquipped = item.getAttribute('data-equipped');
         const itemSkinType = item.getAttribute('data-skin-type');
+        const itemPattern = item.getAttribute('data-pattern');
 
         if (itemName && !searchList.includes(itemName)) {searchList.push(itemName);}
         if (itemSkinType && !searchList.includes(itemSkinType)) {searchList.push(itemSkinType);}
@@ -85,6 +87,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 openOption.style.display = 'block';
             } else {
                 openOption.style.display = 'none';
+            }
+            
+            // Gérer l'option "Utiliser" des émojis et backgrounds
+            if ((itemSkinType === 'emoji' || itemSkinType === 'background') && itemPattern == '') {
+                useOption.style.display = 'block';
+            } else {
+                useOption.style.display = 'none';
             }
 
             // Positionner le menu contextuel à l'endroit du clic
@@ -170,6 +179,14 @@ document.addEventListener('DOMContentLoaded', function () {
             contextMenu.classList.remove('active');
         }
     });
+
+
+
+    useOption.addEventListener('click', function() {
+        const emojiId = selectedItem.getAttribute('data-id');
+        
+        window.location.href = `/emoji/${emojiId}`;
+    })
 
     // Fonction pour équiper ou déséquiper l'item
     function toggleFavStatus() {

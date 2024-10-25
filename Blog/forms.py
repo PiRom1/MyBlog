@@ -4,6 +4,7 @@ from .models import *
 
 
 
+
 class ModifyForm(forms.Form):
     modify = forms.CharField(label = "Modify")
 
@@ -103,3 +104,9 @@ class SoundForm(forms.ModelForm):
     class Meta:
         model = Sound
         fields = ['name', 'sound', 'tags']
+
+
+class EmojiForm(forms.ModelForm):
+    class Meta:
+        model = Emojis
+        fields = ['name', 'image']

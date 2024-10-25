@@ -50,6 +50,9 @@ urlpatterns = [
     path('inventory/toggle_item_favorite', inventory_views.toggle_item_favorite, name='toggle_item_favorite'),
     path('inventory/favorite', inventory_views.get_favorite_skins, name='get_favorite_skins'),
     path('inventory/update_equipped', inventory_views.update_equipped, name='update_equipped'),
+
+    # Emojis
+    path('emoji/<int:pk>', inventory_views.use_emoji, name='use_emoji'),
     
     # Inventory_2
     path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory'),

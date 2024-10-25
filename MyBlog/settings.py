@@ -179,9 +179,11 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "diplowebchat@gmail.com"
 EMAIL_HOST_PASSWORD = "flbibuimwrhdyltu"
  
-ALLOWED_TAGS = ['br', 'i', 'strong', 'ul', 'li', 'a', 'u', 'del', 'iframe']
+ALLOWED_TAGS = ['br', 'i', 'strong', 'ul', 'li', 'a', 'u', 'del', 'iframe', 'img']
 ALLOWED_ATTRIBUTES = {'a': ['href', 'title'],
-                      'iframe': ['src', 'name']}
+                      'iframe': ['src', 'name'],
+                      'img' : ['src', 'width', 'height'],
+                    }
 
 
 ITEM_TYPES = ['text_color', 

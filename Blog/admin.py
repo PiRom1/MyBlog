@@ -101,13 +101,13 @@ class MarketHistoryAdmin(admin.ModelAdmin):
 
 @admin.register(Emojis)
 class EmojisAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
+    list_display = ('id', 'name', 'image')
 
 @admin.register(Background)
 class BackgroundAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
+    list_display = ('id', 'name', 'image')
 
 
 @admin.register(Font)
 class FontAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('id', 'name',)
