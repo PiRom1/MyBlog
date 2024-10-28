@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // name color
-            else if (key === "name_color") {
+            else if (key === "name_rgb") {
                 name.style.setProperty('color', skins[key], 'important');
                 }
 

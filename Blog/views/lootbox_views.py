@@ -9,8 +9,8 @@ import json
 
 def get_random_hexa_color():
     caracs = [str(i) for i in range(10)] + ['A', 'B', 'C', 'D', 'E', 'F']
-    choices = rd.choices(caracs, k = 6)
-    return '#' + ''.join(choices)
+    choices = rd.choices(caracs, k = 3)
+    return f"#{choices[0]}{choices[0]}{choices[1]}{choices[1]}{choices[2]}{choices[2]}"
 
 
 # @login_required
@@ -54,8 +54,14 @@ def view_lootbox(request, pk):
 def open_lootbox(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    skins = list(Skin.objects.all())
+    skins = [skin.image.url for skin in skins]
+    
+    context = {"skins" : skins}
+
     url = "Blog/lootbox/openning.html"
-    return render(request, url)
+    return render(request, url, context)
 
 
 @login_required
@@ -106,4 +112,4 @@ def get_lootbox(request):
     box.save()
     box_user.save()
 
-    return HttpResponseRedirect('/inventory_2')
+    return HttpResponseRedirect('/inventory')
