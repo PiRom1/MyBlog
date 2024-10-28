@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var message_form = document.getElementById('message_html');
     const message = document.getElementById('message_content');
 
-    const submit_button = document.getElementById('submit');
+    const submit_button = document.getElementById('submit-btn');
 
     
     console.log('envoi !');
