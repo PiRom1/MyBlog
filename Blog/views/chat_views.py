@@ -219,7 +219,8 @@ def Index(request, id):
 
     # Get emojis
     emojis = []
-    emoji_item_id = Skin.objects.get(type="emoji").id
+    try:
+        emoji_item_id = Skin.objects.get(type="emoji").id
     
     for item in UserInventory.objects.filter(user=request.user):
         
@@ -227,7 +228,9 @@ def Index(request, id):
             emoji_id = item.item.pattern
             emoji = Emojis.objects.get(id=emoji_id)
             emojis.append(emoji.image.url)
-
+    
+    except:
+        emojis = []
     
     context = {"messages" : messages, 
                "user" : user, "years" : years, 
