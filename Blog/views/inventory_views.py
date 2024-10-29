@@ -134,7 +134,7 @@ def update_equipped(request):
     return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
 
 
-
+@login_required
 def use_emoji(request, pk):
 
     emoji = UserInventory.objects.get(id=pk)

@@ -275,7 +275,7 @@ class Market(models.Model):
 
 class MarketHistory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    item = models.OneToOneField(Item, on_delete = models.CASCADE)
+    item = models.ForeignKey(Item, on_delete = models.CASCADE)
     price = models.IntegerField("price", default = 100)
     date = models.DateField("Date de vente", default = datetime.date.today)
     ACTION = [('buy', 'Buy'), ('sell', 'Sell')]
