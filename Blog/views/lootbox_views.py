@@ -13,7 +13,7 @@ def get_random_hexa_color():
     return '#' + ''.join(choices)
 
 def get_random_animated_color():
-    caracs = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08','rainbow']
+    caracs = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08','#000','rainbow']
     return rd.choice(caracs)
 
 

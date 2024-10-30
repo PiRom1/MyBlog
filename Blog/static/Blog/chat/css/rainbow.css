@@ -6,6 +6,7 @@
 										#F00, #CF0, #0F6, #03F, #C0F,
 										#F00, #CF0, #0F6);
 	--Position: 98% 0%;
+	--Animation: steam 15s linear infinite;
 }
 
 .rainbow:before, .rainbow:after {
@@ -19,7 +20,7 @@
 	width: calc(100% + 5px);
 	height: calc(100% + 4px);
 	z-index: -1;
-	animation: steam 15s linear infinite;
+	animation: var(--Animation)
 }
 
 @keyframes steam {

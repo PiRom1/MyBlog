@@ -100,8 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function defineRGBAnimation(pattern, div, rgb_tab){
     if (pattern === '#000'){
-        div.style.setProperty('--Background', 
-            'linear-gradient(5deg,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333,#666);')
+        div.setAttribute("style",
+            "--Background: linear-gradient(5deg,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333,#666);" +
+            "--Animation: steam 8s linear infinite;");
     }
     else{
         var index = rgb_tab.indexOf(pattern) + rgb_tab.length;
