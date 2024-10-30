@@ -9,8 +9,12 @@ import json
 
 def get_random_hexa_color():
     caracs = [str(i) for i in range(10)] + ['A', 'B', 'C', 'D', 'E', 'F']
-    choices = rd.choices(caracs, k = 6)
+    choices = rd.choices(caracs, k = 3)
     return '#' + ''.join(choices)
+
+def get_random_animated_color():
+    caracs = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08','rainbow']
+    return rd.choice(caracs)
 
 
 # @login_required
@@ -82,6 +86,10 @@ def drop_item(request):
                     pattern='',
                     item_id=item)
     # Il manque Border image
+    elif skin.type == 'border_rgb' or skin.type == 'name_rgb':
+        item = Item(type='skin',
+                    pattern=get_random_animated_color(),
+                    item_id=item)
     else:
         item = Item(type='skin',
                     pattern=get_random_hexa_color(),
