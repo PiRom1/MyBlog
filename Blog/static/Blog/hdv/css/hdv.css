@@ -1,0 +1,91 @@
+.container {
+    display: flex;
+    gap: 20px;
+    padding-top: 3%;
+}
+
+.selling-items {
+    flex: 3;
+    background-color: #e2c0c072;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.your-items {
+    flex: 1;
+    background-color: #e2c0c072;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #f7e5e5;
+    margin-bottom: 15px;
+}
+
+.item-card {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.item-card h3 {
+    color: #7a6969;
+    margin-bottom: 5px;
+}
+
+.item-card p {
+    color: #f5e4e4;
+    font-size: 0.9em;
+}
+
+.item-card:last-child {
+    border-bottom: none;
+}
+
+
+/* Styles de la popup */
+.popup {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: none; /* Cacher par défaut */
+}
+
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f5cb9a96;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.close {
+    cursor: pointer;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Style pour le cercle en haut à gauche */
+.color-circle {
+    position: relative;
+    top: 5px;
+    left: 1px;
+    padding-right: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff; /* Optionnel : bordure blanche pour plus de visibilité */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère pour l'effet de relief */
+}

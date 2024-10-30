@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{% static 'Blog/inventory/css/inventory.css' %}">
     <script src="{% static 'Blog/inventory/js/inventory.js' %}" type="module"></script>
     <script src="{% static 'Blog/inventory/js/autocomplete.js' %}" type="module"></script>
+    <script src="{% static 'Blog/inventory/js/sell.js' %}" type="module"></script>
+
 </head>
 <body>
     <div class="blurred-background"></div>
@@ -47,7 +49,7 @@
         <ul>
             <!-- Tous les items ont ces options -->
             <li id="info-option">Infos</li>
-            <li id="sell-option" class="disabled" style="display: none;">Vendre</li>
+            <li id="sell-option" style="display: none;">Vendre</li>
             <li id="trade-option" class="disabled" style="display: none;">Échanger</li>
             
             <!-- Spécifique aux skins -->
@@ -61,6 +63,21 @@
             
         </ul>
     </div>
+
+    <!-- Sell popup -->
+    <div id="sell-popup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <span id="close" class="close">&times;</span>
+            <h2 id="item-name"></h2>
+            <p><strong>Pattern :</strong> <span id="item-pattern"></span></p>
+            <p><strong>Prix :</strong> <input type="number" id="price" name="price" min="0" step="1" /> </p>
+            
+            <button id="sell">Confirmer la mise en vente</button>
+        </div>
+    </div>
+
+
+
 
     <!-- Flou de fond -->
     <div class="blur-background" id="blur-background"></div>

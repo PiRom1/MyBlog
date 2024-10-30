@@ -6,14 +6,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const popup = document.getElementById("popup");
     const close = document.getElementById("close");
     const buy = document.getElementById("buy");
+    const remove = document.getElementById("remove");
+    const user = document.getElementById("user").getAttribute("user");
+
+    
+
+    
 
     // Global variables for buy and detail
     
-    let id;
+    var item_id;
+    var market_id;
 
     // Loop throughout every selling items
     items.forEach(item =>  {
 
+        item_id = item.getAttribute("item_id");
+        
+        var circle = document.getElementById(`color-circle-${item_id}`);
+        circle.style.backgroundColor = item.getAttribute("pattern");
+
+        
+        
         item.addEventListener('click', function() {
 
             // show detail popup
@@ -37,7 +51,23 @@ document.addEventListener('DOMContentLoaded', function () {
             popup_pattern.style.color = pattern;
             popup_skin.innerHTML = skin;
 
-            id = item.getAttribute("id");
+            item_id = item.getAttribute("item_id");
+            market_id = item.getAttribute("market_id");
+
+            
+            if (seller === user) {
+                remove.style.display = 'block';
+                buy.style.display = 'none';
+                
+            }
+
+            else {
+                buy.style.display = 'block';
+                remove.style.display = 'none';
+                
+            }
+
+            
 
             
         })
@@ -63,7 +93,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
             },
-            body: `id=${id}`
+            body: `id=${market_id}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href="hdv";            
+    });
+
+    })
+
+
+
+    // Retirer de la vente
+    remove.addEventListener('click', function() {
+        
+        const url = "hdv/remove"
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+            },
+            body: `id=${item_id}`
         })
         .then(response => response.json())
         .then(data => {

@@ -9,7 +9,9 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/hdv/css/hdv.css' %}">
 
+    
     <script src="{% static 'Blog/hdv/js/hdv.js' %}" type="module"></script>
     
     {% load custom_filters %}
@@ -18,22 +20,42 @@
 
 <body>
 
+    <div id="user" user="{{user}}"></div>
+
     <h1>Hôtel des Ventes</h1>
     <br><br>
-    <h2>À vendre</h2>
-    <br>
     
-    <div style="background:rgba(231, 236, 183, 0.3); border-radius:15px; width:45%; padding-left:5px;">
-        <ul>
-        {% for item in items.patterns %}
-            <li class="item" style="cursor:pointer;" skin="{{items.skins|index:forloop.counter0}}" price="{{prices|index:forloop.counter0}}" seller="{{sellers|index:forloop.counter0}}" pattern="{{items.patterns|index:forloop.counter0}}" id="{{ids|index:forloop.counter0}}">
-                {{prices|index:forloop.counter0}}$ -  {{items.skins|index:forloop.counter0}} | 
-                <span style="color:{{items.patterns|index:forloop.counter0}};">{{items.patterns|index:forloop.counter0}}</span>
-                (vendu par {{sellers|index:forloop.counter0}})
-            </li>
-        {% endfor %}
-        </ul>
+    
+
+    <div class="container">
+        <!-- Column for Selling Items -->
+        <div class="selling-items">
+            <h2>Articles en Vente</h2>
+            <ul>
+                {% for item in selling_items %}
+                    <li class="item" style="cursor:pointer;" skin="{{item.skins}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
+                        {{item.price}}$ -  {{item.skin}} | 
+                        <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
+                        (vendu par {{item.seller}})                        
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Column for Your Items -->
+        <div class="your-items">
+            <h2>Vos Articles</h2>
+            <ul>
+                {% for item in your_items %}
+                    <li class="item" style="cursor:pointer;" skin="{{item.skins}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
+                        {{item.price}}$ -  {{item.skin}} | 
+                        <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+
 
 
 
@@ -48,43 +70,9 @@
             <p><strong>Prix :</strong> <span id="item-price"></span></p>
             <p><strong>Pattern :</strong> <span id="item-pattern"></span></p>
             <button id="buy">Confirmer l'achat</button>
+            <button id="remove">Retirer de la vente</button>
         </div>
     </div>
     
-    <style>
-        /* Styles de la popup */
-        .popup {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            display: none; /* Cacher par défaut */
-        }
-    
-        .popup-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #f5cb9a96;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-    
-        .close {
-            cursor: pointer;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-    </style>
-
-
-
 
 </body>

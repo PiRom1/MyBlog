@@ -10,26 +10,36 @@ from django.db.models import F
 
 def list_hdv(request):
     
-    selling_items = Market.objects.all()
-    ids = [item.id for item in selling_items]
-    sellers = [item.seller for item in selling_items]
-    items = [item.item for item in selling_items]
-    skins = [Skin.objects.get(pk=item.item_id).type for item in items]
-    prices = [item.price for item in selling_items]
-    patterns = [item.pattern for item in items]
+    selling_items = []
+    your_items = []
 
+    for item in Market.objects.all():
+        market_id = item.id
+        item_id = item.item_id
+        seller = item.seller
+        item_ = item.item
+        skin = Skin.objects.get(pk = item_.item_id)
+        price = item.price
+        pattern = item_.pattern
 
-    items = {'patterns' : patterns,
-             'skins' : skins}
+        d = {'market_id' : market_id,
+             'item_id' : item_id,
+             'seller' : seller,
+             'item' : item,
+             'skin' : skin,
+             'price' : price,
+             'pattern' : pattern}
+        
+        your_items.append(d) if seller == request.user else selling_items.append(d)
     
-    print("items : ", items, skins)
+
+
     
 
     context = {
-        'sellers' : sellers,
-        'items' : items,
-        'prices' : prices,
-        'ids' : ids,
+        'selling_items' : selling_items,
+        'your_items' : your_items,
+        'user' : request.user.username,
     }
     
     return render(request, 'Blog/hdv/hdv.html', context)
@@ -89,3 +99,58 @@ def buy(request):
                          'buyer' : request.user.username,
                          'seller' : transaction.seller.username,
                          })
+
+
+
+
+@login_required
+def sell(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    # Get data
+    user = request.user
+    item_id = request.POST.get('item_id')
+    price = request.POST.get('price')
+    
+    item = Item.objects.get(pk=item_id)
+
+    # Mettre en vente
+    vente = Market(seller = user, 
+                   item = item, 
+                   price = price)
+    
+    vente.save()
+
+    # sortir de l'inventaire
+    UserInventory.objects.get(item_id=item_id).delete()
+
+    # Taxe à voir + tard
+
+
+    return JsonResponse({'success': 'success',
+                         'item_id' : item.item_id,
+                         'price' : price,
+                         'seller' : user.username,
+                         })
+
+
+
+@login_required
+def remove(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    # Get data
+    user = request.user
+    item_id = request.POST.get('id')
+    
+    vente = Market.objects.get(item_id=item_id)
+    vente.delete()
+
+    UserInventory(user = request.user,
+                  item = Item.objects.get(pk=item_id)).save()
+    
+    return JsonResponse({'success' : 'success',
+                         'user' : request.user.username,
+                         'item' : item_id})
