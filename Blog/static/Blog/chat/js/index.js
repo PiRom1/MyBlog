@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <label class="skin-label">
                         <input type="radio" name="${skinType}" class="skin-radio" data-item-id="${item.id}"  ${item.equipped? 'checked' : ''}>
                         <span class="custom-radio"></span>
-                        ${item.name} - ${item.pattern} ${colorCircle}
+                        ${item.name} - <a style="font-family: ${item.pattern}; color: #000;">&nbsp${item.pattern}</a> ${colorCircle}
                     </label>
                 `;
                 groupDiv.appendChild(itemDiv);
