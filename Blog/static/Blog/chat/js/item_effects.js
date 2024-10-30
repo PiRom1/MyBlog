@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Loop on skins
         Object.keys(skins).forEach(function(key) {
+            console.log("key : ", key);
             
             // text color
             if (key === "text_color") {
@@ -35,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // border color
             else if (key === "border_color") {
-                
                 box.style.setProperty('border-style', 'solid', 'important')
                 box.style.setProperty('border-width', '2px', 'important')
                 box.style.setProperty('border-color', skins[key], 'important')
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // name color
-            else if (key === "name_rgb") {
+            else if (key === "name_color") {
                 name.style.setProperty('color', skins[key], 'important');
                 }
 
@@ -85,6 +85,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.head.appendChild(css);
                 }
             }
+            
+            // Rainbow name
+            else if (key === "name_rgb") {
+                name.classList.add('rainbow-text');
+                user_avatar.classList.add('rainbow-border');
+                if(skins[key] !== 'rainbow') {defineRGBAnimationName(skins[key], name, user_avatar, rgb_tab);}
+                const rgbCss = document.getElementById('rainbow-css');
+                if (rgbCss === null) {
+                    const css = document.createElement('link');
+                    css.id = 'rainbow-css';
+                    css.rel = 'stylesheet';
+                    css.href = '/static/Blog/chat/css/rainbow.css';
+                    document.head.appendChild(css);
+                }
+            }
         });
         i = i+1;
     });
@@ -101,20 +116,34 @@ document.addEventListener('DOMContentLoaded', function () {
 function defineRGBAnimation(pattern, div, rgb_tab){
     if (pattern === '#000'){
         div.setAttribute("style",
-            "--Background: linear-gradient(5deg,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333,#666);" +
+            "--Background: linear-gradient(5deg,#333,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333);" +
             "--Animation: steam 8s linear infinite;");
     }
     else{
         var index = rgb_tab.indexOf(pattern) + rgb_tab.length;
         var anim_str = 'linear-gradient(5deg';
-        [0,1,0,-1,0,1,0,-1,0,1,0,-1,0,1,0].forEach((i) => {
+        [0,-1,0,1,0,-1,0,1,0,-1,0,1,0,-1,0].forEach((i) => {
             anim_str += ',' + rgb_tab[(index + i) % rgb_tab.length];
         });
         anim_str += ');';
-        console.log("anim_str : ", anim_str);
-        console.log("div : ", div);
         div.setAttribute("style", "--Background: " + anim_str + "--Position: 100% 0%;");
-        div.style.setProperty();
-        console.log("div : ", div);
+    }
+}
+
+function defineRGBAnimationName(pattern, nameDiv, avatarDiv, rgb_tab){
+    if (pattern === '#000'){
+        ['#000','#333','#666','#999','#ccc','#fff','#fff','#ccc','#999','#666','#333','#000'].forEach((color, index) => {
+            nameDiv.style.setProperty('--TC' + (index+1), color);
+            avatarDiv.style.setProperty('--BC' + (index+1), color);
+        });
+    }
+    else {
+        var rgbIndex = rgb_tab.indexOf(pattern) + rgb_tab.length;
+        [0,1,0,-1,0,1,0,-1,0,1,0,-1].forEach((i, idx) => {
+            nameDiv.style.setProperty('--TC' + (idx+1), rgb_tab[(rgbIndex + i) % rgb_tab.length]);
+            avatarDiv.style.setProperty('--BC' + (idx+1), rgb_tab[(rgbIndex + i) % rgb_tab.length]);
+            nameDiv.style.setProperty("animation", "rainbow-text 16s linear infinite");
+            avatarDiv.style.setProperty("animation", "rainbow-border 16s linear infinite");
+        });
     }
 }

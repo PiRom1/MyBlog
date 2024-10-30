@@ -82,7 +82,6 @@ class Message(models.Model):
     text = models.TextField("Texte")
     upvote = models.IntegerField("upvote", default = 0)
     downvote = models.IntegerField("downvote", default = 0)
-    color = models.CharField("color", max_length = 50, default = "")
     session_id = models.ForeignKey(Session, on_delete = models.CASCADE)
     skin = models.TextField("message_skin", default ="{}")
 

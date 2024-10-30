@@ -6,7 +6,7 @@
 										#F00, #CF0, #0F6, #03F, #C0F,
 										#F00, #CF0, #0F6);
 	--Position: 98% 0%;
-	--Animation: steam 15s linear infinite;
+	--Animation: steam 16s linear infinite;
 }
 
 .rainbow:before, .rainbow:after {
@@ -34,4 +34,115 @@
 
 .rainbow:after {
 	filter: blur(20px);
+}
+
+.rainbow-text{
+    animation: rainbow-text 8s linear;
+    animation-iteration-count: infinite;
+	--TC1: #F00;
+	--TC2: #F80;
+	--TC3: #FF0;
+	--TC4: #8F0;
+	--TC5: #0F0;
+	--TC6: #0F8;
+	--TC7: #0FF;
+	--TC8: #08F;
+	--TC9: #00F;
+	--TC10: #80F;
+	--TC11: #F0F;
+	--TC12: #F08;
+}
+.rainbow-border{
+    border: 3px;
+    border-style: solid;
+    animation: rainbow-border 8s linear;
+    animation-iteration-count: infinite;
+	--BC1: #F00;
+	--BC2: #F80;
+	--BC3: #FF0;
+	--BC4: #8F0;
+	--BC5: #0F0;
+	--BC6: #0F8;
+	--BC7: #0FF;
+	--BC8: #08F;
+	--BC9: #00F;
+	--BC10: #80F;
+	--BC11: #F0F;
+	--BC12: #F08;
+}
+@keyframes rainbow-text{
+    100%,0%{
+		color: var(--TC1);
+	}
+	8%{
+		color: var(--TC2);
+	}
+	16%{
+		color: var(--TC3);
+	}
+	25%{
+		color: var(--TC4);
+	}
+	33%{
+		color: var(--TC5);
+	}
+	41%{
+		color: var(--TC6);
+	}
+	50%{
+		color: var(--TC7);
+	}
+	58%{
+		color: var(--TC8);
+	}
+	66%{
+		color: var(--TC9);
+	}
+	75%{
+		color: var(--TC10);
+	}
+	83%{
+		color: var(--TC11);
+	}
+	91%{
+		color: var(--TC12);
+	}
+}
+@keyframes rainbow-border{
+    100%,0%{
+		border-color: var(--BC1);
+	}
+	8%{
+		border-color: var(--BC2);
+	}
+	16%{
+		border-color: var(--BC3);
+	}
+	25%{
+		border-color: var(--BC4);
+	}
+	33%{
+		border-color: var(--BC5);
+	}
+	41%{
+		border-color: var(--BC6);
+	}
+	50%{
+		border-color: var(--BC7);
+	}
+	58%{
+		border-color: var(--BC8);
+	}
+	66%{
+		border-color: var(--BC9);
+	}
+	75%{
+		border-color: var(--BC10);
+	}
+	83%{
+		border-color: var(--BC11);
+	}
+	91%{
+		border-color: var(--BC12);
+	}
 }

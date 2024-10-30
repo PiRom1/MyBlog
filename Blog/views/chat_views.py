@@ -167,6 +167,8 @@ def Index(request, id):
             for i,item_id in enumerate(item_ids):
                 skin = Skin.objects.get(id=item_id).type
                 dict_items[skin] = items[i].item.pattern
+            if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
+                del dict_items['avatar_color']
             
 
             message_text = process_text(message_text, user, 'black', session)
@@ -175,7 +177,7 @@ def Index(request, id):
                 return message_text
             
 
-            new_message = Message(writer = user, text = message_text, pub_date = timezone.now(), color = 'black', session_id = session, skin = str(dict_items))  
+            new_message = Message(writer = user, text = message_text, pub_date = timezone.now(), session_id = session, skin = str(dict_items))  
             history = History(pub_date = timezone.now(), writer = user, text = message_text, message = new_message)
 
             new_message.save()

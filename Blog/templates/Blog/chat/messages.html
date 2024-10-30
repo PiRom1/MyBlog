@@ -32,8 +32,8 @@
 
         <div class="message-content {{message.color}}">
             <span class="message-meta">
-                <i>{{message.pub_date}}</i> 
                 <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
+                <i>{{message.pub_date}}</i>
             </span>
             <p>{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
         </div>
