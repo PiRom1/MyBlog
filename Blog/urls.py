@@ -59,8 +59,10 @@ urlpatterns = [
     path('inventory_2/toggle_item_status', inventory_2_views.toggle_item_status, name='toggle_item_status'),
 
     # HDV
-    path('hdv', hdv_views.list_hdv, name = 'hdv'),
-    path('hdv/buy', hdv_views.buy, name="buy"),
+    path('hdv', hdv_views.list_hdv, name ='hdv'),
+    path('hdv/buy', hdv_views.buy, name='buy'),
+    path('hdv/sell', hdv_views.sell, name='sell'),
+    path('hdv/remove', hdv_views.remove, name='remove'),
 
     # Soundbox
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),
