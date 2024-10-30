@@ -2,6 +2,11 @@
 	position: relative;
 	z-index: 0;
     width:100%;
+	--Background: linear-gradient(5deg,#F00, #CF0, #0F6, #03F, #C0F,
+										#F00, #CF0, #0F6, #03F, #C0F,
+										#F00, #CF0, #0F6);
+	--Position: 98% 0%;
+	--Animation: steam 15s linear infinite;
 }
 
 .rainbow:before, .rainbow:after {
@@ -10,13 +15,12 @@
 	position: absolute;
 	left: -2px;
 	top: -2px;
-	background: linear-gradient(10deg, #fb0094, #0000ff, #00ff00,#ffff00, #ff0000, #fb0094,
-							   #0000ff, #00ff00,#ffff00, #ff0000, #fb0094, #0000ff, #00ff00);
+	background: var(--Background);
 	background-size: 1100%;
 	width: calc(100% + 5px);
 	height: calc(100% + 4px);
 	z-index: -1;
-	animation: steam 12s linear infinite;
+	animation: var(--Animation)
 }
 
 @keyframes steam {
@@ -24,7 +28,7 @@
 		background-position: 0 0;
 	}
 	100% {
-		background-position: 96% 0%;
+		background-position: var(--Position);
 	}
 }
 

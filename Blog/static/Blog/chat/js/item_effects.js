@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const names = document.querySelectorAll('.name a');
     const user_avatars = document.querySelectorAll('.user-avatar img');
     const font_tab = []
+    const rgb_tab = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08'];
 
     console.log("boxes : ", boxes);
 
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 messageContent = message.parentNode;
                 messageContent.parentNode.insertBefore(rgbDiv, messageContent);
                 rgbDiv.appendChild(messageContent);
+                if(skins[key] !== 'rainbow') {defineRGBAnimation(skins[key], rgbDiv, rgb_tab);}
                 const rgbCss = document.getElementById('rainbow-css');
                 if (rgbCss === null) {
                     const css = document.createElement('link');
@@ -96,3 +98,23 @@ document.addEventListener('DOMContentLoaded', function () {
     document.head.appendChild(font);
 });
 
+function defineRGBAnimation(pattern, div, rgb_tab){
+    if (pattern === '#000'){
+        div.setAttribute("style",
+            "--Background: linear-gradient(5deg,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333,#666);" +
+            "--Animation: steam 8s linear infinite;");
+    }
+    else{
+        var index = rgb_tab.indexOf(pattern) + rgb_tab.length;
+        var anim_str = 'linear-gradient(5deg';
+        [0,1,0,-1,0,1,0,-1,0,1,0,-1,0,1,0].forEach((i) => {
+            anim_str += ',' + rgb_tab[(index + i) % rgb_tab.length];
+        });
+        anim_str += ');';
+        console.log("anim_str : ", anim_str);
+        console.log("div : ", div);
+        div.setAttribute("style", "--Background: " + anim_str + "--Position: 100% 0%;");
+        div.style.setProperty();
+        console.log("div : ", div);
+    }
+}
