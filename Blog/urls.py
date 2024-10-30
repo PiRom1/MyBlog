@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -50,10 +50,17 @@ urlpatterns = [
     path('inventory/toggle_item_favorite', inventory_views.toggle_item_favorite, name='toggle_item_favorite'),
     path('inventory/favorite', inventory_views.get_favorite_skins, name='get_favorite_skins'),
     path('inventory/update_equipped', inventory_views.update_equipped, name='update_equipped'),
+
+    # Emojis
+    path('emoji/<int:pk>', inventory_views.use_emoji, name='use_emoji'),
     
     # Inventory_2
     path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory'),
     path('inventory_2/toggle_item_status', inventory_2_views.toggle_item_status, name='toggle_item_status'),
+
+    # HDV
+    path('hdv', hdv_views.list_hdv, name = 'hdv'),
+    path('hdv/buy', hdv_views.buy, name="buy"),
 
     # Soundbox
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),

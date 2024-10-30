@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDV</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+
+    <script src="{% static 'Blog/hdv/js/hdv.js' %}" type="module"></script>
+    
+    {% load custom_filters %}
+</head>
+{% csrf_token %}
+
+<body>
+
+    <h1>Hôtel des Ventes</h1>
+    <br><br>
+    <h2>À vendre</h2>
+    <br>
+    
+    <div style="background:rgba(231, 236, 183, 0.3); border-radius:15px; width:45%; padding-left:5px;">
+        <ul>
+        {% for item in items.patterns %}
+            <li class="item" style="cursor:pointer;" skin="{{items.skins|index:forloop.counter0}}" price="{{prices|index:forloop.counter0}}" seller="{{sellers|index:forloop.counter0}}" pattern="{{items.patterns|index:forloop.counter0}}" id="{{ids|index:forloop.counter0}}">
+                {{prices|index:forloop.counter0}}$ -  {{items.skins|index:forloop.counter0}} | 
+                <span style="color:{{items.patterns|index:forloop.counter0}};">{{items.patterns|index:forloop.counter0}}</span>
+                (vendu par {{sellers|index:forloop.counter0}})
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+
+
+    <!-- Menu d'achat caché -->
+
+    <div id="popup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <span id="close" class="close">&times;</span>
+            <h2>Détails de l'achat</h2>
+            <p><strong>Item :</strong> <span id="item-skin"></span></p>
+            <p><strong>Vendeur :</strong> <span id="seller-name"></span></p>
+            <p><strong>Prix :</strong> <span id="item-price"></span></p>
+            <p><strong>Pattern :</strong> <span id="item-pattern"></span></p>
+            <button id="buy">Confirmer l'achat</button>
+        </div>
+    </div>
+    
+    <style>
+        /* Styles de la popup */
+        .popup {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none; /* Cacher par défaut */
+        }
+    
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f5cb9a96;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+    
+        .close {
+            cursor: pointer;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
+
+
+
+
+</body>

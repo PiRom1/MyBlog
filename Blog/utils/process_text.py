@@ -113,7 +113,7 @@ def process_theophile(text, user):
 
 
 def url_parsing(text):
-
+    
     # url parsing
     text = bleach.linkify(text)
     text = bleach.clean(text, tags=settings.ALLOWED_TAGS, attributes=settings.ALLOWED_ATTRIBUTES)
@@ -174,8 +174,12 @@ def process_text(text, user, color, session):
          print("res", res)
          return res
 
+    text = text.replace('<div>',"")
+    text = text.replace('</div>','<br>')
+    print("text1 : ", text)
     text = process_theophile(text, user)
     text = url_parsing(text)
+    print("text2 : ", text)
     text = youtube_parsing(text)
     text = calembours(text)
     text = reglys(text)

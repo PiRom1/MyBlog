@@ -58,8 +58,14 @@ def view_lootbox(request, pk):
 def open_lootbox(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    skins = list(Skin.objects.all())
+    skins = [skin.image.url for skin in skins]
+    
+    context = {"skins" : skins}
+
     url = "Blog/lootbox/openning.html"
-    return render(request, url)
+    return render(request, url, context)
 
 
 @login_required
@@ -114,4 +120,4 @@ def get_lootbox(request):
     box.save()
     box_user.save()
 
-    return HttpResponseRedirect('/inventory_2')
+    return HttpResponseRedirect('/inventory')

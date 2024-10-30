@@ -134,11 +134,33 @@
                         <div id="skins-list"></div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
                     </div>
                 </div>
+
+                <!-- Bouton 'emojis' pour ouvrir la popup des emojis -->
+                <button id="emojis-button" class="emojis-btn">&#128513;</button>
+
+                <!-- Popup des skins -->
+                <div id="emojis-popup" class="emojis-popup" style="display:none;">
+                    <div class="emojis-popup-content">
+                        
+                        
+                        <h2>Vos émojis possédés</h2>
+                        <div id="emojis-list">
+                            {% for emoji in emojis %}
+                                <img src="{{emoji}}" width="50px" height="50px" class="emoji" style="cursor:pointer;" emoji_name="{{emoji}}"/>
+                            {% endfor %}
+                        </div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
+                    </div>
+                </div>
+
                 <form action="" method="post" id="message_form">
                     {% csrf_token %}
-                    {{ MessageForm }}
-                    <button type="submit">Envoyer</button>
+                    
+                    <div id="message_content" contenteditable="true" class="message-input" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; width: 100%; background-color:white; color:black; text-align:left;"></div>
+                    <input type="hidden" name="message_html" id="message_html">
+                    <button type="submit" id="submit-btn">Envoyer</button>
                 </form>
+                
+                
             </section>
 
             <section class="poll-section">
@@ -163,7 +185,7 @@
         
         </main>
 
-        
+             
        
 
         <footer>

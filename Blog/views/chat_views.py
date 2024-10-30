@@ -106,15 +106,6 @@ def Index(request, id):
 
     
 
-    # types = {}
-    # for skin in Skin.objects.all():
-    #     item = UserInventory.objects.filter(user=request.user).filter(equipped=True).filter(item__item_id=skin.id)
-    #     if item:
-    #         # print("item : ", item[0].item.pattern)
-    #         types[skin.type] = item[0].item.pattern
-    #     else:
-    #         types[skin.type] = None
-
     session = Session.objects.get(id = id)
 
     page_number = int(request.GET.get('page', 1))
@@ -161,9 +152,11 @@ def Index(request, id):
                                   'last_message_id': last_message_id})
 
     if request.method == "POST":
-        message_form = MessageForm(request.POST)
-
-        if message_form.is_valid():
+        # message_form = MessageForm(request.POST)
+        message_text = request.POST.get('message_html')
+        print("text : ", message_text)
+        if message_text:
+            print('valid !')
 
             # Get items
             items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
@@ -176,26 +169,21 @@ def Index(request, id):
                 dict_items[skin] = items[i].item.pattern
             
 
-            new_message = message_form['message']
-            color = message_form['color'].value()
-            #user = message_form['who']
-            text = new_message.value()
-
-            text = process_text(text, user, color, session)
-
-            if not isinstance(text, str):  # Si text est un HttpResponseRedirect
-                return text
+            message_text = process_text(message_text, user, 'black', session)
+            print("TEXTE : ", message_text)
+            if not isinstance(message_text, str):  # Si text est un HttpResponseRedirect
+                return message_text
             
 
-            new_message = Message(writer = user, text = text, pub_date = timezone.now(), color = color, session_id = session, skin = str(dict_items))  
-            history = History(pub_date = timezone.now(), writer = user, text = text, message = new_message)
+            new_message = Message(writer = user, text = message_text, pub_date = timezone.now(), color = 'black', session_id = session, skin = str(dict_items))  
+            history = History(pub_date = timezone.now(), writer = user, text = message_text, message = new_message)
 
             new_message.save()
             history.save()
 
             return HttpResponseRedirect('#bottom')
 
-    message_form = MessageForm()
+    # message_form = MessageForm()
     
 
 
@@ -227,13 +215,24 @@ def Index(request, id):
     yoda_sounds = list(UserSound.objects.filter(user=user))
     
     yoda_sounds = [sound.sound.sound.url for sound in yoda_sounds]
-    print(yoda_sounds)
+   
 
-
-
+    # Get emojis
+    emojis = []
+    try:
+        emoji_item_id = Skin.objects.get(type="emoji").id
+    
+        for item in UserInventory.objects.filter(user=request.user):
+            
+            if item.item.item_id == emoji_item_id and item.item.pattern:
+                emoji_id = item.item.pattern
+                emoji = Emojis.objects.get(id=emoji_id)
+                emojis.append(emoji.image.url)
+    
+    except:
+        emojis = []
     
     context = {"messages" : messages, 
-               "MessageForm" : message_form, 
                "user" : user, "years" : years, 
                "month" : month, "day" : day, 
                "when_new_date" : when_new_date,
@@ -245,7 +244,8 @@ def Index(request, id):
                "page_number_next" : page_number+1,
                "yoda_sounds" : yoda_sounds,
                "last_message_id" : last_message_id,
-               "skins" : [message.skin for message in messages]
+               "skins" : [message.skin for message in messages],
+               "emojis" : emojis
                }
     
     # rappel

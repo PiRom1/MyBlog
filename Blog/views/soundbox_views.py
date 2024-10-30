@@ -21,17 +21,19 @@ def list_sounds(request):
     user = request.user
     print(all_sounds)
     checks = []
+    tags = []
     for sound in all_sounds:
         
         is_checked = UserSound.objects.filter(sound=sound).filter(user=user)
         checks.append(len(is_checked) >= 1)
+        tags.append(sound.tags)
 
     print(checks)
 
     
     url = "Blog/soundbox/list_sounds.html"
 
-    context = {'all_sounds' : zip(all_sounds, checks),
+    context = {'all_sounds' : zip(all_sounds, checks, tags),
                "media_path" : settings.MEDIA_URL,
                "nb_sounds" : len(all_sounds),
                }

@@ -265,6 +265,12 @@ header h1 {
     border: 1px solid #ddd;
 }
 
+
+.emojis-popup {
+    background-color: rgba(240, 148, 108, 0.3);
+}
+
+
 button[type="submit"] {
     background-color: #ff6b6b;
     color: white;
