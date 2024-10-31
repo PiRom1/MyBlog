@@ -35,11 +35,8 @@
                 {% for item in selling_items %}
                     <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
                         {{item.price}}$ -  {{item.type}} | 
-                        {% if item.type != 'font' %}
-                            <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
-                        {% else %}
-                            <span id="font-{{item.item_id}}"></span>
-                        {% endif %}                    
+                        <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
+                        <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>            
                     </li>
                 {% endfor %}
             </ul>
@@ -50,8 +47,8 @@
             <h2>Vos Articles</h2>
             <ul>
                 {% for item in your_items %}
-                    <li class="item" style="cursor:pointer;" skin="{{item.skin}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
-                        {{item.price}}$ -  {{item.skin}} | 
+                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
+                        {{item.price}}$ -  {{item.type}} | 
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
                     </li>

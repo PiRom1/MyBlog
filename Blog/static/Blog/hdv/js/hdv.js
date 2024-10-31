@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Get attributes 
         const item_id = item.getAttribute("item_id");
-        const skin = item.getAttribute("skin");
+        const skin = item.getAttribute("skin-type");
         const seller = item.getAttribute("seller");
         const pattern = item.getAttribute("pattern");
         const price = item.getAttribute("price");
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else {
             circle.style.display = "none";
-            if (skin === "Police") {
+            if (skin === "font") {
                 font_tab.push(pattern);
             }
         }
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (pattern.startsWith('#')) {
                 popup_pattern.innerHTML = pattern + `<span class="color-circle" style="background-color: ${pattern};"></span>`;
             }
-            else if (skin === "Police") {
+            else if (skin === "font") {
                 popup_pattern.innerHTML = `<a style="font-family: '${pattern}'; color: #feefeb;">${pattern}</a>`;
             }
             else {
