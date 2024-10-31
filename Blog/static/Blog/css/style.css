@@ -470,3 +470,7 @@ figure.media figcaption {
     color: #666;
     margin-top: 0.5em;
 }
+
+.message-content p {
+    color: black;
+}
