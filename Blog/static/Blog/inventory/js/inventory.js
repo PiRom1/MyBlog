@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Récupérer les noms des items
     const searchList = ['Tous', 'Equipé', 'Favori', 'box', 'skin'];
 
+    // Charger les fonts
+    var font_tab = [];
+
     function addHeartCircle(item) {
         // Créer un élément div pour le cercle avec le coeur
         const heartCircle = document.createElement('div');
@@ -44,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (itemName && !searchList.includes(itemName)) {searchList.push(itemName);}
         if (itemSkinType && !searchList.includes(itemSkinType)) {searchList.push(itemSkinType);}
+
+        // Fonts
+        if (itemSkinType === 'font' && font_tab.includes(itemPattern) === false) {
+            font_tab.push(itemPattern);
+        }
         
         const pattern = item.getAttribute('data-pattern');
         // Vérifier si le pattern commence par un '#' (hexadécimal)
@@ -103,6 +111,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Charger les fonts
+    var font = document.createElement('link');
+    font.rel = 'stylesheet';
+    font.href = 'https://fonts.googleapis.com/css2?' 
+    for (var f in font_tab) {
+        font.href += 'family=' + font_tab[f].replace(/ /g, '+') + '&';
+    }
+    font.href += 'display=swap';
+    document.head.appendChild(font);
+
     // Cacher le menu contextuel lorsqu'on clique ailleurs
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.inventory-item')) {
@@ -138,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const pattern = selectedItem.getAttribute('data-pattern');
                 const favorite = selectedItem.getAttribute('data-favorite');
                 const skin_type = selectedItem.getAttribute('data-skin-type');
-                additionalInfo = `<strong>Pattern:</strong> ${pattern}<br>
+                additionalInfo = `<strong>Pattern:</strong> <a style="font-family: ${pattern}; color: #000;">${pattern}</a><br>
                                   <strong>Type:</strong> ${skin_type}<br>
                                   <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}`;
             } else if (type === 'box') {
