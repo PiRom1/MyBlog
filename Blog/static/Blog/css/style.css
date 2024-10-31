@@ -428,3 +428,41 @@ footer a:hover {
     margin-left: 100px;
 }
 
+.ck-content {
+    color: black !important;
+}
+.ck-content img {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 auto;  /* Centre l'image horizontalement */
+    width: 20px;     /* Taille fixe si nécessaire */
+    height: 20px;
+}
+
+/* Style de base pour les éléments de figure */
+figure.media {
+    display: block;
+    margin: 1em auto;
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+/* Style pour centrer le contenu */
+figure.media > oembed,
+figure.media > iframe {
+    display: block;
+    max-width: 426px;
+    width: 426px;
+    max-height: 240px;
+    height: 240px;
+    margin: 0 auto;
+    border: none;
+}
+
+/* Style optionnel pour l'espacement du texte autour de la figure */
+figure.media figcaption {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 0.5em;
+}

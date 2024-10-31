@@ -139,6 +139,7 @@ def Index(request, id):
                 return JsonResponse({'messages_html': '',
                                      'last_message_id': last_message_id})
             
+        print("new_message : ", messages)
         messages_html = render_to_string('Blog/chat/messages.html', {
             'messages': messages,
             'user': user,
@@ -154,10 +155,7 @@ def Index(request, id):
     if request.method == "POST":
         # message_form = MessageForm(request.POST)
         message_text = request.POST.get('message_html')
-        print("text : ", message_text)
         if message_text:
-            print('valid !')
-
             # Get items
             items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
             item_ids = [item.item.item_id for item in items]
@@ -170,9 +168,9 @@ def Index(request, id):
             if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
                 del dict_items['avatar_color']
             
-
-            message_text = process_text(message_text, user, 'black', session)
-            print("TEXTE : ", message_text)
+            print("Before : \n", message_text)
+            message_text = process_text(message_text, user, session)
+            print("TEXTE : \n", message_text)
             if not isinstance(message_text, str):  # Si text est un HttpResponseRedirect
                 return message_text
             

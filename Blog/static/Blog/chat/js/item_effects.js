@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const font_tab = []
     const rgb_tab = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08'];
 
-    console.log("boxes : ", boxes);
 
     var i = 0;
     // Loop on messages
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
         skins = message.getAttribute('skins');
         skins = skins.replace(/'/g, '"');
         skins = JSON.parse(skins);
-        console.log("skins : ", skins);
 
         const box = boxes[i];
         const name = names[i];
@@ -27,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Loop on skins
         Object.keys(skins).forEach(function(key) {
-            console.log("key : ", key);
             
             // text color
             if (key === "text_color") {

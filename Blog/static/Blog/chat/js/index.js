@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var loadMoreBtn = document.getElementById('load-more');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const messageForm = document.getElementById('message_content');
+    const messageForm = document.getElementById('message_html');
 
 
     var text_color = document.getElementById('items').getAttribute('text-color');
@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 messagesContainer.setAttribute('last-message-id', data.last_message_id);
             }
             else {
-                console.log('No new messages');
             }
         });
     }; 
@@ -130,8 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var font = document.createElement('link');
         font.rel = 'stylesheet';
         font.href = 'https://fonts.googleapis.com/css2?' 
-        font_tab.forEach(f => {        
-            console.log('font : ', f);
+        font_tab.forEach(f => {
             font.href += 'family=' + f.replace(/ /g, '+') + '&';
         });
         font.href += 'display=swap';
@@ -200,20 +198,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Ouvrir la popup des emojis
     emojisButton.addEventListener('click', function() {
-        console.log('Appuyé');
         if (emojisPopup.style.display == 'block') {
             emojisPopup.style.display = 'none'
         }
         else {
             emojisPopup.style.display = 'block';
         }
-        
-
     });
-
-    
-
-
 
     // Fermer la popup en cliquant à l'extérieur
     window.addEventListener('click', function (event) {
@@ -222,61 +213,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
+    // Gérer le clic sur chaque emoji
     const emojis = document.querySelectorAll('[emoji_name]');
-    console.log("form : ", messageForm);
     emojis.forEach(emoji => {
-        console.log("emoji : ", emoji);  // Ou faire autre chose avec chaque élément
         emoji.addEventListener('click', function() {
-            console.log(emoji);
-            
-            const emojiHTML = `<img src="${emoji.getAttribute('src')}" width="30" height="30" style="display:inline;">`;
-
-            insertAtCursor(messageForm, emojiHTML);
-            cleanUpBreaks(messageForm);
-            
-            // let img = document.createElement('img');
-            // img.src = emoji.getAttribute('src');
-            // img.width = 30;  // Ajuste la taille de l'image si nécessaire
-            // img.height = 30;
-            // img.style.display = 'inline-block';  // Pour éviter le saut de ligne
-            // messageForm.appendChild(img);
-            // console.log('message form : ', messageForm);
-            
-
-        })
+            const emojiSrc = emoji.getAttribute('src');
+            insertAtCursor(emojiSrc);  // Insertion de l'emoji
+        });
     });
 
 
-    function insertAtCursor(editableDiv, html) {
-        editableDiv.focus();
-        const range = window.getSelection().getRangeAt(0);
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-        const fragment = document.createDocumentFragment();
-        
-        while (tempDiv.firstChild) {
-            fragment.appendChild(tempDiv.firstChild);
-        }
-        range.deleteContents();
-        range.insertNode(fragment);
-        range.collapse(false);
-        
-
-    }
-    
-    function cleanUpBreaks(editableDiv) {
-        // Supprime les <br> indésirables à la fin de la div éditable
-        const children = editableDiv.childNodes;
-        for (let i = children.length - 1; i >= 0; i--) {
-            const node = children[i];
-            if (node.nodeName === "BR" && (i === children.length - 1 || children[i + 1].nodeName === "BR")) {
-                editableDiv.removeChild(node);
-            }
+    function insertAtCursor(emojiSrc) {
+        if (window.editorInstance) {  // Vérifiez si l'instance de CKEditor est prête
+            window.editorInstance.model.change(writer => {
+                const imageElement = writer.createElement('imageInline', {
+                    src: emojiSrc,
+                    alt: 'emoji',
+                    width: '20px',
+                    height: '20px'
+                });
+                window.editorInstance.model.insertContent(imageElement, window.editorInstance.model.document.selection);
+            });
+        } else {
+            console.warn("CKEditor n'est pas encore prêt.");
         }
     }
-
-
-
 
     function update_equipped(skinRadios) {
         skinRadios.forEach(radio => {

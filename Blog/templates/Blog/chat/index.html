@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.0/ckeditor5.css">   
 
     <!-- CSS -->
     
@@ -18,6 +19,16 @@
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
 
     <!-- JS -->
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.0/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.0/"
+            }
+        }      
+
+    </script> 
+    <script src="{% static 'Blog/js/ckeditor.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/index.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
     <script src="{% static 'Blog/chat/js/badger.js' %}" type="module"></script>
@@ -91,7 +102,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                    <p>{% autoescape off %}<div class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
+                                    <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -108,7 +119,7 @@
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                     <i>{{message.pub_date}}</i> 
                                 </span>
-                                <p>{% autoescape off %}<div class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|linebreaks}}</div>{% endautoescape %}</p>
+                                <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
                             </div>
                         </div>
                         {% endif %}
@@ -146,7 +157,7 @@
                         <h2>Vos émojis possédés</h2>
                         <div id="emojis-list">
                             {% for emoji in emojis %}
-                                <img src="{{emoji}}" width="50px" height="50px" class="emoji" style="cursor:pointer;" emoji_name="{{emoji}}"/>
+                                <img src="{{emoji}}" width="30px" height="30px" class="emoji" style="cursor:pointer;" emoji_name="{{emoji}}"/>
                             {% endfor %}
                         </div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
                     </div>
@@ -154,12 +165,9 @@
 
                 <form action="" method="post" id="message_form">
                     {% csrf_token %}
-                    
-                    <div id="message_content" contenteditable="true" class="message-input" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; width: 100%; background-color:white; color:black; text-align:left;"></div>
-                    <input type="hidden" name="message_html" id="message_html">
+                    <textarea name="message_html" id="message_html" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; width: 100%; background-color:white; color:black !important; text-align:left;"></textarea>
                     <button type="submit" id="submit-btn">Envoyer</button>
-                </form>
-                
+                </form>  
                 
             </section>
 

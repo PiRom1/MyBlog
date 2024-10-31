@@ -50,6 +50,8 @@ def user_inventory_view(request):
         # Si l'item est un skin
         elif item.type == 'skin':
             skin = Skin.objects.get(id=item.item_id)
+            print(item)
+            print(item.id)
             items.append({
                 'type': 'skin',
                 'item_id': item.id,
@@ -137,7 +139,7 @@ def update_equipped(request):
 @login_required
 def use_emoji(request, pk):
 
-    emoji = UserInventory.objects.get(id=pk)
+    emoji = Item.objects.get(id=pk)
     
 
     if request.method == 'POST':
@@ -150,8 +152,8 @@ def use_emoji(request, pk):
             print(instance.id)
             print(instance.name, instance.image)
 
-            emoji.item.pattern = instance.id
-            emoji.item.save()
+            emoji.pattern = instance.id
+            emoji.save()
 
             return HttpResponseRedirect('/inventory')
     
