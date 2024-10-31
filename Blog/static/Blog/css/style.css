@@ -471,6 +471,6 @@ figure.media figcaption {
     margin-top: 0.5em;
 }
 
-.message-content p {
+.message-content * {
     color: black;
 }
