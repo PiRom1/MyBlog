@@ -9,6 +9,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const user_avatars = document.querySelectorAll('.user-avatar img');
     const font_tab = []
     const rgb_tab = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08'];
+    var favorite_fonts = document.getElementById('items').getAttribute('fonts');
+    favorite_fonts = favorite_fonts.replace(/'/g,'"');
+    favorite_fonts = JSON.parse(favorite_fonts);
+
+    console.log(favorite_fonts);
+
+    favorite_fonts.forEach((font) => {
+        font_tab.push(font);
+    })
 
     console.log("boxes : ", boxes);
 

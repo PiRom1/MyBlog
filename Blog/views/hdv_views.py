@@ -26,7 +26,7 @@ def list_hdv(request):
              'item_id' : item_id,
              'seller' : seller,
              'item' : item,
-             'skin' : skin,
+             'type' : skin.type,
              'price' : price,
              'pattern' : pattern}
         

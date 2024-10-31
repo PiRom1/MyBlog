@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const buy = document.getElementById("buy");
     const remove = document.getElementById("remove");
     const user = document.getElementById("user").getAttribute("user");
-
+    const fonts = [];
     
 
     
@@ -22,9 +22,20 @@ document.addEventListener('DOMContentLoaded', function () {
     items.forEach(item =>  {
 
         item_id = item.getAttribute("item_id");
-        
-        var circle = document.getElementById(`color-circle-${item_id}`);
-        circle.style.backgroundColor = item.getAttribute("pattern");
+        const skin_type = item.getAttribute('skin-type');
+        console.log("skin type : ", skin_type);
+
+        if (skin_type != "font") {
+            var circle = document.getElementById(`color-circle-${item_id}`);
+            circle.style.backgroundColor = item.getAttribute("pattern");
+        }
+
+        else {
+            var font = document.getElementById(`font-${item_id}`);
+            font.innerHTML = `(${item.getAttribute("pattern")})`;
+            font.style.fontFamily = item.getAttribute("pattern");
+            fonts.push(item.getAttribute("pattern"));
+        }
 
         
         
@@ -124,6 +135,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     })
+
+
+    var font_url = document.createElement('link');
+    font_url.rel = 'stylesheet';
+    font_url.href = 'https://fonts.googleapis.com/css2?' 
+    for (var f in fonts) {
+        font_url.href += 'family=' + fonts[f].replace(/ /g, '+') + '&';
+    }
+    font_url.href += 'display=swap';
+    document.head.appendChild(font_url);
 
 
 });
