@@ -217,20 +217,31 @@ def Index(request, id):
     yoda_sounds = [sound.sound.sound.url for sound in yoda_sounds]
    
 
-    # Get emojis
+    # Get emojis and fonts
     emojis = []
-    try:
-        emoji_item_id = Skin.objects.get(type="emoji").id
+    favorite_fonts = []
+
     
-        for item in UserInventory.objects.filter(user=request.user):
-            
-            if item.item.item_id == emoji_item_id and item.item.pattern:
-                emoji_id = item.item.pattern
-                emoji = Emojis.objects.get(id=emoji_id)
-                emojis.append(emoji.image.url)
+    # emoji_item_id = Skin.objects.get(type="emoji").id
+    # font_item_id = Skin.objects.get(type="font").id
     
-    except:
-        emojis = []
+    # for item in UserInventory.objects.filter(user=request.user):
+        
+    #     if item.item.item_id == emoji_item_id and item.item.pattern:
+    #         emoji_id = item.item.pattern
+    #         emoji = Emojis.objects.get(id=emoji_id)
+    #         emojis.append(emoji.image.url)
+        
+
+        
+    #     if item.item.item_id == font_item_id:
+    #         favorite_fonts.append(item.item.pattern)
+    
+    
+    
+
+    
+    
     
     context = {"messages" : messages, 
                "user" : user, "years" : years, 
@@ -245,7 +256,8 @@ def Index(request, id):
                "yoda_sounds" : yoda_sounds,
                "last_message_id" : last_message_id,
                "skins" : [message.skin for message in messages],
-               "emojis" : emojis
+               "emojis" : emojis,
+               "favorite_fonts" : favorite_fonts,
                }
     
     # rappel
