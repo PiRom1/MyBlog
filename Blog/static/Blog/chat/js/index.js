@@ -125,9 +125,21 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
         favoriteItems = data.favorite_items;
         displaySkins();
+        
+        // Charger les fonts
+        var font = document.createElement('link');
+        font.rel = 'stylesheet';
+        font.href = 'https://fonts.googleapis.com/css2?' 
+        font_tab.forEach(f => {        
+            console.log('font : ', f);
+            font.href += 'family=' + f.replace(/ /g, '+') + '&';
+        });
+        font.href += 'display=swap';
+        document.head.appendChild(font);
     });
 
     // Fonction pour afficher les skins par 'data-skin-type'
+    var font_tab = [];
     function displaySkins() {
         const skinGroups = {};
         skinsList.innerHTML = ''; // Vider la liste avant d'ajouter
@@ -150,6 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (item.equipped){
                     previousPerCategory[skinType] = item.id;
                 }
+                if (skinType === 'Police' && font_tab.includes(item.pattern) === false) {
+                    font_tab.push(item.pattern);
+                }
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add('skin-item');
                 // Vérifier si le pattern commence par '#', auquel cas on affiche un cercle de couleur
@@ -170,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         skinRadios = document.querySelectorAll('.skin-radio');
     }
-
 
     // Ouvrir la popup des skins
     skinsButton.addEventListener('click', function () {

@@ -17,38 +17,38 @@ document.addEventListener('DOMContentLoaded', function () {
     
     var item_id;
     var market_id;
+    var font_tab = [];
 
     // Loop throughout every selling items
     items.forEach(item =>  {
 
-        item_id = item.getAttribute("item_id");
-        const skin_type = item.getAttribute('skin-type');
-        console.log("skin type : ", skin_type);
+        // Get attributes 
+        const item_id = item.getAttribute("item_id");
+        const skin = item.getAttribute("skin");
+        const seller = item.getAttribute("seller");
+        const pattern = item.getAttribute("pattern");
+        const price = item.getAttribute("price");
 
-        if (skin_type != "font") {
-            var circle = document.getElementById(`color-circle-${item_id}`);
-            circle.style.backgroundColor = item.getAttribute("pattern");
+        
+        const circle = document.getElementById(`color-circle-${item_id}`);
+        const patternText = document.getElementById(`pattern-${item_id}`); 
+        // Si le pattern commence par un # 
+        console.log("pattern : ", pattern);
+        if (pattern.startsWith('#')) {
+            circle.style.backgroundColor = pattern;
+            patternText.style.display = "none";
         }
-
         else {
-            var font = document.getElementById(`font-${item_id}`);
-            font.innerHTML = `(${item.getAttribute("pattern")})`;
-            font.style.fontFamily = item.getAttribute("pattern");
-            fonts.push(item.getAttribute("pattern"));
+            circle.style.display = "none";
+            if (skin === "Police") {
+                font_tab.push(pattern);
+            }
         }
 
-        
-        
         item.addEventListener('click', function() {
 
             // show detail popup
             popup.style.display = "block";
-
-            // Get attributes 
-            const skin = item.getAttribute("skin");
-            const seller = item.getAttribute("seller");
-            const pattern = item.getAttribute("pattern");
-            const price = item.getAttribute("price");
 
             // assert attributes
             var popup_name = document.getElementById("seller-name");
@@ -56,35 +56,44 @@ document.addEventListener('DOMContentLoaded', function () {
             var popup_pattern = document.getElementById("item-pattern");
             var popup_skin = document.getElementById("item-skin");
 
+            popup_skin.innerHTML = skin;
             popup_name.innerHTML = seller;
             popup_price.innerHTML = price;
-            popup_pattern.innerHTML = pattern;
-            popup_pattern.style.color = pattern;
-            popup_skin.innerHTML = skin;
+            if (pattern.startsWith('#')) {
+                popup_pattern.innerHTML = pattern + `<span class="color-circle" style="background-color: ${pattern};"></span>`;
+            }
+            else if (skin === "Police") {
+                popup_pattern.innerHTML = `<a style="font-family: '${pattern}'; color: #feefeb;">${pattern}</a>`;
+            }
+            else {
+                popup_pattern.innerHTML = pattern;
+            }
 
-            item_id = item.getAttribute("item_id");
             market_id = item.getAttribute("market_id");
 
             
             if (seller === user) {
                 remove.style.display = 'block';
                 buy.style.display = 'none';
-                
             }
 
             else {
                 buy.style.display = 'block';
                 remove.style.display = 'none';
-                
             }
-
-            
-
-            
         })
-
-
     })
+
+    // Charger les fonts
+    var font = document.createElement('link');
+    font.rel = 'stylesheet';
+    font.href = 'https://fonts.googleapis.com/css2?' 
+    font_tab.forEach(f => {        
+        console.log('font : ', f);
+        font.href += 'family=' + f.replace(/ /g, '+') + '&';
+    });
+    font.href += 'display=swap';
+    document.head.appendChild(font);
 
     // Close detail popup
     close.addEventListener('click', function() {
