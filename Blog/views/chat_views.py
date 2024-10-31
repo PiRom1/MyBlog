@@ -224,20 +224,20 @@ def Index(request, id):
     favorite_fonts = []
 
     
-    emoji_item_id = Skin.objects.get(type="emoji").id
-    font_item_id = Skin.objects.get(type="font").id
+    # emoji_item_id = Skin.objects.get(type="emoji").id
+    # font_item_id = Skin.objects.get(type="font").id
     
-    for item in UserInventory.objects.filter(user=request.user):
+    # for item in UserInventory.objects.filter(user=request.user):
         
-        if item.item.item_id == emoji_item_id and item.item.pattern:
-            emoji_id = item.item.pattern
-            emoji = Emojis.objects.get(id=emoji_id)
-            emojis.append(emoji.image.url)
+    #     if item.item.item_id == emoji_item_id and item.item.pattern:
+    #         emoji_id = item.item.pattern
+    #         emoji = Emojis.objects.get(id=emoji_id)
+    #         emojis.append(emoji.image.url)
         
 
         
-        if item.item.item_id == font_item_id:
-            favorite_fonts.append(item.item.pattern)
+    #     if item.item.item_id == font_item_id:
+    #         favorite_fonts.append(item.item.pattern)
     
     
     
