@@ -110,3 +110,9 @@ class EmojiForm(forms.ModelForm):
     class Meta:
         model = Emojis
         fields = ['name', 'image']
+
+
+class BackgroundForm(forms.ModelForm):
+    class Meta:
+        model = Background
+        fields = ['name', 'image']

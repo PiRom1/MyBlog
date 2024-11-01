@@ -1,9 +1,9 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box, Emojis
+from ..models import UserInventory, Item, Skin, Box, Emojis, Background
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from ..forms import EmojiForm
+from ..forms import EmojiForm, BackgroundForm
 
 def get_skin_type(type):
     if type == 'text_color':
@@ -167,5 +167,39 @@ def use_emoji(request, pk):
     url = "Blog/inventory/emoji.html"
 
     context = {'emoji_form' : emoji_form}
+
+    return render(request, url, context)
+
+
+
+
+
+@login_required
+def use_bg(request, pk):
+
+    bg = Item.objects.get(id=pk)
+
+
+
+    if request.method == 'POST':
+    
+        bg_form = BackgroundForm(request.POST, request.FILES)
+
+        if bg_form.is_valid():
+            
+            instance = bg_form.save()
+            print(instance.id)
+            print(instance.name, instance.image)
+
+            bg.pattern = instance.id
+            bg.save()
+
+            return HttpResponseRedirect('/inventory')
+    
+    bg_form = BackgroundForm()
+
+    url = "Blog/inventory/bg.html"
+
+    context = {'bg_form' : bg_form}
 
     return render(request, url, context)

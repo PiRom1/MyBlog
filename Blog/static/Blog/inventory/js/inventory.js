@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
         item.appendChild(heartCircle);
     }
 
+
+    var skinType;
+
     // Mettre à jour l'événement de clic sur les items pour afficher les options du menu contextuel
     items.forEach(item => {
 
@@ -45,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemSkinType = item.getAttribute('data-skin-type');
         const itemPattern = item.getAttribute('data-pattern');
         const itemId = item.getAttribute('data-id');
+        
         
 
         if (itemName && !searchList.includes(itemName)) {searchList.push(itemName);}
@@ -102,8 +106,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 openOption.style.display = 'none';
             }
             
+            console.log(itemSkinType);
             // Gérer l'option "Utiliser" des émojis et backgrounds
-            if ((itemSkinType === 'emoji' || itemSkinType === 'background') && itemPattern == '') {
+            if ((itemSkinType === 'emoji' || itemSkinType === 'background_image') && itemPattern == '') {
                 useOption.style.display = 'block';
             } else {
                 useOption.style.display = 'none';
@@ -206,9 +211,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     useOption.addEventListener('click', function() {
-        const emojiId = selectedItem.getAttribute('data-id');
+
+        var itemId = selectedItem.getAttribute('data-id');
+        var itemType = selectedItem.getAttribute('data-skin-type');
+
         
-        window.location.href = `/emoji/${emojiId}`;
+
+        if (itemType === 'emoji') {
+            window.location.href = `/emoji/${itemId}`;
+        }
+
+        if (itemType === 'background_image') {
+            window.location.href = `/background/${itemId}`;
+        }
+        
     })
 
     // Fonction pour équiper ou déséquiper l'item

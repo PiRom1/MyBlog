@@ -53,6 +53,9 @@ urlpatterns = [
 
     # Emojis
     path('emoji/<int:pk>', inventory_views.use_emoji, name='use_emoji'),
+
+    # Background
+    path('background/<int:pk>', inventory_views.use_bg, name='use_bg'),
     
     # Inventory_2
     path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory'),
