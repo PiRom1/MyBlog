@@ -220,10 +220,11 @@ def Index(request, id):
     # Get emojis and fonts
     emojis = []
     favorite_fonts = []
-
+    background = ''
     
     emoji_item_id = Skin.objects.get(type="emoji").id
     font_item_id = Skin.objects.get(type="font").id
+    bg_item_id = Skin.objects.get(type="background_image").id
     
     for item in UserInventory.objects.filter(user=request.user):
         
@@ -236,7 +237,11 @@ def Index(request, id):
         
         if item.item.item_id == font_item_id:
             favorite_fonts.append(item.item.pattern)
-    
+        
+        if item.item.item_id == bg_item_id:
+            background = Background.objects.get(id=item.item.pattern)
+            background = background.image.url
+            
     
     
 
@@ -258,6 +263,7 @@ def Index(request, id):
                "skins" : [message.skin for message in messages],
                "emojis" : emojis,
                "favorite_fonts" : favorite_fonts,
+               "background" : background,
                }
     
     # rappel

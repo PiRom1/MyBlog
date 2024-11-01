@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
 
+    // Change bg image
+    bg_image = document.getElementById('items').getAttribute('background');
+    console.log('bg : ', bg_image);
+    document.body.style.backgroundImage = `url(${bg_image})`;
+
+
+
     var i = 0;
     // Loop on messages
     messages.forEach((message) => {
