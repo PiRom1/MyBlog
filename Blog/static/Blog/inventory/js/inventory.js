@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemEquipped = item.getAttribute('data-equipped');
         const itemSkinType = item.getAttribute('data-skin-type');
         const itemPattern = item.getAttribute('data-pattern');
+        const itemId = item.getAttribute('data-id');
+        
 
         if (itemName && !searchList.includes(itemName)) {searchList.push(itemName);}
         if (itemSkinType && !searchList.includes(itemSkinType)) {searchList.push(itemSkinType);}
@@ -71,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (itemFavorite === 'True') {
             addHeartCircle(item)
         }
+
+       
+
 
         item.addEventListener('click', function (e) {
             e.preventDefault();

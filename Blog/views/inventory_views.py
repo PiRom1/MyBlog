@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box
+from ..models import UserInventory, Item, Skin, Box, Emojis
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from ..forms import EmojiForm
@@ -63,6 +63,11 @@ def user_inventory_view(request):
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
                 })
+            
+            if skin.type == 'emoji' and item.pattern != '':
+                emoji = Emojis.objects.get(id=item.pattern)
+                print(items[-1]['image'])
+                items[-1]['image'] = emoji.image.url
     
     context = {
         'items': items

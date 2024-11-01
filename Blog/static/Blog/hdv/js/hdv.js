@@ -45,6 +45,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+
+        // Show emoji image
+        console.log(skin);
+        if (skin === 'emoji' && pattern != '') {
+            var img = document.getElementById(`img-${item_id}`);
+            img.style.display = 'inline';
+            patternText.style.display = 'none';
+        }
+
         item.addEventListener('click', function() {
 
             // show detail popup

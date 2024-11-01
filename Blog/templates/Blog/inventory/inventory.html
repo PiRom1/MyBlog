@@ -37,7 +37,7 @@
              {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
 
-            <img src="{{ item.image }}" alt="{{ item.name }}">
+            <img src="{{ item.image }}" alt="{{ item.name }}" id="img-{{item.item_id}}">
             <!-- <h3>{{ item.name }}</h3> -->
         </div>
         {% endfor %}
