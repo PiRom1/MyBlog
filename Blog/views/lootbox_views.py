@@ -44,12 +44,14 @@ def get_random_animated_color():
 @login_required
 def view_lootbox(request, pk):
     box = Box.objects.get(pk=pk)
+    box_img = box.image.url
     skins = list(Skin.objects.filter(box_id=box.id))
     print("Skins : ", skins)
-    skins = zip([skin.name for skin in skins], [skin.image.url for skin in skins])
+    skins = zip([skin.type for skin in skins], [skin.image.url for skin in skins])
 
     context = {'skins' : skins,
-               'box_id': pk}
+               'box_id': pk,
+               'box_img' : box_img}
     url = 'Blog/lootbox/view_box.html'
     return render(request, url, context)
 

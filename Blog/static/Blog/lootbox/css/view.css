@@ -31,10 +31,16 @@ body {
 
 .lootbox {
     margin-bottom: 20px;
+    transition: transform 0.3s ease;
 }
 
 .lootbox img {
     width: 200px;
+    transition: transform 0.3s ease;
+}
+
+.lootbox img:hover {
+    transform: scale(1.1);
 }
 
 .items {
@@ -46,7 +52,7 @@ body {
 }
 
 .items img {
-    width: 70px;
+    width: 120px;
     margin: 5px;
     transition: transform 0.3s ease;
 }
@@ -85,12 +91,18 @@ body {
 .image {
     position: relative;
     padding-bottom: 15px;
+    
+}
+
+.image:hover .text {
+    display:block;
 }
 
 .text {
     position: absolute;
     bottom:0;
     left:0;
+    display: none;
 }
 
 

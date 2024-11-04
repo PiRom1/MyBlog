@@ -377,18 +377,48 @@ def increment_enjoy(request):
 
 
 def tkt_view(request):
-    print('ici')
     
-    texts = ["Je ramène les chocolatines demain !", 
-                "Je ramène plein de croissants demain matin !", 
-                "Je vous invite au restau ce midi les p'tits potes, ça me fait plaisir :)",
-                "Les gars demain matin c'est moi qui ramène le p'tit dèj ;)",
-                ]
-    print(175)
+    
+    texts = ["Tu crois encore que ce bouton sert à quelque chose ?",
+             "Sérieux, arrête de cliquer, ça va t'amener nul part ... ",
+             "T'es encore là ???",
+             "Tu comptes cliquer encore longtemps ?",
+             "T'es encore là ???",
+             "À un moment il va falloir se trouver un vrai travail !",
+             "J'en conclus que tu es probablement en intercontrat ...",
+             "Je vais faire remonter à la direction que tu as du temps à perdre !",
+             "Bon... Tu vas cliquer combien de fois encore ?",
+             "Je n'ai rien à t'apprendre, je te promets !",
+             "D'accord, je vois ... Monsieur cherche des easter eggs c'est cela ?",
+             "Eh bien je suis désolé de t'apprendre que je n'en renferme aucun !",
+             "Aucun, oui oui, tu m'as bien entendu !",
+             "J'ai juste l'impression que tu me fais des attouchements là !",
+             "Si tu as autant de temps à perdre, n'hésite pas à contribuer à Chat Acelys !",
+             "Le GitHub est donné sur la page d'accueil !",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Tu ne vas donc jamais me lâcher les baskets ?",
+             "Ah oui donc tu es quelqu'un de plutôt persistant !",
+             "Me toucher dix fois pour avoir un nouveau message, il faut le faire !",
+             "Tu as bien mérité un petit cadeau alors !",
+             "Tends l'oreille, je vais te confier un secret ...",
+             "Écoute attentivement ...",
+            ]
+    
 
-    session_id = request.GET.get('session')
-    session = Session.objects.get(id=session_id)
-    message = Message(writer = request.user, text = rd.choice(texts), pub_date = timezone.now(), color = 'black', session_id = session)  
-    message.save()
+    user = User.objects.get(username=request.user.username)
+    counter = user.tkt_counter
+    text = texts[counter]
 
-    return HttpResponseRedirect(f'/{session_id}#bottom')
+    if counter < len(texts)-1:
+        user.tkt_counter += 1
+        user.save()
+
+
+    return JsonResponse({'text' : text})

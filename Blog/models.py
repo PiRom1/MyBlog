@@ -54,6 +54,7 @@ class User(AbstractUser):
     yoda_counter = models.IntegerField("Yoda_counter", default = 0)
     enjoy_counter = models.IntegerField("Enjoy_counter", default = 0)
     coins = models.IntegerField("Diplodocoins", default = 0)    
+    tkt_counter = models.IntegerField("tkt_counter", default=0)
     
     class Meta:
         verbose_name = 'Utilisateur'

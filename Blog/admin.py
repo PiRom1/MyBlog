@@ -12,6 +12,7 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets[1][1]['fields'] += ('yoda_counter',)
     fieldsets[1][1]['fields'] += ('enjoy_counter',)
     fieldsets[1][1]['fields'] += ('coins',)
+    fieldsets[1][1]['fields'] += ('tkt_counter',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)

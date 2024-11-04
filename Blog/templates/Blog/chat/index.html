@@ -34,6 +34,7 @@
     <script src="{% static 'Blog/chat/js/badger.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
+    <script src="{% static 'Blog/chat/js/tkt.js' %}"></script>
     
     {% load custom_filters %}
 </head>
@@ -63,12 +64,13 @@
         Your browser does not support the audio element.
     </audio>
 
-
-    <div class="tkt" style="position:fixed; cursor:pointer;">
-        <a href="/tkt/?session={{session.id}}">
-            <img src="{% static 'img/clique.png' %}" width="150" onclick="clique_tkt()"/>
-        </a>
+    
+    <div class="tkt" style="position:fixed; cursor:pointer;" id="tkt-btn">
+        <img src="{% static 'img/clique.png' %}" width="150"/>
     </div>
+
+
+    <div id="tkt-popup" style="display:none;" class="tkt-popup"></div>
 
 
     
