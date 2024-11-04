@@ -409,7 +409,8 @@ def tkt_view(request):
              "Tu as bien mérité un petit cadeau alors !",
              "Tends l'oreille, je vais te confier un secret ...",
              "Écoute attentivement ...",
-            ]
+            
+]
     
 
     user = User.objects.get(username=request.user.username)

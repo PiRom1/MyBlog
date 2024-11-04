@@ -19,7 +19,10 @@
     <div class="blurred-background"></div>
     <!-- Conteneur pour le titre, la barre de recherche et le bouton de filtre -->
     <div class="inventory-header">
+        
+
         <h1>Inventaire</h1>
+
 
         <!-- Barre de recherche avec auto-complétion -->
         <div class="search-container">
@@ -27,6 +30,13 @@
             <input type="text" id="search-bar" class="search-bar" placeholder="Filtrer les items...">
             <div id="autocomplete-list" class="autocomplete-items" style="display: none;"></div>
         </div>
+
+        
+
+    </div>
+
+    <div class="coins">
+        {{coins}} <img src="{% static 'img/lootbox_1/coin.png' %}" width="30"/>
     </div>
 
     <div class="inventory-grid">
@@ -70,7 +80,7 @@
             <span id="close" class="close">&times;</span>
             <h2 id="item-name"></h2>
             <p><strong>Pattern :</strong> <span id="item-pattern"></span></p>
-            <p><strong>Prix :</strong> <input type="number" id="price" name="price" min="0" step="1" /> </p>
+            <p><strong>Prix :</strong> <input type="number" id="price" name="price" min="0" step="1" /> <img src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> </p>
             
             <button id="sell">Confirmer la mise en vente</button>
         </div>

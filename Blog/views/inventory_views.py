@@ -70,7 +70,8 @@ def user_inventory_view(request):
                 items[-1]['image'] = emoji.image.url
     
     context = {
-        'items': items
+        'items': items,
+        'coins' : request.user.coins,
     }
     
     return render(request, 'Blog/inventory/inventory.html', context)

@@ -89,3 +89,8 @@ h2 {
     border: 2px solid #fff; /* Optionnel : bordure blanche pour plus de visibilité */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère pour l'effet de relief */
 }
+
+
+.coin {
+    padding-left: 1%;
+}

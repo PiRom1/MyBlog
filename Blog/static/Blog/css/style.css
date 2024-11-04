@@ -86,12 +86,18 @@ header h1 {
     margin-bottom: 15px;
 }
 
+.user-avatar img:hover {
+    transform: scale(1.1);
+}
+
+
 .user-avatar img {
     border-radius: 50%;
     width: 50px;
     height: 50px;
     object-fit: cover;
     margin-right: 15px;
+    transition: transform 0.3s ease;
 }
 
 .message-content {
@@ -488,3 +494,4 @@ figure.media figcaption {
     z-index: 1000;
 
 }
+
