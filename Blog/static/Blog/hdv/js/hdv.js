@@ -48,17 +48,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Show emoji image
         console.log(skin);
-        if (skin === 'emoji' && pattern != '') {
+        if ( (skin === 'emoji' || skin === 'background_image') && pattern != '') {
             var img = document.getElementById(`img-${item_id}`);
             img.style.display = 'inline';
             patternText.style.display = 'none';
         }
 
+
+
+
         item.addEventListener('click', function() {
 
             // show detail popup
             popup.style.display = "block";
-
+            const item_id = item.getAttribute("item_id");
             // assert attributes
             var popup_name = document.getElementById("seller-name");
             var popup_price = document.getElementById("item-price");
@@ -73,6 +76,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             else if (skin === "font") {
                 popup_pattern.innerHTML = `<a style="font-family: '${pattern}'; color: #feefeb;">${pattern}</a>`;
+            }
+            else if (skin === 'emoji') {
+                popup_pattern.innerHTML = '';
+                var url = document.getElementById(`img-${item_id}`).src;
+                
+                var emoji_popup_img = document.createElement('img');
+                emoji_popup_img.src = url;
+                emoji_popup_img.width='25';
+                emoji_popup_img.height='25';
+                emoji_popup_img.style.display = 'inline;'
+
+                popup_pattern.appendChild(emoji_popup_img);
+            }
+            else if (skin === 'background_image') {
+                popup_pattern.innerHTML = '';
+                var url = document.getElementById(`img-${item_id}`).src;
+                
+                var emoji_popup_img = document.createElement('img');
+                emoji_popup_img.src = url;
+                emoji_popup_img.width='25';
+                emoji_popup_img.height='25';
+                emoji_popup_img.style.display = 'inline;'
+
+                popup_pattern.appendChild(emoji_popup_img);
             }
             else {
                 popup_pattern.innerHTML = pattern;
@@ -137,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     remove.addEventListener('click', function() {
         
         const url = "hdv/remove"
-        
+        console.log(item_id);
         fetch(url, {
             method: 'POST',
             headers: {

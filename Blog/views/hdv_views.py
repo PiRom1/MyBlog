@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box, Market, MarketHistory, Emojis
+from ..models import UserInventory, Item, Skin, Box, Market, MarketHistory, Emojis, Background
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
@@ -26,6 +26,10 @@ def list_hdv(request):
         if skin.type == 'emoji' and pattern != '':
             emoji = Emojis.objects.get(id=pattern)
             url = emoji.image.url
+        
+        if skin.type == 'background_image' and pattern != '':
+            background = Background.objects.get(id=pattern)
+            url = background.image.url
 
 
         d = {'market_id' : market_id,
@@ -151,7 +155,7 @@ def remove(request):
     # Get data
     user = request.user
     item_id = request.POST.get('id')
-    
+    print(item_id)
     vente = Market.objects.get(item_id=item_id)
     vente.delete()
 

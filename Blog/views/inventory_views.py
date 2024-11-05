@@ -68,6 +68,10 @@ def user_inventory_view(request):
                 emoji = Emojis.objects.get(id=item.pattern)
                 print(items[-1]['image'])
                 items[-1]['image'] = emoji.image.url
+            
+            if skin.type == 'background_image' and item.pattern != '':
+                background = Background.objects.get(id=item.pattern)
+                items[-1]['image'] = background .image.url
     
     context = {
         'items': items,
