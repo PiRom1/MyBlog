@@ -10,6 +10,9 @@
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+    
 </head>
 <body>
     <h1>Update Sondage: {{ sondage.question }}</h1>

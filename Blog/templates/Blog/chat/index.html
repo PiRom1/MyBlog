@@ -28,6 +28,7 @@
         }      
 
     </script> 
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/js/ckeditor.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/index.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
@@ -41,7 +42,7 @@
 
 <body>
 
-    
+    {% include "../bg.html" %}
     <div id="items" text-color="{{text_color}}" border-color="{{border_color}}" background-color="{{background_color}}" fonts="{{favorite_fonts}}" background="{{background}}"></div>
 
 

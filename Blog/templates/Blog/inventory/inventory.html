@@ -13,9 +13,13 @@
     <script src="{% static 'Blog/inventory/js/inventory.js' %}" type="module"></script>
     <script src="{% static 'Blog/inventory/js/autocomplete.js' %}" type="module"></script>
     <script src="{% static 'Blog/inventory/js/sell.js' %}" type="module"></script>
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
 
 </head>
 <body>
+    
+    {% include "../bg.html" %}
+
     <div class="blurred-background"></div>
     <!-- Conteneur pour le titre, la barre de recherche et le bouton de filtre -->
     <div class="inventory-header">
@@ -70,6 +74,8 @@
 
             <!-- Spécifique aux emojis et backgrounds -->
             <li id="use-option" style="display: none;">Utiliser</li>
+
+            
             
         </ul>
     </div>

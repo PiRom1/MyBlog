@@ -13,13 +13,15 @@
 
     
     <script src="{% static 'Blog/hdv/js/hdv.js' %}" type="module"></script>
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     
     {% load custom_filters %}
 </head>
 {% csrf_token %}
 
 <body>
-
+    
+    {% include "../bg.html" %}
     <div id="user" user="{{user}}"></div>
 
     <h1>Hôtel des Ventes</h1>

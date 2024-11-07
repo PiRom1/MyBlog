@@ -18,9 +18,12 @@
     <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
     <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script>
     <script src="{% static 'Blog/soundbox/js/filter.js' %}" type="module"></script>
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
 
     <body>
-       
+        {{bg}}
+        {% include "../bg.html" %}
+
         <h1>Paramètres de la soundbox </h1>
         <img src="{% static 'img/yoda.png' %}" width="150" id="yoda" nb_sounds={{nb_sounds}}/>
         <br><br>

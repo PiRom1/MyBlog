@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const remove = document.getElementById("remove");
     const user = document.getElementById("user").getAttribute("user");
     const fonts = [];
-    
+    var item_id;
 
     
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     items.forEach(item =>  {
 
         // Get attributes 
-        const item_id = item.getAttribute("item_id");
+        item_id = item.getAttribute("item_id");
         const skin = item.getAttribute("skin-type");
         const seller = item.getAttribute("seller");
         const pattern = item.getAttribute("pattern");
@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // show detail popup
             popup.style.display = "block";
-            const item_id = item.getAttribute("item_id");
+            item_id = item.getAttribute("item_id");
+            console.log('item id : ', item_id);
             // assert attributes
             var popup_name = document.getElementById("seller-name");
             var popup_price = document.getElementById("item-price");
@@ -164,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
     remove.addEventListener('click', function() {
         
         const url = "hdv/remove"
+        
         console.log(item_id);
         fetch(url, {
             method: 'POST',
