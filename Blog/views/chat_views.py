@@ -167,6 +167,8 @@ def Index(request, id):
                 dict_items[skin] = items[i].item.pattern
             if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
                 del dict_items['avatar_color']
+            if 'border_image' in dict_items:
+                dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
             
             print("Before : \n", message_text)
             message_text = process_text(message_text, user, session)

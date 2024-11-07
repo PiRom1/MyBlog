@@ -111,6 +111,15 @@ header h1 {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
+.message-border-image {
+    flex: 1;
+    border-image-source: url('/media/BorderImages/dino.png');
+    border-image-slice: 31 16 30 15 fill;
+    border-image-outset: 0px;
+    border-image-repeat: round;
+    border-style: solid;
+    border-width: 30px 15px;
+}
 
 .message-meta {
     font-size: 0.9rem;
