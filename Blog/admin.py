@@ -108,6 +108,9 @@ class EmojisAdmin(admin.ModelAdmin):
 class BackgroundAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'image')
 
+@admin.register(BorderImage)
+class BorderImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'image')
 
 @admin.register(Font)
 class FontAdmin(admin.ModelAdmin):

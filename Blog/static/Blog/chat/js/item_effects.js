@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // text color
             if (key === "text_color") {
-                message.style.setProperty('color', skins[key], 'important')
+                box.querySelectorAll('p').forEach((text) => {
+                    modifLastElement(text, key, skins[key]);
+                });
             }
 
             // border color
@@ -78,10 +80,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // font
             else if (key === "font") {
-                message.childNodes[1].style.setProperty('font-family', skins[key], 'important');
+                box.querySelectorAll('p').forEach((text) => {
+                    modifLastElement(text, key, skins[key]);
+                });
                 if (font_tab.includes(skins[key]) === false) {
                     font_tab.push(skins[key]);
                 }
+            }
+
+            // border image
+            else if (key === "border_image") {
+                const borderDiv = document.createElement('div');
+                borderDiv.className = 'message-border-image';
+                messageContent = message.parentNode;
+                messageContent.parentNode.insertBefore(borderDiv, messageContent);
+                borderDiv.appendChild(messageContent);
+                borderDiv.style.setProperty('border-image-source', `url(${skins[key]})`, 'important');
             }
 
             // Rainbow border
@@ -161,5 +175,20 @@ function defineRGBAnimationName(pattern, nameDiv, avatarDiv, rgb_tab){
             nameDiv.style.setProperty("animation", "rainbow-text 16s linear infinite");
             avatarDiv.style.setProperty("animation", "rainbow-border 16s linear infinite");
         });
+    }
+}
+
+function modifLastElement(element, skin, pattern){
+    if (element.children.length > 0) {
+        modifLastElement(element.children[0], skin, pattern);
+    }
+    else {
+        if (skin === 'text_color') {
+            element.style.setProperty('color', pattern, 'important');
+        }
+        else if (skin === 'font') {
+            element.style.setProperty('font-family', pattern, 'important');
+            element.style.setProperty('font-size', '1.2em', 'important');
+        }
     }
 }
