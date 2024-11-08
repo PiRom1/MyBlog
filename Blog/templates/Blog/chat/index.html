@@ -173,30 +173,44 @@
                 
             </section>
 
-            <section class="poll-section">
-                <div class="poll-container">
-                    <h3>Sondage du jour :</h3>
-                    <p class="poll-question">{{sondage.question}}</p>
-                    
-                    <div class="poll-options">
-                        {% for choice in choices %}
-                            <a href="/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
-                                <div class="poll-option{% if choice == vote %} my_vote{% endif %}">                              
-                                    {{choice.choice}}
-                                
-                                <span class="poll-votes">{{choice.votes}} {% if choice.votes > 1 %}votes{% else %}vote{% endif %}</span>
-                                
-                                </div>
-                            </a>
+            <!-- Nouvelle div qui englobe le sondage et les actions -->
+            <div class="poll-and-actions">
+                <section class="poll-section">
+                    <div class="poll-container">
+                        <h3>Sondage du jour :</h3>
+                        <p class="poll-question">{{sondage.question}}</p>
+                        
+                        <div class="poll-options">
+                            {% for choice in choices %}
+                                <a href="/sondages/vote/{{choice.sondage.id}}/{{choice.id}}">
+                                    <div class="poll-option{% if choice == vote %} my_vote{% endif %}">                              
+                                        {{choice.choice}}
+                                    
+                                    <span class="poll-votes">{{choice.votes}} {% if choice.votes > 1 %}votes{% else %}vote{% endif %}</span>
+                                    
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section pour les actions utilisateur -->
+                <section class="opening-logs-section">
+                    <h2>Dernières ouvertures de box</h2>
+                    <div id="opening-logs">
+                        {% for log in opening_logs %}
+                            <div class="log-entry">
+                                <span class="log-user">{{ log.user.username }}</span> &nbsp; a obtenu &nbsp;
+                                <span class="log-skin" style="color: {{ log.skin.rarity.color }}">{{ log.skin.name }}</span>
+                                <span class="log-date">{{ log.date }}</span>
+                            </div>
                         {% endfor %}
                     </div>
-                </div>
-            </section>
-        
-        </main>
+                </section>
+            </div>
 
-             
-       
+        </main>
 
         <footer>
             <a href="/stats/{{session.id}}">Statistiques</a> | <a href="/">Home</a> | <a href="/list_sounds">Paramètres de la Soundbox</a>

@@ -250,6 +250,9 @@ def Index(request, id):
     
     
     
+    # Récupérer les 10 derniers opening logs
+    opening_logs = OpeningLog.objects.all().order_by('-date')[:10]
+    
     context = {"messages" : messages, 
                "user" : user, "years" : years, 
                "month" : month, "day" : day, 
@@ -266,6 +269,7 @@ def Index(request, id):
                "emojis" : emojis,
                "favorite_fonts" : favorite_fonts,
                "background" : background,
+               "opening_logs": opening_logs,  # Ajout des opening logs
                }
     
     # rappel
@@ -381,7 +385,7 @@ def increment_enjoy(request):
 def tkt_view(request):
     
     
-    texts = ["Tu crois encore que ce bouton sert à quelque chose ?",
+    texts = ["Tu crois encore que ce bouton sert �� quelque chose ?",
              "Sérieux, arrête de cliquer, ça va t'amener nul part ... ",
              "T'es encore là ???",
              "Tu comptes cliquer encore longtemps ?",

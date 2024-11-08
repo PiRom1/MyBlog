@@ -277,10 +277,17 @@ class MarketHistory(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     item = models.ForeignKey(Item, on_delete = models.CASCADE)
     price = models.IntegerField("price", default = 100)
-    date = models.DateField("Date de vente", default = datetime.date.today)
+    date = models.DateTimeField("Date de vente", default = datetime.datetime.today)
     ACTION = [('buy', 'Buy'), ('sell', 'Sell')]
     action = models.CharField("action", max_length=4, choices = ACTION, default = 'sell')
 
     def __str__(self):
         return f"{self.user} : {self.action} {self.item} ({self.price})"
-    
+
+class OpeningLog(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    skin = models.ForeignKey(Skin, on_delete = models.CASCADE)
+    date = models.DateTimeField("Date d'ouverture", default = datetime.datetime.today)
+
+    def __str__(self):
+        return f"{self.user} : {self.skin} ({self.date})"    

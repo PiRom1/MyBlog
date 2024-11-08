@@ -115,3 +115,7 @@ class BorderImageAdmin(admin.ModelAdmin):
 @admin.register(Font)
 class FontAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
+
+@admin.register(OpeningLog)
+class OpeningLogsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'skin', 'date')

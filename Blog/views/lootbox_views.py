@@ -38,7 +38,7 @@ def get_random_animated_color():
 #     # item.save()
 #     # user_item.save()
 
-#     url = 'Blog/lootbox/openning.html'
+#     url = 'Blog/lootbox/opening.html'
 #     return render(request, url)
 
 @login_required
@@ -69,7 +69,7 @@ def open_lootbox(request):
     
     context = {"skins" : skins}
 
-    url = "Blog/lootbox/openning.html"
+    url = "Blog/lootbox/opening.html"
     return render(request, url, context)
 
 
@@ -110,6 +110,9 @@ def drop_item(request):
                              item=item)   
     item.save()
     itemUser.save()
+
+    OpeningLog(user=request.user,
+                skin=skin).save()
 
     return JsonResponse({'status': 'success', 'message': 'Item dropped successfully!'})
 

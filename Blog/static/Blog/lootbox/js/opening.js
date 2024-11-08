@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     
     // link.rel = 'stylesheet';
-    // link.href = '/static/Blog/lootbox/css/openning.css'; // Remplacer par ton fichier CSS
+    // link.href = '/static/Blog/lootbox/css/opening.css'; // Remplacer par ton fichier CSS
     // document.head.appendChild(link);
   }
 
