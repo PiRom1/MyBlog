@@ -20,6 +20,10 @@
   <!-- JS -->
   <script src="{% static 'Blog/lootbox/js/opening.js' %}"></script>
   <meta name="csrf-token" content="{{ csrf_token }}">
+  <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+  {% include "../bg.html" %}
+
+
 </head>
 
 
@@ -55,8 +59,8 @@
    
     
       
-        <button role="button" class="button" id="button">
-          Ouvrir ({{open_price}} <img src="{% static 'img/lootbox_1/coin.png' %}" width="30"/>)
+        <button role="button" class="button" id="button" can-open="{{can_open}}">
+          <span id="open-text">Ouvrir</span> ({{open_price}} <img src="{% static 'img/lootbox_1/coin.png' %}" width="30"/>)
         </button>
 
 

@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const favoriteOption = document.getElementById('favorite-option');
     const openOption = document.getElementById('open-option');
     const useOption = document.getElementById('use-option');
+
+   
     
     // Récupérer les noms des items
     const searchList = ['Tous', 'Equipé', 'Favori', 'box', 'skin'];
@@ -107,12 +109,26 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             console.log(itemSkinType);
-            // Gérer l'option "Utiliser" des émojis et backgrounds
-            if ((itemSkinType === 'emoji' || itemSkinType === 'background_image') && itemPattern == '') {
-                useOption.style.display = 'block';
-            } else {
-                useOption.style.display = 'none';
+
+            // Gérer l'option "Utiliser" des émojis 
+            if (itemSkinType === 'emoji') {
+                favoriteOption.style.display = 'none';
+                if (itemPattern == '') {
+                    useOption.style.display = 'block';
+                } else {
+                    useOption.style.display = 'none';
+                }
             }
+
+            // Gérer l'option "Utiliser" des Backgrounds 
+            if (itemSkinType === 'background_image') {
+                favoriteOption.style.display = 'none';
+                useOption.style.display = 'block';
+            }
+                
+
+           
+
 
             // Positionner le menu contextuel à l'endroit du clic
             contextMenu.style.top = `${e.clientY}px`;
@@ -214,6 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var itemId = selectedItem.getAttribute('data-id');
         var itemType = selectedItem.getAttribute('data-skin-type');
+        var pattern = selectedItem.getAttribute('data-pattern');
 
         
 
@@ -222,7 +239,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (itemType === 'background_image') {
+            if (pattern === '') {
             window.location.href = `/background/${itemId}`;
+            }
+            else {
+                console.log(itemId);
+                fetch('/equip_bg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+                    },
+                    body: `item_id=${itemId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.body.style.backgroundImage = `url(${data['bg_url']})`;
+                    // window.location.href='/inventory';
+                })
+            }
         }
         
     })

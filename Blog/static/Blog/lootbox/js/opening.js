@@ -120,10 +120,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   console.log('départ');
   var button = document.getElementById('button');
-  button.addEventListener('click', function(){
+  const can_open = button.getAttribute('can-open');
+  console.log(can_open);
+  
+  if (can_open === 'False') {
+    button.style.backgroundColor = '#888888bb';
+    }
 
-    replaceContent();
-    
+
+  button.addEventListener('click', function(){
+    if (can_open === 'True') {
+      replaceContent();
+    }
+        
     });
 });
 

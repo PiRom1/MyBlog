@@ -73,9 +73,20 @@ def user_inventory_view(request):
                 background = Background.objects.get(id=item.pattern)
                 items[-1]['image'] = background .image.url
     
+
+    background_id = Skin.objects.get(type='background_image').id
+    bg = UserInventory.objects.filter(item_id__item_id=background_id).filter(equipped=True)
+    if bg:
+        bg = Background.objects.get(id = bg[0].item.pattern).image.url
+    else:
+        bg = None
+
+
     context = {
         'items': items,
         'coins' : request.user.coins,
+        'bg' : bg,
+
     }
     
     return render(request, 'Blog/inventory/inventory.html', context)
@@ -208,3 +219,29 @@ def use_bg(request, pk):
     context = {'bg_form' : bg_form}
 
     return render(request, url, context)
+
+
+@login_required
+def equip_bg(request):
+
+    # Get data
+    item_id = request.POST.get('item_id')
+    bg = Item.objects.get(pk=item_id)
+
+    # Unequipp bg
+    user_bgs = UserInventory.objects.filter(item_id__item_id = bg.item_id)
+    for user_bg in user_bgs:
+        user_bg.equipped = False
+        user_bg.save()
+
+
+
+    # Equip bg
+    bg_id = bg.pattern
+    bg = Background.objects.get(pk=bg_id)
+    user_item = UserInventory.objects.get(item_id=item_id)
+    user_item.equipped = True
+    user_item.save()
+
+    return JsonResponse({'bg_url' : bg.image.url})
+

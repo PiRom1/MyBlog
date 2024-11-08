@@ -203,6 +203,14 @@ def UserView(request, id):
     plot = get_messages_plot(messages, viewed_user)
 
 
+    background_id = Skin.objects.get(type='background_image').id
+    bg = UserInventory.objects.filter(item_id__item_id=background_id).filter(user=viewed_user).filter(equipped=True)
+    if bg:
+        bg = Background.objects.get(id=bg[0].item.pattern).image.url
+    else:
+        bg = None
+    
+
 
     url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
@@ -211,6 +219,7 @@ def UserView(request, id):
                'messages' : messages,
                'words' : words,
                'plot' : plot,
+               'user_bg' : bg,
                }
 
     return render(request, url, context)

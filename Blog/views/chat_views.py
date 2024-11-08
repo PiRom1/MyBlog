@@ -240,7 +240,7 @@ def Index(request, id):
         if item.item.item_id == font_item_id:
             favorite_fonts.append(item.item.pattern)
         
-        if item.item.item_id == bg_item_id and item.favorite:
+        if item.item.item_id == bg_item_id and item.equipped:
             background = Background.objects.get(id=item.item.pattern)
             background = background.image.url
             

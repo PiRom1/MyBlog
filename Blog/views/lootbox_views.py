@@ -50,10 +50,13 @@ def view_lootbox(request, pk):
     print("Skins : ", skins)
     skins = zip([skin.type for skin in skins], [skin.image.url for skin in skins])
 
+    can_open = request.user.coins >= open_price
+
     context = {'skins' : skins,
                'box_id': pk,
                'box_img' : box_img,
-               'open_price' : open_price}
+               'open_price' : open_price,
+               'can_open' : can_open}
     
     url = 'Blog/lootbox/view_box.html'
     return render(request, url, context)
@@ -83,7 +86,9 @@ def drop_item(request):
     # Delete box in user inventory
     box = UserInventory.objects.filter(item_id__type='box').filter(user_id=request.user).first()
     box_id = box.item_id
+    open_price = Box.objects.get(pk = box.item.item_id).open_price
     box.delete()
+    
     # Delete box in items
     Item.objects.get(id=box_id).delete()
     # Instantiate new item
@@ -110,6 +115,9 @@ def drop_item(request):
                              item=item)   
     item.save()
     itemUser.save()
+
+    request.user.coins -= open_price
+    request.user.save()
 
     OpeningLog(user=request.user,
                 skin=skin).save()
