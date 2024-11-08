@@ -67,12 +67,14 @@ def buy(request):
     
     # Get transaction and item
     transaction = Market.objects.get(pk=id)
+
+    # Check if enough coins
+    if request.user.coins < transaction.price:
+        return HttpResponseRedirect('/hdv')
+
     item = Item.objects.get(pk=transaction.item.id)
     
-    # Delete item from seller's inventory
-    seller_item = UserInventory.objects.filter(user=transaction.seller)
-    seller_item.delete()
-
+    
     # Add item to buyer's inventory
     buyer_item = UserInventory(user = request.user, item = item)
     buyer_item.save()
