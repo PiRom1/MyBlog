@@ -68,9 +68,13 @@ def open_lootbox(request):
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
     
     skins = list(Skin.objects.all())
-    skins = [skin.image.url for skin in skins]
+    skin_images = [skin.image.url for skin in skins]
+    skin_probas = [skin.rarity.probability for skin in skins]
+    skin_probas = [proba/sum(skin_probas) for proba in skin_probas]
+    print(skin_probas)
     
-    context = {"skins" : skins}
+    context = {"skin_images" : skin_images,
+               "skin_probas" : skin_probas}
 
     url = "Blog/lootbox/opening.html"
     return render(request, url, context)

@@ -4,8 +4,33 @@ document.addEventListener('DOMContentLoaded', function () {
   var box_id = document.getElementById('box_id').getAttribute('box_id');
   console.log("box id : ", box_id);
   const csrftoken = document.querySelector('meta[name="csrf-token"]').content;  
-  
+  let probas;
 
+  
+  function make_cum_probas(probas) {
+    const cum_probas = [];
+    let s = 0;
+  
+    for (let i = 0; i < probas.length; i++) {
+      s += probas[i];
+      cum_probas.push(s)
+    }
+
+    return cum_probas;
+  }
+
+
+  function choice(skins, cum_probas) {
+    random = Math.random();
+    console.log(cum_probas);
+    console.log(skins, random);
+    for (let i = 0; i < cum_probas.length; i++) {
+      if (random < cum_probas[i]) {
+        return skins[i];
+      }
+    }
+  
+  }
   
 
 
@@ -55,32 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, DURATION);
  }
 
-  function itemAttr(){
-    var items = $(".itemBoxAn");
-    var img_array = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-    var win_id = img_array[Math.floor(Math.random() * img_array.length)];
-    var skins = document.getElementById('data').getAttribute('skins');
-    skins = skins.replace(/'/g,"\"");
-    
-    skins = JSON.parse(skins);
-    console.log("skins : ", skins[0]);
-    
-    
-
-    items.each(function() {
-      // si l'item est l'objet itemBoxAnW, on ne fait rien
-      if($(this).hasClass('itemBoxAnW')){
-        
-        $(this).append('<img src="' + skins[win_id - 1]+'" alt="'+win_id+'">');
-      }
-      else{
-        var random = img_array[Math.floor(Math.random() * img_array.length)];
-        $(this).append('<img src="' + skins[random - 1]+'" alt="'+random+'">');
-      }
-    });
-    
-    return win_id;
-  }
+  
 
 
 
@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
       success: function(data) {
           // Remplacer le contenu du body par le nouveau contenu
           $('body').html(data);
-
+          probas = JSON.parse(document.getElementById('data').getAttribute('probas'));
+          console.log('probas : ', probas);
           var win_id = itemAttr();
           startRoll(win_id);
           
@@ -116,7 +117,36 @@ document.addEventListener('DOMContentLoaded', function () {
     // document.head.appendChild(link);
   }
 
+  function itemAttr(){
+    var items = $(".itemBoxAn");
+    var img_array = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
+    var cum_probas = make_cum_probas(probas);
+
+    var win_id = choice(img_array, cum_probas);
+    var skins = document.getElementById('data').getAttribute('skins');
+    skins = skins.replace(/'/g,"\"");
+    
+    skins = JSON.parse(skins);
+    console.log("skins : ", skins[0]);
+    console.log("win_id : ", win_id);
+    
+    
+
+    items.each(function() {
+      // si l'item est l'objet itemBoxAnW, on ne fait rien
+      if($(this).hasClass('itemBoxAnW')){
+        
+        $(this).append('<img src="' + skins[win_id - 1]+'" alt="'+win_id+'">');
+      }
+      else{
+        var random = choice(img_array, cum_probas);
+        $(this).append('<img src="' + skins[random - 1]+'" alt="'+random+'">');
+      }
+    });
+    
+    return win_id;
+  }
 
   console.log('départ');
   var button = document.getElementById('button');
