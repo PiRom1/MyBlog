@@ -50,7 +50,7 @@ class SondageChoiceAdmin(admin.ModelAdmin):
 
 @admin.register(ChoiceUser)
 class ChoiceUserAdmin(admin.ModelAdmin):
-    list_display = ('choice','user')
+    list_display = ('user', 'choice')
 
 @admin.register(Recit)
 class Recitadmin(admin.ModelAdmin):
