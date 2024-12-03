@@ -25,7 +25,7 @@
 
 body {
     /* background-color: #FFF6E5; */
-    background: url('/static/img/wood_bg.png');
+    background: url('/static/img/theo_info.png');
     background-size: 100vw 100vh; /* L'image prend exactement la taille de l'écran */
     background-position: center; /* Centre l'image */
     background-repeat: no-repeat; /* L'image ne se répète pas */
