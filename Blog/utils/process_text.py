@@ -38,7 +38,6 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' donc ',' (pé)donc(ule) '),
                        (' philippe ', ' (jen)philippe(er vite monslip) '),
                        (' salwa ', ' salwa(naconda) ' ),
-                       ('lise')
                        (' très ', ' très(te négrière) '),
                        (' champignon ', ' cham(bragaz)pignon '),
                        (' tant ', ' tant(dinite) '),
@@ -53,7 +52,6 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' police ', ' police(rael) '),
                        (' repas ', ' repas(lestine) '),
                        ('ping', "(putain fait chier j'ai 300 de)ping"),
-                       (' botade ', '  '),
                        (' conges ', ' conges(nocide armenien) '),
                        (' congès ', ' congès(nocide armenien) '),
                        (' congés ', ' congés(nocide armenien) '),
@@ -183,13 +181,22 @@ def reglys(text):
 
 def replace_words(text):
     rand = rd.random()
-    if text in ['lise', 'Lise']:
+    if 'lise' in text:
         if rand < 0.5:
-            text = '<del>Lise</del> Louise'
+            text = text.replace('lise', '<del>Lise</del> Louise')
         else:
-            text = 'Louise'
-    elif text in ['louise', 'Louise']:
-        text = 'Lise'
+            text = text.replace('lise', 'Louise')
+
+    if 'Lise' in text:
+        if rand < 0.5:
+            text = text.replace('Lise', '<del>Lise</del> Louise')
+        else:
+            text = text.replace('Lise', 'Louise')
+
+    text = text.replace('louise', 'Lise')
+    text = text.replace('Louise', 'Lise')
+
+
     return text
 
 
