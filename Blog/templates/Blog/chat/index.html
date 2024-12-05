@@ -1,35 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
-    
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{session.session_name}}</title>
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.0/ckeditor5.css">   
-
-    <!-- CSS -->
     
+    <!-- CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-    <!-- JS -->
-    <script type="importmap">
-        {
-            "imports": {
-                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.0/ckeditor5.js",
-                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.0/"
-            }
-        }      
-
-    </script> 
     
+    <!-- CKEditor CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/translations/fr.js"></script>
+    
+    <!-- JS -->
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/js/ckeditor.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/index.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>

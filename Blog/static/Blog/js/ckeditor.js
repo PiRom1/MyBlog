@@ -1,157 +1,66 @@
-import {
-	ClassicEditor,
-	AccessibilityHelp,
-	Autoformat,
-	AutoImage,
-	Autosave,
-	BalloonToolbar,
-	BlockQuote,
-	Bold,
-	Code,
-	Essentials,
-	Heading,
-	ImageBlock,
-	ImageCaption,
-	ImageInline,
-	ImageInsert,
-	ImageInsertViaUrl,
-	ImageResize,
-	ImageStyle,
-	ImageTextAlternative,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	IndentBlock,
-	Italic,
-	Link,
-	LinkImage,
-	List,
-	ListProperties,
-	// Markdown,
-	MediaEmbed,
-	Paragraph,
-	PasteFromMarkdownExperimental,
-	PasteFromOffice,
-	SelectAll,
-	SimpleUploadAdapter,
-	Strikethrough,
-	Table,
-	TableCaption,
-	TableCellProperties,
-	TableColumnResize,
-	TableProperties,
-	TableToolbar,
-	TextTransformation,
-	TodoList,
-	Underline,
-	Undo
-} from 'ckeditor5';
+//import { ClassicEditor } from 'https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor5.js';
 
-import translations from 'ckeditor5/translations/fr.js';
-
+// Editor Configuration
 const editorConfig = {
-	toolbar: {
-		items: [
-			'undo',
-			'redo',
-			'|',
-			'bold',
-			'italic',
-			'underline',
-			'strikethrough',
-			'code',
-			'|',
-			'link',
-			// 'insertImage',
-			// 'mediaEmbed',
-			'insertTable',
-			'blockQuote',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'todoList',
-			'outdent',
-			'indent'
-		],
-		shouldNotGroupWhenFull: false
-	},
-	plugins: [
-		AccessibilityHelp,
-		Autoformat,
-		AutoImage,
-		Autosave,
-		BalloonToolbar,
-		BlockQuote,
-		Bold,
-		Code,
-		Essentials,
-		Heading,
-		ImageBlock,
-		ImageCaption,
-		ImageInline,
-		ImageInsert,
-		ImageInsertViaUrl,
-		// ImageResize,
-		ImageStyle,
-		ImageTextAlternative,
-		ImageToolbar,
-		ImageUpload,
-		Indent,
-		IndentBlock,
-		Italic,
-		Link,
-		LinkImage,
-		List,
-		ListProperties,
-		// Markdown,
-		MediaEmbed,
-		Paragraph,
-		PasteFromMarkdownExperimental,
-		PasteFromOffice,
-		SelectAll,
-		SimpleUploadAdapter,
-		Strikethrough,
-		Table,
-		TableCaption,
-		TableCellProperties,
-		TableColumnResize,
-		TableProperties,
-		TableToolbar,
-		TextTransformation,
-		TodoList,
-		Underline,
-		Undo
-	],
-	language: 'fr',
-	link: {
-		addTargetToExternalLinks: true,
-		defaultProtocol: 'https://',
-		decorators: {
-			toggleDownloadable: {
-				mode: 'manual',
-				label: 'Downloadable',
-				attributes: {
-					download: 'file'
-				}
-			}
-		}
-	},
-	list: {
-		properties: {
-			styles: true,
-			startIndex: true,
-			reversed: true
-		}
-	},
-	placeholder: 'Type or paste your content here!',
-	table: {
-		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
-	},
-	translations: [translations]
+    toolbar: {
+        items: [
+            'undo',
+            'redo',
+            '|',
+            'bold',
+            'italic',
+            'underline',
+            'strikethrough',
+            'code',
+            '|',
+            'link',
+            'insertTable',
+            'blockQuote',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'todoList',
+            'outdent',
+            'indent'
+        ],
+        shouldNotGroupWhenFull: false,
+    },
+    language: 'fr', // Set editor language to French
+    link: {
+        addTargetToExternalLinks: true,
+        defaultProtocol: 'https://',
+        decorators: {
+            toggleDownloadable: {
+                mode: 'manual',
+                label: 'Downloadable',
+                attributes: {
+                    download: 'file',
+                },
+            },
+        },
+    },
+    list: {
+        properties: {
+            styles: true,
+            startIndex: true,
+            reversed: true,
+        },
+    },
+    placeholder: 'Type or paste your content here!',
+    table: {
+        contentToolbar: [
+            'tableColumn',
+            'tableRow',
+            'mergeTableCells',
+            'tableProperties',
+            'tableCellProperties'
+        ],
+    },
 };
 
 window.editorInstance = null;
 
+// Create CKEditor Instance
 function createEditor() {
     ClassicEditor
         .create(document.querySelector('#message_html'), editorConfig)
@@ -160,7 +69,8 @@ function createEditor() {
         })
         .catch(error => {
             console.error(error);
-        });    
+        });
 }
 
+// Initialize the editor
 createEditor();
