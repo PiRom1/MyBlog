@@ -38,6 +38,7 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' donc ',' (pé)donc(ule) '),
                        (' philippe ', ' (jen)philippe(er vite monslip) '),
                        (' salwa ', ' salwa(naconda) ' ),
+                       ('lise')
                        (' très ', ' très(te négrière) '),
                        (' champignon ', ' cham(bragaz)pignon '),
                        (' tant ', ' tant(dinite) '),
@@ -55,6 +56,7 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' botade ', '  '),
                        (' conges ', ' conges(nocide armenien) '),
                        (' congès ', ' congès(nocide armenien) '),
+                       (' congés ', ' congés(nocide armenien) '),
                        (' facultatif ', ' facultatif(fany(ktamere)) '),
                        (' dino ', ' dino(rdahl Lelandais) '),
 
@@ -179,8 +181,16 @@ def reglys(text):
 
     return text
 
-
-
+def replace_words(text):
+    rand = rd.random()
+    if text in ['lise', 'Lise']:
+        if rand < 0.5:
+            text = '<del>Lise</del> Louise'
+        else:
+            text = 'Louise'
+    elif text in ['louise', 'Louise']:
+        text = 'Lise'
+    return text
 
 
 def process_text(text, user, session):
@@ -202,5 +212,7 @@ def process_text(text, user, session):
     text = youtube_parsing(text)
     text = calembours(text)
     text = reglys(text)
+    text = replace_words(text)
+    
 
     return text
