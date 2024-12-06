@@ -190,24 +190,26 @@ def Index(request, id):
 
 
     url = "Blog/chat/index.html"
-
-    sondage = Sondage.objects.filter(current=True)
+    request.session['previous_url'] = request.get_full_path()
+    
+    vote = None
+    sondage = Sondage.objects.filter(current=True).filter(session=session)
     choices = None
     if sondage:
         sondage = sondage[0]
         choices = list(SondageChoice.objects.filter(sondage=sondage))
 
-    request.session['previous_url'] = request.get_full_path()
+    
 
-    user_choices = ChoiceUser.objects.filter(user_id=user.id)
+        user_choices = ChoiceUser.objects.filter(user_id=user.id)
 
-    vote = None
+        vote = None
 
-    # Detect user cote
-    for user_choice in user_choices:
-        for choice in choices:
-            if user_choice.choice_id == choice.id:
-                vote = choice
+        # Detect user cote
+        for user_choice in user_choices:
+            for choice in choices:
+                if user_choice.choice_id == choice.id:
+                    vote = choice
     
     # yoda_path = os.path.join(settings.STATIC_ROOT, 'yoda') 
     # yoda_sounds = os.listdir(yoda_path)

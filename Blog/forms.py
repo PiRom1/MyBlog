@@ -69,7 +69,7 @@ class TicketForm(forms.ModelForm):
 class SondageForm(forms.ModelForm):
     class Meta:
         model = Sondage
-        fields = ['question', 'current']
+        fields = ['question', 'current', 'session']
 
     
     
