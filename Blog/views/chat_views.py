@@ -177,6 +177,7 @@ def Index(request, id):
             if not isinstance(processed_message_text, str):  # Si text est un HttpResponseRedirect
                 return processed_message_text
             
+            theo_last_message = Message.objects.filter(writer__username='theophile').last()
 
             new_message = Message(writer = user, text = processed_message_text, pub_date = timezone.now(), session_id = session, skin = str(dict_items))  
             history = History(pub_date = timezone.now(), writer = user, text = processed_message_text, message = new_message)
@@ -185,7 +186,7 @@ def Index(request, id):
             history.save()
 
             # 1 chance sur 10 de déclencher une réponse de LLM
-            if rd.random() < 0.2:
+            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.2:
                 response, username = LLMResponse(user.username+" : "+message_text)
                 if response:
                     llm_user = User.objects.get(username=username)
