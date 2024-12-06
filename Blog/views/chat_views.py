@@ -14,6 +14,7 @@ import nltk
 nltk.download('stopwords')
 
 from ..utils.process_text import process_text
+from ..utils.llm_response import LLMResponse
 
 from ..utils.stats import *
 import random as rd
@@ -157,7 +158,7 @@ def Index(request, id):
         message_text = request.POST.get('message_html')
         if message_text:
             # Get items
-            items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
+            items = UserInventory.objects.filter(user=user).filter(equipped=True)
             item_ids = [item.item.item_id for item in items]
 
             dict_items = {}
@@ -171,17 +172,27 @@ def Index(request, id):
                 dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
             
             print("Before : \n", message_text)
-            message_text = process_text(message_text, user, session)
-            print("TEXTE : \n", message_text)
-            if not isinstance(message_text, str):  # Si text est un HttpResponseRedirect
-                return message_text
+            processed_message_text = process_text(message_text, user, session)
+            print("TEXTE : \n", processed_message_text)
+            if not isinstance(processed_message_text, str):  # Si text est un HttpResponseRedirect
+                return processed_message_text
             
 
-            new_message = Message(writer = user, text = message_text, pub_date = timezone.now(), session_id = session, skin = str(dict_items))  
-            history = History(pub_date = timezone.now(), writer = user, text = message_text, message = new_message)
+            new_message = Message(writer = user, text = processed_message_text, pub_date = timezone.now(), session_id = session, skin = str(dict_items))  
+            history = History(pub_date = timezone.now(), writer = user, text = processed_message_text, message = new_message)
 
             new_message.save()
             history.save()
+
+            # 1 chance sur 10 de déclencher une réponse de LLM
+            if rd.random() < 0.1:
+                response, username = LLMResponse(user.username+" : "+message_text)
+                if response:
+                    llm_user = User.objects.get(username=username)
+                    new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
+                    history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
+                    new_message.save()
+                    history.save()
 
             return HttpResponseRedirect('#bottom')
 
