@@ -1,0 +1,6 @@
+Options +ExecCGI
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(media/.*)$ - [L]
+RewriteRule ^(MyBlog/dispatch\.wsgi/.*)$ - [L]
+RewriteRule ^(.*)$ MyBlog/MyBlog/dispatch.wsgi/$1 [QSA,PT,L]
