@@ -74,9 +74,9 @@ def create_sondage(request):
                     new_choice.save()
 
             # Si nouveau current et qu'il y en avait un autre : devient le seul nouveau current. 
-            sondage = Sondage.objects.filter(id=form.instance.id)[0]
+            sondage = Sondage.objects.get(id=form.instance.id)
             for _sondage in Sondage.objects.all():
-                if _sondage.current and _sondage != sondage:
+                if _sondage.current and _sondage != sondage and _sondage.session == sondage.session:
                     _sondage.current = False
                     _sondage.save()
 

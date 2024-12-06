@@ -129,6 +129,7 @@ class Sondage(models.Model):
     question = models.TextField()
     pub_date = models.DateField("Date publication", default = datetime.date.today)
     current = models.BooleanField(default = False)
+    session = models.ForeignKey(Session, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.question

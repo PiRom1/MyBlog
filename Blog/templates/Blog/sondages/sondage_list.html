@@ -21,8 +21,9 @@
     <br><br>
     <ul>
         {% for sondage in sondages %}
-        <li>[{{ sondage.pub_date }}] - <a href="/sondages/detail/{{ sondage.pk }}">{{ sondage.question }} {% if sondage.current %}</a><strong>[ Current ]</strong>{% endif %}
-            (<a href = "/sondages/update/{{ sondage.pk }}">Modify</a> / <a href = "/sondages/delete/{{ sondage.pk }}">Delete</a>)</li>
+        <li>[{{ sondage.pub_date }}] - <a href="/sondages/detail/{{ sondage.pk }}">{{ sondage.question }} 
+            (<a href = "/sondages/update/{{ sondage.pk }}">Modify</a> / <a href = "/sondages/delete/{{ sondage.pk }}">Delete</a>)
+         | Session : <strong>{{ sondage.session }}</strong> {% if sondage.current %}</a><strong> | [ <u>Current</u> ]</strong>{% endif %}</li>
         {% endfor %}
 
     </ul>
