@@ -185,7 +185,7 @@ def Index(request, id):
             history.save()
 
             # 1 chance sur 10 de déclencher une réponse de LLM
-            if rd.random() < 0.1:
+            if rd.random() < 0.2:
                 response, username = LLMResponse(user.username+" : "+message_text)
                 if response:
                     llm_user = User.objects.get(username=username)
