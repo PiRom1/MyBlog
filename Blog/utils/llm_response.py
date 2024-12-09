@@ -3,7 +3,7 @@ import random
 from typing import Optional
 from groq import Groq
 
-USERLIST = ['salwa','philippe']
+USERLIST = ['salwa','philippe','philippe']
 
 # Dictionnaire des prompts personnalisés par utilisateur
 USERPROMPTS = {

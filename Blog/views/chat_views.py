@@ -186,7 +186,7 @@ def Index(request, id):
             history.save()
 
             # 1 chance sur 10 de déclencher une réponse de LLM
-            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.2:
+            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1:
                 response, username = LLMResponse(user.username+" : "+message_text)
                 if response:
                     llm_user = User.objects.get(username=username)
