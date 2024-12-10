@@ -11,3 +11,6 @@ def run():
             UserInventory.objects.create(user=user, item=Item.objects.create(type='box'))
 
     print(f'{nb_drop} lootboxes dropped for each user | {nb_coins} coins added to each user')
+
+if __name__ == '__main__':
+    run()
