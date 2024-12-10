@@ -132,7 +132,7 @@ def Index(request, id):
             post_last_message_id = post_data['last_message_id']
             new_message = post_data['new_message']
 
-            if rd.random() < 0.001:
+            if rd.random() < 0.0005:
                 response, username = LLMNewMessage()
                 if response:
                     llm_user = User.objects.get(username=username)
