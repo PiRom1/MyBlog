@@ -1,16 +1,20 @@
-from Blog.models import User, Item, UserInventory
+from Blog.models import User, Item, UserInventory, Box
+import argparse
 
-def run():
-    nb_drop = 2
-    nb_coins = 400
+def run(*args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('nb_drop', type=int)
+    parser.add_argument('nb_coins', type=int)
+    args = parser.parse_args(args)
+
     users = User.objects.all()
+    box_id = Box.objects.last().id
     for user in users:
-        user.coins += nb_coins
+        user.coins += args.nb_coins
         user.save()
-        for _ in range(nb_drop):
-            UserInventory.objects.create(user=user, item=Item.objects.create(type='box'))
+        for _ in range(args.nb_drop):
+            UserInventory.objects.create(user=user, item=Item.objects.create(type='box', item_id=box_id))
 
-    print(f'{nb_drop} lootboxes dropped for each user | {nb_coins} coins added to each user')
+    print(f'{args.nb_drop} lootboxes dropped for each user | {args.nb_coins} coins added to each user')
 
-if __name__ == '__main__':
-    run()
+
