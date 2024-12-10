@@ -179,7 +179,7 @@ def reglys(text):
 
     return text
 
-def replace_words(text):
+def replace_louise(text):
     rand = rd.random()
     if 'lise' in text:
         if rand < 0.5:
@@ -187,16 +187,15 @@ def replace_words(text):
         else:
             text = text.replace('lise', 'Louise')
 
-    if 'Lise' in text:
+    elif 'Lise' in text:
         if rand < 0.5:
             text = text.replace('Lise', '<del>Lise</del> Louise')
         else:
             text = text.replace('Lise', 'Louise')
-
-    text = text.replace('louise', 'Lise')
-    text = text.replace('Louise', 'Lise')
-
-
+    elif 'Louise' in text:
+        text = text.replace('Louise', 'Lise')
+    elif 'louise' in text:
+        text = text.replace('louise', 'Lise')
     return text
 
 
@@ -219,7 +218,7 @@ def process_text(text, user, session):
     text = youtube_parsing(text)
     text = calembours(text)
     text = reglys(text)
-    text = replace_words(text)
+    text = replace_louise(text)
     
 
     return text
