@@ -225,8 +225,9 @@ def process_text(text, user, session):
     return text
 
 def ask_agent_question(text, userlist = USERLIST):
-    for user in USERLIST:
-        if f"@{user}".upper() in text.upper():
-            return(user)
+    for agent in USERLIST:
+        print(agent)
+        if f"@{agent}".upper() in text.upper():
+            return(agent)
     return None
         

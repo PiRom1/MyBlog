@@ -196,10 +196,13 @@ def Index(request, id):
             new_message.save()
             history.save()
             agent_called = ask_agent_question(message_text)
-            print(agent_called, message_text)
             # 1 chance sur 10 de déclencher une réponse de LLM
-            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1:
-                response, username = LLMResponse(user.username+" : "+message_text)
+            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
+                print(agent_called)
+                if agent_called:
+                    response, username = LLMResponse(user.username+" : "+message_text, agent_called)
+                else:
+                    response, username = LLMResponse(user.username+" : "+message_text)
                 if response:
                     llm_user = User.objects.get(username=username)
                     new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
