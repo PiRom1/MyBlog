@@ -14,7 +14,7 @@ import nltk
 nltk.download('stopwords')
 
 from ..utils.process_text import process_text
-from ..utils.llm_response import LLMResponse
+from ..utils.llm_response import LLMResponse, LLMNewMessage
 
 from ..utils.stats import *
 import random as rd
@@ -129,16 +129,27 @@ def Index(request, id):
         # Si la requête est une requête AJAX, on retourne les messages sous forme de JSON 
         if request.method == "POST":
             post_data = json.loads(request.body.decode("utf-8"))
-            last_message_id = post_data['last_message_id']
+            post_last_message_id = post_data['last_message_id']
             new_message = post_data['new_message']
-            if int(last_message_id) < messages[-1].id:
-                messages = Message.objects.filter(id__gt = last_message_id, session_id = session).order_by('-id')[:n_messages_par_page:-1]
+
+            if rd.random() < 0.01:
+                response, username = LLMNewMessage()
+                if response:
+                    llm_user = User.objects.get(username=username)
+                    new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
+                    history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
+                    new_message.save()
+                    history.save()
+                    last_message_id = new_message.id
+
+            if int(post_last_message_id) < last_message_id:
+                messages = Message.objects.filter(id__gt = post_last_message_id, session_id = session).order_by('-id')[:n_messages_par_page:-1]
                 years, month, day, when_new_date = get_dates(messages)
                 when_new_date = []
-                last_message_id = messages[-1].id
+                post_last_message_id = last_message_id
             else:
                 return JsonResponse({'messages_html': '',
-                                     'last_message_id': last_message_id})
+                                     'last_message_id': post_last_message_id})
             
         print("new_message : ", messages)
         messages_html = render_to_string('Blog/chat/messages.html', {
@@ -151,7 +162,7 @@ def Index(request, id):
             'new_message': new_message})
         
         return JsonResponse(data={'messages_html': messages_html,
-                                  'last_message_id': last_message_id})
+                                  'last_message_id': post_last_message_id})
 
     if request.method == "POST":
         # message_form = MessageForm(request.POST)
