@@ -3,8 +3,8 @@ import argparse
 
 def run(*args):
     parser = argparse.ArgumentParser()
-    parser.add_argument('nb_drop', type=int)
-    parser.add_argument('nb_coins', type=int)
+    parser.add_argument('nb_drop', type=int, default=2)
+    parser.add_argument('nb_coins', type=int, default=400)
     args = parser.parse_args(args)
 
     users = User.objects.all()
