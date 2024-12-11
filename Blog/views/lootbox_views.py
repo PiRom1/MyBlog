@@ -70,7 +70,12 @@ def open_lootbox(request):
     skins = list(Skin.objects.all())
     skin_images = [skin.image.url for skin in skins]
     skin_probas = [skin.rarity.probability for skin in skins]
-    skin_probas = [proba/sum(skin_probas) for proba in skin_probas]
+    # dictionnaire comptant le nombre de skins de chaque proba
+    proba_dict = {proba:0 for proba in skin_probas}
+    for proba in skin_probas:
+        proba_dict[proba] += 1
+    
+    skin_probas = [proba/proba_dict[proba] for proba in skin_probas]
     print(skin_probas)
     
     context = {"skin_images" : skin_images,

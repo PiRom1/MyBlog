@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  const DURATION = 1000;
+  const DURATION = 10000;
   var box_id = document.getElementById('box_id').getAttribute('box_id');
   console.log("box id : ", box_id);
   const csrftoken = document.querySelector('meta[name="csrf-token"]').content;  
@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var img_array = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
     var cum_probas = make_cum_probas(probas);
+    console.log(cum_probas);
 
     var win_id = choice(img_array, cum_probas);
     var skins = document.getElementById('data').getAttribute('skins');
