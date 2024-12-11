@@ -195,7 +195,7 @@ def Index(request, id):
 
             new_message.save()
             history.save()
-            #agent_called = ask_agent_question(message_text)
+            agent_called = None #ask_agent_question(message_text)
             # 1 chance sur 10 de déclencher une réponse de LLM
             if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
                 if agent_called:
