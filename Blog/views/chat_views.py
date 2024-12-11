@@ -200,6 +200,7 @@ def Index(request, id):
             if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
                 print(agent_called)
                 if agent_called:
+                    print(user.username+" : "+message_text, agent_called)
                     response, username = LLMResponse(user.username+" : "+message_text, agent_called)
                 else:
                     response, username = LLMResponse(user.username+" : "+message_text)
