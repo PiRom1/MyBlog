@@ -1,4 +1,4 @@
-USERLIST = ['salwa','philippe','philippe', 'ronan', 'ronan', 'yoda']
+USERLIST = ['salwa','philippe', 'ronan', 'yoda']
 
 # Dictionnaire de contexte utilisateur
 USER_CONTEXTS = {
