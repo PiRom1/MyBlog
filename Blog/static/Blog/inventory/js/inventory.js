@@ -16,6 +16,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const favoriteOption = document.getElementById('favorite-option');
     const openOption = document.getElementById('open-option');
     const useOption = document.getElementById('use-option');
+    const unequipOption = document.getElementById('unequip-option');
+    const equipOption = document.getElementById('equip-option');
+
+    // Price management
+    const price_input = document.getElementById('price');
+    console.log(price_input);
+
+    price_input.addEventListener('keydown', function(e) {
+        if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+            e.preventDefault();
+        }
+
+    })
 
    
     
@@ -50,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemSkinType = item.getAttribute('data-skin-type');
         const itemPattern = item.getAttribute('data-pattern');
         const itemId = item.getAttribute('data-id');
+        const itemUrl = item.getAttribute('data-url');
         
         
 
@@ -60,6 +74,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (itemSkinType === 'font' && font_tab.includes(itemPattern) === false) {
             font_tab.push(itemPattern);
         }
+
+        
+
         
         const pattern = item.getAttribute('data-pattern');
         // Vérifier si le pattern commence par un '#' (hexadécimal)
@@ -92,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function () {
             infoOption.style.display = 'block';
             sellOption.style.display = 'block';
             tradeOption.style.display = 'block';
+            useOption.style.display = 'none';
+            unequipOption.style.display = 'none';
+            equipOption.style.display = 'none';
     
             // Gérer les options spécifiques aux skins
             if (itemType === 'skin') {
@@ -120,10 +140,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Gérer l'option "Utiliser" des Backgrounds 
+            // Gérer l'option "Utiliser" et "Déséquiper" des Backgrounds 
             if (itemSkinType === 'background_image') {
                 favoriteOption.style.display = 'none';
-                useOption.style.display = 'block';
+
+                if (itemPattern === "") {
+                    useOption.style.display = 'block';
+                }
+
+                else {
+
+                    if (itemEquipped === "True") {
+                        unequipOption.style.display = 'block';
+                    }
+                    else {
+                        equipOption.style.display = 'block';
+                    }
+                }
+            }
+
+            if (itemSkinType === 'border_image') {
+                infoModal.style.flex = '1';
+                infoModal.style.borderImageSlice = '31 16 30 15 fill';
+                infoModal.style.borderImageOutset = '0px';
+                infoModal.style.borderImageRepeat = 'round';
+                infoModal.style.borderStyle = 'solid';
+                infoModal.style.borderWidth = '30px 15px';
+                infoModal.style.setProperty('border-image-source', `url(${itemUrl})`, 'important'); // Avec priorité 'important'
+            }
+
+            else {
+                infoModal.style.borderImageSource = ''
+                infoModal.style.borderImageSlice = ''
+                infoModal.style.borderImageOutset = '';
+                infoModal.style.borderImageRepeat = '';
+                infoModal.style.borderStyle = '';
+                infoModal.style.borderWidth = '';
             }
                 
 
@@ -150,6 +202,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cacher le menu contextuel lorsqu'on clique ailleurs
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.inventory-item')) {
+            
+            // infoModal.style.borderImageSource = ''
+            // infoModal.style.borderImageSlice = ''
+            // infoModal.style.borderImageOutset = '';
+            // infoModal.style.borderImageRepeat = '';
+            // infoModal.style.borderStyle = '';
+            // infoModal.style.borderWidth = '';
             contextMenu.classList.remove('active');
         }
     });
@@ -225,14 +284,54 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+    unequipOption.addEventListener('click', function() {
+        var itemId = selectedItem.getAttribute('data-id');
+
+        fetch('/unequip_bg', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+            },
+            body: `item_id=${itemId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            window.location.href='/inventory';
+        })
+
+    })
+
+    equipOption.addEventListener('click', function() {
+        var itemId = selectedItem.getAttribute('data-id');
+
+        fetch('/equip_bg', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+            },
+            body: `item_id=${itemId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            window.location.href='/inventory';
+        })
+
+    })
+
+
+
 
     useOption.addEventListener('click', function() {
 
         var itemId = selectedItem.getAttribute('data-id');
         var itemType = selectedItem.getAttribute('data-skin-type');
         var pattern = selectedItem.getAttribute('data-pattern');
-
-        
 
         if (itemType === 'emoji') {
             window.location.href = `/emoji/${itemId}`;
@@ -241,28 +340,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (itemType === 'background_image') {
             if (pattern === '') {
             window.location.href = `/background/${itemId}`;
-            }
-            else {
-                console.log(itemId);
-                fetch('/equip_bg', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
-                    },
-                    body: `item_id=${itemId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    document.body.style.backgroundImage = `url(${data['bg_url']})`;
-                    // window.location.href='/inventory';
-                })
-            }
+            }            
         }
-        
-    })
+    });
 
     // Fonction pour équiper ou déséquiper l'item
     function toggleFavStatus() {

@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const items = document.querySelectorAll('.item');
     const popup = document.getElementById("popup");
+
+    const popup_content = document.getElementById("popup-content-id");
     const close = document.getElementById("close");
     const buy = document.getElementById("buy");
     const remove = document.getElementById("remove");
@@ -28,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const seller = item.getAttribute("seller");
         const pattern = item.getAttribute("pattern");
         const price = item.getAttribute("price");
+        const url = item.getAttribute("url");
 
         
         const circle = document.getElementById(`color-circle-${item_id}`);
@@ -48,11 +51,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Show emoji image
         console.log(skin);
-        if ( (skin === 'emoji' || skin === 'background_image') && pattern != '') {
+        if ( (skin === 'emoji' || skin === 'background_image') ) {
             var img = document.getElementById(`img-${item_id}`);
             img.style.display = 'inline';
             patternText.style.display = 'none';
+
+            if (pattern === '') {
+                document.getElementById(`name-${item_id}`).innerHTML = " (unused)";
+            }
+
         }
+
+        // if (skin === 'border_image') {
+        //     item.style.flex = '1';
+        //     item.style.borderImageSource = `url(${url})`;
+        //     item.style.borderImageSlice = '31 16 30 15 fill';
+        //     item.style.borderImageOutset = '0px';
+        //     item.style.borderImageRepeat = 'round';
+        //     item.style.borderStyle = 'solid';
+        //     item.style.borderWidth = '30px 15px';
+        //     item.style.setProperty('border-image-source', `url(${url})`, 'important'); // Avec priorité 'important'
+            
+
+        //     console.log("item : ", item);
+        // }
 
 
 
@@ -102,6 +124,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 popup_pattern.appendChild(emoji_popup_img);
             }
+            else if (skin === 'border_image') {
+            var url = document.getElementById(`img-${item_id}`).src;
+            popup_content.style.flex = '1';
+            popup_content.style.borderImageSource = `url(${url})`;
+            popup_content.style.borderImageSlice = '31 16 30 15 fill';
+            popup_content.style.borderImageOutset = '0px';
+            popup_content.style.borderImageRepeat = 'round';
+            popup_content.style.borderStyle = 'solid';
+            popup_content.style.borderWidth = '30px 15px';
+            popup_content.style.setProperty('border-image-source', `url(${url})`, 'important'); // Avec priorité 'important'
+            popup_pattern.innerHTML = pattern;
+            }
             else {
                 popup_pattern.innerHTML = pattern;
             }
@@ -135,6 +169,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close detail popup
     close.addEventListener('click', function() {
         popup.style.display = 'none';
+        popup_content.style.flex = '1';
+        popup_content.style.borderImageSource = ''
+        popup_content.style.borderImageSlice = ''
+        popup_content.style.borderImageOutset = '';
+        popup_content.style.borderImageRepeat = '';
+        popup_content.style.borderStyle = '';
+        popup_content.style.borderWidth = '';
+        popup_content.style.setProperty('');
     })
 
     // Buy item

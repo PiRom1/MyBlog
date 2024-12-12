@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box, Market, MarketHistory, Emojis, Background
+from ..models import UserInventory, Item, Skin, Box, Market, MarketHistory, Emojis, Background, BorderImage
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
@@ -27,9 +27,20 @@ def list_hdv(request):
             emoji = Emojis.objects.get(id=pattern)
             url = emoji.image.url
         
+        if skin.type == 'emoji' and pattern == '':
+            url = Skin.objects.get(name='emoji').image.url
+
         if skin.type == 'background_image' and pattern != '':
             background = Background.objects.get(id=pattern)
             url = background.image.url
+        
+        if skin.type == 'background_image' and pattern == '':
+            url = Skin.objects.get(name='background_image').image.url
+        
+        if skin.type == 'border_image' and pattern == '':
+            url = Skin.objects.get(name='border_image').image.url
+        if skin.type == 'border_image' and pattern != '':
+            url = BorderImage.objects.get(name=pattern).image.url
 
 
         d = {'market_id' : market_id,
@@ -40,6 +51,8 @@ def list_hdv(request):
              'price' : price,
              'pattern' : pattern,
              'url' : url}
+        
+        print(d)
         
         your_items.append(d) if seller == request.user else selling_items.append(d)
     

@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box, Emojis, Background
+from ..models import UserInventory, Item, Skin, Box, Emojis, Background, BorderImage
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from ..forms import EmojiForm, BackgroundForm
@@ -71,7 +71,12 @@ def user_inventory_view(request):
             
             if skin.type == 'background_image' and item.pattern != '':
                 background = Background.objects.get(id=item.pattern)
-                items[-1]['image'] = background .image.url
+                items[-1]['image'] = background.image.url
+            
+            if skin.type == 'border_image':
+                print("pattern : ", item.pattern)
+                border_image = BorderImage.objects.get(name=item.pattern)
+                items[-1]['url'] = border_image.image.url
     
 
     background_id = Skin.objects.get(type='background_image').id
@@ -245,3 +250,20 @@ def equip_bg(request):
 
     return JsonResponse({'bg_url' : bg.image.url})
 
+
+
+@login_required
+def unequip_bg(request):
+
+    # Get data
+    item_id = request.POST.get('item_id')
+    bg = Item.objects.get(pk=item_id)
+
+    # Unequipp bg
+    user_bgs = UserInventory.objects.filter(item_id__item_id = bg.item_id)
+
+    for user_bg in user_bgs:
+        user_bg.equipped = False
+        user_bg.save()
+
+    return JsonResponse({'success' : True})

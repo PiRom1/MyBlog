@@ -28,7 +28,6 @@
     <a href="/">HOME</a> | <a href="/inventory">INVENTAIRE</a>
     <br><br>
     
-    
 
     <div class="container">
         <!-- Column for Selling Items -->
@@ -36,8 +35,8 @@
             <h2>Articles en Vente</h2>
             <ul>
                 {% for item in selling_items %}
-                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
-                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> -  {{item.type}} | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
+                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
+                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> - {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>            
                     </li>
@@ -50,8 +49,8 @@
             <h2>Vos Articles</h2>
             <ul>
                 {% for item in your_items %}
-                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}">
-                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> -  {{item.type}} | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
+                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
+                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
                     </li>
@@ -66,7 +65,7 @@
     <!-- Menu d'achat caché -->
 
     <div id="popup" class="popup" style="display:none;">
-        <div class="popup-content">
+        <div class="popup-content" id="popup-content-id">
             <span id="close" class="close">&times;</span>
             <h2>Détails de l'achat</h2>
             <p><strong>Item :</strong> <span id="item-skin"></span></p>

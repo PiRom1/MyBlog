@@ -38,11 +38,14 @@ def update_sondage(request, pk):
             form.save()
             formset.save()
 
+            
             # Si nouveau current et qu'il y en avait un autre : devient le seul nouveau current. 
-            for _sondage in Sondage.objects.all():
-                if _sondage.current and _sondage != sondage:
-                    _sondage.current = False
-                    _sondage.save()
+            
+            if form.data['current'] == 'on':
+                for _sondage in Sondage.objects.all():
+                    if _sondage.current and _sondage != sondage and _sondage.session == sondage.session:
+                        _sondage.current = False
+                        _sondage.save()
 
 
             return redirect('sondage_list')

@@ -47,7 +47,7 @@
         <!-- Boucle pour tous les items mélangés -->
         {% for item in items %}
         <div class="inventory-item" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
-             data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}"
+             data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}" data-url="{{item.url}}"
              {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
 
@@ -74,6 +74,12 @@
 
             <!-- Spécifique aux emojis et backgrounds -->
             <li id="use-option" style="display: none;">Utiliser</li>
+            
+            <!-- Spécifique aux backgrounds équipés -->
+            <li id="unequip-option" style="display: none;">Déséquiper</li>
+            
+            <!-- Spécifique aux backgrounds non équipés -->
+            <li id="equip-option" style="display: none;">Équiper</li>
 
             
             
