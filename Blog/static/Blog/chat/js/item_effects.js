@@ -13,15 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
     favorite_fonts = favorite_fonts.replace(/'/g,'"');
     favorite_fonts = JSON.parse(favorite_fonts);
 
-    console.log(favorite_fonts);
-
     favorite_fonts.forEach((font) => {
         font_tab.push(font);
     })
 
 
     // Change bg image
-    bg_image = document.getElementById('items').getAttribute('background');
+    var bg_image = document.getElementById('items').getAttribute('background');
     console.log('bg : ', bg_image);
 
     if (bg_image != '') {
@@ -35,8 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
     messages.forEach((message) => {
         // Get skins
         skins = message.getAttribute('skins');
+        console.log(skins);
         skins = skins.replace(/'/g, '"');
+        console.log(skins);
         skins = JSON.parse(skins);
+        console.log(skins);
 
         const box = boxes[i];
         const name = names[i];

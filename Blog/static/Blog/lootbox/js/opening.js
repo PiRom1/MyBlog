@@ -22,8 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function choice(skins, cum_probas) {
     random = Math.random();
-    console.log(cum_probas);
-    console.log(skins, random);
     for (let i = 0; i < cum_probas.length; i++) {
       if (random < cum_probas[i]) {
         return skins[i];
@@ -54,30 +52,31 @@ document.addEventListener('DOMContentLoaded', function () {
             }
     );
 
-    setTimeout(function(){
-      fetch('/lootbox/drop_item', {
-          method: 'POST',
-          headers: {
-              'X-Requested-With': 'XMLHttpRequest',
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken  // Récupération du token CSRF
-          },
-          body: JSON.stringify({ item: win_id, box_id: box_id})  // Envoie l'item dans le corps de la requête
-      })
-      .then(response => {
-          // Vérifie si la réponse est correcte
-          if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-          }
-          return response.json();
-      })
-      .then(data => {
-          console.log(data);
-          // Redirection après une réponse réussie
-          window.location.href = '/inventory';
-      })
-      .catch(error => console.error('Erreur:', error));  // Gestion des erreurs
-    }, DURATION);
+    
+    fetch('/lootbox/drop_item', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken  // Récupération du token CSRF
+        },
+        body: JSON.stringify({ item: win_id, box_id: box_id})  // Envoie l'item dans le corps de la requête
+    })
+    .then(response => {
+        // Vérifie si la réponse est correcte
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        // Redirection après une réponse réussie
+        setTimeout(function() {
+            window.location.href = '/inventory';
+        }, DURATION);
+    })
+    .catch(error => console.error('Erreur:', error));  // Gestion des erreurs
  }
 
   
@@ -97,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
           // Remplacer le contenu du body par le nouveau contenu
           $('body').html(data);
           probas = JSON.parse(document.getElementById('data').getAttribute('probas'));
-          console.log('probas : ', probas);
           var win_id = itemAttr();
           startRoll(win_id);
           
