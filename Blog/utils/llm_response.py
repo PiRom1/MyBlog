@@ -35,7 +35,7 @@ def LLMResponse(message: str, user: Optional[str] = None) -> Optional[str]:
                     "content": message
                 }
             ],
-            model="llama-3.3-70b-versatile",
+            model="mixtral-8x7b-32768",
             temperature=1.2,
             max_tokens=1024,
             top_p=0.95,
@@ -72,7 +72,7 @@ def LLMNewMessage(user: Optional[str] = None) -> Optional[str]:
                     "content": prompt
                 }
             ],
-            model="llama-3.3-70b-versatile",
+            model="mixtral-8x7b-32768",
             temperature=1.2,
             max_tokens=1024,
             top_p=0.95,
