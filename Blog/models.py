@@ -55,6 +55,7 @@ class User(AbstractUser):
     enjoy_counter = models.IntegerField("Enjoy_counter", default = 0)
     coins = models.IntegerField("Diplodocoins", default = 0)    
     tkt_counter = models.IntegerField("tkt_counter", default=0)
+    llm_context = models.TextField('llm_context', default='')
     
     class Meta:
         verbose_name = 'Utilisateur'
@@ -292,3 +293,27 @@ class OpeningLog(models.Model):
 
     def __str__(self):
         return f"{self.user} : {self.skin} ({self.date})"    
+
+
+
+class Bot(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    preprompt = models.TextField("preprompt", default="")
+    model_name = models.CharField('model_name', default="mixtral-8x7b-32768", max_length=100)
+    max_tokens = models.IntegerField('max_tokens', default=1024)
+    temperature = models.FloatField('temperature', default=1.0)
+    top_p = models.FloatField('top_p', default=0.95)
+    presence_penalty = models.FloatField('presence_penalty', default=0.6)
+    frequence_penalty = models.FloatField('frequence_penalty', default=0.6)
+    is_callable = models.BooleanField(default=False)
+    can_answer = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Bot : {self.user.username}"
+
+
+class SessionBot(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    bot = models.ForeignKey(Bot, on_delete=models.CASCADE)
+    
+

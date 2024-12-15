@@ -133,7 +133,7 @@ def Index(request, id):
             new_message = post_data['new_message']
 
             if rd.random() < 0.0005:
-                response, username = LLMNewMessage()
+                response, username = LLMNewMessage(session)
                 if response:
                     llm_user = User.objects.get(username=username)
                     new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
@@ -195,14 +195,13 @@ def Index(request, id):
 
             new_message.save()
             history.save()
-            agent_called = None #ask_agent_question(message_text)
+            agent_called = ask_agent_question(message_text, session)
             # 1 chance sur 10 de déclencher une réponse de LLM
-            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
+            if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 1 or agent_called:
                 if agent_called:
-                    print(user.username+" : "+message_text, agent_called)
-                    response, username = LLMResponse(user.username+" : "+message_text, agent_called)
+                    response, username = LLMResponse(user.username, message_text, session, agent_called)
                 else:
-                    response, username = LLMResponse(user.username+" : "+message_text)
+                    response, username = LLMResponse(user.username, message_text, session)
                 if response:
                     llm_user = User.objects.get(username=username)
                     new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = "{}")
@@ -211,13 +210,15 @@ def Index(request, id):
                     history.save()
 
                     while rd.random() < 0.1 :
-                        response, username = LLMResponse(username+" : "+response, 'salwa' if username == 'philippe' else 'philippe')
-                        if response:
-                            llm_user = User.objects.get(username=username)
-                            new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
-                            history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
-                            new_message.save()
-                            history.save()
+                        allowed_bots = Bot.objects.filter(sessionbot__session=session).filter(can_answer=True).exclude(user__username=username.username)
+                        if allowed_bots:
+                            response, username = LLMResponse(username, response, session, rd.choice(allowed_bots))
+                            if response:
+                                llm_user = User.objects.get(username=username)
+                                new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
+                                history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
+                                new_message.save()
+                                history.save()
 
             return HttpResponseRedirect('#bottom')
 

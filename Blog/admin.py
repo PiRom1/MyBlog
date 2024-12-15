@@ -13,6 +13,7 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets[1][1]['fields'] += ('enjoy_counter',)
     fieldsets[1][1]['fields'] += ('coins',)
     fieldsets[1][1]['fields'] += ('tkt_counter',)
+    fieldsets[1][1]['fields'] += ('llm_context',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)
@@ -119,3 +120,14 @@ class FontAdmin(admin.ModelAdmin):
 @admin.register(OpeningLog)
 class OpeningLogsAdmin(admin.ModelAdmin):
     list_display = ('user', 'skin', 'date')
+
+
+@admin.register(Bot)
+class BotAdmin(admin.ModelAdmin):
+    list_display = ('user', 'preprompt', 'model_name', 'max_tokens', 'temperature', 'top_p', 'presence_penalty', 'frequence_penalty', 'can_answer', 'is_callable', )
+
+
+@admin.register(SessionBot)
+class SessionBotAdmin(admin.ModelAdmin):
+    list_display = ('session', 'bot')
+

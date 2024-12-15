@@ -1,4 +1,4 @@
-from ..models import Message
+from Blog.models import Message, Bot, SessionBot, SessionUser, User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
 from django.shortcuts import render, redirect
@@ -224,10 +224,11 @@ def process_text(text, user, session):
 
     return text
 
-def ask_agent_question(text, userlist = USERLIST):
-    for agent in USERLIST:
-        print(agent)
-        if f"@{agent}".upper() in text.upper():
-            return(agent)
+def ask_agent_question(text, session):
+    allowed_bots = Bot.objects.filter(sessionbot__session=session).filter(is_callable=True)
+    for bot in allowed_bots:
+        print(bot)
+        if f"@{bot.user.username}".upper() in text.upper():
+            return(bot)
     return None
         
