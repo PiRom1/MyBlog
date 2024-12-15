@@ -315,5 +315,8 @@ class Bot(models.Model):
 class SessionBot(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     bot = models.ForeignKey(Bot, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.bot} / {self.session}"
     
 
