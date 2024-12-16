@@ -80,5 +80,6 @@ urlpatterns = [
     path('tkt/', chat_views.tkt_view, name='tkt'),
     path('update_plot/', user_views.update_plot, name='update_plot'),
     path('update_soundbox/', soundbox_views.update_soundbox, name='update_soundbox'),
+    path('ask_heure_enjoy/', chat_views.ask_heure_enjoy, name = 'ask_heure_enjoy'),
     
 ]

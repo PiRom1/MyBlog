@@ -29,6 +29,7 @@
     <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
     <script src="{% static 'Blog/chat/js/tkt.js' %}"></script>
+    <script src="{% static 'Blog/chat/js/enjoy_heure.js' %}"></script>
     
     {% load custom_filters %}
 </head>
@@ -66,7 +67,7 @@
 
     <div id="tkt-popup" style="display:none;" class="tkt-popup"></div>
 
-
+    <div id="enjoy-heure" style="display:none;" class="tkt-popup"></div>
     
     <div class="container" id="{{session.id}}">
         <header>
@@ -203,6 +204,9 @@
                     </div>
                 </section>
             </div>
+
+
+            
 
         </main>
 

@@ -18,6 +18,9 @@ from ..utils.llm_response import LLMResponse, LLMNewMessage
 
 from ..utils.stats import *
 import random as rd
+from groq import Groq
+from datetime import datetime
+
 
 
 
@@ -468,3 +471,36 @@ def tkt_view(request):
 
 
     return JsonResponse({'text' : text})
+
+
+
+def ask_heure_enjoy(request):
+    # Initialize Groq client with API key
+    client = Groq(
+        api_key="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"
+    )
+    bot = Bot.objects.get(user__username='enjoy')
+    user = request.user
+    prompt = f'''{bot.preprompt}.
+                    {user.username} te demande l'heure. \n
+                    Voici des informations sur {user.username} : {user.llm_context}. 
+                    \nVoici l'heure exacte que tu dois donner : {datetime.now().hour} heures et {datetime.now().minute} minutes.
+    '''
+    
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": prompt
+            },
+        ],
+        model=bot.model_name,
+        temperature=bot.temperature,
+        max_tokens=bot.max_tokens,
+        top_p=bot.top_p,
+        presence_penalty=bot.presence_penalty,
+        frequency_penalty=bot.frequence_penalty
+    )
+
+    return JsonResponse({'message' : response.choices[0].message.content})
+

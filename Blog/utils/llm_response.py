@@ -30,7 +30,11 @@ def LLMResponse(username:str, message: str, session, bot: Optional[str] = None) 
 
 
         if bot.user.username == 'enjoy':
-            prompt = f"{bot.preprompt}.\nVoici l'heure exacte que tu dois donner : {datetime.now().hour} heures et {datetime.now().minute} minutes."
+            prompt = f'''{bot.preprompt}.
+                         {user.username} te demande l'heure à travers ce message : {message}. \n
+                         Voici des informations sur {user.username} : {user_context}. 
+                         \nVoici l'heure exacte que tu dois donner : {datetime.now().hour} heures et {datetime.now().minute} minutes.
+            '''
             print("prompt : ", prompt)
             message = ''
         
