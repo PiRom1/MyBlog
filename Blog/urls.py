@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -73,6 +73,9 @@ urlpatterns = [
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),
     path('add_sounds', soundbox_views.add_sounds, name='add_sounds'),
 
+    # Enjoy Timeline
+    path('enjoy_timeline/', enjoy_timeline_views.enjoy_timeline, name='enjoy_timeline'),
+
     # Other
     path('increment_yoda/', chat_views.increment_yoda, name='increment_yoda'),
     path('increment_enjoy/', chat_views.increment_enjoy, name='increment_enjoy'),
@@ -81,5 +84,6 @@ urlpatterns = [
     path('update_plot/', user_views.update_plot, name='update_plot'),
     path('update_soundbox/', soundbox_views.update_soundbox, name='update_soundbox'),
     path('ask_heure_enjoy/', chat_views.ask_heure_enjoy, name = 'ask_heure_enjoy'),
+
     
 ]

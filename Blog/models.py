@@ -319,4 +319,11 @@ class SessionBot(models.Model):
     def __str__(self):
         return f"{self.bot} / {self.session}"
     
+class EnjoyTimestamp(models.Model):
+    time = models.TimeField()
+    published_date = models.DateTimeField()
+    writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    comment = models.TextField()
 
+    def __str__(self):
+        return f"{self.time} ({self.writer.username})"

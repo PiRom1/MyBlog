@@ -131,3 +131,8 @@ class BotAdmin(admin.ModelAdmin):
 class SessionBotAdmin(admin.ModelAdmin):
     list_display = ('session', 'bot')
 
+
+@admin.register(EnjoyTimestamp)
+class EnjoyTimestampAdmin(admin.ModelAdmin):
+    list_display = ('time', 'published_date', 'writer', 'comment')
+
