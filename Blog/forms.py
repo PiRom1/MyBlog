@@ -116,3 +116,9 @@ class BackgroundForm(forms.ModelForm):
     class Meta:
         model = Background
         fields = ['name', 'image']
+
+
+class EnjoyTimestampForm(forms.ModelForm):
+    class Meta:
+        model = EnjoyTimestamp
+        fields = ['comment']

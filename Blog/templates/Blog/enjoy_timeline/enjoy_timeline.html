@@ -15,12 +15,49 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/enjoy_timeline/timeline.css' %}">
     
+    <script src="{% static 'Blog/enjoy_timeline/timeline.js' %}" type="module"></script>
+
+
     {% load custom_filters %}
 </head>
 
-<body>
 
+<body>
     {% include "../bg.html" %}
-    <h1>TO BE CONTINUED ...</h1>
+    <h1>Enjoy Timeline</h1>
+
+    
+    <div id="nb" nb="{{nb}}"></div>
+    <div id="colors" colors="{{colors}}"></div>
+
+
+
+    <div class="hour-container">
+        <div class="minute-container">
+            {% for minute in minutes %}
+                <div class="square-minute">{{minute}}</div>
+            {% endfor %}
+        </div>
+
+        <br>
+
+
+        {% for hour in hours %}
+                <div class="square-hour">{{hour}}</div>
+            {% for minute in minutes %}
+                <div class="square" hour="{{hour}}" minute="{{minute}}"></div>
+            {% endfor %}
+            <br>
+        {% endfor %}
+    </div>
+
+    <div id="hour-panel" class="hour-panel"></div>
+
+    <div class="footer">
+        <a href="/">Retour à la page d'accueil</a>
+    </div>
+
+
 </body>

@@ -2,6 +2,22 @@
 import Badger from './badger.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+
+
+
+    const form = document.getElementById('message_form');
+
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            form.submit();
+        }
+    })
+
+
+
+
+
+
     // Créer une instance de la classe Badger
     const badger = new Badger({
         size: 0.6,

@@ -75,6 +75,7 @@ urlpatterns = [
 
     # Enjoy Timeline
     path('enjoy_timeline/', enjoy_timeline_views.enjoy_timeline, name='enjoy_timeline'),
+    path('enjoy_timeline/<int:hour>/<int:minute>/', enjoy_timeline_views.enjoy_timeline_hour_minute, name='enjoy_timeline_hour_minute'),
 
     # Other
     path('increment_yoda/', chat_views.increment_yoda, name='increment_yoda'),
