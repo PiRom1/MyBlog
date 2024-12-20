@@ -34,14 +34,19 @@ def enjoy_timeline(request):
     max_color = np.array([199, 0, 57 ])
     ecart_color = max_color - min_color
     
-    min_timestamps = min(values)
-    max_timestamps = max(values)
+    if values:
+        max_timestamps = max(values)
+    else:
+        max_timestamps = 0
+
+    min_timestamps = 0
     
+
     timestamps_dict = {}
     for timestamp in timestamps:
         timestamps_dict[f"{timestamp['hour']}_{timestamp['minute']}"] = timestamp['count']
     
-
+    print(min_timestamps, max_timestamps)
     nb = {}
     colors = {}
 
@@ -50,7 +55,11 @@ def enjoy_timeline(request):
             nb_timestamps = timestamps_dict.get(f"{hour}_{minute}")
             nb_timestamps = nb_timestamps if nb_timestamps else 0
            
-            val_pourcentage = nb_timestamps / (max_timestamps-min_timestamps) * 100
+            if min_timestamps == max_timestamps:
+                val_pourcentage = 0
+            else:
+                val_pourcentage = nb_timestamps / (max_timestamps-min_timestamps) * 100
+
             new_color = min_color + ecart_color*val_pourcentage/100
 
             nb[f"{hour}_{minute}"] = nb_timestamps
