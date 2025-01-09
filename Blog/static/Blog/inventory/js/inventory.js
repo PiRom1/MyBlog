@@ -50,9 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         item.appendChild(heartCircle);
     }
 
-
-    var skinType;
-
     // Mettre à jour l'événement de clic sur les items pour afficher les options du menu contextuel
     items.forEach(item => {
 
@@ -61,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemFavorite = item.getAttribute('data-favorite');
         const itemEquipped = item.getAttribute('data-equipped');
         const itemSkinType = item.getAttribute('data-skin-type');
+        const itemRarityName = item.getAttribute('data-rarity-name');
+        const itemRarityColor = item.getAttribute('data-rarity-color');
         const itemPattern = item.getAttribute('data-pattern');
         const itemId = item.getAttribute('data-id');
         const itemUrl = item.getAttribute('data-url');
@@ -75,9 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
             font_tab.push(itemPattern);
         }
 
-        
-
-        
+        // Set rarity color
+        // Get the after pseudo of the item in jquery
+        item.style.setProperty('--RarityBorder', `6px solid ${itemRarityColor}`);
+                
         const pattern = item.getAttribute('data-pattern');
         // Vérifier si le pattern commence par un '#' (hexadécimal)
         if (pattern && pattern.startsWith('#')) {

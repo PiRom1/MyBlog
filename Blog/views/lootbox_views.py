@@ -76,10 +76,12 @@ def open_lootbox(request):
         proba_dict[proba] += 1
     
     skin_probas = [proba/proba_dict[proba] for proba in skin_probas]
-    print(skin_probas)
+
+    rarity_colors = [skin.rarity.color for skin in skins]
     
     context = {"skin_images" : skin_images,
-               "skin_probas" : skin_probas}
+               "skin_probas" : skin_probas,
+               "rarity_colors" : rarity_colors}
 
     url = "Blog/lootbox/opening.html"
     return render(request, url, context)
@@ -135,14 +137,7 @@ def drop_item(request):
 
 @login_required
 def get_lootbox(request):
-
-    box = Item(type='box',
-               item_id=1)
-    
-    box_user = UserInventory(user = request.user,
-                             item = box)
-    
-    box.save()
-    box_user.save()
+    for _ in range(10):
+        UserInventory.objects.create(user=request.user, item=Item.objects.create(type='box', item_id=1))
 
     return HttpResponseRedirect('/inventory')

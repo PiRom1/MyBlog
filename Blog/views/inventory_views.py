@@ -62,6 +62,8 @@ def user_inventory_view(request):
                 'favorite': inventory.favorite,
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
+                'rarity_name': skin.rarity.name,
+                'rarity_color': skin.rarity.color
                 })
             
             if skin.type == 'emoji' and item.pattern != '':

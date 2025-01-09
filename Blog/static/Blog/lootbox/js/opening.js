@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  const DURATION = 10000;
+  const DURATION = 30000;
   var box_id = document.getElementById('box_id').getAttribute('box_id');
   console.log("box id : ", box_id);
   const csrftoken = document.querySelector('meta[name="csrf-token"]').content;  
@@ -125,6 +125,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var win_id = choice(img_array, cum_probas);
     var skins = document.getElementById('data').getAttribute('skins');
     skins = skins.replace(/'/g,"\"");
+    var rarity_colors = document.getElementById('data').getAttribute('rarity-colors');
+    rarity_colors = rarity_colors.replace(/'/g,"\"");
+    rarity_colors = JSON.parse(rarity_colors);
     
     skins = JSON.parse(skins);
     console.log("skins : ", skins[0]);
@@ -137,10 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if($(this).hasClass('itemBoxAnW')){
         
         $(this).append('<img src="' + skins[win_id - 1]+'" alt="'+win_id+'">');
+        $(this).css('--RarityBorder', `10px solid ${rarity_colors[win_id - 1]}`);
       }
       else{
         var random = choice(img_array, cum_probas);
         $(this).append('<img src="' + skins[random - 1]+'" alt="'+random+'">');
+        $(this).css('--RarityBorder', `10px solid ${rarity_colors[random - 1]}`);
       }
     });
     

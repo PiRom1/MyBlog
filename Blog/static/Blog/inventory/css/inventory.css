@@ -158,6 +158,19 @@ h1 {
     backdrop-filter: blur(3px); /* Applique le flou sur le fond */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombre légère */
     transition: box-shadow 0.3s ease;
+    --RarityBorder: 0px solid transparent; /* Bordure par défaut */
+}
+
+.inventory-item::after{
+    content: "";
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 111px;
+    bottom: 0px;
+    border: var(--RarityBorder);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .inventory-item:hover {
