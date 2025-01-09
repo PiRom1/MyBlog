@@ -30,7 +30,7 @@ def enjoy_timeline(request):
     timestamps = list(timestamps)
     values = [i['count'] for i in timestamps]
 
-    scale = 450
+    scale = 400
     
     if values:
         max_timestamps = max(max(values), 1)
@@ -40,7 +40,7 @@ def enjoy_timeline(request):
         min_timestamps = 1
 
     ecart = max_timestamps - min_timestamps + 2
-    scale_table = [i*scale/ecart for i in range(ecart-1)]
+    scale_table = [(i+1)*scale/ecart for i in range(ecart-1)]
 
     
 
@@ -60,11 +60,11 @@ def enjoy_timeline(request):
                 new_color = [200, 200, 200]
             else:
                 color = scale_table[nb_timestamps-1]
-                if color <= 250 : 
-                    new_color = [250, 250-color, 250-color]
+                if color <= 220 : 
+                    new_color = [255, 220-color, 220-color]
                 else:
-                    color = color - 250
-                    new_color = [250-color, 0, 0]
+                    color = color - 220
+                    new_color = [255-color, 0, 0]
 
             nb[f"{hour}_{minute}"] = nb_timestamps
             colors[f"{hour}_{minute}"] = new_color
