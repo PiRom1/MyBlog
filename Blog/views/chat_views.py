@@ -504,3 +504,28 @@ def ask_heure_enjoy(request):
 
     return JsonResponse({'message' : response.choices[0].message.content})
 
+
+def chat_with_bot(request, id):
+    message = ''
+    answer = ''
+
+    bot = Bot.objects.get(user_id=id)
+    form = MessageForm2()
+
+    if request.method == "POST":
+        message = request.POST.get('message')
+        answer, _ = LLMResponse(username = request.user.username, message = message, session = None, bot = bot)
+
+
+        
+
+    url = "Blog/chat/chat_with_bot.html"
+    context = {"id": id,
+               "bot" : bot,
+               "image" : bot.user.image.image.url,
+               "user" : bot.user,
+               'form' : form,
+               'message' : message,
+               'answer' : answer}
+    
+    return render(request, url, context)

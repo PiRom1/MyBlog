@@ -26,9 +26,10 @@
 
 <a href="/">HOME</a>
 
+
 <h1>Profil de <span class="name">{{viewed_user.username}} </span></h1>
 {% if user == viewed_user %} <span id="ouvrirFormulaire" style="color: blue; cursor: pointer;">✏️</span>{% endif %}
-
+<h2>{{answer}}</h2>
 
 <div id="formContainer" style="display: none;">
   <form action="" method="post" id="monFormulaire">
@@ -56,6 +57,10 @@ Mot les plus utilisés : <br>
 <br><br>
 
 <a href="/user/{{viewed_user.id}}/messages#bottom">Voir les messages de {{viewed_user.username}}</a>
+<br>
+{% if is_bot %}
+  <a href="/bot/{{viewed_user.id}}/chat">Discuter avec le bot</a>
+{% endif %}
 <br><br>
 {% if user == viewed_user %}
 <a href = "/change_photo">Changer sa photo de profil</a>

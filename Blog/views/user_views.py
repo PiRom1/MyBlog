@@ -210,6 +210,8 @@ def UserView(request, id):
     else:
         bg = None
     
+    bot_ids = Bot.objects.all().values_list('user_id', flat=True)
+    is_bot = viewed_user.id in bot_ids
 
 
     url = "Blog/user/user.html"
@@ -220,6 +222,7 @@ def UserView(request, id):
                'words' : words,
                'plot' : plot,
                'user_bg' : bg,
+               'is_bot' : is_bot,
                }
 
     return render(request, url, context)

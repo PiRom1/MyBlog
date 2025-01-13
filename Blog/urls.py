@@ -77,6 +77,9 @@ urlpatterns = [
     path('enjoy_timeline/', enjoy_timeline_views.enjoy_timeline, name='enjoy_timeline'),
     path('enjoy_timeline/<int:hour>/<int:minute>/', enjoy_timeline_views.enjoy_timeline_hour_minute, name='enjoy_timeline_hour_minute'),
 
+    # Bot
+    path('bot/<int:id>/chat/', chat_views.chat_with_bot, name="chat_with_bot"),
+
     # Other
     path('increment_yoda/', chat_views.increment_yoda, name='increment_yoda'),
     path('increment_enjoy/', chat_views.increment_enjoy, name='increment_enjoy'),

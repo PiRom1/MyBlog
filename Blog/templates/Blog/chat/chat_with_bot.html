@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <title>{{Bot}}</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
+    rel="stylesheet"
+    type="text/css" />
+  
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/chat/css/chat_with_bot.css' %}">
+
+  <script src="{% static 'Blog/chat/js/chat_with_bot.js' %}" type="module"></script>
+
+</head>
+
+<body>
+<h1>Discutez avec le bot {{user.username}}</h1>
+<br><br>
+
+<div class="bot">
+    <img src="{{image}}" width="33%" class="bot_image">
+    <p class="preprompt">{{bot.preprompt}}</p>
+</div>
+
+<p class="message" id="message">{{message}}</p>
+<p class="answer" id="answer">{{answer}}</p>
+
+<form action="" method="post" id="messageForm">
+    {% csrf_token %}
+    
+    {{ form }}
+    <button type="submit" id="submit-button">Envoyer</button>
+</form>
+
+
+</body>
+
+</html>

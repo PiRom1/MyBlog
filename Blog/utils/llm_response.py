@@ -7,12 +7,12 @@ from Blog.models import Bot, User, SessionUser, SessionBot
 from datetime import datetime
 
 # Fonction qui génère une réponse à partir d'un message et optionnellement d'un utilisateur
-def LLMResponse(username:str, message: str, session, bot: Optional[str] = None) -> Optional[str]:
+def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) -> Optional[str]:
     
     user = User.objects.get(username=username)
     user_context = user.llm_context
     print(user_context)
-
+    print(bot)
     
 
     try:    
@@ -40,7 +40,8 @@ def LLMResponse(username:str, message: str, session, bot: Optional[str] = None) 
         
         else:
             prompt = f"{bot.preprompt}\n\nTu parles à {user.username}. Fais mention des caractéristiques de cette personne dans ta réponse. Voici les caractéristiques de cette personne : {user_context}"
-            
+        
+        print('ICI')
         # Send completion request to Groq with personalized prompt
         response = client.chat.completions.create(
             messages=[
