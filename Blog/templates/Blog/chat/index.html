@@ -103,6 +103,7 @@
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
                                     <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
+                                    {{skins|index:forloop.counter0}}
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">

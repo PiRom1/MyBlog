@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  const DURATION = 30000;
+  const DURATION = 10000;
   var box_id = document.getElementById('box_id').getAttribute('box_id');
   console.log("box id : ", box_id);
   const csrftoken = document.querySelector('meta[name="csrf-token"]').content;  
