@@ -139,7 +139,7 @@ def Index(request, id):
                 response, username = LLMNewMessage(session)
                 if response:
                     llm_user = User.objects.get(username=username)
-                    new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
+                    new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '{}')
                     history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
                     new_message.save()
                     history.save()
@@ -218,7 +218,7 @@ def Index(request, id):
                             response, username = LLMResponse(username, response, session, rd.choice(allowed_bots))
                             if response:
                                 llm_user = User.objects.get(username=username)
-                                new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '')
+                                new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = '{}')
                                 history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
                                 new_message.save()
                                 history.save()

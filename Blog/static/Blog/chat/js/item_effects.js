@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Get skins
         skins = message.getAttribute('skins');
         console.log(skins);
+        if (skins === '') {
+            skins = "{}";
+        }
         skins = skins.replace(/'/g, '"');
         console.log(skins);
         skins = JSON.parse(skins);
