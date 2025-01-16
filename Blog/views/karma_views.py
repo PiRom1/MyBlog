@@ -1,7 +1,7 @@
 from better_profanity import profanity
 from afinn import Afinn
  #*Moderation
-profanity.load_censor_words_from_file('banwords.txt')
+profanity.load_censor_words_from_file('MyBlog/Blog/banwords.txt')
 
 afinn = Afinn()
 
