@@ -132,6 +132,8 @@ def UserView(request, id):
     session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
     
     messages = Message.objects.filter(writer=viewed_user)
+    karma = messages.values_list('karma', flat=True)
+    mean_karma = np.mean(karma)
     n_messages = len(messages)
 
     messages = ' '.join([message.text for message in messages])
@@ -223,6 +225,7 @@ def UserView(request, id):
                'plot' : plot,
                'user_bg' : bg,
                'is_bot' : is_bot,
+               'mean_karma' : round(mean_karma, 2),
                }
 
     return render(request, url, context)

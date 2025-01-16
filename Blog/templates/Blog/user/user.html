@@ -54,6 +54,8 @@ Mot les plus utilisés : <br>
     <li>{{forloop.counter}} - <strong><a href="/user/{{viewed_user.id}}/messages/{{word}}">{{word}}</a></strong> ({{nb}})</li>
 </ol>
 {% endfor %}
+<br>
+Karma moyen : {{mean_karma}}
 <br><br>
 
 <a href="/user/{{viewed_user.id}}/messages#bottom">Voir les messages de {{viewed_user.username}}</a>
