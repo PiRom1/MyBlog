@@ -30,6 +30,7 @@
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
     <script src="{% static 'Blog/chat/js/tkt.js' %}"></script>
     <script src="{% static 'Blog/chat/js/enjoy_heure.js' %}"></script>
+    <script src="{% static 'Blog/chat/js/karma.js' %}"></script>
     
     {% load custom_filters %}
 </head>
@@ -42,7 +43,7 @@
 
     <div class="enjoy" id="enjoy">
         <a href="http://www.quelleheureestilenjoy.com/" target="_blank">
-            <img src="{% static 'img/Enjoy/enjoy_theo.png' %}" width="200"/>
+            <img src="{% static 'img/Enjoy/enjoy.png' %}" width="200"/>
             
         </a>
         <p>
@@ -51,7 +52,7 @@
     </div>
 
     <div class="yoda_img" id="yoda">
-        <img src="{% static 'img/maitre_theo.png' %}" width="150"/>
+        <img src="{% static 'img/yoda.png' %}" width="150"/>
     </div>
 
 
@@ -102,7 +103,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                    <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
+                                    <p class="text" skins="{{skins|index:forloop.counter0}}" karma="{{message.karma}}">{{message.text|safe}}</p>
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -119,7 +120,7 @@
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                     <i>{{message.pub_date}}</i> 
                                 </span>
-                                <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
+                                <p class="text" skins="{{skins|index:forloop.counter0}}" karma="{{message.karma}}">{{message.text|safe}}</p>
                             </div>
                         </div>
                         {% endif %}
