@@ -39,7 +39,7 @@
     </ul>
     
     <form method="post" class="form", id="form">
-        <br><br<br>
+        <br><br><br>
         <p>Donne tes impressions sur ce que dit enjoy à cette heure-ci !</p>
         {% csrf_token %}
         {{ form.as_p }}
@@ -47,7 +47,9 @@
     </form>
 
     <div class="footer">
+        <a href="http://www.quelleheureestilenjoy.com/" target="_blank">Quelle Heure Est-Il Enjoy ?</a><br>
         <a href="/enjoy_timeline">Retour à la timeline</a>
+
     </div>
 
 </body>
