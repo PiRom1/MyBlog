@@ -32,7 +32,7 @@
         {% for timestamp in timestamps %}   
             <li>
                 <div class="comment">
-                    {{timestamp.writer}} : {{timestamp.comment}}
+                    (<span class="date">{{timestamp.published_date}}</span>) {{timestamp.writer}} : {{timestamp.comment}}
                 </div>
             </li>
         {% endfor %}

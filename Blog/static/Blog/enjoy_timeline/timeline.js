@@ -19,8 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const square_nb = nb[`${hour}_${minute}`];
             const square_color = colors[`${hour}_${minute}`];
-            console.log(square_nb);
-            console.log(square_color);
+           
 
             const rgbColor = `rgb(${square_color.join(',')})`;
 
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 hour_panel.style.left = (e.pageX - hour_panel.clientWidth) + 'px';
                 hour_panel.style.top = e.pageY - hour_panel.clientHeight + 'px';
                 
-                console.log(hour_panel.clientWidth);
 
             })
 

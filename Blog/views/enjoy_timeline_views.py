@@ -97,13 +97,7 @@ def enjoy_timeline_hour_minute(request, hour, minute):
 
         return HttpResponseRedirect(f'/enjoy_timeline/{hour}/{minute}')
     
-
         
-    
-
-
-
-
     url = "Blog/enjoy_timeline/enjoy_timeline_hour_minute.html"
     context = {'hour' : hour,
                'minute' : minute,
