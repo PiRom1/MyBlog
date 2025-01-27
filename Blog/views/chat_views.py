@@ -170,6 +170,7 @@ def Index(request, id):
     if request.method == "POST":
         # message_form = MessageForm(request.POST)
         message_text = request.POST.get('message_html')
+        print("text : ", message_text)
         if message_text:
             # Get items
             items = UserInventory.objects.filter(user=user).filter(equipped=True)

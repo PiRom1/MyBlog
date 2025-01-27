@@ -2,9 +2,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     
     // Get every messages
-    const messages = document.querySelectorAll('.text');
+    const messages = document.querySelectorAll('.message-content');
     
-
+    console.log(messages);
     var i = 0;
     // Loop on messages
     messages.forEach((message) => {

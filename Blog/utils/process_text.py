@@ -167,7 +167,7 @@ def calembours(text):
                 calembour = True
                 index = text.lower().find(pattern[0])
         if calembour:
-            text += SENTENCE_CALEMBOUR
+            text = text.split('</p>')[0] + '\n' + SENTENCE_CALEMBOUR + '</p>'
     
     return text
 

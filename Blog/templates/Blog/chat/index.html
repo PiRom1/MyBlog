@@ -98,12 +98,12 @@
                         
                         {% if message.writer.username == user.username %}
                         <div class="message">
-                            <div class="message-content {{message.color}}">
+                            <div class="message-content {{message.color}}" karma="{{message.karma}}>
                                 <span class="message-meta">
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                    <p class="text" skins="{{skins|index:forloop.counter0}}" karma="{{message.karma}}">{{message.text|safe}}</p>
+                                    <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
                                 </div>
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -115,12 +115,12 @@
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}">
                             </a>
 
-                            <div class="message-content {{message.color}}">
+                            <div class="message-content {{message.color}}" karma="{{message.karma}}>
                                 <span class="message-meta">
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                     <i>{{message.pub_date}}</i> 
                                 </span>
-                                <p class="text" skins="{{skins|index:forloop.counter0}}" karma="{{message.karma}}">{{message.text|safe}}</p>
+                                <p class="text" skins="{{skins|index:forloop.counter0}}">{{message.text|safe}}</p>
                             </div>
                         </div>
                         {% endif %}
