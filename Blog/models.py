@@ -87,13 +87,14 @@ class Message(models.Model):
     downvote = models.IntegerField("downvote", default = 0)
     session_id = models.ForeignKey(Session, on_delete = models.CASCADE)
     skin = models.TextField("message_skin", default ="{}")
-    karma = models.FloatField("karma", default = 0.)
+    karma = models.FloatField("karma", default = None, null=True)
 
     def __str__(self):
         return f"{self.writer} ({self.pub_date}) : {self.text}"
     
     def save(self, *args, **kwargs):
-        self.karma = analyze_sentiment(self.text)
+        if not self.karma:
+            self.karma = analyze_sentiment(self.text)
         super().save(*args, **kwargs)
 
 class History(models.Model):
