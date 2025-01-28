@@ -8,7 +8,8 @@ import json
 
 
 def record_score(request):
-    
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
     data = json.loads(request.body.decode('utf-8'))        
     game = data.get('game')
     score = data.get('score')
