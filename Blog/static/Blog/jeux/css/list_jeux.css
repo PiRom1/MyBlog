@@ -1,0 +1,42 @@
+.leaderboard-container {
+    position: absolute;
+    right: 10%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    max-width: 800px;
+}
+
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.leaderboard-table th {
+    background-color: #6c25258e;
+    color: white;
+    font-size: 1.2em;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #ed9494c9; /* Couleur de fond pour les lignes paires */
+}
+
+.leaderboard-table tr:nth-child(odd) {
+    background-color: #eda3a3c9; /* Couleur de fond pour les lignes impaires */
+}
+
+
+.leaderboard-table td {
+    font-size: 1em;
+    color: ivory;
+}

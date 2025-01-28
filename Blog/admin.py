@@ -136,3 +136,8 @@ class SessionBotAdmin(admin.ModelAdmin):
 class EnjoyTimestampAdmin(admin.ModelAdmin):
     list_display = ('time', 'published_date', 'writer', 'comment')
 
+
+@admin.register(GameScore)
+class GameScoreAdmin(admin.ModelAdmin):
+    list_display = ('game', 'score', 'user', 'date')
+

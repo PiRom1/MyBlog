@@ -1,0 +1,60 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste Jeux</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/list_jeux.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Liste des jeux accessibles</h1>
+    
+    <br>
+    <ol>
+        {% for jeu in liste_jeux %}
+            <li>
+                <a href="{{jeu}}">{{jeu}}</a>
+            </li>
+        {% endfor %}
+    </ol>
+    
+    {% comment %} Leaderboard Flex {% endcomment %}
+
+    <div class="leaderboard-container">
+        <h1>Leaderboard Flex</h1>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores.Flex %}
+                <tr>
+
+                    <td>{{ forloop.counter }}{% if forloop.counter == 1 %} (Le King 👑) {% endif %}</td>
+                    <td><a href="/user/{{score.user.id}}">{{ score.user.username }}</a></td>
+                    <td>{{ score.score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <a href="/" style="position:absolute; bottom:15px;">HOME</a>
+
+</body>

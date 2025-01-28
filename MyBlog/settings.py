@@ -197,3 +197,6 @@ ITEM_TYPES = ['text_color',
               'emoji',
               'border_image',
               'other',]
+
+
+JEUX = [('Flex', 'Flex')]

@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import datetime
+from django.utils import timezone
 from Blog.views.karma_views import *
+from django.conf import settings
 
 # Create your models here.
 
@@ -334,3 +336,10 @@ class EnjoyTimestamp(models.Model):
 
     def __str__(self):
         return f"{self.time} ({self.writer.username})"
+
+
+class GameScore(models.Model):
+    game = models.CharField(max_length=100, choices=settings.JEUX)
+    score = models.FloatField()
+    user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
+    date = models.DateTimeField(default=timezone.now)

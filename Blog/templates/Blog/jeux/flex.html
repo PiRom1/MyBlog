@@ -1,0 +1,82 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Flex</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/flex.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/jeux/js/flex.js' %}" type="module"></script>
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Flex, Le jeu où tu testes tes réflexes !</h1>
+    
+    <br>
+    
+
+    <h3>Les Règles Officielles du Jeu de Réactivité</h3>
+
+    <p>
+        Bienvenue dans ce jeu où ta <span class="important">vitesse de réaction</span> et ta <span class="important">concentration</span> seront mises à l’épreuve. 
+        Avant de commencer, il est crucial de bien comprendre chaque détail du déroulement afin de tirer le meilleur parti de cette expérience ludique et immersive.
+    </p>
+
+    <p>
+        Tout commencera dès que tu prendras la décision appuyée d’appuyer sur le bouton intitulé <span class="highlight">"Commencer"</span>. 
+        Ce bouton, affiché de manière visible sur ton écran, sera le point de départ officiel de ton aventure. 
+        Une fois que tu auras cliqué, il te faudra être prêt, vigilant, et entièrement concentré sur ce qui va se produire.
+    </p>
+
+    <p>
+        Ton objectif principal, une fois le jeu en marche, sera de <span class="important">cliquer</span> sur l'écran dès que tu remarqueras un <span class="highlight">changement de couleur</span>. 
+        Cette modification, qui peut se produire à tout moment après le lancement du jeu, constitue le signal visuel que tu dois impérativement détecter et auquel tu devras réagir immédiatement.
+    </p>
+
+    <p>
+        Il est essentiel de garder à l’esprit que ton <span class="important">temps de réaction</span> sera mesuré avec une précision extrême grâce à un système de chronométrage très pointu. 
+        Ce dernier enregistrera le laps de temps exact entre le changement de couleur et ton clic. 
+        Par conséquent, la rapidité de ta réponse est cruciale pour obtenir un score optimal.
+    </p>
+
+    <p>
+        Afin d'optimiser tes chances de succès, voici quelques conseils utiles :
+    </p>
+    <ul>
+        <li>Maintiens ton regard fixé sur l’écran en permanence.</li>
+        <li>Évite toute distraction extérieure qui pourrait détourner ton attention.</li>
+        <li>Assure-toi d’avoir une position confortable pour réagir efficacement.</li>
+        <li>Ne clique pas trop tôt, car cela pourrait entraîner une erreur.</li>
+        <li>Sois prêt à donner le meilleur de toi-même, dès que le changement de couleur se produit.</li>
+    </ul>
+
+    <p>
+        Il est également important de noter que chaque milliseconde compte. Toute hésitation pourrait allonger ton temps de réaction et affecter ton score final. 
+        Ainsi, la <span class="important">rapidité</span> et la <span class="important">précision</span> sont les maîtres-mots de ce défi passionnant.
+    </p>
+
+    <p>
+        Pour conclure, souviens-toi que le jeu est conçu pour tester ta capacité à réagir rapidement à un stimulus visuel. 
+        Reste concentré, détendu, et profite de cette opportunité pour te challenger et améliorer tes réflexes au fil des tentatives.
+    </p>
+
+    <p style="text-align:center; font-size: 1.2em; font-weight: bold;">
+        Bonne chance et que le meilleur temps l'emporte !
+    </p>
+
+    <p style="text-align:center;">
+        <button id='bouton'>Commencer</button>
+    </p>
+
+    
+</body>
