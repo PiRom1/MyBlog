@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/jeux/css/list_jeux.css' %}">
     <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-    
+    <script src="{% static 'Blog/jeux/js/list_jeux.js' %}" type="module"></script>
+    {% load leaderboard_tags %}
     {% include "../bg.html" %}
 </head>
 
@@ -24,35 +25,14 @@
     <ol>
         {% for jeu in liste_jeux %}
             <li>
-                <a href="{{jeu}}">{{jeu}}</a>
+                <span class="show_leaderboard" name="{{jeu}}" style="cursor:pointer;">&#x1F3C6;</span> <a href="{{jeu}}">{{jeu}}</a>
             </li>
         {% endfor %}
     </ol>
     
-    {% comment %} Leaderboard Flex {% endcomment %}
-
-    <div class="leaderboard-container">
-        <h1>Leaderboard Flex</h1>
-        <table class="leaderboard-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>User</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for score in scores.Flex %}
-                <tr>
-
-                    <td>{{ forloop.counter }}{% if forloop.counter == 1 %} (Le King 👑) {% endif %}</td>
-                    <td><a href="/user/{{score.user.id}}">{{ score.user.username }}</a></td>
-                    <td>{{ score.score }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% comment %} Leaderboards Flex {% endcomment %}
+    <div class="leaderboard" name="Flex">{% render_leaderboard scores.Flex "Flex" %}</div>
+    <div class="leaderboard" name="Tracker" style="display:none;">{% render_leaderboard scores.Tracker "Tracker" %}</div>
 
 
     <a href="/" style="position:absolute; bottom:15px;">HOME</a>
