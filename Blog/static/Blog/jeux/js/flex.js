@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
 
     const bouton = document.getElementById('bouton');
+
     
     let game_begin = false;
 
@@ -101,10 +102,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     bouton.addEventListener('click', async function(e) {
         e.stopPropagation();
-        game_begin = true;
-        debut_jeu();
-
-        });
+        loadQuiz();
+        const verifierReponsesButton = document.getElementById('verifierReponses');
+        verifierReponsesButton.addEventListener('click', verifierReponses);
+    });
     
     
 
@@ -179,6 +180,178 @@ document.addEventListener('DOMContentLoaded', async function () {
         
 
     });
+
+    function loadQuiz() {
+        const container = document.body;
+        container.innerHTML = `
+          <h2 style="text-align:center; color:#0044cc;">Quiz de Compréhension</h2>
+  
+          <div class="question">
+            <p><strong>1. Quelle est la toute première instruction dans les règles ?</strong></p>
+            <div class="options" style="margin-left:20px;">
+              <label>
+                <input type="radio" name="q1" value="A">
+                Dès que tu auras cliqué sur 'Commencer', prépare-toi à appuyer sur l'écran dès que celui-ci change de couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q1" value="B">
+                Dès que tu auras cliqué sur 'Commencer', prépare-toi à cliquer sur l'écran dès que celui-ci change de couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q1" value="C">
+                Dès que tu auras appuyé sur 'Commencer', prépare-toi à appuyer sur l'écran dès que celui-ci change de couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q1" value="D">
+                Dès que tu auras appuyé sur 'Commencer', prépare-toi à cliquer sur l'écran dès que celui-ci change de teinte.
+              </label>
+            </div>
+          </div>
+  
+          <div class="question">
+            <p><strong>2. Que conseillent précisément les règles pour indiquer ta rapidité ?</strong></p>
+            <div class="options" style="margin-left:20px;">
+              <label>
+                <input type="radio" name="q2" value="A">
+                Sois réactif, ton temps sera mesuré très précisemment !
+              </label><br>
+              <label>
+                <input type="radio" name="q2" value="B">
+                Sois réactif, ton temps sera mesuré avec précision !
+              </label><br>
+              <label>
+                <input type="radio" name="q2" value="C">
+                Sois attentif, ton temps sera mesuré très précisemment !
+              </label><br>
+              <label>
+                <input type="radio" name="q2" value="D">
+                Sois attentif, ton score sera mesuré avec précision !
+              </label>
+            </div>
+          </div>
+  
+          <div class="question">
+            <p><strong>3. Quel est le signal visuel exact à ne surtout pas rater ?</strong></p>
+            <div class="options" style="margin-left:20px;">
+              <label>
+                <input type="radio" name="q3" value="A">
+                Il faut cliquer dès que ce dernier change sa couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q3" value="B">
+                Il faut cliquer dès que celui-ci change de couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q3" value="C">
+                Il faut appuyer dès que ce dernier change de couleur.
+              </label><br>
+              <label>
+                <input type="radio" name="q3" value="D">
+                Il faut appuyer dès que celui-ci change de nuance.
+              </label>
+            </div>
+          </div>
+  
+          <div class="question">
+            <p><strong>4. Après avoir cliqué sur 'Commencer', que dois-tu exactement faire ?</strong></p>
+            <div class="options" style="margin-left:20px;">
+              <label>
+                <input type="radio" name="q4" value="A">
+                Prépare-toi à cliquer sur l'écran.
+              </label><br>
+              <label>
+                <input type="radio" name="q4" value="B">
+                Tiens-toi prêt à cliquer sur l'écran.
+              </label><br>
+              <label>
+                <input type="radio" name="q4" value="C">
+                Prépare-toi à appuyer sur l'écran.
+              </label><br>
+              <label>
+                <input type="radio" name="q4" value="D">
+                Tiens-toi prêt à appuyer sur l'écran.
+              </label>
+            </div>
+          </div>
+  
+          <div class="question">
+            <p><strong>5. Quel conseil est donné concernant ton attitude globale pendant la partie ?</strong></p>
+            <div class="options" style="margin-left:20px;">
+              <label>
+                <input type="radio" name="q5" value="A">
+                sois attentif.
+              </label><br>
+              <label>
+                <input type="radio" name="q5" value="B">
+                Sois rapide.
+              </label><br>
+              <label>
+                <input type="radio" name="q5" value="C">
+                Sois très rapide.
+              </label><br>
+              <label>
+                <input type="radio" name="q5" value="D">
+                Sois réactif.
+              </label>
+            </div>
+          </div>
+  
+          <!-- Bouton interne pour valider les réponses -->
+          <button id="verifierReponses">Valider les réponses</button>
+  
+          <!-- Zone d'affichage du résultat -->
+          <div class="result" id="resultat"></div>
+        `;
+    }
+  
+    /**
+     * Fonction qui vérifie les réponses sélectionnées et affiche le score.
+     */
+    function verifierReponses() {
+    let score = 0;
+    const totalQuestions = 5;
+
+    // Réponses correctes EXACTES (issues des règles)
+    // Q1 = B
+    // Q2 = A (avec "très précisemment" et "Sois réactif, ton temps sera mesuré")
+    // Q3 = B
+    // Q4 = A
+    // Q5 = A
+
+    const reponse1 = document.querySelector('input[name="q1"]:checked');
+    if (reponse1 && reponse1.value === "B") score++;
+
+    const reponse2 = document.querySelector('input[name="q2"]:checked');
+    if (reponse2 && reponse2.value === "A") score++;
+
+    const reponse3 = document.querySelector('input[name="q3"]:checked');
+    if (reponse3 && reponse3.value === "B") score++;
+
+    const reponse4 = document.querySelector('input[name="q4"]:checked');
+    if (reponse4 && reponse4.value === "A") score++;
+
+    const reponse5 = document.querySelector('input[name="q5"]:checked');
+    if (reponse5 && reponse5.value === "D") score++;
+
+    const resultat = document.getElementById('resultat');
+    if (score === totalQuestions) {
+        resultat.innerHTML = "✔️ Parfait ! Vous avez choisi toutes les formulations EXACTES. Le jeu va démarrer.";
+        resultat.style.color = "green";
+        resultat.style.fontWeight = "bold";
+        resultat.style.textShadow = "1px 1px 1px black";
+        sleep(5000).then(() => {
+        
+        game_begin = true;
+        debut_jeu();
+        });
+    } else {
+        resultat.innerHTML = "❌ Vous avez " + score + "/" + totalQuestions
+                            + ". Réessayez en repérant les subtilités de vocabulaire.";
+        resultat.style.color = "red";
+        resultat.style.fontWeight = "bold";
+        resultat.style.textShadow = "1px 1px 1px black";
+    }
+    }
             
         
-    });
+});
