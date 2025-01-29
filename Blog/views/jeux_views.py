@@ -27,8 +27,10 @@ def list_jeux(request):
     scores = {}
 
     # Get Flex score
-    flex_scores = GameScore.objects.filter(game='Flex').order_by('score')[:5]
+    flex_scores = GameScore.objects.filter(game='Flex').order_by('score')[:10]
+    tracker_scores = GameScore.objects.filter(game='Tracker').order_by('-score')[:10]
     scores['Flex'] = [{'user' : flex_score.user, 'score' : flex_score.score} for flex_score in flex_scores]
+    scores['Tracker'] = [{'user' : tracker_score.user, 'score' : tracker_score.score} for tracker_score in tracker_scores]
     
 
 
@@ -37,8 +39,7 @@ def list_jeux(request):
     
     context = {
         'liste_jeux': liste_jeux,
-        'scores' : scores,
-        
+        'scores' : scores,        
     }
     
     return render(request, url, context)
@@ -50,6 +51,19 @@ def flex(request):
     
     context = {
         'nom_jeu': 'Flex',        
+    }
+    
+    return render(request, url, context)
+
+
+
+@login_required
+def tracker(request):
+
+    url = 'Blog/jeux/tracker.html'
+    
+    context = {
+        'nom_jeu': 'Tracker',        
     }
     
     return render(request, url, context)

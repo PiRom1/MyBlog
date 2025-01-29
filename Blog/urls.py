@@ -92,6 +92,7 @@ urlpatterns = [
     # Jeux
     path('jeux/', jeux_views.list_jeux, name = 'list_jeux'),
     path('jeux/Flex', jeux_views.flex, name = 'flex'),
+    path('jeux/Tracker', jeux_views.tracker, name = 'tracker'),
     path('jeux/record', jeux_views.record_score, name='record_score'),
     
 ]

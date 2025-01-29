@@ -1,0 +1,69 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Tracker</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/tracker.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/jeux/js/tracker.js' %}" type="module"></script>
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Tracker, Le Jeu de Précision Ultime !</h1>
+
+    <br>
+    
+    <h3>Règles Officielles du Jeu Tracker</h3>
+    
+    <p>
+        Bienvenue dans <span class="important">Tracker</span>, un jeu où ta <span class="important">précision</span>, ta <span class="important">concentration</span> et ta <span class="important">réactivité</span> seront mises à l’épreuve ! 
+        Ton objectif est simple : <span class="important">suivre un cercle</span> qui se déplace aléatoirement sur l’écran aussi longtemps que possible.
+    </p>
+    
+    <p>
+        Pour commencer, appuie sur le bouton <span class="highlight">"Commencer"</span>. Dès que la partie démarre, un cercle apparaîtra et commencera à bouger. 
+        Ta mission sera de <span class="important">garder ta souris ou ton doigt sur lui</span>, sans le lâcher.
+    </p>
+    
+    <p>
+        Attention, ce défi n’est pas statique ! Plus le temps passe, plus la <span class="important">vitesse du cercle augmentera</span>, rendant le suivi de plus en plus difficile. 
+        Si jamais tu perds le cercle, la partie est immédiatement terminée et ton score est enregistré.
+    </p>
+    
+    <p>
+        Voici quelques conseils pour maximiser tes chances de réussite :
+    </p>
+    <ul>
+        <li>Adopte une position confortable pour suivre le mouvement avec précision.</li>
+        <li>Anticipe les changements brusques de direction du cercle.</li>
+        <li>Reste concentré et ne détourne jamais ton regard de l’écran.</li>
+        <li>Utilise toute ta main pour un meilleur contrôle du suivi.</li>
+    </ul>
+    
+    <p>
+        Plus tu restes sur le cercle, plus ton <span class="important">score augmente</span> ! Seuls les joueurs les plus habiles pourront tenir longtemps et atteindre des records impressionnants.
+    </p>
+    
+    <p>
+        Prêt à tester tes réflexes ? Alors ne perds plus une seconde et appuie sur le bouton ci-dessous !
+    </p>
+    
+    <p style="text-align:center; font-size: 1.2em; font-weight: bold;">
+        Bonne chance et que le meilleur Tracker l’emporte !
+    </p>
+    
+    <p style="text-align:center;">
+        <button id='bouton'>Commencer</button>
+    </p>
+    

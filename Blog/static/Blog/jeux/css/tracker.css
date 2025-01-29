@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.8;
+    margin: 40px;
+    color: #333;
+}
+h1 {
+    color: gainsboro;
+    text-align: center;
+}
+h2 {
+    color: gainsboro;
+}
+h3 {
+    color: ivory;
+}
+p {
+    text-align: justify;
+    color: white;
+}
+.important {
+    font-weight: bold;
+    color: #f1a7a7;
+}
+.highlight {
+    background-color: #ffff99;
+    color: gray;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+
+li {
+    color: ivory;
+    margin-left: 3%;
+}
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+canvas {
+    display: block;
+}
