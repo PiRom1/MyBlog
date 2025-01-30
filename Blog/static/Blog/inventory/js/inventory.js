@@ -241,9 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const pattern = selectedItem.getAttribute('data-pattern');
                 const favorite = selectedItem.getAttribute('data-favorite');
                 const skin_type = selectedItem.getAttribute('data-skin-type');
+                const skin_rarity_name = selectedItem.getAttribute('data-rarity-name');
+
                 additionalInfo = `<strong>Pattern:</strong> <a style="font-family: ${pattern}; color: #000;">${pattern}</a><br>
                                   <strong>Type:</strong> ${skin_type}<br>
-                                  <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}`;
+                                  <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}<br>
+                                  <strong>Rareté:</strong> ${skin_rarity_name}`;
             } else if (type === 'box') {
                 const openPrice = selectedItem.getAttribute('data-open-price');
                 additionalInfo = `<strong>Prix d'ouverture:</strong> ${openPrice} crédits`;
