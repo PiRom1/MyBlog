@@ -45,10 +45,10 @@
                             <option value="daily">Jour</option>
                         </select>
         </h1> <!-- Affiche la clé passée -->
-
+  
         {% comment %} Leaderboards Flex {% endcomment %}
         {% for score in scores %}
-            <div class="leaderboard" name={{score.game}} timedelta={{score.time_delta}} style="display:block;">{% render_leaderboard score.score%}</div>
+            <div class="leaderboard" name={{score.game}} timedelta={{score.time_delta}} style="display:block;">{% render_leaderboard score %}</div>
         {% endfor %}
     </div>
 

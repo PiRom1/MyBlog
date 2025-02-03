@@ -51,8 +51,8 @@ def get_scores(game_name, time_delta, desc = False):
 
 
     if desc:
-        return scores.order_by('-score')[:10]
-    return scores.order_by('score')[:10]
+        return scores.order_by('-score')
+    return scores.order_by('score')
 
 
 @login_required
@@ -70,9 +70,19 @@ def list_jeux(request):
     for jeu in liste_jeux:
         for delta in deltas:
             scores = get_scores(jeu, time_delta = delta, desc = orders[jeu])
+            # Get better personal score
+            best_score = scores.filter(user=request.user).first()
+            print("best score : ", best_score)
+            if best_score:
+                rg = list(scores).index(best_score) + 1
+            else:
+                rg = None
+
+
             d = {'game' : jeu, 
                  'time_delta' : delta, 
-                 'score' : [{'user' : score.user, 'score' : score.score, 'date' : score.date} for score in scores]}
+                 'score' : [{'user' : score.user, 'score' : score.score, 'date' : score.date} for score in scores[0:10]],
+                 'user_best_score' : {'rg' : rg, 'score' : best_score, 'user' : request.user}}
             data.append(d)
 
     print(data)
