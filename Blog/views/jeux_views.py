@@ -14,7 +14,8 @@ def record_score(request):
     game = data.get('game')
     score = data.get('score')
     game_score = GameScore(game = game, score = score, user = request.user)
-    game_score.save()
+    if game_score != 9999.0:
+        game_score.save()
     return JsonResponse({'success' : True})
 
 
