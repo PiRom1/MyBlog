@@ -200,4 +200,5 @@ ITEM_TYPES = ['text_color',
 
 
 JEUX = [('Flex', 'Flex'),
-        ('Tracker', 'Tracker')]
+        ('Tracker', 'Tracker'),
+        ('Kingboard', 'Kingboard')]

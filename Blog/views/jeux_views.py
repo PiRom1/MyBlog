@@ -58,14 +58,12 @@ def get_scores(game_name, time_delta, desc = False):
 def list_jeux(request):
     liste_jeux = [jeu[0] for jeu in settings.JEUX]
     orders = {'Flex' : False,
-              'Tracker' : True}
+              'Tracker' : True,
+              'Kingboard' : False}
+
     deltas = ['all', 'monthly', 'weekly', 'daily']
 
-
     # Get scores
-    # Score = liste de dictionnaires. Les dictionnaires contiennent : 
-    #               le nom du jeu, la granulométrie (daily, ... ) et une liste de dictionnaires contenant en clef le user et son score
-
     data = []
 
     for jeu in liste_jeux:
@@ -107,6 +105,19 @@ def tracker(request):
     
     context = {
         'nom_jeu': 'Tracker',        
+    }
+    
+    return render(request, url, context)
+
+
+
+@login_required
+def kingboard(request):
+
+    url = 'Blog/jeux/kingboard.html'
+    
+    context = {
+        'nom_jeu': 'Kingboard',        
     }
     
     return render(request, url, context)

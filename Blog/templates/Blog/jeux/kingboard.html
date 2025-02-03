@@ -1,0 +1,83 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Kingboard</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/kingboard.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/jeux/js/kingboard.js' %}" type="module"></script>
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Kingboard, Le jeu où tu testes ta rapidité au clavier !</h1>
+    
+    <br>
+    
+    <h3>Les Règles Officielles du Jeu de Frappe Rapide</h3>
+    
+    <p>
+        Bienvenue dans ce jeu où ta <span class="important">vitesse de frappe</span> et ta <span class="important">précision</span> seront mises à rude épreuve. 
+        Avant de te lancer dans cette aventure palpitante, il est essentiel de bien comprendre chaque détail du fonctionnement du jeu afin d’en tirer le meilleur profit possible.
+    </p>
+    
+    
+    <p>
+        Ton objectif principal sera de <span class="important">saisir</span> sur ton clavier la lettre qui apparaîtra à l’écran le plus rapidement possible. 
+        Dès que tu auras correctement tapé la lettre affichée, une nouvelle apparaîtra instantanément. 
+        Ce processus se répétera <span class="important">10 fois d’affilée</span>, et ton temps total sera minutieusement enregistré.
+    </p>
+    
+    <p>
+        Il est crucial de noter que chaque <span class="important">seconde</span>, voire chaque <span class="important">milliseconde</span>, comptera dans ce jeu. 
+        Ton temps de réaction et la vitesse à laquelle tu tapes détermineront ton score final. 
+        Un chronomètre ultra-précis mesurera le temps exact écoulé entre l’apparition de chaque lettre et la frappe correcte correspondante.
+    </p>
+    
+    <p>
+        Pour maximiser tes chances de réussite, voici quelques conseils essentiels :
+    </p>
+    <ul>
+        <li>Garde tes doigts bien positionnés sur le clavier pour une réactivité optimale.</li>
+        <li>Évite toute distraction extérieure qui pourrait ralentir ta frappe.</li>
+        <li>Assure-toi de jouer dans un environnement calme et ergonomique.</li>
+        <li>Ne tape pas trop vite sans regarder, une erreur de frappe peut te ralentir.</li>
+        <li>Reste concentré et enchaîne les frappes avec fluidité.</li>
+    </ul>
+    
+    <p>
+        Sache également que la moindre hésitation pourrait impacter ton score final. 
+        Ainsi, la <span class="important">rapidité</span> et la <span class="important">précision</span> seront les maîtres-mots de ce défi haletant.
+    </p>
+    
+    <p>
+        Attention, tu n’auras droit qu’à une seule tentative pour prouver ta valeur ! 
+        Chaque erreur t'obligera à recommencer, et si tu mets trop de temps, ton score affichera un lamentable <span class="important">9999ms</span> ... 
+    </p>
+    
+    <p>
+        Pour conclure, souviens-toi que Kingboard est conçu pour tester ta capacité à taper rapidement et efficacement sur un clavier. 
+        Reste concentré, détendu, et profite de cette opportunité pour perfectionner ta rapidité de frappe tout en te challengeant !
+    </p>
+    
+    <p style="text-align:center; font-size: 1.2em; font-weight: bold;">
+        Bonne chance et que le meilleur temps l’emporte !
+    </p>
+    
+    <p style="text-align:center;">
+        <button id='bouton'>Commencer</button>
+    </p>
+    
+
+
+</body>

@@ -109,23 +109,23 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.body.appendChild(link); 
 
 
-         // Write score in database
-         const url = '/jeux/record';
+        // Write score in database
+        const url = '/jeux/record';
 
-         fetch(url, {
-             method: 'POST',
-             headers: {
-                 'X-Requested-With': 'XMLHttpRequest', // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
-                 'Content-Type': 'application/json',
-                 'X-CSRFToken': csrfToken,
-             },
-             body: JSON.stringify({game: 'Tracker', score: time})  // Envoie des données dans le corps de la requête
-             })        
-         .then(response => response.json())
-         .then(data => {
-             console.log("Donnée bien enregistrée !");
-             })
-    }
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest', // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({game: 'Tracker', score: time})  // Envoie des données dans le corps de la requête
+            })        
+        .then(response => response.json())
+        .then(data => {
+            console.log("Donnée bien enregistrée !");
+            })
+}
     
     function distance(x1, y1, x2, y2) {
         const dx = x1 - x2;
