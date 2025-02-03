@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import json
+from django.utils import timezone
+from datetime import timedelta
 
 
 def record_score(request):
@@ -20,27 +22,68 @@ def record_score(request):
 
 
 
-@login_required
-def list_jeux(request):
-    liste_jeux = [jeu[0] for jeu in settings.JEUX]
+def get_scores(game_name, time_delta, desc = False):
+    '''
+    Returns the queryset of the scores of a certain game. 
+    game_name : str, name of the game
+    order : string, 'desc' si décroissant sinon None
+    time_delta : string, deltatime of allowed scores ('daily', 'weekly', 'monthly' or 'all')
+    '''
+    
+    if time_delta == 'all':
+        scores = GameScore.objects.filter(game=game_name)
 
-    # Get scores
-    scores = {}
+    elif time_delta == 'monthly':
+        today = timezone.now().date()
+        scores = GameScore.objects.filter(game=game_name, date__year=today.year, date__month=today.month)
 
-    # Get Flex score
-    flex_scores = GameScore.objects.filter(game='Flex').order_by('score')[:10]
-    tracker_scores = GameScore.objects.filter(game='Tracker').order_by('-score')[:10]
-    scores['Flex'] = [{'user' : flex_score.user, 'score' : flex_score.score} for flex_score in flex_scores]
-    scores['Tracker'] = [{'user' : tracker_score.user, 'score' : tracker_score.score} for tracker_score in tracker_scores]
+    elif time_delta == 'weekly':
+        today = timezone.now().date()
+        start_of_week = today - timedelta(days=today.weekday()) 
+        scores = GameScore.objects.filter(game=game_name, date__date__range=(today, start_of_week))
+
+    elif time_delta == 'daily':
+        today = timezone.now().date()
+        scores = GameScore.objects.filter(game=game_name, date__date=today)
+
+
     
 
 
+    if desc:
+        return scores.order_by('-score')[:10]
+    return scores.order_by('score')[:10]
+
+
+@login_required
+def list_jeux(request):
+    liste_jeux = [jeu[0] for jeu in settings.JEUX]
+    orders = {'Flex' : False,
+              'Tracker' : True}
+    deltas = ['all', 'monthly', 'weekly', 'daily']
+
+
+    # Get scores
+    # Score = liste de dictionnaires. Les dictionnaires contiennent : 
+    #               le nom du jeu, la granulométrie (daily, ... ) et une liste de dictionnaires contenant en clef le user et son score
+
+    data = []
+
+    for jeu in liste_jeux:
+        for delta in deltas:
+            scores = get_scores(jeu, time_delta = delta, desc = orders[jeu])
+            d = {'game' : jeu, 
+                 'time_delta' : delta, 
+                 'score' : [{'user' : score.user, 'score' : score.score, 'date' : score.date} for score in scores]}
+            data.append(d)
+
+    print(data)
 
     url = 'Blog/jeux/list_jeux.html'
     
     context = {
         'liste_jeux': liste_jeux,
-        'scores' : scores,        
+        'scores' : data,        
     }
     
     return render(request, url, context)

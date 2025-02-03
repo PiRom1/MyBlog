@@ -6,10 +6,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     const bouton = document.getElementById('bouton');
 
+    
+    let screenDiagonal = Math.min(window.innerWidth, window.innerHeight);
+    console.log("screen : ", screenDiagonal);
     let canvas;
     let ctx;
     const CIRCLE_COLOR = 'red';
-    let CIRCLE_RADIUS = 40;
+    let CIRCLE_RADIUS = screenDiagonal * 0.04;
+
     let CIRCLE_X = window.innerWidth/2;
     let CIRCLE_Y = window.innerHeight/2;
 
@@ -17,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let mouse_y;
 
     let ANGLE_MOUVEMENT = randint(-Math.PI, Math.PI);
-    let COEFF_MOUVEMENT = 0.5;
+    let COEFF_MOUVEMENT = 0.00045 * screenDiagonal;
 
     let begin, end;
 

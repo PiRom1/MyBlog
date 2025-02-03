@@ -30,9 +30,27 @@
         {% endfor %}
     </ol>
     
-    {% comment %} Leaderboards Flex {% endcomment %}
-    <div class="leaderboard" name="Flex">{% render_leaderboard scores.Flex "Flex" %}</div>
-    <div class="leaderboard" name="Tracker" style="display:none;">{% render_leaderboard scores.Tracker "Tracker" %}</div>
+    <div class="leaderboard-container">
+        <h1>
+            Leaderboard <select name="games" id="game-selector" class="game-selector">
+                            {% for jeu in liste_jeux %}
+                                <option value="{{jeu}}">{{jeu}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <select name="games" id="timedelta-selector" class="frequency-selector">
+                            <option value="all">All</option>
+                            <option value="monthly">Mois</option>
+                            <option value="weekly">Semaine</option>
+                            <option value="daily">Jour</option>
+                        </select>
+        </h1> <!-- Affiche la clé passée -->
+
+        {% comment %} Leaderboards Flex {% endcomment %}
+        {% for score in scores %}
+            <div class="leaderboard" name={{score.game}} timedelta={{score.time_delta}} style="display:block;">{% render_leaderboard score.score%}</div>
+        {% endfor %}
+    </div>
 
 
     <a href="/" style="position:absolute; bottom:15px;">HOME</a>
