@@ -40,3 +40,29 @@
     font-size: 1em;
     color: ivory;
 }
+
+.game-selector {
+    text-align: center;
+    font-size: 75%;
+    background-color: rgba(180, 169, 169, 0.83);
+    color: ivory;
+    font-weight: bold;
+    margin-bottom: 1%;
+}
+
+.game-selector option {
+    font-weight: bold;
+}
+
+.frequency-selector {
+    text-align: center;
+    font-size: 55%;
+    background-color: rgba(208, 198, 198, 0.83);
+    color: ivory;
+    font-weight: bold;
+    margin-bottom: 1%;
+}
+
+.frequency-selector option {
+    font-weight: bold;
+}

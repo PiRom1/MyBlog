@@ -3,5 +3,5 @@ from django import template
 register = template.Library()
 
 @register.inclusion_tag('Blog/jeux/leaderboard_table.html')
-def render_leaderboard(scores, key):
-    return {'scores': scores, 'key': key}
+def render_leaderboard(scores):
+    return {'scores': scores}
