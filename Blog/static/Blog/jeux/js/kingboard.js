@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const bouton = document.getElementById('bouton');
     let randomChar;
     const nb_char = 10;
-    let step = 1;
+    let step = 0;
     let begin, end, time;
 
     async function sleep(ms) {
@@ -26,9 +26,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     };
     
-    bouton.addEventListener('click', function() {
+    // New function to restart the game (reset state and start draw_decompte)
+    function startGame() {
+        step = 0;
         document.body.innerHTML = '';
+        document.body.style.background = 'Black';
         draw_decompte();
+    }
+    
+    bouton.addEventListener('click', function() {
+        startGame();
     })
 
     function afficher_char() {
@@ -49,8 +56,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         replay.style.textAlign = "center";
         replay.textContent = "Rejouer !";
 
+        // Changed code: call startGame() instead of reloading the page
         replay.addEventListener("click", function() {
-            window.location.href='/jeux/Kingboard';
+            startGame();
         });
 
         document.body.appendChild(replay);
@@ -76,8 +84,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         replay.style.textAlign = "center";
         replay.textContent = "Rejouer !";
 
+        // Changed code: call startGame() instead of reloading the page
         replay.addEventListener("click", function() {
-            window.location.href='/jeux/Kingboard';
+            startGame();
         });
 
         document.body.appendChild(replay);
@@ -120,8 +129,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.log(e.key, randomChar);
                 if (e.key === randomChar) {
                     step += 1;
-                    randomChar = String.fromCharCode(97 + Math.floor(Math.random() * 26));
-                    afficher_char();
+                    if (step < nb_char){
+                        randomChar = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+                        afficher_char();
+                    }
+                    else {
+                        end = Date.now();
+                        time = (end - begin)/1000;
+                        randomChar = null;
+                        draw_end();
+                    }
                 }
                 else {
                     draw_fail();
