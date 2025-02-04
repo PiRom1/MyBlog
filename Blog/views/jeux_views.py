@@ -39,8 +39,8 @@ def get_scores(game_name, time_delta, desc = False):
 
     elif time_delta == 'weekly':
         today = timezone.now().date()
-        start_of_week = today - timedelta(days=today.weekday()) 
-        scores = GameScore.objects.filter(game=game_name, date__date__range=(today, start_of_week))
+        start_of_week = today - timedelta(days=today.weekday())
+        scores = GameScore.objects.filter(game=game_name, date__date__range=(start_of_week, today))
 
     elif time_delta == 'daily':
         today = timezone.now().date()
