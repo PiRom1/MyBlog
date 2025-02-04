@@ -66,3 +66,7 @@
 .frequency-selector option {
     font-weight: bold;
 }
+
+.user_best_row {
+    background-color: rgba(193, 179, 179, 0.75) !important;
+}
