@@ -1,30 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
   const startButton = document.getElementById('startButton');
-  // Ajout récupération du CSRF token
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  startButton.addEventListener('click', function () {
-    // Start the game
+  
+  // New function to encapsulate the game logic and initialization
+  function startGame() {
+    // Set up the game DOM and styling
     document.body.innerHTML = '<canvas id="gameCanvas"></canvas><div id="score"></div>';
-    document.body.style.background = 'black';
+    document.body.style.margin = '0'; // Remove default margin
+    
     const canvas = document.getElementById("gameCanvas");
+    canvas.style.backgroundColor = "black"; // Canvas background remains black
     const ctx = canvas.getContext("2d");
-
-    // Ajustement de la taille du canvas à la fenêtre
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    // Définition du joueur
+    
+    // Définir la résolution virtuelle fixe
+    const GAME_WIDTH = 1536;
+    const GAME_HEIGHT = 695;
+    
+    // La logique du jeu se base sur ces dimensions fixes
+    canvas.width = GAME_WIDTH;
+    canvas.height = GAME_HEIGHT;
+    
+    // On utilise le CSS pour que le canvas occupe toute la fenêtre,
+    // en adaptant l’affichage, mais pas la logique
+    function resizeCanvasDisplay() {
+      // On calcule un ratio pour que le canvas garde son ratio sans déformation
+      const ratio = Math.min(window.innerWidth / GAME_WIDTH, window.innerHeight / GAME_HEIGHT);
+      canvas.style.width = (GAME_WIDTH * ratio) + 'px';
+      canvas.style.height = (GAME_HEIGHT * ratio) + 'px';
+    }
+    resizeCanvasDisplay();
+    window.addEventListener("resize", resizeCanvasDisplay);
+    
+    // --- Début de votre logique de jeu ---
+    
+    // Définition du joueur dans l'espace virtuel
     const player = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
+      x: GAME_WIDTH / 2,
+      y: GAME_HEIGHT / 2,
       radius: 5,
       speed: 5
     };
-
+    
     // Gestion des touches pour le déplacement
     const keys = {
       ArrowUp: false,
@@ -32,17 +48,28 @@ document.addEventListener('DOMContentLoaded', function () {
       ArrowLeft: false,
       ArrowRight: false
     };
-
+    
+    // Mise à jour de la gestion des touches pour inclure z,q,s,d
     window.addEventListener("keydown", (e) => {
-      if (e.key in keys) keys[e.key] = true;
+      let key = e.key;
+      if (key === "z") key = "ArrowUp";
+      if (key === "q") key = "ArrowLeft";
+      if (key === "s") key = "ArrowDown";
+      if (key === "d") key = "ArrowRight";
+      if (key in keys) keys[key] = true;
     });
     window.addEventListener("keyup", (e) => {
-      if (e.key in keys) keys[e.key] = false;
+      let key = e.key;
+      if (key === "z") key = "ArrowUp";
+      if (key === "q") key = "ArrowLeft";
+      if (key === "s") key = "ArrowDown";
+      if (key === "d") key = "ArrowRight";
+      if (key in keys) keys[key] = false;
     });
-
+    
     // Tableau des projectiles
     const bullets = [];
-
+    
     // Classe Bullet pour gérer les projectiles
     class Bullet {
       constructor(x, y, dx, dy, radius = 3, color = "red") {
@@ -64,104 +91,91 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.fill();
       }
     }
-
-    // Variables pour le score et la gestion du temps
+    
     let startTime = Date.now();
     let gameOver = false;
-    let spawnInterval = 1000; // Intervalle initial entre spawns (en ms)
+    let spawnInterval = 1000;
     let lastSpawnTime = 0;
-
-    // Fonction pour faire apparaître un projectile
+    
     function spawnBullet() {
-      // Le projectile apparaît aléatoirement sur l’un des bords de l’écran
       let edge = Math.floor(Math.random() * 4);
       let x, y;
       switch (edge) {
         case 0: // Haut
-          x = Math.random() * canvas.width;
+          x = Math.random() * GAME_WIDTH;
           y = 0;
           break;
         case 1: // Droit
-          x = canvas.width;
-          y = Math.random() * canvas.height;
+          x = GAME_WIDTH;
+          y = Math.random() * GAME_HEIGHT;
           break;
         case 2: // Bas
-          x = Math.random() * canvas.width;
-          y = canvas.height;
+          x = Math.random() * GAME_WIDTH;
+          y = GAME_HEIGHT;
           break;
         case 3: // Gauche
           x = 0;
-          y = Math.random() * canvas.height;
+          y = Math.random() * GAME_HEIGHT;
           break;
       }
-      // Calcul de l’angle pour que le projectile se dirige vers le joueur
       let angle = Math.atan2(player.y - y, player.x - x);
       
-      // Décider du type de projectile: 10% bleu, 10% vert, sinon rouge.
+      // Choix du type de projectile
       let rand = Math.random();
       let bulletRadius, baseSpeed, color;
       if (rand < 0.05) {
-          // Bullet bleu
-          bulletRadius = 10;
+          bulletRadius = 15;
           baseSpeed = 1.3;
           color = "blue";
       } else if (rand < 0.15) {
-          // Bullet vert (plus petit et très rapide)
           bulletRadius = 2;
           baseSpeed = 5;
           color = "lime";
       } else {
-          // Bullet rouge
           bulletRadius = 3;
           baseSpeed = 2;
           color = "red";
       }
-      
-      const speed = baseSpeed + (color === "blue" ? Math.random() * 0.5 : Math.random());
+      const speed = baseSpeed * 1.4;
       const dx = Math.cos(angle) * speed;
       const dy = Math.sin(angle) * speed;
       bullets.push(new Bullet(x, y, dx, dy, bulletRadius, color));
     }
-
-    // Détection de collision entre le joueur et un projectile
+    
     function isColliding(bullet) {
       const dx = bullet.x - player.x;
       const dy = bullet.y - player.y;
       const distance = Math.hypot(dx, dy);
       return distance < bullet.radius + player.radius;
     }
-
-    // Boucle principale du jeu
+    
     function update() {
       if (gameOver) return;
-
-      // Effacer le canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Calcul et affichage du score (temps de survie en secondes)
+      
+      // Effacer le canvas (dans l'espace de jeu virtuel)
+      ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
       const currentTime = Date.now();
       const score = ((currentTime - startTime) / 1000).toFixed(2);
       document.getElementById("score").textContent = "Score: " + score;
-
-      // Mise à jour du déplacement du joueur
+      
+      // Déplacement du joueur (toujours dans l'espace 800×600)
       if (keys.ArrowUp && player.y - player.radius > 0) player.y -= player.speed;
-      if (keys.ArrowDown && player.y + player.radius < canvas.height) player.y += player.speed;
+      if (keys.ArrowDown && player.y + player.radius < GAME_HEIGHT) player.y += player.speed;
       if (keys.ArrowLeft && player.x - player.radius > 0) player.x -= player.speed;
-      if (keys.ArrowRight && player.x + player.radius < canvas.width) player.x += player.speed;
-
+      if (keys.ArrowRight && player.x + player.radius < GAME_WIDTH) player.x += player.speed;
+      
       // Dessiner le joueur
       ctx.beginPath();
       ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
       ctx.fillStyle = "white";
       ctx.fill();
-
+      
       // Mise à jour et dessin des projectiles
       for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
         bullet.update();
         bullet.draw();
-
-        // Collision avec le joueur
+        
         if (isColliding(bullet)) {
           gameOver = true;
           // Enregistrement du score
@@ -177,32 +191,28 @@ document.addEventListener('DOMContentLoaded', function () {
           .then(response => response.json())
           .then(data => console.log("Score registered!"));
           
-          // Création de l'écran de Game Over inspiré de draw_end de kingboard
+          // Écran de Game Over
           document.body.innerHTML = '';
           document.body.style.background = 'red';
-          
           const title = document.createElement('h1');
           title.textContent = 'Game Over';
           document.body.appendChild(title);
-          
           const scorePara = document.createElement('p');
           scorePara.textContent = `Score: ${score}`;
           document.body.appendChild(scorePara);
-          
           const messagePara = document.createElement('p');
-          messagePara.textContent = "Seulement ça? tu appuies sur les fleches avec le front ou quoi pour être si lent?";
+          messagePara.textContent = "Seulement ça? Tu appuies sur les flèches avec le front ou quoi pour être si lent?";
           document.body.appendChild(messagePara);
-          
           const replay = document.createElement('button');
           replay.textContent = "Rejouer !";
           replay.style.fontSize = "20px";
           replay.style.padding = "10px 20px";
           replay.style.marginTop = "20px";
           replay.addEventListener("click", function() {
-              location.reload();
+              // Restart the game instead of reloading the page
+              startGame();
           });
           document.body.appendChild(replay);
-          
           const link = document.createElement('a');
           link.href = '/jeux';
           link.textContent = "Retour à la liste de jeux.";
@@ -210,34 +220,37 @@ document.addEventListener('DOMContentLoaded', function () {
           link.style.left = '5px';
           link.style.top = '10px';
           document.body.appendChild(link);
-          
           return;
         }
-
-        // Suppression des projectiles hors écran pour optimiser
+        
+        // Suppression des projectiles hors du monde de jeu
         if (
-          bullet.x < -10 || bullet.x > canvas.width + 10 ||
-          bullet.y < -10 || bullet.y > canvas.height + 10
+          bullet.x < -10 || bullet.x > GAME_WIDTH + 10 ||
+          bullet.y < -10 || bullet.y > GAME_HEIGHT + 10
         ) {
           bullets.splice(i, 1);
         }
       }
-
-      // Apparition de nouveaux projectiles avec une fréquence croissante
+      
+      // Apparition de nouveaux projectiles
       const timeSinceLastSpawn = currentTime - lastSpawnTime;
       if (timeSinceLastSpawn > spawnInterval) {
-        let bulletsToSpawn = 5 + Math.floor(score); // Nombre de projectiles à faire apparaître
+        let bulletsToSpawn = 5 + Math.floor(score);
         for (let i = 0; i < bulletsToSpawn; i++) {
           spawnBullet();
         }
         lastSpawnTime = currentTime;
-        // Diminution progressive de l'intervalle entre les spawns, avec une limite minimale
         spawnInterval = Math.max(500, spawnInterval - 10);
       }
-
+      
       requestAnimationFrame(update);
     }
-
+    
     update();
+  }
+  
+  // Change the start button to launch the game via startGame
+  startButton.addEventListener('click', function () {
+    startGame();
   });
 });

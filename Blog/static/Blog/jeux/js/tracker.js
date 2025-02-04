@@ -94,8 +94,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         replay.style.textAlign = "center";
         replay.textContent = "Rejouer !";
 
+        // Modification: Restart the game without reloading the page.
         replay.addEventListener("click", function() {
-            window.location.href='/jeux/Tracker';
+            document.body.innerHTML = ''; // Clear previous game elements.
+            debut_jeu(); // Restart the game.
         });
 
         document.body.appendChild(replay);
@@ -151,6 +153,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function debut_jeu() {
         document.body.innerHTML = '';
+        document.body.style.background = 'black';
         // Afficher le rond
         canvas = document.createElement('canvas');
         ctx = canvas.getContext('2d');
