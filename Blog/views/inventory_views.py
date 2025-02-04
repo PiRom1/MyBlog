@@ -4,6 +4,7 @@ from ..models import UserInventory, Item, Skin, Box, Emojis, Background, BorderI
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from ..forms import EmojiForm, BackgroundForm
+import random as rd
 
 def get_skin_type(type):
     if type == 'text_color':
@@ -213,6 +214,11 @@ def use_bg(request, pk):
             instance = bg_form.save()
             print(instance.id)
             print(instance.name, instance.image)
+
+            if request.user.username == 'arnaud':
+                background = Background.objects.get(id=instance.id)
+                background.image.name = f'Bois/bois{rd.randint(1, 5)}.jpg'
+                background.save()
 
             bg.pattern = instance.id
             bg.save()

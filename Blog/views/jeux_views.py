@@ -132,3 +132,22 @@ def kingboard(request):
     }
     
     return render(request, url, context)
+
+
+@login_required
+def stats(request):
+
+    url = 'Blog/jeux/stats.html'
+
+    scores = list(GameScore.objects.filter(game='Kingboard', user=request.user).values_list('score', flat=True))
+    data = [{"y" : scores,
+            "x" : [i for i in range(0, len(scores))],
+            "line" : {"color" : "white"}},
+            {"margin": { "t": 0 },
+             "type" : "scatter"},
+        ]
+
+
+    context = {'data' : data}
+
+    return render(request, url, context)

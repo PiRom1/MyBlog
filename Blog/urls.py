@@ -95,5 +95,6 @@ urlpatterns = [
     path('jeux/Tracker', jeux_views.tracker, name = 'tracker'),
     path('jeux/Kingboard', jeux_views.kingboard, name = 'kingboard'),
     path('jeux/record', jeux_views.record_score, name='record_score'),
+    path('jeux/stats', jeux_views.stats, name='jeux_stats'),
     
 ]

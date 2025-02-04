@@ -1,0 +1,33 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats Jeux</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{% static 'Blog/jeux/js/stats.js' %}" type="module"></script>
+
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Statistiques de jeux</h1>
+   
+    <div id="data" data='{{data}}'></div>
+
+    <div id="plot"></div>
+
+
+
+
+    <a style="position:absolute; bottom:5px;" href="/">HOME</a>
+</body>
