@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Mini-Jeu Bullet Hell</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/jeux/css/bullet_hell.css' %}">
+  <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+  <script src="{% static 'Blog/jeux/js/bullet_hell.js' %}" type="module"></script>
+  {% include "../bg.html" %}
+</head>
+<body>
+  <h1>Bullet Hell, Le jeu où tu testes tes réflexes !</h1>
+  
+  <br>
+  
+  <h3>Les Règles Officielles du Jeu Bullet Hell</h3>
+
+  <p>
+    Bienvenue dans ce jeu où ta <span class="important">vitesse de réaction</span> et ta <span class="important">concentration</span> seront mises à l’épreuve. 
+    Avant de commencer, il est crucial de bien comprendre chaque détail du déroulement afin de tirer le meilleur parti de cette expérience ludique et immersive.
+  </p>
+
+  <p>
+    Tout commencera dès que tu prendras la décision appuyée d’appuyer sur le bouton intitulé <span class="highlight">"Commencer"</span>. 
+    Ce bouton, affiché de manière visible sur ton écran, sera le point de départ officiel de ton aventure. 
+    Une fois que tu auras cliqué, il te faudra être prêt, vigilant, et entièrement concentré sur ce qui va se produire.
+  </p>
+
+  <p>
+    Ton objectif principal, une fois le jeu en marche, sera de <span class="important">déplacer</span> ton personnage avec les flèches directionnelles 
+    pour éviter trois types de projectiles distincts :
+    <ul>
+        <li><span class="highlight">les rouges</span>, de taille moyenne et rapides,</li>
+        <li><span class="highlight">les bleus</span>, plus lents mais nettement plus volumineux,</li>
+        <li><span class="highlight">les verts</span>, extrêmement petits mais bondissant à une vitesse fulgurante.</li>        
+    </ul>
+    
+  </p>
+
+  <p>
+    Tous ces projectiles apparaîtront aléatoirement sur les bords de l'écran et se dirigeront vers toi à leur vitesse respective. 
+    Reste constamment vigilant pour t'adapter aux différences de taille et de rapidité afin de maximiser ton temps de survie.
+  </p>
+
+  <p>
+    Il est essentiel de garder à l’esprit que ton <span class="important">temps de survie</span> sera mesuré avec une précision extrême. 
+    Par conséquent, la rapidité de ta réponse est cruciale pour obtenir un score optimal.
+  </p>
+
+  <p>
+    Afin d'optimiser tes chances de succès, voici quelques conseils utiles :
+  </p>
+  <ul>
+    <li>Maintiens ton regard fixé sur l’écran en permanence.</li>
+    <li>Évite toute distraction extérieure qui pourrait détourner ton attention.</li>
+    <li>Utilise les flèches directionnelles pour te déplacer rapidement.</li>
+    <li>Sois prêt à donner le meilleur de toi-même, dès que les projectiles apparaissent.</li>
+  </ul>
+
+  <p style="text-align:center; font-size: 1.2em; font-weight: bold;">
+    Bonne chance et que le meilleur temps l'emporte !
+  </p>
+
+  <p style="text-align:center;">
+    <button id='startButton'>Commencer</button>
+  </p>
+</body>
+</html>

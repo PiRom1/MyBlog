@@ -60,7 +60,8 @@ def list_jeux(request):
     liste_jeux = [jeu[0] for jeu in settings.JEUX]
     orders = {'Flex' : False,
               'Tracker' : True,
-              'Kingboard' : False}
+              'Kingboard' : False,
+              'Bullet_Hell' : True}
 
     deltas = ['all', 'monthly', 'weekly', 'daily']
 
@@ -119,6 +120,17 @@ def kingboard(request):
     
     context = {
         'nom_jeu': 'Kingboard',        
+    }
+    
+    return render(request, url, context)
+
+@login_required
+def bullet_hell(request):
+
+    url = 'Blog/jeux/bullet_hell.html'
+    
+    context = {
+        'nom_jeu': 'Bullet_Hell',        
     }
     
     return render(request, url, context)

@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.8;
+  margin: 40px;
+  color: #333;
+  overflow: hidden;
+}
+
+h1 {
+  color: gainsboro;
+  text-align: center;
+}
+
+h2 {
+  color: gainsboro;
+}
+
+h3 {
+  color: ivory;
+}
+
+p {
+  text-align: justify;
+  color: white;
+}
+
+.important {
+  font-weight: bold;
+  color: #f1a7a7;
+}
+
+.highlight {
+  background-color: #ffff99;
+  color: gray;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+
+li {
+  color: ivory;
+  margin-left: 3%;
+}
+
+label {
+  color: ivory;
+}
+
+canvas {
+  display: block;
+}
+
+#score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 24px;
+  z-index: 100;
+}
