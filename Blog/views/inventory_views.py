@@ -150,10 +150,10 @@ def update_equipped(request):
         print("old_equipped : ", old_equipped, type(old_equipped))
         
         try:
-            if old_equipped and item_id:
-                if int(item_id) == int(old_equipped):
-                    # Manage same item (unequip)
-                    item = UserInventory.objects.get(user=request.user, item_id=item_id)
+            # Manage same item (unequip)
+            if item_id:
+                item = UserInventory.objects.get(user=request.user, item_id=item_id)
+                if item.equipped:
                     item.equipped = False
                     item.save()
                     return JsonResponse({'status': 'success', 'action' : 'unequip'})

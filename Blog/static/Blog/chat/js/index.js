@@ -284,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.status === 'success') {
                         console.log('Item favori mis à jour');
+                        console.log(data);
                         previousPerCategory[skinType] = itemId;
                         if (data.action === 'unequip') {
                             radio.checked = false;
