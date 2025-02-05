@@ -255,14 +255,13 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn("CKEditor n'est pas encore prêt.");
         }
     }
-    let previousState = new Map();
+
     function update_equipped(skinRadios) {
         skinRadios.forEach(radio => {
             console.log('radio : ', radio.checked);
            
             radio.addEventListener('click', function (e) {
-                console.log("dtate : ", previousState.get(radio));
-                console.log('change !');
+                
                 const itemId = this.getAttribute('data-item-id'); // Récupérer l'ID du nouvel item sélectionné
                 const skinType = this.getAttribute('name'); // Récupérer le nom de la catégorie (skinType)
                 console.log('Item ID : ', itemId);
