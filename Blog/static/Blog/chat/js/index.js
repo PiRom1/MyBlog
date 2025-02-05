@@ -203,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ouvrir la popup des skins
     skinsButton.addEventListener('click', function () {
         skinsPopup.style.display = 'flex';
+        console.log('click !!! ');
         update_equipped(skinRadios);
     });
 
@@ -254,10 +255,14 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn("CKEditor n'est pas encore prêt.");
         }
     }
-
+    let previousState = new Map();
     function update_equipped(skinRadios) {
         skinRadios.forEach(radio => {
-            radio.addEventListener('change', function () {
+            console.log('radio : ', radio.checked);
+           
+            radio.addEventListener('click', function (e) {
+                console.log("dtate : ", previousState.get(radio));
+                console.log('change !');
                 const itemId = this.getAttribute('data-item-id'); // Récupérer l'ID du nouvel item sélectionné
                 const skinType = this.getAttribute('name'); // Récupérer le nom de la catégorie (skinType)
                 console.log('Item ID : ', itemId);
@@ -281,11 +286,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.status === 'success') {
                         console.log('Item favori mis à jour');
                         previousPerCategory[skinType] = itemId;
+                        if (data.action === 'unequip') {
+                            radio.checked = false;
+                        }
+                        
                     } else {
                         console.log('Erreur : ', data.message);
                     }
                 });
             });
+          
+           
         });
     }
     

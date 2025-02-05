@@ -146,9 +146,17 @@ def update_equipped(request):
         data = json.loads(request.body)
         item_id = data.get('item_id')
         old_equipped = data.get('previous_item_id')
-        print("item_id : ", item_id)
-        print("old_equipped : ", old_equipped)
+        print("item_id : ", item_id, type(item_id))
+        print("old_equipped : ", old_equipped, type(old_equipped))
+        
         try:
+            if old_equipped and item_id:
+                if int(item_id) == int(old_equipped):
+                    # Manage same item (unequip)
+                    item = UserInventory.objects.get(user=request.user, item_id=item_id)
+                    item.equipped = False
+                    item.save()
+                    return JsonResponse({'status': 'success', 'action' : 'unequip'})
             try :
                 old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
             except :
@@ -159,7 +167,7 @@ def update_equipped(request):
             item = UserInventory.objects.get(user=request.user, item_id=item_id)
             item.equipped = True
             item.save()
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'success', 'action' : 'equip'})
         except UserInventory.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
     return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
