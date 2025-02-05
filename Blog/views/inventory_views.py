@@ -40,7 +40,7 @@ def user_inventory_view(request):
             box = Box.objects.get(id=item.item_id)
             items.append({
                 'type': 'box',
-                'item_id': item.item_id,
+                'item_id': item.id,
                 'name': box.name,
                 'image': box.image.url,
                 'open_price': box.open_price,

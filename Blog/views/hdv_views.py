@@ -14,6 +14,7 @@ def list_hdv(request):
     your_items = []
 
     for item in Market.objects.all():
+        print("item : ", item.item)
         market_id = item.id
         item_id = item.item_id
         seller = item.seller
@@ -42,12 +43,13 @@ def list_hdv(request):
         if skin.type == 'border_image' and pattern != '':
             url = BorderImage.objects.get(name=pattern).image.url
 
+        type = skin.type if item.item.type == 'skin' else 'Box'
 
         d = {'market_id' : market_id,
              'item_id' : item_id,
              'seller' : seller,
              'item' : item,
-             'type' : skin.type,
+             'type' : type,
              'price' : price,
              'pattern' : pattern,
              'url' : url}
