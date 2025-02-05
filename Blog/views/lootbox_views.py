@@ -117,6 +117,11 @@ def drop_item(request):
         item = Item(type='skin',
                     pattern=get_random_animated_color(),
                     item_id=item)
+    elif skin.type == 'border_image':
+        border_images = BorderImage.objects.all().values_list('name', flat=True)
+        item = Item(type='skin',
+                    pattern = rd.choice(border_images),
+                    item_id=item)
     else:
         item = Item(type='skin',
                     pattern=get_random_hexa_color(),
