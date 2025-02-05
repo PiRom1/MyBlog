@@ -51,3 +51,7 @@
     opacity: 1; /* Change l'opacité pour le rendre visible */
   }
   
+  img[alt="emoji"] {
+    width: 20px !important;
+    height: 20px !important;
+}

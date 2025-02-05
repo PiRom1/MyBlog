@@ -246,14 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const imageElement = writer.createElement('imageInline', {
                     src: emojiSrc,
                     alt: 'emoji',
-                    width: '20px',
-                    height: '20px'
                 });
                 window.editorInstance.model.insertContent(imageElement, window.editorInstance.model.document.selection);
-            });
-        } else {
-            console.warn("CKEditor n'est pas encore prêt.");
-        }
+                });
+                } 
+                else {
+                console.warn("CKEditor n'est pas encore prêt.");
+                }
     }
 
     function update_equipped(skinRadios) {
