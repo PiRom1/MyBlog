@@ -1,0 +1,18 @@
+{% extends "Blog/layout/base.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Blog/jeux/css/lobby.css' %}">
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'Blog/jeux/js/lobby.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div id="lobby" data-room-name="{{ room_name }}">
+  <h1>Salle d'attente: {{ room_name }}</h1>
+  <button id="readyButton">Ready</button>
+  <!-- players list container with placeholder -->
+  <div id="players">Aucun joueur n'est connecté</div>
+  <!-- disconnect button moved inside lobby container -->
+  <a href="{% url 'list_jeux' %}">Se déconnecter</a>
+</div>
+{% endblock %}

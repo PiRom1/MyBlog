@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tir à la corde</title>
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/TOW.css' %}">
+    <script src="{% static 'Blog/jeux/js/TOW.js' %}" type="module"></script>
+</head>
+<body>
+    <h1>Tir à la corde</h1>
+    
+    <!-- Le canvas où se dessine le jeu -->
+    <canvas id="gameCanvas" width="600" height="200"></canvas>
+    
+    <!-- Boutons pour déclencher l'action de tirer -->
+    <div id="controls">
+        <button id="player1-btn">Joueur 1 tire</button>
+        <button id="player2-btn">Joueur 2 tire</button>
+    </div>
+    
+    <!-- Zone d'affichage des messages (ex. gagnant ou dernier joueur) -->
+    <p id="result"></p>
+    
+</body>
+</html>
