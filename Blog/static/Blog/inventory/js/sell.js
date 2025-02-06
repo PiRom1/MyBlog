@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
             },
-            body: `item_id=${id}&price=${price_value}`
+            body: `item_id=${item_id}&price=${price_value}&id=${id}`
         })
         .then(response => response.json())
         .then(data => {

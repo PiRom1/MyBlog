@@ -139,7 +139,11 @@ def sell(request):
     # Get data
     user = request.user
     item_id = request.POST.get('item_id')
+    id = request.POST.get('id')
     price = request.POST.get('price')
+    
+    if id:
+        item_id = id
     
     item = Item.objects.get(pk=item_id)
 
