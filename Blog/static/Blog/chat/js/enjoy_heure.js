@@ -1,11 +1,10 @@
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('LAAAA');
     const enjoy_popup = document.getElementById('enjoy-heure');
     const enjoy = document.getElementById('enjoy');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    console.log("enjoy : ", enjoy);
+
     document.addEventListener('click', function(e){
         if (!e.target.closest('.enjoy-heure')) {
             enjoy_popup.style.display = 'none';
