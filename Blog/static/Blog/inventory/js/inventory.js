@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const itemRarityColor = item.getAttribute('data-rarity-color');
         const itemPattern = item.getAttribute('data-pattern');
         const itemId = item.getAttribute('data-id');
+        const Id = item.getAttribute('id');
         const itemUrl = item.getAttribute('data-url');
         
         

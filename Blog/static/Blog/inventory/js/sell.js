@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var name;
     var pattern;
     var item_id;
+    var id;
 
     items.forEach( item => {
         item.addEventListener('click', function() {
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
             name = item.getAttribute('data-name');
             pattern = item.getAttribute('data-pattern');
             item_id = item.getAttribute('data-id')
+            id = item.getAttribute('id');
 
         })
 
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
             },
-            body: `item_id=${item_id}&price=${price_value}`
+            body: `item_id=${id}&price=${price_value}`
         })
         .then(response => response.json())
         .then(data => {

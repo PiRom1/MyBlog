@@ -46,7 +46,7 @@
     <div class="inventory-grid">
         <!-- Boucle pour tous les items mélangés -->
         {% for item in items %}
-        <div class="inventory-item" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
+        <div class="inventory-item" id="{{item.id}}" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
              data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}" data-url="{{item.url}}"
              {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}" data-rarity-name="{{item.rarity_name}}" data-rarity-color="{{item.rarity_color}}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
