@@ -91,13 +91,9 @@ urlpatterns = [
 
     # Jeux
     path('jeux/', jeux_views.list_jeux, name = 'list_jeux'),
-    path('jeux/Flex', jeux_views.flex, name = 'flex'),
-    path('jeux/Tracker', jeux_views.tracker, name = 'tracker'),
-    path('jeux/Kingboard', jeux_views.kingboard, name = 'kingboard'),
-    path('jeux/Bullet_Hell', jeux_views.bullet_hell, name = 'bullet_hell'),
+    path('jeux/<str:game>/', jeux_views.play_game, name='play_game'),
     path('jeux/record', jeux_views.record_score, name='record_score'),
     path('jeux/stats', jeux_views.stats, name='jeux_stats'),
-    # path('tugofwar/', jeux_views.tugofwar_page, name='tugofwar'),          # added tugofwar URL
 
     # Lobby pages
     path('lobby/<str:room_name>/', jeux_views.lobby_page, name='lobby'),  # added lobby URL with room_name

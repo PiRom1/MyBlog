@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify({game: 'Tracker', score: time})  // Envoie des données dans le corps de la requête
+            body: JSON.stringify({game: 'tracker', score: time})  // Envoie des données dans le corps de la requête
             })        
         .then(response => response.json())
         .then(data => {
@@ -154,6 +154,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function debut_jeu() {
         document.body.innerHTML = '';
         document.body.style.background = 'black';
+        
+        // Reset circle position, size and movement speed
+        CIRCLE_X = window.innerWidth / 2;
+        CIRCLE_Y = window.innerHeight / 2;
+        screenDiagonal = Math.min(window.innerWidth, window.innerHeight);
+        CIRCLE_RADIUS = screenDiagonal * 0.04;
+        COEFF_MOUVEMENT = 0.00045 * screenDiagonal;
+        
         // Afficher le rond
         canvas = document.createElement('canvas');
         ctx = canvas.getContext('2d');

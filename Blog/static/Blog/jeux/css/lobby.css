@@ -12,3 +12,10 @@
 #readyButton:hover {
   background-color: #005f6b;
 }
+
+/* New countdown styling */
+#countdown {
+  font-size: 2em;
+  text-align: center;
+  margin-top: 20px;
+}

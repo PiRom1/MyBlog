@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify({game: 'Flex', score: mean_time})  // Envoie des données dans le corps de la requête
+            body: JSON.stringify({game: 'flex', score: mean_time})  // Envoie des données dans le corps de la requête
             })        
         .then(response => response.json())
         .then(data => {
@@ -136,25 +136,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     window.location.href='/jeux/Flex';
                 });
                 document.body.appendChild(bouton); 
-
-                // Write score to database
-                const url = '/jeux/record';
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest', // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken,
-                    },
-                    body: JSON.stringify({game: 'Flex', score: 9999})  // Envoie des données dans le corps de la requête
-                    })        
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Donnée bien enregistrée !");
-                    })
-
-
                 }
 
             if (wait_for_click && !jeu_fini) {

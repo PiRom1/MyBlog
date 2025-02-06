@@ -338,19 +338,26 @@ class EnjoyTimestamp(models.Model):
     def __str__(self):
         return f"{self.time} ({self.writer.username})"
 
+class Game(models.Model):
+    name = models.CharField("name", max_length=64)
+    players = models.IntegerField("players", default = 1)
+    SCORES = [(-1, 'None'), (0, 'Lowest is best'), (1, 'Highest is best')]
+    score = models.IntegerField("score", choices = SCORES, default = -1)
+
+    def __str__(self):
+        return self.name
 
 class GameScore(models.Model):
-    game = models.CharField(max_length=100, choices=settings.JEUX)
+    game = models.ForeignKey(Game, on_delete = models.CASCADE)
     score = models.FloatField()
     user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
     date = models.DateTimeField(default=timezone.now)
 
-# New Lobby model
 class Lobby(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    game = models.CharField(max_length=100)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+    players = models.ManyToManyField(User, related_name='players')
 
     # Added async save method for asynchronous operations
     async def asave(self, *args, **kwargs):

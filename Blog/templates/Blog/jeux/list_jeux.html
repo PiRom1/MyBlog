@@ -24,7 +24,7 @@
     
     <br>
     <ol>
-        {% for jeu in liste_jeux %}
+        {% for jeu in liste_jeux_solo %}
             <li>
                 <span class="show_leaderboard" name="{{jeu}}" style="cursor:pointer;">&#x1F3C6;</span> <a href="{{jeu}}">{{jeu}}</a>
             </li>
@@ -36,7 +36,7 @@
             {% csrf_token %}
             <input type="text" id="lobby-name-input" placeholder="Nom du lobby" required>
             <select id="lobby-game-selector">
-                {% for jeu in liste_jeux %}
+                {% for jeu in liste_jeux_multi %}
                     <option value="{{jeu}}">{{jeu}}</option>
                 {% endfor %}
             </select>
@@ -52,7 +52,7 @@
     <div class="leaderboard-container">
         <h1>
             Leaderboard <select name="games" id="game-selector" class="game-selector">
-                            {% for jeu in liste_jeux %}
+                            {% for jeu in liste_jeux_solo %}
                                 <option value="{{jeu}}">{{jeu}}</option>
                             {% endfor %}
                         </select>

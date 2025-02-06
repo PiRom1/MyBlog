@@ -4,5 +4,5 @@ from Blog.consumers import TOWConsumer, lobbyConsumer
 
 websocket_urlpatterns = [
     re_path(r'ws/tiracorde/$', TOWConsumer.TugOfWarConsumer.as_asgi()),
-    re_path(r'ws/lobby/(?P<room_name>[^/]+)/$', lobbyConsumer.WaitingRoomConsumer.as_asgi()),  # added lobby routing with room_name
+    re_path(r'ws/lobby/(?P<room_name>[^/]+)/(?P<game>[^/]+)/(?P<size>[^/]+)/$', lobbyConsumer.WaitingRoomConsumer.as_asgi()),
 ]

@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
               'Content-Type': 'application/json',
               'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify({ game: 'Bullet_Hell', score: score })
+            body: JSON.stringify({ game: 'bullet_hell', score: score })
           })
           .then(response => response.json())
           .then(data => console.log("Score registered!"));

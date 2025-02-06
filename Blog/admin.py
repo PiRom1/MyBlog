@@ -142,7 +142,11 @@ class EnjoyTimestampAdmin(admin.ModelAdmin):
 class GameScoreAdmin(admin.ModelAdmin):
     list_display = ('game', 'score', 'user', 'date')
 
+@admin.register(Game)
+class GameAdmin(admin.ModelAdmin):
+    list_display = ('name', 'players', 'score')
+
 @admin.register(Lobby)
 class LobbyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'game', 'created_at', 'is_active')
+    list_display = ('name', 'game', 'created_at') 
 

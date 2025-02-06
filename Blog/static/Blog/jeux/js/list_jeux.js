@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 lobbyHTML = '<ul>';
                 data.lobbies.forEach(lobby => {
                     // Each lobby rendered as a link with href and a data attribute
-                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}">${lobby.name} - ${lobby.game}</a></li>`;
+                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}" data-game="${lobby.game}" data-size="${lobby.size}">${lobby.name} - ${lobby.game}</a></li>`;
                 });
                 lobbyHTML += '</ul>';
             } else {
@@ -56,8 +56,44 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Add event listener for lobby links to establish WebSocket join connection
             lobbyContainer.addEventListener('click', function(e) {
                 const target = e.target;
+                console.log('Clicked on lobby :', e);
                 if (target.tagName.toLowerCase() === 'a') {
-                    window.location.href = "/lobby/" + roomName;
+                    e.preventDefault();
+                    const roomName = target.getAttribute('data-room-name');
+                    const gameName = target.getAttribute('data-game');
+                    const gameSize = target.getAttribute('data-size');
+                    // Open WebSocket connection to ensure the lobby is not full
+                    const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+                    const lobbySocket = new WebSocket(wsScheme + '://' + window.location.host + '/ws/lobby/' + roomName + '/' + gameName + '/' + gameSize + '/');
+                    lobbySocket.onopen = function() {
+                        console.log('Connected to lobby websocket for room:', roomName);
+                    };
+                    lobbySocket.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        if(data.type === 'room_full') {
+                            alert(data.message);
+                        } else if(data.type === 'lobby_update') {
+                            // On successful join, close the socket and then redirect.
+                            if(data.message.includes('a rejoint')) {
+                                lobbySocket.close(1000, 'Lobby joined successfully');
+                                window.location.href = '/lobby/' + roomName;
+                            }
+                        }
+                    };
+                    lobbySocket.onclose = function(e) {
+                        // Optional: Handle unexpected closures if needed.
+                        if(e.code === 4001) {
+                            console.log('Lobby full, closing connection.');
+                        }
+                        else if(e.code === 1000) {
+                            console.log(e.reason);
+                        }
+                        else {
+                            console.log('Lobby websocket closed unexpectedly');
+                            alert('Le lobby est fermé.');
+                        }
+                    };
+
                 }
             });
         } catch (error) {
