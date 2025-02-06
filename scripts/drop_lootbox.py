@@ -6,8 +6,8 @@ def run():
     # parser.add_argument('--nb_drop', type=int, default=2)
     # parser.add_argument('--nb_coins', type=int, default=400)
     # args = parser.parse_args(args)
-    nb_drop = 5
-    nb_coins = 2000
+    nb_drop = 2
+    nb_coins = 400
 
     users = User.objects.all()
     box_id = Box.objects.last().id
