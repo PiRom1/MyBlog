@@ -36,7 +36,7 @@
             <ul>
                 {% for item in selling_items %}
                     <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
-                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> - {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
+                        {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> - {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>            
                     </li>
@@ -50,7 +50,7 @@
             <ul>
                 {% for item in your_items %}
                     <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
-                        {{item.price}} <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
+                        {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
                     </li>
@@ -70,7 +70,7 @@
             <h2>Détails de l'achat</h2>
             <p><strong>Item :</strong> <span id="item-skin"></span></p>
             <p><strong>Vendeur :</strong> <span id="seller-name"></span></p>
-            <p><strong>Prix :</strong> <span id="item-price"></span> <img class="coin" src="{% static 'img/lootbox_1/coin.png' %}" width="30"/> </p>
+            <p><strong>Prix :</strong> <span id="item-price"></span> <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> </p>
             <p><strong>Pattern :</strong> <span id="item-pattern"></span></p>
             <button id="buy">Confirmer l'achat</button>
             <button id="remove">Retirer de la vente</button>
