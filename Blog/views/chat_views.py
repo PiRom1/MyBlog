@@ -294,7 +294,8 @@ def Index(request, id):
     
     
     # Récupérer les 10 derniers opening logs
-    opening_logs = OpeningLog.objects.all().order_by('-date')[:10]
+    
+    opening_logs = OpeningLog.objects.filter(user_id__in=SessionUser.objects.filter(session=session).values('user')).order_by('-date')[:10]
     
     context = {"messages" : messages, 
                "user" : user, "years" : years, 
