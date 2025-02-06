@@ -4,6 +4,7 @@ import datetime
 from django.utils import timezone
 from Blog.views.karma_views import *
 from django.conf import settings
+from asgiref.sync import sync_to_async
 
 # Create your models here.
 
@@ -343,3 +344,17 @@ class GameScore(models.Model):
     score = models.FloatField()
     user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
     date = models.DateTimeField(default=timezone.now)
+
+# New Lobby model
+class Lobby(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    game = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    # Added async save method for asynchronous operations
+    async def asave(self, *args, **kwargs):
+        await sync_to_async(super(Lobby, self).save)(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.game}"

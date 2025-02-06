@@ -97,5 +97,11 @@ urlpatterns = [
     path('jeux/Bullet_Hell', jeux_views.bullet_hell, name = 'bullet_hell'),
     path('jeux/record', jeux_views.record_score, name='record_score'),
     path('jeux/stats', jeux_views.stats, name='jeux_stats'),
+    # path('tugofwar/', jeux_views.tugofwar_page, name='tugofwar'),          # added tugofwar URL
+
+    # Lobby pages
+    path('lobby/<str:room_name>/', jeux_views.lobby_page, name='lobby'),  # added lobby URL with room_name
+    path('get_open_lobbies/', jeux_views.get_open_lobbies, name='get_open_lobbies'),  # added get_open_lobbies URL
+    path('create_lobby/', jeux_views.create_lobby, name='create_lobby'),  # added create_lobby URL
     
 ]

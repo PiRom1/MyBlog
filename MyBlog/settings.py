@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'clearcache',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MyBlog.wsgi.application'
+
+ASGI_APPLICATION = 'MyBlog.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
 # Database

@@ -1,12 +1,13 @@
 import json
 from django.shortcuts import render
-from ..models import User, GameScore
+from ..models import User, GameScore, Lobby  # added Lobby import
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import json
 from django.utils import timezone
 from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
 
 
 def record_score(request):
@@ -73,7 +74,6 @@ def list_jeux(request):
             scores = get_scores(jeu, time_delta = delta, desc = orders[jeu])
             # Get better personal score
             best_score = scores.filter(user=request.user).first()
-            print("best score : ", best_score)
             if best_score:
                 rg = list(scores).index(best_score) + 1
             else:
@@ -85,8 +85,6 @@ def list_jeux(request):
                  'score' : [{'user' : score.user, 'score' : score.score, 'date' : score.date} for score in scores[0:10]],
                  'user_best_score' : {'rg' : rg, 'score' : best_score, 'user' : request.user}}
             data.append(d)
-
-    print(data)
 
     url = 'Blog/jeux/list_jeux.html'
     
@@ -163,3 +161,37 @@ def stats(request):
     context = {'data' : data}
 
     return render(request, url, context)
+
+@login_required
+def lobby_page(request, room_name):
+    # Render the template for the waiting room with the given room_name
+    return render(request, 'Blog/jeux/lobby.html', {'room_name': room_name})
+
+# New view to fetch open lobbies dynamically.
+@login_required
+def get_open_lobbies(request):
+    # Query open lobbies from the database
+    lobbies = Lobby.objects.filter(is_active=True)
+    lobby_list = []
+    for lobby in lobbies:
+        # Replace players count with actual logic if available; here default to 0.
+        lobby_list.append({
+            'name': lobby.name,
+            'game': lobby.game,
+            'players': 0
+        })
+    return JsonResponse({'lobbies': lobby_list})
+
+@login_required
+def create_lobby(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        lobby_name = data.get('lobby')
+        game = data.get('game')
+        if Lobby.objects.filter(name=lobby_name).exists():
+            return JsonResponse({'success': False, 'error': 'Lobby already exists'})
+        Lobby.objects.create(name=lobby_name, game=game)
+        print(f'Lobby {lobby_name} created for game {game}')
+        return JsonResponse({'success': True})
+    print('Invalid request method')
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

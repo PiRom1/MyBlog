@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from .models import *
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.db.models.functions import Lower, Reverse
+
 class UserAdmin(DefaultUserAdmin):
     model = User
     list_display = ['username', 'is_superuser']
@@ -140,4 +141,8 @@ class EnjoyTimestampAdmin(admin.ModelAdmin):
 @admin.register(GameScore)
 class GameScoreAdmin(admin.ModelAdmin):
     list_display = ('game', 'score', 'user', 'date')
+
+@admin.register(Lobby)
+class LobbyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'game', 'created_at', 'is_active')
 

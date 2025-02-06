@@ -2,25 +2,20 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-
-<!-- <head>
+<head></head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLOG ACELYS</title>
+    <title>{% block title %}BLOG ACELYS{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
-
+    <!-- CSS from list_jeux design (adapted for background and text style) -->
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-
-    <script src="{% static 'Blog/js/script.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-</head> -->
-
+    <!-- Background design script -->
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+    {% block extra_css %}{% endblock %}
+</head>
 <body>
+    {% block content %}
     {% if messages %}
       <div class="modal-background active">
         <div class="modal active">
@@ -31,6 +26,8 @@
         </div>
       </div>
     {% endif %}
+    {% endblock %}
+    {% block extra_js %}{% endblock %}
+    <a href="/" style="position:absolute; bottom:15px;">HOME</a>
 </body>
-
 </html>
