@@ -10,3 +10,4 @@ bleach
 markdown
 numpy
 matplotlib
+uvicorn[standard]

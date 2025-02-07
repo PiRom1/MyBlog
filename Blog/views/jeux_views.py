@@ -56,8 +56,8 @@ def get_scores(game, time_delta, desc = False):
 
 @login_required
 def list_jeux(request):
-    liste_jeux_solo = Game.objects.filter(players=1)
-    liste_jeux_multi = Game.objects.filter(players__gt=1)
+    liste_jeux_solo = Game.objects.filter(gameType='solo')
+    liste_jeux_multi = Game.objects.exclude(gameType='solo')
 
     deltas = ['all', 'monthly', 'weekly', 'daily']
 
@@ -132,7 +132,10 @@ def get_game_size(game_type):
 
 @login_required
 def lobby_page(request, room_name):
-    lobby = Lobby.objects.get(name=room_name)
+    try:
+        lobby = Lobby.objects.get(name=room_name)
+    except Lobby.DoesNotExist:
+        return HttpResponseRedirect('/jeux/')
     game_name = lobby.game.name
     game_type = lobby.game.gameType
     game_size = get_game_size(game_type)
@@ -170,15 +173,18 @@ def create_lobby(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 @login_required
-def play_lobby_game(request, token, room_name, player_id, player_team, player_role = None):
+def play_lobby_game(request, token):
+    if request.method == "POST":
+        room_name = request.POST.get('roomName')
+        player_team = request.POST.get('team')
+        player_role = request.POST.get('role')    
+    player_id = request.user.id
     lobby = Lobby.objects.get(name=room_name)
     game_name = lobby.game.name
     game_type = lobby.game.gameType
     game_size = get_game_size(game_type)
     if token == lobby.token:
         channel_layer = get_channel_layer()
-        if not async_to_sync(channel_layer.group_contains)(f"game_{room_name}", request.channel_name):
-            async_to_sync(channel_layer.group_add)(f"game_{room_name}", request.channel_name)
         async_to_sync(channel_layer.group_send)(f"game_{room_name}", {
             'type': 'init',
             'game_name': game_name,
@@ -188,6 +194,7 @@ def play_lobby_game(request, token, room_name, player_id, player_team, player_ro
             'team': player_team,
             'role': player_role
         })
-        return render(request, f'Blog/jeux/{game_name}/{room_name}.html')
+        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': room_name})
     else:
         return HttpResponseRedirect('/jeux/')
+

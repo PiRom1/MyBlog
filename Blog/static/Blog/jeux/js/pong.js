@@ -8,15 +8,26 @@ let gameState = {
     paddle2: { y: 100 }
 };
 
-const ws = new WebSocket('ws://localhost:8000/ws/pong/');
+// Retrieve room name from the DOM
+const roomElem = document.querySelector('.game-container');
+const roomName = roomElem ? roomElem.dataset.roomName : 'default';
+// Update WebSocket connection URL to include the room name
+const ws = new WebSocket(`ws://localhost:8000/ws/pong/${roomName}/`);
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
-    if(data.type === 'update'){
-        // update state from backend
+    if(data.type === 'game_update'){
+        // update state from backend using new type
         gameState = { ...gameState, ...data.game_state };
+    } else if(data.type === 'start_game'){
+        // Initialize game state if required
+        console.log("Game started", data.game_state);
+        gameState = { ...gameState, ...data.game_state };
+    } else if(data.type === 'all_players_connected'){
+        // All players are connected; can display a message or unpause the game 
+        console.log("All players connected: " + data.message);
     } else if(data.type === 'verify'){
-        // Optionally compare local and backend positions, then adjust if necessary.
+        // Optionally compare local and backend positions
         // ...existing verification logic...
     }
 };

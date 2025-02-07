@@ -3,7 +3,7 @@ from Blog.consumers.baseGameConsumer import BaseGameConsumer
 
 class PongConsumer(BaseGameConsumer):
 
-    async def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.game_state.update({
             'score': {'team1': 0, 'team2': 0},
@@ -12,7 +12,7 @@ class PongConsumer(BaseGameConsumer):
             'paddle1': {'y': 100},
             'paddle2': {'y': 100}
         })
-        self.inputs = {'paddle1': None, 'paddle2': None}  # store current input states
+        self.inputs = {'paddle1': None, 'paddle2': None}
 
     async def receive_json(self, content):
         super().receive_json(content)

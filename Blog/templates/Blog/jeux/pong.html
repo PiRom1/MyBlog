@@ -1,0 +1,29 @@
+<html lang="fr">
+<head>
+    <!-- ...existing meta tags and includes... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Pong</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/pong.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/jeux/js/pong.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+</head>
+<body>
+    <!-- ...existing header or background code... -->
+    <h1>Pong - Le défi des raquettes rapides</h1>
+    
+    <div class="game-container" data-room-name="{{ room_name }}">
+        <canvas id="pongCanvas" width="500" height="300"></canvas>
+    </div>
+    
+    <p style="text-align:center;">
+        <button id="startButton">Commencer</button>
+    </p>
+    <!-- ...existing code... -->
+</body>
+</html>

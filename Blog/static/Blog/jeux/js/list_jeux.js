@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 lobbyHTML = '<ul>';
                 data.lobbies.forEach(lobby => {
                     // Each lobby rendered as a link with href and a data attribute
-                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}" data-game="${lobby.game}" data-size="${lobby.size}">${lobby.name} - ${lobby.game}</a></li>`;
+                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}" data-game="${lobby.game}" data-size="${lobby.size}" data-type="${lobby.type}">${lobby.name} - ${lobby.game}</a></li>`;
                 });
                 lobbyHTML += '</ul>';
             } else {
@@ -62,9 +62,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                     const roomName = target.getAttribute('data-room-name');
                     const gameName = target.getAttribute('data-game');
                     const gameSize = target.getAttribute('data-size');
+                    const gameType = target.getAttribute('data-type');
                     // Open WebSocket connection to ensure the lobby is not full
                     const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-                    const lobbySocket = new WebSocket(wsScheme + '://' + window.location.host + '/ws/lobby/' + roomName + '/' + gameName + '/' + gameSize + '/');
+                    const lobbySocket = new WebSocket(wsScheme + '://' + window.location.host + '/ws/lobby/' + roomName + '/' + gameName + '/' + gameSize + '/' + gameType + '/');
                     lobbySocket.onopen = function() {
                         console.log('Connected to lobby websocket for room:', roomName);
                     };

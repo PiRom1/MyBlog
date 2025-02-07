@@ -4,9 +4,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const gameName = lobbyElem.dataset.gameName;
   const gameSize = lobbyElem.dataset.gameSize;
   const gameType = lobbyElem.dataset.gameType;
-  const players = {};
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
   const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
-  const lobbySocket = new WebSocket(wsScheme + "://" + window.location.host + "/ws/lobby/" + roomName + "/"+ gameName + "/" + gameSize + "/");
+  const lobbySocket = new WebSocket(wsScheme + "://" + window.location.host + "/ws/lobby/" + roomName + "/"+ gameName + "/" + gameSize + "/" + gameType + "/");
   let isReady = false;
 
   lobbySocket.onopen = function() {
@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function() {
         playerDiv.className = 'player';
         playerDiv.textContent = `${player.name} - ${player.ready ? "Ready" : "Not Ready"}`;
         playersElem.appendChild(playerDiv);
-        players[player.id] = {'team': 0, 'role': 0};
       });
     }
 
@@ -46,7 +45,41 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     if (data.type === "start_game") {
+      // Replace fetch with form submission to trigger redirect.
+      let form = document.createElement("form");
+      form.method = "POST";
+      form.action = '/play_lobby_game/' + data.token + '/';
       
+      // CSRF token input
+      let csrfInput = document.createElement("input");
+      csrfInput.type = "hidden";
+      csrfInput.name = "csrfmiddlewaretoken";
+      csrfInput.value = csrfToken;
+      form.appendChild(csrfInput);
+      
+      // roomName input
+      let roomInput = document.createElement("input");
+      roomInput.type = "hidden";
+      roomInput.name = "roomName";
+      roomInput.value = roomName;
+      form.appendChild(roomInput);
+      
+      // team input
+      let teamInput = document.createElement("input");
+      teamInput.type = "hidden";
+      teamInput.name = "team";
+      teamInput.value = data.team;
+      form.appendChild(teamInput);
+      
+      // role input
+      let roleInput = document.createElement("input");
+      roleInput.type = "hidden";
+      roleInput.name = "role";
+      roleInput.value = data.role;
+      form.appendChild(roleInput);
+      
+      document.body.appendChild(form);
+      form.submit();
     }
   };
 

@@ -144,9 +144,9 @@ class GameScoreAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('name', 'players', 'score')
+    list_display = ('name', 'gameType', 'score')
 
 @admin.register(Lobby)
 class LobbyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'game', 'created_at') 
+    list_display = ('name', 'game', 'created_at', 'token')
 

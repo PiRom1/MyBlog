@@ -26,7 +26,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
     """
 
     # Stockage de l'état de la salle d'attente.
-    # Structure : { room_name: { players: { user_id: {name, ready} }, game, size } }
+    # Structure : { room_name: { players: { user_id: {name, ready, team, role, channel} }, game, size, type } }
     waiting_room = {}
 
     async def connect(self):
@@ -34,6 +34,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs'].get('room_name', 'default')
         self.game_name = self.scope['url_route']['kwargs'].get('game', 'default')
         self.game_size = int(self.scope['url_route']['kwargs'].get('size', 2))
+        self.game_type = self.scope['url_route']['kwargs'].get('type', 'default')
         safe_room = sanitize_group_name(self.room_name)
         self.group_name = f"waiting_room_{safe_room}"
         
@@ -46,7 +47,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
 
         # Initialiser l'état de la salle si nécessaire
         if self.room_name not in WaitingRoomConsumer.waiting_room:
-            WaitingRoomConsumer.waiting_room[self.room_name] = {'players': {}, 'game': self.game_name, 'size': self.game_size}
+            WaitingRoomConsumer.waiting_room[self.room_name] = {'players': {}, 'game': self.game_name, 'size': self.game_size, 'type': self.game_type}
 
         # Refuser la connexion si la salle d'attente est pleine
         elif len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) >= WaitingRoomConsumer.waiting_room[self.room_name]['size']:
@@ -57,7 +58,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
 
         # Ajouter l'utilisateur avec un statut "non prêt" (False)
         WaitingRoomConsumer.waiting_room[self.room_name]['players'][user_id] = {'name':self.scope['user'].username,
-                                                                     'ready':False}
+                                                                     'ready':False, 'team':None, 'role':None, 'channel':self.channel_name}
 
         # Ajouter le canal au groupe de la salle d'attente
         await self.channel_layer.group_add(self.group_name, self.channel_name)
@@ -103,9 +104,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             # Supprimer la salle du cache en mémoire
             WaitingRoomConsumer.waiting_room.pop(self.room_name, None)
             # Supprimer le lobby de la DB s'il existe
-            await Lobby.objects.aget(name=self.room_name).adelete()
-            # Close the websocket if no room is found
-            await self.close()
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
 
     async def receive_json(self, content):
         """
@@ -153,15 +152,21 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
                     # Générer un token unique pour la salle d'attente de 16 caractères
                     token = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
                     # Enregistrer le token dans la base de données
-                    await Lobby.objects.aget(name=self.room_name).aupdate(token=token)       
-                    await self.channel_layer.group_send(
-                        self.group_name,
-                        {
-                            "type": "start_game",
-                            "message": "Redirection vers le jeu...",
-                            "token": token,
-                        }
-                    )
+                    await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)      
+                    # Attribuer des équipes et rôles aux joueurs
+                    await self.assign_teams()
+                    for player in current_players.values():
+                        # Envoyer un message de démarrage à chaque joueur
+                        await self.channel_layer.send(
+                            player['channel'],
+                            {
+                                "type": "start_game",
+                                "message": "Redirection vers le jeu...",
+                                "token": token,
+                                "team": player['team'],
+                                "role": player['role'],
+                            }
+                        )
 
         elif action == "not_ready":
             # L'utilisateur annule son statut "prêt"
@@ -204,4 +209,35 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json({
             "type": "start_game",
             "message": event["message"],
+            "token": event["token"],
+            "team": event["team"],
+            "role": event["role"],
         })
+
+    async def assign_teams(self):
+        """
+        Méthode pour attribuer des équipes et rôles aux joueurs. Aléatoire pour l'instant.
+        """
+        game_type = WaitingRoomConsumer.waiting_room[self.room_name]['type']
+        players = list(WaitingRoomConsumer.waiting_room[self.room_name]['players'].keys())
+        random.shuffle(players)
+        if game_type == '1v1':
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[0]]['team'] = 1
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]]['team'] = 2
+        elif game_type == '2v2':
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[0]].update({'team': 1, 'role': 1})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]].update({'team': 1, 'role': 2})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[2]].update({'team': 2, 'role': 1})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[3]].update({'team': 2, 'role': 2})
+
+        elif game_type == '3v1':
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[0]].update({'team': 1, 'role': 1})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]].update({'team': 1, 'role': 2})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[2]].update({'team': 1, 'role': 3})
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[3]].update({'team': 2, 'role': 4})
+        else:
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[0]]['team'] = 1
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]]['team'] = 2
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[2]]['team'] = 3
+            WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[3]]['team'] = 4
+

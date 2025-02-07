@@ -99,5 +99,6 @@ urlpatterns = [
     path('lobby/<str:room_name>/', jeux_views.lobby_page, name='lobby'),  # added lobby URL with room_name
     path('get_open_lobbies/', jeux_views.get_open_lobbies, name='get_open_lobbies'),  # added get_open_lobbies URL
     path('create_lobby/', jeux_views.create_lobby, name='create_lobby'),  # added create_lobby URL
+    path('play_lobby_game/<str:token>/', jeux_views.play_lobby_game, name='play_lobby_game'),  # added play_lobby_game URL
     
 ]

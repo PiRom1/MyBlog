@@ -1,0 +1,38 @@
+body {
+    /* ...existing global styles... */
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    color: gainsboro;
+    margin-bottom: 20px;
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+canvas {
+    border: 2px solid #f1a7a7;
+    background-color: #000;
+    /* ...existing canvas styles... */
+}
+
+button {
+    background-color: #f1a7a7;
+    color: #222;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #f1a7a7cc;
+}

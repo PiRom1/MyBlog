@@ -3,10 +3,9 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 class BaseGameConsumer(AsyncJsonWebsocketConsumer):
 
-    async def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.players = {} # store allowed players, their connection status, and their game info
+        self.players = {}  # store allowed players, their connection status, and their game info
         # Structure: { user_id: { 'connected': True/False, 'team': 1/2 } }
         self.waiting_to_reconnect = []  # store user_ids waiting to reconnect
         self.game_state = {
@@ -26,6 +25,7 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
         
         if not hasattr(self, 'group_name'):
+            print(self.scope['url_route']['kwargs'])
             room_name = self.scope['url_route']['kwargs'].get('room_name')
             self.group_name = f"game_{room_name}"
             await self.channel_layer.group_add(self.group_name, self.channel_name)
@@ -60,25 +60,28 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         user_id = self.scope["user"].id
-        await self.channel_layer.group_discard(self.group_name, self.channel_name)
-        if user_id in self.players:
-            self.players[user_id]['connected'] = False
-            if self.game_state['started']:
-                if not self.game_state['finished']:
-                    if hasattr(self, 'game_task'):
-                        self.game_task.cancel()
-                    self.waiting_to_reconnect.append(user_id)
-                    await self.channel_layer.group_send(
-                        self.group_name,
-                        {
-                            'type': 'player_disconnected',
-                            'user_id': user_id
-                        }
-                    )
-                else:
-                    self.players.pop(user_id)
-                    if not self.players:
-                        await self.close()
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+            if user_id in self.players:
+                self.players[user_id]['connected'] = False
+                if self.game_state['started']:
+                    if not self.game_state['finished']:
+                        if hasattr(self, 'game_task'):
+                            self.game_task.cancel()
+                        self.waiting_to_reconnect.append(user_id)
+                        await self.channel_layer.group_send(
+                            self.group_name,
+                            {
+                                'type': 'player_disconnected',
+                                'user_id': user_id
+                            }
+                        )
+                    else:
+                        self.players.pop(user_id)
+                        if not self.players:
+                            await self.close()
+        # print who disconnected if it isn't a player
+        print(self.scope)
 
     async def receive_json(self, content):
         msg_type = content.get('type')
