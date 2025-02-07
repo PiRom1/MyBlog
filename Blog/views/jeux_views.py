@@ -8,6 +8,8 @@ import json
 from django.utils import timezone
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 def record_score(request):
@@ -102,7 +104,6 @@ def play_game(request, game):
     return render(request, url, context)
 
 
-
 @login_required
 def stats(request):
 
@@ -121,14 +122,24 @@ def stats(request):
 
     return render(request, url, context)
 
+def get_game_size(game_type):
+    if game_type == 'solo':
+        return 1
+    elif game_type == '1v1':
+        return 2
+    else:
+        return 4
+
 @login_required
 def lobby_page(request, room_name):
     lobby = Lobby.objects.get(name=room_name)
     game_name = lobby.game.name
-    game_size = lobby.game.players
+    game_type = lobby.game.gameType
+    game_size = get_game_size(game_type)
     return render(request, 'Blog/jeux/lobby.html', {'room_name': room_name,
                                                     'game_name': game_name,
-                                                    'game_size': game_size})
+                                                    'game_size': game_size,
+                                                    'game_type': game_type})
 
 # New view to fetch open lobbies dynamically.
 @login_required
@@ -140,7 +151,7 @@ def get_open_lobbies(request):
         lobby_list.append({
             'name': lobby.name,
             'game': lobby.game.name,
-            'size': lobby.game.players,
+            'size': get_game_size(lobby.game.gameType),
         })
     return JsonResponse({'lobbies': lobby_list})
 
@@ -157,3 +168,26 @@ def create_lobby(request):
         return JsonResponse({'success': True})
     print('Invalid request method')
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required
+def play_lobby_game(request, token, room_name, player_id, player_team, player_role = None):
+    lobby = Lobby.objects.get(name=room_name)
+    game_name = lobby.game.name
+    game_type = lobby.game.gameType
+    game_size = get_game_size(game_type)
+    if token == lobby.token:
+        channel_layer = get_channel_layer()
+        if not async_to_sync(channel_layer.group_contains)(f"game_{room_name}", request.channel_name):
+            async_to_sync(channel_layer.group_add)(f"game_{room_name}", request.channel_name)
+        async_to_sync(channel_layer.group_send)(f"game_{room_name}", {
+            'type': 'init',
+            'game_name': game_name,
+            'game_size': game_size,
+            'game_type': game_type,
+            'player': player_id,
+            'team': player_team,
+            'role': player_role
+        })
+        return render(request, f'Blog/jeux/{game_name}/{room_name}.html')
+    else:
+        return HttpResponseRedirect('/jeux/')

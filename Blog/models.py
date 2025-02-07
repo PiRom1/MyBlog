@@ -340,9 +340,10 @@ class EnjoyTimestamp(models.Model):
 
 class Game(models.Model):
     name = models.CharField("name", max_length=64)
-    players = models.IntegerField("players", default = 1)
     SCORES = [(-1, 'None'), (0, 'Lowest is best'), (1, 'Highest is best')]
     score = models.IntegerField("score", choices = SCORES, default = -1)
+    TYPES = [('solo', 'solo'), ('1v1', '1v1'), ('2v2', '2v2'), ('3v1', '3v1'), ('FFA', 'FFA')]
+    gameType = models.CharField("gameType", max_length=4, default = "solo", choices = TYPES)
 
     def __str__(self):
         return self.name
@@ -357,6 +358,7 @@ class Lobby(models.Model):
     name = models.CharField(max_length=100, unique=True)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=16, default="")
 
     # Added async save method for asynchronous operations
     async def asave(self, *args, **kwargs):

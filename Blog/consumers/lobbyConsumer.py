@@ -1,5 +1,7 @@
 import json
-import asyncio  # ...added import...
+import asyncio
+import random
+import string  # ...added import...
 from asgiref.sync import sync_to_async  # ...added for Django ORM calls...
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from Blog.models import Lobby  # ...added import for DB deletion
@@ -101,7 +103,9 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             # Supprimer la salle du cache en mémoire
             WaitingRoomConsumer.waiting_room.pop(self.room_name, None)
             # Supprimer le lobby de la DB s'il existe
-            await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
+            await Lobby.objects.aget(name=self.room_name).adelete()
+            # Close the websocket if no room is found
+            await self.close()
 
     async def receive_json(self, content):
         """
@@ -146,12 +150,16 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
                 current_players = WaitingRoomConsumer.waiting_room[self.room_name]['players']
                 required_players = WaitingRoomConsumer.waiting_room[self.room_name]['size']
                 if len(current_players) >= required_players and all(cp['ready'] for cp in current_players.values()):
-                    # Tous les joueurs sont prêts : notifier le groupe
+                    # Générer un token unique pour la salle d'attente de 16 caractères
+                    token = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+                    # Enregistrer le token dans la base de données
+                    await Lobby.objects.aget(name=self.room_name).aupdate(token=token)       
                     await self.channel_layer.group_send(
                         self.group_name,
                         {
                             "type": "start_game",
                             "message": "Redirection vers le jeu...",
+                            "token": token,
                         }
                     )
 

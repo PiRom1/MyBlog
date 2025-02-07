@@ -7,7 +7,7 @@
 <script src="{% static 'Blog/jeux/js/lobby.js' %}"></script>
 {% endblock %}
 {% block content %}
-<div id="lobby" data-room-name="{{ room_name }}" data-game-name="{{ game_name }}" data-game-size="{{ game_size }}">
+<div id="lobby" data-room-name="{{ room_name }}" data-game-name="{{ game_name }}" data-game-size="{{ game_size }}" data-game-type="{{ game_type }}">
   <h1>Salle d'attente: {{ room_name }}</h1>
   <button id="readyButton">Ready</button>
   <!-- players list container with placeholder -->

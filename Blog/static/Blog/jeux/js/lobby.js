@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const roomName = lobbyElem.dataset.roomName;
   const gameName = lobbyElem.dataset.gameName;
   const gameSize = lobbyElem.dataset.gameSize;
+  const gameType = lobbyElem.dataset.gameType;
+  const players = {};
   const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
   const lobbySocket = new WebSocket(wsScheme + "://" + window.location.host + "/ws/lobby/" + roomName + "/"+ gameName + "/" + gameSize + "/");
   let isReady = false;
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
         playerDiv.className = 'player';
         playerDiv.textContent = `${player.name} - ${player.ready ? "Ready" : "Not Ready"}`;
         playersElem.appendChild(playerDiv);
+        players[player.id] = {'team': 0, 'role': 0};
       });
     }
 
@@ -43,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     if (data.type === "start_game") {
-      window.location.href = "/jeux/" ;
+      
     }
   };
 
