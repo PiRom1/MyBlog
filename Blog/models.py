@@ -357,7 +357,6 @@ class Lobby(models.Model):
     name = models.CharField(max_length=100, unique=True)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    players = models.ManyToManyField(User, related_name='players')
 
     # Added async save method for asynchronous operations
     async def asave(self, *args, **kwargs):
