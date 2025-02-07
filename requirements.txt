@@ -2,3 +2,11 @@ django-clearcache
 django-extensions
 djangorestframework
 groq
+channels
+better-profanity
+afinn
+nltk
+bleach
+markdown
+numpy
+matplotlib

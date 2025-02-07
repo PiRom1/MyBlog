@@ -11,7 +11,7 @@ import string
 import re
 from nltk.corpus import stopwords
 import nltk
-nltk.download('stopwords')
+# nltk.download('stopwords')
 
 from ..utils.process_text import process_text, ask_agent_question
 from ..utils.llm_response import LLMResponse, LLMNewMessage
