@@ -12,7 +12,7 @@ def run():
             'game': score.game,
             'score': score.score,
             'user_id': score.user.id,
-            'date': score.date
+            'date': score.date.isoformat()  # converted datetime to string
         }
  
     # Save data to JSON file
