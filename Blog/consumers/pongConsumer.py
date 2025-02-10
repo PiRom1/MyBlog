@@ -84,7 +84,3 @@ class PongConsumer(BaseGameConsumer):
 
         except asyncio.CancelledError:
             pass
-
-    async def init_lobby(self, event):
-        print("PongConsumer received init_lobby event:", event)
-        return await super().init_lobby(event)

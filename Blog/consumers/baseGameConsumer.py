@@ -88,15 +88,16 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         if msg_type in ['init', 'init_lobby'] and not self.cache['game_state']['started']:
             if self.cache['game_state']['type'] is None:
                 self.cache['game_state']['type'] = content.get('game_type')
-                self.cache['game_state']['size'] = content.get('game_size')
+                self.cache['game_state']['size'] = int(content.get('game_size'))
                 self.cache['game_state']['name'] = content.get('game_name')
             content_player = content.get('player', None)
-            content_team = content.get('team', None)
+            content_team = int(content.get('team', None))
             content_role = content.get('role', None)
             self.cache['players'][content_player] = {'connected': True, 'team': content_team}
             if content_role:
                 self.cache['players'][content_player]['role'] = content_role
 
+            print(self.cache['players'], self.cache['game_state']['size'])
             if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
                 await self.channel_layer.group_send(
                     self.group_name,
@@ -111,25 +112,3 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             'type': 'all_players_connected',
             'message': event['message']
         })
-
-    async def init_lobby(self, event):
-        print('Init lobby:', event)
-        content_player = event.get('player')
-        content_team = event.get('team')
-        content_role = event.get('role')
-        if not self.cache['game_state']['started']:
-            if self.cache['game_state']['type'] is None:
-                self.cache['game_state']['type'] = event.get('game_type')
-                self.cache['game_state']['size'] = event.get('game_size')
-                self.cache['game_state']['name'] = event.get('game_name')
-            self.cache['players'][content_player] = {'connected': True, 'team': content_team}
-            if content_role:
-                self.cache['players'][content_player]['role'] = content_role
-            if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
-                await self.channel_layer.group_send(
-                    self.group_name,
-                    {
-                        'type': 'all_players_connected',
-                        'message': 'starting game'
-                    }
-                )
