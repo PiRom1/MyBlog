@@ -21,6 +21,16 @@
         <canvas id="pongCanvas" width="500" height="300"></canvas>
     </div>
     
+    <!-- New hidden element to pass context to JS -->
+    <div class="game-data" style="display: none;"
+         data-game-name="{{ game_name }}"
+         data-game-size="{{ game_size }}"
+         data-game-type="{{ game_type }}"
+         data-player="{{ user.id }}"
+         data-team="{{ team }}"
+         data-role="{{ role }}">
+    </div>
+    
     <p style="text-align:center;">
         <button id="startButton">Commencer</button>
     </p>

@@ -177,24 +177,30 @@ def play_lobby_game(request, token):
     if request.method == "POST":
         room_name = request.POST.get('roomName')
         player_team = request.POST.get('team')
-        player_role = request.POST.get('role')    
+        player_role = request.POST.get('role')
     player_id = request.user.id
-    lobby = Lobby.objects.get(name=room_name)
+    try:
+        lobby = Lobby.objects.get(name=room_name)
+    except Lobby.DoesNotExist:
+        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': room_name})
+    
     game_name = lobby.game.name
     game_type = lobby.game.gameType
     game_size = get_game_size(game_type)
     if token == lobby.token:
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(f"game_{room_name}", {
-            'type': 'init',
+        print(f"User authenticated: {request.user.is_authenticated}")
+        # Remove sending init_lobby here to ensure the consumer is initialized
+        # Instead, pass required info to the template so that client code sends init_lobby after websocket connection is open.
+        context = {
+            'room_name': room_name,
             'game_name': game_name,
             'game_size': game_size,
             'game_type': game_type,
             'player': player_id,
             'team': player_team,
             'role': player_role
-        })
-        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': room_name})
+        }
+        return render(request, f'Blog/jeux/{game_name}.html', context)
     else:
         return HttpResponseRedirect('/jeux/')
 

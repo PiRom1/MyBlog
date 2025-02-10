@@ -11,8 +11,38 @@ let gameState = {
 // Retrieve room name from the DOM
 const roomElem = document.querySelector('.game-container');
 const roomName = roomElem ? roomElem.dataset.roomName : 'default';
-// Update WebSocket connection URL to include the room name
-const ws = new WebSocket(`ws://localhost:8000/ws/pong/${roomName}/`);
+// Update WebSocket connection URL to be relative:
+const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+const ws = new WebSocket(`${ws_scheme}://${window.location.host}/ws/pong/${roomName}/`);
+
+// Retrieve game data passed in the template via data attributes
+const gameElem = document.querySelector('.game-data');
+const gameData = gameElem ? {
+    gameName: gameElem.dataset.gameName,
+    gameSize: gameElem.dataset.gameSize,
+    gameType: gameElem.dataset.gameType,
+    player: gameElem.dataset.player,
+    team: gameElem.dataset.team,
+    role: gameElem.dataset.role
+} : {};
+
+ws.onopen = function() {
+    console.log("Connected to game websocket for room:", roomName);
+    // Send the init_lobby message once the websocket is open
+    ws.send(JSON.stringify({
+        type: 'init_lobby',
+        game_name: gameData.gameName,
+        game_size: gameData.gameSize,
+        game_type: gameData.gameType,
+        player: gameData.player,
+        team: gameData.team,
+        role: gameData.role
+    }));
+    // Optionally, send a test message after a delay
+    setTimeout(() => {
+        ws.send(JSON.stringify({ type: 'test' }));
+    }, 5000);
+};
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);

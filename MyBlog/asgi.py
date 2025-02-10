@@ -16,13 +16,16 @@ django.setup()
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack  # Added for authentication
+from channels.security.websocket import AllowedHostsOriginValidator
 import Blog.routing  # votre fichier de routage pour les websockets
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(  # Wrap the URLRouter with AuthMiddlewareStack
-        URLRouter(
-            Blog.routing.websocket_urlpatterns
-        )
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(  # Wrap the URLRouter with AuthMiddlewareStack
+            URLRouter(
+                Blog.routing.websocket_urlpatterns
+            )
+        ),
     ),
 })
