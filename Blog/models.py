@@ -4,6 +4,7 @@ import datetime
 from django.utils import timezone
 from Blog.views.karma_views import *
 from django.conf import settings
+from asgiref.sync import sync_to_async
 
 # Create your models here.
 
@@ -337,9 +338,31 @@ class EnjoyTimestamp(models.Model):
     def __str__(self):
         return f"{self.time} ({self.writer.username})"
 
+class Game(models.Model):
+    name = models.CharField("name", max_length=64)
+    SCORES = [(-1, 'None'), (0, 'Lowest is best'), (1, 'Highest is best')]
+    score = models.IntegerField("score", choices = SCORES, default = -1)
+    TYPES = [('solo', 'solo'), ('1v1', '1v1'), ('2v2', '2v2'), ('3v1', '3v1'), ('FFA', 'FFA')]
+    gameType = models.CharField("gameType", max_length=4, default = "solo", choices = TYPES)
+
+    def __str__(self):
+        return self.name
 
 class GameScore(models.Model):
-    game = models.CharField(max_length=100, choices=settings.JEUX)
+    game = models.ForeignKey(Game, on_delete = models.CASCADE)
     score = models.FloatField()
     user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
     date = models.DateTimeField(default=timezone.now)
+
+class Lobby(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=16, default="")
+
+    # Added async save method for asynchronous operations
+    async def asave(self, *args, **kwargs):
+        await sync_to_async(super(Lobby, self).save)(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.game}"

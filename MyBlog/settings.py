@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'clearcache',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MyBlog.wsgi.application'
+
+ASGI_APPLICATION = 'MyBlog.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
 # Database
@@ -203,3 +212,7 @@ JEUX = [('Flex', 'Flex'),
         ('Tracker', 'Tracker'),
         ('Kingboard', 'Kingboard'),
         ('Bullet_Hell', 'Bullet_Hell'),]
+
+# Add/update the following cookie settings:
+SESSION_COOKIE_SAMESITE = 'Lax'  # ou 'None' si vous utilisez HTTPS avec SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False    # passez à True si vous êtes en production avec HTTPS

@@ -7,10 +7,25 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 """
 
+# asgi.py
 import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MyBlog.settings')
+import django
+django.setup()
 
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack  # Added for authentication
+from channels.security.websocket import AllowedHostsOriginValidator
+import Blog.routing  # votre fichier de routage pour les websockets
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MyBlog.settings')
-
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(  # Wrap the URLRouter with AuthMiddlewareStack
+            URLRouter(
+                Blog.routing.websocket_urlpatterns
+            )
+        ),
+    ),
+})

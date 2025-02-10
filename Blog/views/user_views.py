@@ -13,7 +13,7 @@ import random as rd
 
 from nltk.corpus import stopwords
 import nltk
-nltk.download('stopwords')
+# nltk.download('stopwords')
 # Create your views here.
 
 
