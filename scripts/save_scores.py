@@ -8,13 +8,13 @@ def run():
     scores = GameScore.objects.all()
     data = {}
     for score in scores:
-        for attribute in score.__dict__:
-            if attribute not in ['_state', 'id']:
-                if attribute not in data:
-                    data[attribute] = []
-                data[attribute].append(getattr(score, attribute))
-
-    
+        data[score.id] = {
+            'game': score.game,
+            'score': score.score,
+            'user_id': score.user_id,
+            'date': score.date
+        }
+ 
     # Save data to JSON file
     output_file = os.path.join(os.path.dirname(__file__), 'game_scores.json')
     with open(output_file, 'w', encoding='utf-8') as f:
