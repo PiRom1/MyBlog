@@ -35,7 +35,9 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                     'game_task': None
                 }
             self.cache = self.GLOBAL_STATE[self.group_name]
-
+        
+        print('User', user_id, 'connected to', self.group_name)
+        print(self.cache)
         if user_id in self.cache['players']:
             self.cache['players'][user_id]['connected'] = True
             if not self.cache['game_state']['started']:
@@ -90,14 +92,13 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                 self.cache['game_state']['type'] = content.get('game_type')
                 self.cache['game_state']['size'] = int(content.get('game_size'))
                 self.cache['game_state']['name'] = content.get('game_name')
-            content_player = content.get('player', None)
+            content_player = int(content.get('player', None))
             content_team = int(content.get('team', None))
             content_role = content.get('role', None)
             self.cache['players'][content_player] = {'connected': True, 'team': content_team}
             if content_role:
                 self.cache['players'][content_player]['role'] = content_role
 
-            print(self.cache['players'], self.cache['game_state']['size'])
             if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
                 await self.channel_layer.group_send(
                     self.group_name,

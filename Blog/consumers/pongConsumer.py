@@ -32,16 +32,18 @@ class PongConsumer(BaseGameConsumer):
         user_id = self.scope["user"].id
 
         if msg_type == 'start_game':
-            self.cache['players'][user_id]['team'] = data.get('team')
+            print('User', user_id, 'joined team', self.cache['players'][user_id]['team'])
             await self.send_json({
                 'type': 'start_game',
                 'game_state': self.cache['game_state']
             })
             if not self.cache['game_task']:
+                print('Starting game loop')
                 self.cache['game_task'] = asyncio.create_task(self.game_loop())
 
         elif msg_type == 'key_input':
             key = data.get('key')
+            print('User', user_id, 'pressed', key)
             action = data.get('action')
             if key in ['ArrowUp', 'ArrowDown']:
                 if self.cache['players'][user_id]['team'] == 1:
@@ -62,9 +64,9 @@ class PongConsumer(BaseGameConsumer):
                 bs = self.cache['game_state']['ball']
                 bs['x'] += bs['vx']
                 bs['y'] += bs['vy']
-                if bs['y'] <= 0 or bs['y'] >= self.cache['game_state']['canvas']['height']:
+                if bs['y'] <= 5 or bs['y'] >= self.cache['game_state']['canvas']['height']-5:
                     bs['vy'] *= -1
-                if bs['x'] <= 0 or bs['x'] >= self.cache['game_state']['canvas']['width']:
+                if bs['x'] <= 5 or bs['x'] >= self.cache['game_state']['canvas']['width']-5:
                     bs['vx'] *= -1
 
                 for paddle in ['paddle1', 'paddle2']:
@@ -80,7 +82,7 @@ class PongConsumer(BaseGameConsumer):
                     'type': 'game_update',
                     'game_state': self.cache['game_state']
                 })
-                await asyncio.sleep(1/30)
+                await asyncio.sleep(1/60) # 30 FPS
 
         except asyncio.CancelledError:
             pass

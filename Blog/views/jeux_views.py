@@ -88,6 +88,7 @@ def list_jeux(request):
         'liste_jeux_solo': liste_jeux_solo,
         'liste_jeux_multi': liste_jeux_multi,
         'scores' : data,        
+        'user' : request.user.id
     }
     
     return render(request, url, context)

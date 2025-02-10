@@ -18,7 +18,8 @@
     <h1>Pong - Le défi des raquettes rapides</h1>
     
     <div class="game-container" data-room-name="{{ room_name }}">
-        <canvas id="pongCanvas" width="500" height="300"></canvas>
+        <!-- Updated canvas size to match backend dimensions -->
+        <canvas id="pongCanvas" width="800" height="500"></canvas>
     </div>
     
     <!-- New hidden element to pass context to JS -->
@@ -31,9 +32,8 @@
          data-role="{{ role }}">
     </div>
     
-    <p style="text-align:center;">
-        <button id="startButton">Commencer</button>
-    </p>
+    <!-- Added countdown element -->
+    <p id="countdown" style="text-align:center; display:none;"></p>
     <!-- ...existing code... -->
 </body>
 </html>

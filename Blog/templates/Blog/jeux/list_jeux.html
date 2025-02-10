@@ -31,23 +31,26 @@
         {% endfor %}
     </ol>
     <!-- New div for displaying open lobbies -->
-    <div id="lobbies">
-        <form id="create-lobby-form" method="POST">
-            {% csrf_token %}
-            <input type="text" id="lobby-name-input" placeholder="Nom du lobby" required>
-            <select id="lobby-game-selector">
-                {% for jeu in liste_jeux_multi %}
-                    <option value="{{jeu}}">{{jeu}}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Créer Lobby</button>
-        </form>
-        <div id="open-lobbies">
-            <h2>Lobbys actuellement ouverts</h2>
-            <!-- Ajoutez ici la logique pour afficher les lobbys ouverts -->
-            <!-- New lobby creation form -->
+    <!-- afficher les lobbies uniquement si le user est 18 ou 13 -->
+    {% if user == 1 or user == 18  or user == 21%}
+        <div id="lobbies">
+            <form id="create-lobby-form" method="POST">
+                {% csrf_token %}
+                <input type="text" id="lobby-name-input" placeholder="Nom du lobby" required>
+                <select id="lobby-game-selector">
+                    {% for jeu in liste_jeux_multi %}
+                        <option value="{{jeu}}">{{jeu}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Créer Lobby</button>
+            </form>
+            <div id="open-lobbies">
+                <h2>Lobbys actuellement ouverts</h2>
+                <!-- Ajoutez ici la logique pour afficher les lobbys ouverts -->
+                <!-- New lobby creation form -->
+            </div>
         </div>
-    </div>
+    {% endif %}
     
     <div class="leaderboard-container">
         <h1>
