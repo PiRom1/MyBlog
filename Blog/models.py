@@ -349,7 +349,7 @@ class Game(models.Model):
         return self.name
 
 class GameScore(models.Model):
-    game = models.CharField(max_length=64)
+    game = models.ForeignKey(Game, on_delete = models.CASCADE)
     score = models.FloatField()
     user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
     date = models.DateTimeField(default=timezone.now)
