@@ -1,21 +1,19 @@
 import sqlite3
 import json
 import os
+from Blog.models import GameScore
 
 def run():
-    # Modify the database path as necessary
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'db', 'my_blog.db')
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
-    
-    # Fetch all entries from game_score table
-    cur.execute("SELECT * FROM GameScore")
-    rows = cur.fetchall()
-    # Get column names
-    columns = [desc[0] for desc in cur.description]
-    
-    # Build a list of dicts for each row
-    data = [dict(zip(columns, row)) for row in rows]
+    # Get scores from database
+    scores = GameScore.objects.all()
+    data = {}
+    for score in scores:
+        for attribute in score.__dict__:
+            if attribute not in ['_state', 'id']:
+                if attribute not in data:
+                    data[attribute] = []
+                data[attribute].append(getattr(score, attribute))
+
     
     # Save data to JSON file
     output_file = os.path.join(os.path.dirname(__file__), 'game_scores.json')
