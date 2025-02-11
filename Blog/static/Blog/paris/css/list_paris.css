@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    gap: 20px;
+    padding-top: 3%;
+}
+
+.open_paris_container {
+    flex: 3;
+    background-color: #e2c0c072;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.close_paris_container {
+    flex: 1;
+    background-color: #e2c0c072;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.open_paris {
+    margin-top: 10px;
+}
+
+.close_paris {
+    margin-top: 10px;
+}

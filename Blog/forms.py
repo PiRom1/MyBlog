@@ -122,3 +122,10 @@ class EnjoyTimestampForm(forms.ModelForm):
     class Meta:
         model = EnjoyTimestamp
         fields = ['comment']
+
+
+class PariForm(forms.ModelForm):
+
+    class Meta:
+        model = Pari
+        fields = ['name', 'description', 'duration']

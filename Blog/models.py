@@ -343,3 +343,34 @@ class GameScore(models.Model):
     score = models.FloatField()
     user = models.ForeignKey(User, null = True, on_delete=models.SET_NULL)
     date = models.DateTimeField(default=timezone.now)
+
+
+class Pari(models.Model):
+    name = models.CharField(max_length=100, null=False)
+    description = models.TextField(default='', null=True, blank=True)
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    published_date = models.DateTimeField(auto_now=True)
+    duration = models.DurationField()
+    open = models.BooleanField(default=True)
+    admin_reviewed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} ({self.open})"
+
+class PariIssue(models.Model):
+    pari = models.ForeignKey(Pari, on_delete=models.CASCADE)
+    issue = models.TextField()
+    winning = models.BooleanField(default=None, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.issue} ({self.pari.name})"
+
+class UserForIssue(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pari_issue = models.ForeignKey(PariIssue, on_delete=models.CASCADE)
+    mise = models.IntegerField()
+    comment = models.CharField(max_length=100, default='', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user}_{self.pari_issue}"
+

@@ -141,3 +141,17 @@ class EnjoyTimestampAdmin(admin.ModelAdmin):
 class GameScoreAdmin(admin.ModelAdmin):
     list_display = ('game', 'score', 'user', 'date')
 
+
+@admin.register(Pari)
+class PariAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description', 'creator', 'open', 'admin_reviewed')
+
+
+@admin.register(PariIssue)
+class PariAdmin(admin.ModelAdmin):
+    list_display = ('pari', 'issue', 'winning')
+
+
+@admin.register(UserForIssue)
+class UserForIssueAdmin(admin.ModelAdmin):
+    list_display = ('user', 'pari_issue', 'mise')

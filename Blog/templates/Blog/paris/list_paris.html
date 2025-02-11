@@ -1,0 +1,54 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste Paris</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/paris/css/list_paris.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+</head>
+
+<body>
+    <h1>Les paris en cours</h1>
+
+    <div class="button-create">
+        <a href="/paris/create">Créer un pari</a>
+    </div>
+
+
+    <div class="container">
+
+        <div class="open_paris_container">
+            <h2>Les paris en cours</h2>
+            
+            <div class="open_paris">
+                <ul>
+                {% for pari in open_paris %}
+                    <li><a href="/paris/{{pari.id}}">{{pari.name}}</a> <a href="/user/{{pari.creator.id}}">({{pari.creator.username}})</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="close_paris_container">
+            <h2>Les paris terminés</h2>
+            <div class="close_paris">
+                <ul>
+                {% for pari in close_paris %}
+                    <li><a href="/paris/{{pari.id}}">{{pari.name}}</a> <a href="/user/{{pari.creator.id}}">({{pari.creator.username}})</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    
+    </div>
+        
+
+</body>
