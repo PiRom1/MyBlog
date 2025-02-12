@@ -17,7 +17,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MyBlog.settings')
 
 # Forward WSGI requests to Uvicorn running on a UNIX socket
 def application(environ, start_response):
-    url = "http://127.0.0.1:8086" + environ.get("PATH_INFO", "/")
+    url = "http://127.0.0.1:8080" + environ.get("PATH_INFO", "/")
 
     # Include query parameters if present
     if environ.get("QUERY_STRING"):
