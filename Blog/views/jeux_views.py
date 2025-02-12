@@ -160,9 +160,9 @@ def get_open_lobbies(request):
     return JsonResponse({'lobbies': lobby_list})
 
 @login_required
-def create_lobby(request):
+async def create_lobby(request):
     if request.method == "POST":
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         lobby_name = data.get('lobby')
         game = Game.objects.get(name=data.get('game'))
         if Lobby.objects.filter(name=lobby_name).exists():
