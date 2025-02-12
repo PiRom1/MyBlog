@@ -1,0 +1,162 @@
+
+h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 1.2em;
+    background: rgba(223, 169, 76, 0.685);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+
+.issues {
+    flex: 5;
+    margin-top: 20px;
+    display: flex;
+    
+}
+
+.issues ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.issue {
+    display: flex;
+    font-size: 1.1em;
+    background: #dad2bca4;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px auto;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    width: 400px;
+}
+
+
+.user_for_issues {
+    flex:5;
+    background-color: #e2c0c072;
+    padding-top: 5px;
+    padding-left: 10px;
+}
+
+
+.issue_add {
+    position: relative;
+    margin-left: 20px;
+    font-family:fantasy;
+    color: rgb(212, 181, 176);
+    font-weight: bold;
+    background: rgba(202, 80, 80, 0.663);
+    border-radius: 100%;
+    border: 1px solid #333;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.issue_add:hover {
+    
+    color: rgb(212, 181, 176);
+    background: rgba(104, 40, 40, 0.663);
+}
+
+
+
+.issue_text:hover {
+    font-weight: bold;
+}
+
+
+.pari_form {
+    display: none;
+    text-align: center;
+    width:40%;
+    background-color: #e5c07dbc;
+    border-radius: 5px;
+    border: 1px solid #333;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    color: #eddcdc;
+}
+
+
+.close:hover {
+    color: #ded3d3;
+}
+
+.validate-issue {
+    background-color: rgba(255, 255, 240, 0.852);
+    color: black;
+    width: 12%;
+    padding: 5px;
+    display: none;
+}
+
+.validate-issue:hover {
+    background-color: rgba(238, 238, 206, 0.852);
+    cursor: pointer;
+}
+
+
+.gains {
+    margin-top: 20px;
+    margin-left: 2%;
+    display: flex;
+    position: absolute;
+    left: 20%;   
+}
+
+.positif {
+    color:#bee3ba;
+}
+
+.negatif {
+    color: #ff746c;
+}
+
+.winning .issue {
+    background: #61de89a1 !important;
+}
+
+.loosing .issue {
+    background: #d77878b7 !important;
+}
+
+.chart {
+    width: 30%;
+    position: absolute;
+    right: 30%;
+}

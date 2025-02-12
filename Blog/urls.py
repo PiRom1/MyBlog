@@ -101,5 +101,8 @@ urlpatterns = [
     # Paris
     path('paris/', paris_views.list_paris, name='list_paris'),
     path('paris/create', paris_views.create_pari, name='create_paris'),
+    path('paris/<int:id>', paris_views.detail_pari, name='detail_pari'),
+    path('parier/', paris_views.parier, name='parier'),
+    path('conclure_pari/', paris_views.conclure, name='conclure_pari'),
 
 ]

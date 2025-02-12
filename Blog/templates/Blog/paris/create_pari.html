@@ -21,15 +21,25 @@
 <body>
     <h1>Création d'un pari</h1>
 
-    Nom du pari : <input id="pari_name" type="text" name="Nom"> <br>
-    Description éventuelle du pari : <input id="pari_description" type="text" name="Description"> <br>
-    Durée du pari : <input id="pari_duration" type="number" name="Duration" min=1>
-    <br><br>
-    Issues du pari : <br>
-    Issue 1 : <input class="pari_issue" type="text" name="Issue"><br>
-    Issue 2 : <input class="pari_issue" type="text" name="Issue"><br>
-    <span id='plus' class='plus'>+</span> 
-    <br>
-    <button class="submit-button" id="submit">Créer le pari !</button>
+    <div class="form">
+        Nom du pari : <input id="pari_name" type="text" name="Nom"> <br>
+        Description éventuelle du pari : <input id="pari_description" type="text" name="Description"> <br>
+        Durée du pari (en heures) : <input id="pari_duration" type="number" name="Duration" min=1>
+        <br><br>
+        Issues du pari : <br>
+        Issue 1 : <input class="pari_issue" type="text" name="Issue"><br>
+        Issue 2 : <input class="pari_issue" type="text" name="Issue"><br>
+        <span id='plus' class='plus'>+</span> 
+        <br>
+        <button class="submit-button" id="submit">Créer le pari !</button>
+    </div>
+
+
+    
+    <div style="left:2px; bottom:2px; position:absolute;">
+        <a href="/paris/">Retour aux paris</a><br>
+        <a href="/">HOME</a><br>
+    </div>
+
 
 </body>

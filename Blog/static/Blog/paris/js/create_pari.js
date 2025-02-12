@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             error.innerHTML = '';
         }
         error = document.createElement('div');
-        error.style.color = 'tomato';
+        error.style.color = 'ivory';
         error.innerHTML = `Attention ! ${erreur}`;
         
         plus.parentNode.appendChild(error, plus);
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             console.log(data);
             if (data.success === true) {
-                window.location.href = '/paris';
+                window.location.href = `/paris/${data.pari_id}`;
             }
             else {
                 afficher_erreur(data.error);

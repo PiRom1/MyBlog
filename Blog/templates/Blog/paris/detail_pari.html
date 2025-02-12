@@ -1,0 +1,148 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Pari</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/paris/css/detail_pari.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/paris/js/detail_pari.js' %}" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% include "../bg.html" %}
+    {% load custom_filters %}
+
+</head>
+
+<body>
+    
+    <div id="mise-possible" mise-possible='{{mise_possible}}'></div>
+    <div id="is-admin" is-admin='{{is_admin}}'></div>
+    <div id="id-pari" id-pari='{{id}}'></div>
+    <div id="is-open" is-open='{{pari.open}}'></div>
+
+    <div id="data" labels="{{labels}}" cotes="{{pie_chart_cotes}}"></div>
+
+    <div id="blur-background">
+
+        <h1>{{pari.name}}</h1>
+        
+        <div class="description">
+            {{pari.description}}
+        </div>
+        <br>
+        {% if pari.open %}
+            
+                Pari ouvert le <strong>{{pari.published_date|date:"d/m/Y (H:i)"}}</strong> par <strong>{{pari.creator.username}}</strong>.
+                <br>
+                {% if duree_atteinte == False %}
+                Le pari se fermera le <strong>{{fin_pari|date:"d/m/Y"}}</strong> à <strong>{{fin_pari|date:"(H:i)"}}</strong>.
+                <br><br>
+                {% if mise_possible %}
+                {% else %}
+                    Vous avez déjà participé à ce pari !
+                {% endif %}
+            {% else %}
+                Le pari est arrivé à échéance.
+            {% endif %}
+        {% else %}
+            Le pari est fermé.
+        {% endif %}
+        <br><br>
+        Mise totale du pari : <strong>{{mise_totale}}</strong> <img class="coin" src="{% static 'img/coin.png' %}" width="30"/>
+        
+
+
+        <div class="container">
+           
+            <div class="issues">
+                
+                <ul>
+                    {% for issue in issues %}
+                        <span class="{% if issue.winning %}winning{% elif issue.winning == 0 %}loosing{% else %}{% endif %}">
+                            <li class="issue">
+                                <span class="issue_text" id="issue_{{issue.id}}" issue-id="{{issue.id}}">
+                                    {{issue.issue}}{% if cotes|index:forloop.counter0 > 0 %} - <i>1:{{cotes|index:forloop.counter0}}{% endif %}</i>
+                                </span>
+                                <span class="issue_add" issue-id="{{issue.id}}">+</span> 
+                            </li>
+                        </span>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            
+            <div class="user_for_issues">
+            {% for issue in issues_detail %}
+                    <div class="issue_detail" id="issue_detail_{{issue.issue_id}}" style="display:none;">
+                        <strong><u>{{issue.issue}}</u></strong> : <br>
+                        <ul>
+                            {% for mise in issue.mises %}
+                                <li>
+                                    <u><a href="/user/{{mise.user.id}}">{{mise.user.username}}</a></u> : {{mise.mise}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> - {{mise.comment}}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            {% endfor %}
+            </div>
+                
+        
+        </div>
+    
+    </div>
+    
+    {% if gains %}
+        <div class="gains">
+            
+            <ul>
+                {% for gain in gains %}
+                    <span class='mise'>
+                        <span class="{% if gain.mise > 0 %} positif {% else %} negatif {% endif %}">
+                            <li>{{gain.user.username}} a {% if gain.mise > 0 %}gagné{% else %}perdu{% endif %} {{ gain.mise|floatformat:0|cut:"-" }} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/></li>
+                        </span>
+                    </span>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="chart">
+        <canvas id="pie-chart"></canvas>
+    </div>
+
+
+
+    <div id="validate-issue" class="validate-issue">
+        Clôre le pari et définir cette issue comme gagnante
+    </div>
+
+
+
+    <div style="left:2px; bottom:2px; position:absolute;">
+        <a href="/paris/">Retour aux paris</a><br>
+        <a href="/">HOME</a><br>
+    </div>
+
+
+
+
+    <div class="pari_form" id="pari_form">
+        <span class='close' id='close'>X</span>
+        <span id="pari_form_name"></span><br>
+        Votre mise : <input type="number" min=1 id="input_mise"> <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> <br>
+        Un petit commentaire ? <input type="text" id="input_commentaire"> <br>
+        <button id="submit">Parier !</button>
+        <br>
+        <span id='error-message'></span>
+    </div>
+    
+
+</body>
