@@ -33,7 +33,7 @@ TOKEN_EXPIRE_HOURS = 24
 TOKEN_EXPIRED_AFTER_SECONDS = 3600  # Durée de vie du token en secondes (par exemple, 1 heure)
 
 ALLOWED_HOSTS = [
-    "www.diplo.pythonanywhere.com",
+    "https://diplo.pythonanywhere.com",
     'diplo.pythonanywhere.com', 
     '127.0.0.1', 
     'localhost'
