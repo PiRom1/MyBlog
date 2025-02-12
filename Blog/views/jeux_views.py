@@ -10,6 +10,7 @@ from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import logging
 
 
 def record_score(request):
@@ -159,10 +160,13 @@ def get_open_lobbies(request):
         })
     return JsonResponse({'lobbies': lobby_list})
 
+logger = logging.getLogger(__name__)
+
 @login_required
-async def create_lobby(request):
+def create_lobby(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        logger.info(f"JSON reçu: {data}")
         lobby_name = data.get('lobby')
         game = Game.objects.get(name=data.get('game'))
         if Lobby.objects.filter(name=lobby_name).exists():
