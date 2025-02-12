@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -101,4 +101,11 @@ urlpatterns = [
     path('create_lobby/', jeux_views.create_lobby, name='create_lobby'),  # added create_lobby URL
     path('play_lobby_game/<str:token>/', jeux_views.play_lobby_game, name='play_lobby_game'),  # added play_lobby_game URL
     
+    # Paris
+    path('paris/', paris_views.list_paris, name='list_paris'),
+    path('paris/create', paris_views.create_pari, name='create_paris'),
+    path('paris/<int:id>', paris_views.detail_pari, name='detail_pari'),
+    path('parier/', paris_views.parier, name='parier'),
+    path('conclure_pari/', paris_views.conclure, name='conclure_pari'),
+
 ]

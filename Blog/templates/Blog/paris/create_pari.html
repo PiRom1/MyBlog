@@ -1,0 +1,45 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer Paris</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/paris/css/create_pari.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/paris/js/create_pari.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+</head>
+
+
+<body>
+    <h1>Création d'un pari</h1>
+
+    <div class="form">
+        Nom du pari : <input id="pari_name" type="text" name="Nom"> <br>
+        Description éventuelle du pari : <input id="pari_description" type="text" name="Description"> <br>
+        Durée du pari (en heures) : <input id="pari_duration" type="number" name="Duration" min=1>
+        <br><br>
+        Issues du pari : <br>
+        Issue 1 : <input class="pari_issue" type="text" name="Issue"><br>
+        Issue 2 : <input class="pari_issue" type="text" name="Issue"><br>
+        <span id='plus' class='plus'>+</span> 
+        <br>
+        <button class="submit-button" id="submit">Créer le pari !</button>
+    </div>
+
+
+    
+    <div style="left:2px; bottom:2px; position:absolute;">
+        <a href="/paris/">Retour aux paris</a><br>
+        <a href="/">HOME</a><br>
+    </div>
+
+
+</body>
