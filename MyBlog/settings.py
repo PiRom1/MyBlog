@@ -85,6 +85,8 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 # Autorise les credentials (si besoin)
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = ['https://*.diplo.pythonanywhere.com','https://*.127.0.0.1']
+
 ROOT_URLCONF = 'MyBlog.urls'
 
 TEMPLATES = [
