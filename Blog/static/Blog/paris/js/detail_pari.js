@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const is_open = document.getElementById('is-open').getAttribute('is-open');
     const error_message = document.getElementById('error-message');
 
+    const duree_atteinte = document.getElementById('duree-atteinte').getAttribute('duree-atteinte');
 
     const issues = document.querySelectorAll('.issue_text');
     const details = document.querySelectorAll('.issue_detail');
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("blur : ", blur_background);
     plus.forEach(plus_=>{
         
-        if (mise_possible === 'True' && is_open === 'True') {
+        if (mise_possible === 'True' && is_open === 'True' && duree_atteinte === 'False') {
             plus_.addEventListener('click', function() {
 
                 // blur_background.style.backdropFilter = 'blur(2px)';
