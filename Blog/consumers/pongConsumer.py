@@ -9,9 +9,9 @@ class PongConsumer(BaseGameConsumer):
         self.initial_state = {
             'score': {'team1': 0, 'team2': 0},
             'canvas': {'width': 800, 'height': 500},
-            'ball': {'x': 250, 'y': 150, 'vx': random.choice([-3, 3]), 'vy': random.choice([-3, 3])},
-            'paddle1': {'y': 100, 'v': 5},
-            'paddle2': {'y': 100, 'v': 5}
+            'ball': {'x': 250, 'y': 250, 'vx': random.choice([-5, 5]), 'vy': random.choice([-5, 5])},
+            'paddle1': {'y': 200, 'v': 5},
+            'paddle2': {'y': 200, 'v': 5}
         }
         self.inputs = {'paddle1': None, 'paddle2': None}
 
@@ -73,13 +73,13 @@ class PongConsumer(BaseGameConsumer):
                 if bs['y'] <= 6 or bs['y'] >= self.cache['game_state']['canvas']['height']-6:
                     bs['vy'] *= -1
 
-                if bs['y'] >= paddle1['y']-50 and bs['y'] <= paddle1['y']+50 and bs['x'] <= 36 and not going_right:
+                if bs['y'] >= paddle1['y']-100 and bs['y'] <= paddle1['y'] and bs['x'] <= 36 and not going_right:
                     bs['vx'] *= -1.2
                     bs['vy'] *= 1.2
                     paddle1['v'] *= 1.1
                     paddle2['v'] *= 1.1
                     
-                elif bs['y'] >= paddle2['y']-50 and bs['y'] <= paddle2['y']+50 and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
+                elif bs['y'] >= paddle2['y']-100 and bs['y'] <= paddle2['y'] and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
                     bs['vx'] *= -1.2
                     bs['vy'] *= 1.2
                     paddle2['v'] *= 1.1
