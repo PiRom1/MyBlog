@@ -111,17 +111,25 @@ WSGI_APPLICATION = 'MyBlog.wsgi.application'
 
 ASGI_APPLICATION = 'MyBlog.asgi.application'
 
+# # Using Redis as a channel layer
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
+#         "CONFIG": {
+#             "hosts":[{
+#                 "address": "rediss://default:AVNS_IvNII3zoJDXACpkOLsY@valkey-166486-diplowebchat-l86r.e.aivencloud.com:13472",  # "REDIS_TLS_URL"
+#                 "ssl_cert_reqs": None,
+#             }],
+#             "serializer_format": "json",
+#         }
+#     }
+# }
+
+# Using In-Memory channel layer
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
-        "CONFIG": {
-            "hosts":[{
-                "address": "rediss://default:AVNS_IvNII3zoJDXACpkOLsY@valkey-166486-diplowebchat-l86r.e.aivencloud.com:13472",  # "REDIS_TLS_URL"
-                "ssl_cert_reqs": None,
-            }],
-            "serializer_format": "json",
-        }
-    }
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer",
+    },
 }
 
 
