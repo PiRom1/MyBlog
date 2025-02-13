@@ -98,7 +98,8 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             self.cache['players'][content_player] = {'connected': True, 'team': content_team}
             if content_role:
                 self.cache['players'][content_player]['role'] = content_role
-
+            self.cache['players'][content_player]['channel'] = self.channel_name
+            
             if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
                 await self.channel_layer.group_send(
                     self.group_name,
@@ -107,9 +108,13 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                         'message': 'starting game'
                     }
                 )
+                return
 
     async def all_players_connected(self, event):
-        await self.send_json({
-            'type': 'all_players_connected',
-            'message': event['message']
-        })
+        try:
+            await self.send_json({
+                'type': 'all_players_connected',
+                'message': event['message']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()

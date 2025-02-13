@@ -40,6 +40,8 @@ class PongConsumer(BaseGameConsumer):
             if not self.cache['game_task']:
                 print('Starting game loop')
                 self.cache['game_task'] = asyncio.create_task(self.game_loop())
+            self.game_update = asyncio.create_task(self.game_update_loop())
+            return            
 
         elif msg_type == 'key_input':
             key = data.get('key')
@@ -78,11 +80,43 @@ class PongConsumer(BaseGameConsumer):
                         elif action == 'down':
                             self.cache['game_state'][paddle]['y'] += -5 if key in ['ArrowUp'] else 5
 
-                await self.send_json({
-                    'type': 'game_update',
-                    'game_state': self.cache['game_state']
-                })
-                await asyncio.sleep(1/60) # 30 FPS
+                await asyncio.sleep(1/30) # 30 FPS
 
         except asyncio.CancelledError:
+            print('Game loop cancelled')
             pass
+
+    async def game_update_loop(self):
+        try:
+            while True:
+                await asyncio.create_task(self.send_game_update())
+                await asyncio.sleep(1/30)
+        except asyncio.CancelledError:
+            print('Game update loop cancelled')
+            self.game_update.cancel()
+        
+    async def send_game_update(self):
+        await self.send_json({
+            'type': 'game_update',
+            'game_state': self.cache['game_state']
+        })
+    
+    # async def send_game_update(self):
+    #     for player in self.cache['players'].values():
+    #         await self.channel_layer.send(
+    #             player['channel'],
+    #             {
+    #                 'type': 'game_update',
+    #                 'game_state': self.cache['game_state']
+    #             }
+    #         )
+
+    # async def game_update(self, event):
+    #     try:
+    #         await self.send_json({
+    #             'type': 'game_update',
+    #             'game_state': event['game_state']
+    #         })
+    #     except Exception as e:
+    #         print('Error sending game update:', e)
+    #         pass

@@ -79,18 +79,24 @@ ws.onmessage = function(event) {
     }
 };
 
+let keydown = false;
+
 // Send key events to backend
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        ws.send(JSON.stringify({ type: 'key_input', data: {key: e.key, action: 'down' }}));
-    }
-});
 document.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
+    e.preventDefault();
+    if (keydown && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
         ws.send(JSON.stringify({ type: 'key_input', data: {key: e.key, action: 'up' }}));
     }
+    keydown = false;
+});
+
+document.addEventListener('keydown', (e) => {
+    e.preventDefault();
+    if (!keydown && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        ws.send(JSON.stringify({ type: 'key_input', data: {key: e.key, action: 'down' }}));
+        console.log("Keydown event sent");
+    }
+    keydown = true;
 });
 
 // Local animation loop for smooth drawing
