@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('ici');
     const ctx = document.getElementById('pie-chart').getContext('2d');
     const data = document.getElementById('data');
-    let labels = data.getAttribute('labels');
+    let labels = data.getAttribute('labels').replace(/'/g, '"');
     let cotes = data.getAttribute('cotes').replace(/'/g, '"');
     console.log(labels);
     labels = JSON.parse(labels);
