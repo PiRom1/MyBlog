@@ -199,8 +199,6 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         """
         Méthode pour attribuer des équipes et rôles aux joueurs. Aléatoire pour l'instant.
         """
-        print(WaitingRoomConsumer.waiting_room[self.room_name]['players'])
-
         game_type = WaitingRoomConsumer.waiting_room[self.room_name]['type']
         players = list(WaitingRoomConsumer.waiting_room[self.room_name]['players'].keys())
         random.shuffle(players)
@@ -223,7 +221,6 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]]['team'] = 2
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[2]]['team'] = 3
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[3]]['team'] = 4
-        print(WaitingRoomConsumer.waiting_room[self.room_name]['players'])
         return
 
     async def game_start(self):
