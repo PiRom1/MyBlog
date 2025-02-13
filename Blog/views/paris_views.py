@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timezone
 import numpy as np
+import json
 
 
 @login_required
@@ -186,7 +187,9 @@ def detail_pari(request, id):
     is_admin = request.user.is_superuser
     
     url = 'Blog/paris/detail_pari.html'
-    
+
+    print("labels : ", json.dumps(labels))
+
     context = {'id' : id,
                'pari' : pari,
                'issues' : issues,
@@ -196,7 +199,7 @@ def detail_pari(request, id):
                'is_admin' : is_admin,
                'gains': gains,
                'cotes' : cotes,
-               'labels' : labels,
+               'labels' : json.dumps(labels),
                'pie_chart_cotes' : pie_chart_cotes,
                'fin_pari' : pari.published_date + pari.duration,
                'duree_atteinte' : duree_atteinte}

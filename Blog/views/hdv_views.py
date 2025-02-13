@@ -58,14 +58,26 @@ def list_hdv(request):
         
         your_items.append(d) if seller == request.user else selling_items.append(d)
     
+    market_history = []
+
+    for history in MarketHistory.objects.all().order_by('-date'):
+        if history.item.type == 'skin':
+            skin = Skin.objects.get(id=history.item.item_id).name
+        else:
+            skin = 'box'
+        
+        market_history.append({'history' : history,
+                               'skin' : skin,
+                               'pattern' : history.item.pattern,
+                               'price' : history.price if history.action == 'sell' else -history.price})
 
 
-    
 
     context = {
         'selling_items' : selling_items,
         'your_items' : your_items,
         'user' : request.user.username,
+        'market_history' : market_history,
     }
     
     return render(request, 'Blog/hdv/hdv.html', context)
@@ -111,11 +123,6 @@ def buy(request):
                                   action = "buy")
     history_buyer.save()
     
-    history_seller = MarketHistory(user = transaction.seller,
-                                  item = item,
-                                  price = transaction.price,
-                                  action = "sell")
-    history_seller.save()
 
     # Delete market line
     transaction.delete()
@@ -156,6 +163,12 @@ def sell(request):
 
     # sortir de l'inventaire
     UserInventory.objects.get(item_id=item_id).delete()
+
+    # Market history
+    MarketHistory.objects.create(price = price,
+                                 action = 'sell',
+                                 item = item,
+                                 user = user)
 
     # Taxe à voir + tard
 
