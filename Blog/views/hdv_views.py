@@ -76,7 +76,7 @@ def list_hdv(request):
     context = {
         'selling_items' : selling_items,
         'your_items' : your_items,
-        'user' : request.user.username,
+        'user' : request.user,
         'market_history' : market_history,
     }
     
