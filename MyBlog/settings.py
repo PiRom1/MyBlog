@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'clearcache',
     'channels',
-    "corsheaders",
+    # "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -69,21 +69,21 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
+# MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
 
 # Autorise ton domaine pour les appels API
-CORS_ALLOWED_ORIGINS = [
-    "https://diplo.pythonanywhere.com",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://diplo.pythonanywhere.com",
+# ]
 
-# OU (si plusieurs sous-domaines possibles)
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.*\.pythonanywhere\.com$",
-]
+# # OU (si plusieurs sous-domaines possibles)
+# CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"^https://.*\.pythonanywhere\.com$",
+# ]
 
-# Autorise les credentials (si besoin)
-CORS_ALLOW_CREDENTIALS = True
+# # Autorise les credentials (si besoin)
+# CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['https://*.diplo.pythonanywhere.com','https://*.127.0.0.1']
 
@@ -112,9 +112,16 @@ WSGI_APPLICATION = 'MyBlog.wsgi.application'
 ASGI_APPLICATION = 'MyBlog.asgi.application'
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': "channels.layers.InMemoryChannelLayer",
-    },
+    "default": {
+        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
+        "CONFIG": {
+            "hosts":[{
+                "address": "rediss://default:AVNS_IvNII3zoJDXACpkOLsY@valkey-166486-diplowebchat-l86r.e.aivencloud.com:13472",  # "REDIS_TLS_URL"
+                "ssl_cert_reqs": None,
+            }],
+            "serializer_format": "json",
+        }
+    }
 }
 
 
