@@ -73,13 +73,13 @@ class PongConsumer(BaseGameConsumer):
                 if bs['y'] <= 6 or bs['y'] >= self.cache['game_state']['canvas']['height']-6:
                     bs['vy'] *= -1
 
-                if bs['y'] >= paddle1['y']-100 and bs['y'] <= paddle1['y'] and bs['x'] <= 36 and not going_right:
+                if bs['y'] >= paddle1['y'] and bs['y'] <= paddle1['y']+100 and bs['x'] <= 36 and not going_right:
                     bs['vx'] *= -1.2
                     bs['vy'] *= 1.2
                     paddle1['v'] *= 1.1
                     paddle2['v'] *= 1.1
                     
-                elif bs['y'] >= paddle2['y']-100 and bs['y'] <= paddle2['y'] and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
+                elif bs['y'] >= paddle2['y'] and bs['y'] <= paddle2['y']+100 and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
                     bs['vx'] *= -1.2
                     bs['vy'] *= 1.2
                     paddle2['v'] *= 1.1

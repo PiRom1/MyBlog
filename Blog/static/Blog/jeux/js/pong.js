@@ -3,9 +3,9 @@ const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
 let gameState = {
-    ball: { x: 250, y: 150 },
-    paddle1: { y: 100 },
-    paddle2: { y: 100 }
+    ball: { x: 250, y: 250 },
+    paddle1: { y: 200 },
+    paddle2: { y: 200 }
 };
 
 // Retrieve room name from the DOM
