@@ -60,16 +60,19 @@
     </div>
 
     <div class="history-container">
-        <h2 class='history_title'>Historique du marché</h2>
-        <ul>
-            {% for history in market_history %}
-                {% if history.history.action == 'buy' %}
-                    <li>{{history.history.user.username}} a acheté {{history.skin}} pour {{history.history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
-                {% elif history.history.action == 'sell' %}
-                    <li>{{history.history.user.username}} a mis en vente {{history.skin}} pour {{history.history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+        
+            <div class="history-content">
+            <h2 class='history-title'>Historique du marché</h2>    
+            <ul>
+                {% for history in market_history %}
+                    {% if history.history.action == 'buy' %}
+                        <li class="buy"><span style="text-transform : capitalize;">{{history.history.user.username}}</span> a acheté <span class='skin' pattern='{{history.pattern}}'>{{history.skin}}</span> pour {{history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
+                    {% elif history.history.action == 'sell' %}
+                        <li class="sell"><span style="text-transform : capitalize;">{{history.history.user.username}}</span> a mis en vente <span class='skin' pattern='{{history.pattern}}'>{{history.skin}}</span> pour {{history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
 
     </div>
 

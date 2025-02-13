@@ -97,16 +97,54 @@ h2 {
 
 
 .history-container {
-    width : 50%;
-    background-color: #f5cb9a96;
-    border-radius: 5px;
-    text-align: center;
-    position: absolute;
-    left: 25%;
-    margin-bottom: 100px;
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
 }
+
+.history-content {
+    width: 50%; /* Ajuste la largeur selon tes besoins */
+    background: url('/static/img/panneau.png');
+    background-size: 100% auto; /* Étire en largeur, hauteur auto pour répétition */
+    border-radius: 10px;
+    margin-bottom: 30px;
+
+}
+
+.history-title {
+    padding: 5px;
+    margin: 5px;
+}
+
 
 .history-container ul {
     padding-left: 25px;
     /* list-style-position: inside; */
+}
+
+.history-container li {
+    list-style: none;
+}
+
+
+.history-container .buy {
+    color: ivory;
+    background-color: rgba(214, 93, 93, 0.378);
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: 5px;
+    padding: 6px;
+}
+
+
+.history-container .sell {
+    color: rgb(69, 66, 65);
+    background-color: rgba(221, 118, 58, 0.316);
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: 5px;
+    padding: 6px;
+
 }

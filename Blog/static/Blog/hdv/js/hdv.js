@@ -236,4 +236,19 @@ document.addEventListener('DOMContentLoaded', function () {
     document.head.appendChild(font_url);
 
 
+
+
+    // Color patterns in history
+
+    const history_skins = document.querySelectorAll('.skin');
+
+    history_skins.forEach(skin => {
+        let skin_pattern = skin.getAttribute('pattern');
+        
+        if (skin_pattern) {
+            skin.style.color = skin_pattern;
+        }
+    })
+
+
 });

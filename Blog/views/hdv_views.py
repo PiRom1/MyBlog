@@ -60,14 +60,16 @@ def list_hdv(request):
     
     market_history = []
 
-    for history in MarketHistory.objects.all():
+    for history in MarketHistory.objects.all().order_by('-date'):
         if history.item.type == 'skin':
             skin = Skin.objects.get(id=history.item.item_id).name
         else:
             skin = 'box'
+        
         market_history.append({'history' : history,
                                'skin' : skin,
-                               'pattern' : history.item.pattern})
+                               'pattern' : history.item.pattern,
+                               'price' : history.price if history.action == 'sell' else -history.price})
 
 
 
