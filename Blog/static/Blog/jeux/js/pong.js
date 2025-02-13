@@ -45,10 +45,19 @@ ws.onmessage = function(event) {
     if(data.type === 'game_update'){
         // update state from backend using new type
         gameState = { ...gameState, ...data.game_state };
+        // update score display if available in gameState
+        if(document.getElementById('score1') && document.getElementById('score2')) {
+            document.getElementById('score1').textContent = gameState.score.team1;
+            document.getElementById('score2').textContent = gameState.score.team2;
+        }
     } else if(data.type === 'start_game'){
         // Initialize game state if required
         console.log("Game started", data.game_state);
         gameState = { ...gameState, ...data.game_state };
+        if(document.getElementById('score1') && document.getElementById('score2')) {
+            document.getElementById('score1').textContent = gameState.score.team1;
+            document.getElementById('score2').textContent = gameState.score.team2;
+        }
     } else if(data.type === 'all_players_connected'){
         // All players are connected; can display a message or unpause the game 
         console.log("All players connected: " + data.message);

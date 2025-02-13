@@ -10,8 +10,8 @@ class PongConsumer(BaseGameConsumer):
             'score': {'team1': 0, 'team2': 0},
             'canvas': {'width': 800, 'height': 500},
             'ball': {'x': 250, 'y': 150, 'vx': random.choice([-3, 3]), 'vy': random.choice([-3, 3])},
-            'paddle1': {'y': 100},
-            'paddle2': {'y': 100}
+            'paddle1': {'y': 100, 'v': 5},
+            'paddle2': {'y': 100, 'v': 5}
         }
         self.inputs = {'paddle1': None, 'paddle2': None}
 
@@ -64,12 +64,41 @@ class PongConsumer(BaseGameConsumer):
         try:
             while True:
                 bs = self.cache['game_state']['ball']
+                paddle1 = self.cache['game_state']['paddle1']
+                paddle2 = self.cache['game_state']['paddle2']
+                going_right = bs['vx'] > 0
+
                 bs['x'] += bs['vx']
                 bs['y'] += bs['vy']
-                if bs['y'] <= 5 or bs['y'] >= self.cache['game_state']['canvas']['height']-5:
+                if bs['y'] <= 6 or bs['y'] >= self.cache['game_state']['canvas']['height']-6:
                     bs['vy'] *= -1
-                if bs['x'] <= 5 or bs['x'] >= self.cache['game_state']['canvas']['width']-5:
-                    bs['vx'] *= -1
+
+                if bs['y'] >= paddle1['y']-50 and bs['y'] <= paddle1['y']+50 and bs['x'] <= 36 and not going_right:
+                    bs['vx'] *= -1.2
+                    bs['vy'] *= 1.2
+                    paddle1['v'] *= 1.1
+                    paddle2['v'] *= 1.1
+                    
+                elif bs['y'] >= paddle2['y']-50 and bs['y'] <= paddle2['y']+50 and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
+                    bs['vx'] *= -1.2
+                    bs['vy'] *= 1.2
+                    paddle2['v'] *= 1.1
+                    paddle1['v'] *= 1.1
+
+                elif bs['x'] <= 0 or bs['x'] >= self.cache['game_state']['canvas']['width']: # Score
+                    if bs['x'] <= 0:
+                        self.cache['game_state']['score']['team2'] += 1
+                    else:
+                        self.cache['game_state']['score']['team1'] += 1
+                    bs['x'] = 250
+                    bs['y'] = 150
+                    bs['vx'] = random.choice([-3, 3])
+                    bs['vy'] = random.choice([-3, 3])
+                    paddle1['y'] = 100
+                    paddle2['y'] = 100
+                    paddle1['v'] = 5
+                    paddle2['v'] = 5
+                    print('Score:', self.cache['game_state']['score'])
 
                 for paddle in ['paddle1', 'paddle2']:
                     inp = self.cache['inputs'].get(paddle)
@@ -78,9 +107,9 @@ class PongConsumer(BaseGameConsumer):
                         if action == 'up':
                             self.cache['inputs'][paddle] = None
                         elif action == 'down':
-                            self.cache['game_state'][paddle]['y'] += -5 if key in ['ArrowUp'] else 5
+                            self.cache['game_state'][paddle]['y'] += -self.cache['game_state'][paddle]['v'] if key in ['ArrowUp'] else self.cache['game_state'][paddle]['v']
 
-                await asyncio.sleep(1/30) # 30 FPS
+                await asyncio.sleep(1/60) # 30 FPS
 
         except asyncio.CancelledError:
             print('Game loop cancelled')
@@ -90,7 +119,7 @@ class PongConsumer(BaseGameConsumer):
         try:
             while True:
                 await asyncio.create_task(self.send_game_update())
-                await asyncio.sleep(1/30)
+                await asyncio.sleep(1/60)
         except asyncio.CancelledError:
             print('Game update loop cancelled')
             self.game_update.cancel()
