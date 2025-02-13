@@ -100,7 +100,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
     async def cleanup_room(self):
         await asyncio.sleep(3)
         # Re-vérifier si la salle est toujours vide
-        if len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) == 0:
+        if self.room_name in WaitingRoomConsumer.waiting_room and len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) == 0:
             # Supprimer la salle du cache en mémoire
             WaitingRoomConsumer.waiting_room.pop(self.room_name, None)
             # Supprimer le lobby de la DB s'il existe
@@ -136,6 +136,10 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             required_players = WaitingRoomConsumer.waiting_room[self.room_name]['size']
             if len(current_players) >= required_players and all(cp['ready'] for cp in current_players.values()):
                 # Tous les joueurs sont prêts : notifier le groupe
+                # await self.send_json({
+                #     "type": "all_ready",
+                #     "message": "Tous les joueurs sont prêts. Le jeu va démarrer !",
+                # })
                 await self.channel_layer.group_send(
                     self.group_name,
                     {
@@ -143,31 +147,8 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
                         "message": "Tous les joueurs sont prêts. Le jeu va démarrer !",
                     }
                 )
-                # Attendre 3 secondes avant de rediriger les joueurs vers le jeu
-                await asyncio.sleep(3)
-                # Re-vérifier si le nombre de joueurs est suffisant et si tous sont prêts
-                current_players = WaitingRoomConsumer.waiting_room[self.room_name]['players']
-                required_players = WaitingRoomConsumer.waiting_room[self.room_name]['size']
-                if len(current_players) >= required_players and all(cp['ready'] for cp in current_players.values()):
-                    # Générer un token unique pour la salle d'attente de 16 caractères
-                    token = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
-                    # Enregistrer le token dans la base de données
-                    await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)      
-                    # Attribuer des équipes et rôles aux joueurs
-                    await self.assign_teams()
-                    for player in current_players.values():
-                        # Envoyer un message de démarrage à chaque joueur
-                        await self.channel_layer.send(
-                            player['channel'],
-                            {
-                                "type": "start_game",
-                                "message": "Redirection vers le jeu...",
-                                "token": token,
-                                "team": player['team'],
-                                "role": player['role'],
-                            }
-                        )
-
+                asyncio.create_task(self.game_start())
+                
         elif action == "not_ready":
             # L'utilisateur annule son statut "prêt"
             if self.room_name in WaitingRoomConsumer.waiting_room:
@@ -218,6 +199,8 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         """
         Méthode pour attribuer des équipes et rôles aux joueurs. Aléatoire pour l'instant.
         """
+        print(WaitingRoomConsumer.waiting_room[self.room_name]['players'])
+
         game_type = WaitingRoomConsumer.waiting_room[self.room_name]['type']
         players = list(WaitingRoomConsumer.waiting_room[self.room_name]['players'].keys())
         random.shuffle(players)
@@ -240,4 +223,34 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[1]]['team'] = 2
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[2]]['team'] = 3
             WaitingRoomConsumer.waiting_room[self.room_name]['players'][players[3]]['team'] = 4
+        print(WaitingRoomConsumer.waiting_room[self.room_name]['players'])
+        return
 
+    async def game_start(self):
+        """
+        Méthode appelée pour démarrer le jeu.
+        """
+        # Attendre 3 secondes avant de rediriger les joueurs vers le jeu
+        await asyncio.sleep(3)
+        # Re-vérifier si le nombre de joueurs est suffisant et si tous sont prêts
+        current_players = WaitingRoomConsumer.waiting_room[self.room_name]['players']
+        required_players = WaitingRoomConsumer.waiting_room[self.room_name]['size']
+        if len(current_players) >= required_players and all(cp['ready'] for cp in current_players.values()):
+            # Générer un token unique pour la salle d'attente de 16 caractères
+            token = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+            # Enregistrer le token dans la base de données
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)      
+            # Attribuer des équipes et rôles aux joueurs
+            await self.assign_teams()
+            for player in current_players.values():
+                # Envoyer un message de démarrage à chaque joueur
+                await self.channel_layer.send(
+                    player['channel'],
+                    {
+                        "type": "start_game",
+                        "message": "Redirection vers le jeu...",
+                        "token": token,
+                        "team": player['team'],
+                        "role": player['role'],
+                    }
+                )
