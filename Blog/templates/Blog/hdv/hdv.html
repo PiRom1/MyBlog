@@ -22,11 +22,12 @@
 <body>
     
     {% include "../bg.html" %}
-    <div id="user" user="{{user}}"></div>
+    <div id="user" user="{{user.username}}"></div>
 
     <h1>Hôtel des Ventes</h1>
     <a href="/">HOME</a> | <a href="/inventory">INVENTAIRE</a>
     <br><br>
+    <span style='padding-left: 5px;'>{{user.coins}}</span><img class="coin" src="{% static 'img/coin.png' %}" width="45px"/>
     
 
     <div class="container">
