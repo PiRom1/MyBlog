@@ -33,6 +33,7 @@ TOKEN_EXPIRE_HOURS = 24
 TOKEN_EXPIRED_AFTER_SECONDS = 3600  # Durée de vie du token en secondes (par exemple, 1 heure)
 
 ALLOWED_HOSTS = [
+    "https://diplo.pythonanywhere.com",
     'diplo.pythonanywhere.com', 
     '127.0.0.1', 
     'localhost'
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'clearcache',
     'channels',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
+
+# Autorise ton domaine pour les appels API
+CORS_ALLOWED_ORIGINS = [
+    "https://diplo.pythonanywhere.com",
+]
+
+# OU (si plusieurs sous-domaines possibles)
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.pythonanywhere\.com$",
+]
+
+# Autorise les credentials (si besoin)
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ['https://*.diplo.pythonanywhere.com','https://*.127.0.0.1']
 
 ROOT_URLCONF = 'MyBlog.urls'
 
