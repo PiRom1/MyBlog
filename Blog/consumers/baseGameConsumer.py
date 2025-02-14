@@ -84,6 +84,8 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                         self.cache['players'].pop(user_id)
                         if not self.cache['players']:
                             self.GLOBAL_STATE.pop(self.group_name)
+            if all(not self.cache['players'][player]['connected'] for player in self.cache['players']) and self.GLOBAL_STATE.get(self.group_name):
+                self.GLOBAL_STATE.pop(self.group_name)
 
     async def receive_json(self, content):
         msg_type = content.get('type')

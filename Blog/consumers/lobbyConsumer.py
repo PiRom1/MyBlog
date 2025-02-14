@@ -234,7 +234,7 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         required_players = WaitingRoomConsumer.waiting_room[self.room_name]['size']
         if len(current_players) >= required_players and all(cp['ready'] for cp in current_players.values()):
             # Générer un token unique pour la salle d'attente de 16 caractères
-            token = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+            token = self.room_name+'_'+''.join(random.choices(string.ascii_letters + string.digits, k=16))
             # Enregistrer le token dans la base de données
             await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)      
             # Attribuer des équipes et rôles aux joueurs

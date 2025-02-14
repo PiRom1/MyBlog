@@ -163,7 +163,6 @@ def get_open_lobbies(request):
 def create_lobby(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        print(f"JSON reçu: {data}")
         lobby_name = data.get('lobby')
         game = Game.objects.get(name=data.get('game'))
         if Lobby.objects.filter(name=lobby_name).exists():
@@ -184,7 +183,7 @@ def play_lobby_game(request, token):
     try:
         lobby = Lobby.objects.get(name=room_name)
     except Lobby.DoesNotExist:
-        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': room_name})
+        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': token.split('_')[0]})
     
     game_name = lobby.game.name
     game_type = lobby.game.gameType
