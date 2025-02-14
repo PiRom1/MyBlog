@@ -9,7 +9,7 @@ class PongConsumer(BaseGameConsumer):
         self.initial_state = {
             'score': {'team1': 0, 'team2': 0},
             'canvas': {'width': 800, 'height': 500},
-            'ball': {'x': 250, 'y': 250, 'vx': random.choice([-5, 5]), 'vy': random.choice([-5, 5])},
+            'ball': {'x': 400, 'y': 250, 'vx': random.choice([-5, 5]), 'vy': random.choice([-5, 5])},
             'paddle1': {'y': 200, 'v': 5},
             'paddle2': {'y': 200, 'v': 5}
         }
@@ -33,6 +33,7 @@ class PongConsumer(BaseGameConsumer):
 
         if msg_type == 'start_game':
             print('User', user_id, 'joined team', self.cache['players'][user_id]['team'])
+            self.cache['game_state']['started'] = True
             await self.send_json({
                 'type': 'start_game',
                 'game_state': self.cache['game_state']
@@ -74,31 +75,45 @@ class PongConsumer(BaseGameConsumer):
                     bs['vy'] *= -1
 
                 if bs['y'] >= paddle1['y'] and bs['y'] <= paddle1['y']+100 and bs['x'] <= 36 and not going_right:
-                    bs['vx'] *= -1.2
-                    bs['vy'] *= 1.2
-                    paddle1['v'] *= 1.1
-                    paddle2['v'] *= 1.1
+                    if abs(bs['vx']) < 20:
+                        bs['vx'] *= -1.2
+                        bs['vy'] *= 1.2
+                        paddle1['v'] *= 1.2
+                        paddle2['v'] *= 1.2
                     
                 elif bs['y'] >= paddle2['y'] and bs['y'] <= paddle2['y']+100 and bs['x'] >= self.cache['game_state']['canvas']['width']-36 and going_right:
-                    bs['vx'] *= -1.2
-                    bs['vy'] *= 1.2
-                    paddle2['v'] *= 1.1
-                    paddle1['v'] *= 1.1
+                    if abs(bs['vx']) < 20:
+                        bs['vx'] *= -1.2
+                        bs['vy'] *= 1.2
+                        paddle2['v'] *= 1.2
+                        paddle1['v'] *= 1.2
 
-                elif bs['x'] <= 0 or bs['x'] >= self.cache['game_state']['canvas']['width']: # Score
+                elif bs['x'] <= -10 or bs['x'] >= self.cache['game_state']['canvas']['width']+10: # Score
                     if bs['x'] <= 0:
                         self.cache['game_state']['score']['team2'] += 1
+                        bs['vx'] = 5
                     else:
                         self.cache['game_state']['score']['team1'] += 1
-                    bs['x'] = 250
-                    bs['y'] = 150
-                    bs['vx'] = random.choice([-3, 3])
-                    bs['vy'] = random.choice([-3, 3])
-                    paddle1['y'] = 100
-                    paddle2['y'] = 100
+                        bs['vx'] = -5
+                    bs['x'] = 400
+                    bs['y'] = 250
+                    bs['vy'] = random.choice([-5, 5])
+                    paddle1['y'] = 200
+                    paddle2['y'] = 200
                     paddle1['v'] = 5
                     paddle2['v'] = 5
                     print('Score:', self.cache['game_state']['score'])
+                    if self.cache['game_state']['score']['team1'] == 5 or self.cache['game_state']['score']['team2'] == 5:
+                        self.cache['game_state']['finished'] = True
+                        await self.channel_layer.group_send(
+                            self.group_name,
+                            {
+                                'type': 'game_finished',
+                                'message': 'Game finished'
+                            }
+                        )
+                        self.cache['game_task'].cancel()
+                        break
 
                 for paddle in ['paddle1', 'paddle2']:
                     inp = self.cache['inputs'].get(paddle)
@@ -109,7 +124,8 @@ class PongConsumer(BaseGameConsumer):
                         elif action == 'down':
                             self.cache['game_state'][paddle]['y'] += -self.cache['game_state'][paddle]['v'] if key in ['ArrowUp'] else self.cache['game_state'][paddle]['v']
 
-                await asyncio.sleep(1/60) # 30 FPS
+                await asyncio.sleep(1/60) # 60 FPS
+            print('Game loop finished')
 
         except asyncio.CancelledError:
             print('Game loop cancelled')
@@ -117,9 +133,11 @@ class PongConsumer(BaseGameConsumer):
 
     async def game_update_loop(self):
         try:
-            while True:
+            while not self.cache['game_state']['finished']:
                 await asyncio.create_task(self.send_game_update())
                 await asyncio.sleep(1/60)
+            await self.send_game_update()
+            print('Game update loop finished')
         except asyncio.CancelledError:
             print('Game update loop cancelled')
             self.game_update.cancel()
@@ -129,23 +147,9 @@ class PongConsumer(BaseGameConsumer):
             'type': 'game_update',
             'game_state': self.cache['game_state']
         })
-    
-    # async def send_game_update(self):
-    #     for player in self.cache['players'].values():
-    #         await self.channel_layer.send(
-    #             player['channel'],
-    #             {
-    #                 'type': 'game_update',
-    #                 'game_state': self.cache['game_state']
-    #             }
-    #         )
 
-    # async def game_update(self, event):
-    #     try:
-    #         await self.send_json({
-    #             'type': 'game_update',
-    #             'game_state': event['game_state']
-    #         })
-    #     except Exception as e:
-    #         print('Error sending game update:', e)
-    #         pass
+    async def game_finished(self, event):
+        await self.send_json({
+            'type': 'game_finished',
+            'message': event['message']
+        })

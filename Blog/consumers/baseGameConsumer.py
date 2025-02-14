@@ -83,7 +83,7 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                     else:
                         self.cache['players'].pop(user_id)
                         if not self.cache['players']:
-                            await self.close()
+                            self.GLOBAL_STATE.pop(self.group_name)
 
     async def receive_json(self, content):
         msg_type = content.get('type')
