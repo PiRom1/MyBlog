@@ -1,5 +1,8 @@
 import json, asyncio, random
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from asgiref.sync import sync_to_async
+from Blog.models import Lobby
+from Blog.views.jeux_views import award_game_prize
 
 class BaseGameConsumer(AsyncJsonWebsocketConsumer):
 
@@ -16,10 +19,11 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         user_id = self.scope["user"].id
         await self.accept()
         
+        self.room_name = self.scope['url_route']['kwargs'].get('room_name')
+        
         if not hasattr(self, 'group_name'):
             print(self.scope['url_route']['kwargs'])
-            room_name = self.scope['url_route']['kwargs'].get('room_name')
-            self.group_name = f"game_{room_name}"
+            self.group_name = f"game_{self.room_name}"
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             if self.group_name not in self.GLOBAL_STATE:
                 self.GLOBAL_STATE[self.group_name] = {
@@ -61,8 +65,20 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                         self.cache['players'].pop(user_id)
                         if not self.cache['players']:
                             self.GLOBAL_STATE.pop(self.group_name)
+            # Si aucun joueur n'est connecté, lancer le nettoyage après 3 secondes
             if all(not self.cache['players'][player]['connected'] for player in self.cache['players']) and self.GLOBAL_STATE.get(self.group_name):
+                asyncio.create_task(self.cleanup_room())
+
+    async def cleanup_room(self):
+        await asyncio.sleep(3)
+        if all(not self.cache['players'][player]['connected'] for player in self.cache['players']):
+            if self.GLOBAL_STATE.get(self.group_name):
                 self.GLOBAL_STATE.pop(self.group_name)
+            # Supprimer le lobby de la DB s'il existe
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
+
+            
+
 
     async def receive_json(self, content):
         msg_type = content.get('type')
@@ -106,3 +122,10 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             })
         except Exception as e:
             self.cache['game_task'].cancel()
+            
+    async def award_prize(self, winner_team):
+        winners_ids = [player for player in self.cache['players'] if self.cache['players'][player]['team'] == winner_team]
+        game_type = self.cache['game_state']['type']
+        mise = await sync_to_async(Lobby.objects.filter(name=self.room_name).values_list('mise', flat=True).first)()
+        await sync_to_async(award_game_prize)(winners_ids, game_type, mise)
+        return

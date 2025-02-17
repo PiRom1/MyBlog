@@ -162,5 +162,5 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(Lobby)
 class LobbyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'game', 'created_at', 'token')
+    list_display = ('name', 'game', 'created_at', 'token', 'state', 'mise')
 

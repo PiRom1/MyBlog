@@ -137,6 +137,9 @@ def lobby_page(request, room_name):
         lobby = Lobby.objects.get(name=room_name)
     except Lobby.DoesNotExist:
         return HttpResponseRedirect('/jeux/')
+    user = User.objects.get(id=request.user.id)
+    if user.coins < lobby.mise:
+        return HttpResponseRedirect('/jeux/')
     game_name = lobby.game.name
     game_type = lobby.game.gameType
     game_size = get_game_size(game_type)
@@ -155,6 +158,7 @@ def get_open_lobbies(request):
         lobby_list.append({
             'name': lobby.name,
             'game': lobby.game.name,
+            'mise': lobby.mise,
             'size': get_game_size(lobby.game.gameType),
         })
     return JsonResponse({'lobbies': lobby_list})
@@ -164,10 +168,11 @@ def create_lobby(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         lobby_name = data.get('lobby')
+        mise = data.get('mise')
         game = Game.objects.get(name=data.get('game'))
         if Lobby.objects.filter(name=lobby_name).exists():
             return JsonResponse({'success': False, 'error': 'Lobby already exists'})
-        Lobby.objects.create(name=lobby_name, game=game)
+        Lobby.objects.create(name=lobby_name, game=game, mise=mise)
         print(f'Lobby {lobby_name} created for game {game}')
         return JsonResponse({'success': True})
     print('Invalid request method')
@@ -180,18 +185,15 @@ def play_lobby_game(request, token):
         player_team = request.POST.get('team')
         player_role = request.POST.get('role')
     player_id = request.user.id
-    try:
-        lobby = Lobby.objects.get(name=room_name)
-    except Lobby.DoesNotExist:
-        return render(request, f'Blog/jeux/{game_name}.html', {'room_name': token.split('_')[0]})
-    
+    lobby = Lobby.objects.get(name=room_name)
+    mise = lobby.mise   
     game_name = lobby.game.name
     game_type = lobby.game.gameType
     game_size = get_game_size(game_type)
+    user = User.objects.get(id=player_id)
     if token == lobby.token:
-        print(f"User authenticated: {request.user.is_authenticated}")
-        # Remove sending init_lobby here to ensure the consumer is initialized
-        # Instead, pass required info to the template so that client code sends init_lobby after websocket connection is open.
+        user.coins -= mise
+        user.save()
         context = {
             'room_name': room_name,
             'game_name': game_name,
@@ -204,4 +206,28 @@ def play_lobby_game(request, token):
         return render(request, f'Blog/jeux/{game_name}.html', context)
     else:
         return HttpResponseRedirect('/jeux/')
-
+    
+def award_game_prize(winners_ids, game_type, mise):
+    if game_type == '1v1':
+        winner = User.objects.get(id=winners_ids[0])
+        winner.coins += 2 * mise
+        winner.save()
+    elif game_type == '2v2':
+        winners = User.objects.filter(id__in=winners_ids)
+        for winner in winners:
+            winner.coins += 2 * mise
+            winner.save()
+    elif game_type == '3v1':
+        if len(winners_ids) == 3:
+            winners = User.objects.filter(id__in=winners_ids)
+            for winner in winners:
+                winner.coins += mise + int(mise / 3)
+                winner.save()
+        else:
+            winner = User.objects.get(id=winners_ids[0])
+            winner.coins += 4 * mise
+            winner.save()
+    elif game_type == 'FFA':
+        winner = User.objects.get(id=winners_ids[0])
+        winner.coins += 4 * mise
+        winner.save()

@@ -1,6 +1,5 @@
 import json, asyncio, random
 from Blog.consumers.baseGameConsumer import BaseGameConsumer
-
 class PongConsumer(BaseGameConsumer):
 
     def __init__(self, *args, **kwargs):
@@ -103,7 +102,9 @@ class PongConsumer(BaseGameConsumer):
                     paddle1['v'] = 5
                     paddle2['v'] = 5
                     print('Score:', self.cache['game_state']['score'])
-                    if self.cache['game_state']['score']['team1'] == 5 or self.cache['game_state']['score']['team2'] == 5:
+                    t1_score = self.cache['game_state']['score']['team1']
+                    t2_score = self.cache['game_state']['score']['team2']
+                    if t1_score == 5 or t2_score == 5:
                         self.cache['game_state']['finished'] = True
                         await self.channel_layer.group_send(
                             self.group_name,
@@ -113,6 +114,8 @@ class PongConsumer(BaseGameConsumer):
                             }
                         )
                         self.cache['game_task'].cancel()
+                        winner_team = 1 if t1_score > t2_score else 2
+                        asyncio.create_task(self.award_prize(winner_team))
                         break
 
                 for paddle in ['paddle1', 'paddle2']:
