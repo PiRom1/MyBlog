@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 lobbyHTML = '<ul>';
                 data.lobbies.forEach(lobby => {
                     // Each lobby rendered as a link with href and a data attribute
-                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}" data-game="${lobby.game}" data-size="${lobby.size}" data-type="${lobby.type}">${lobby.name} - ${lobby.game}</a></li>`;
+                    lobbyHTML += `<li><a href="/lobby/${lobby.name}" data-room-name="${lobby.name}" data-game="${lobby.game}" data-size="${lobby.size}" data-type="${lobby.type}" data-mise="${lobby.mise}">${lobby.name} - ${lobby.game} - ${lobby.mise}₵</a></li>`;
                 });
                 lobbyHTML += '</ul>';
             } else {
@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             e.preventDefault();
             const lobbyName = document.getElementById('lobby-name-input').value;
             const game = document.getElementById('lobby-game-selector').value;
+            const mise = document.getElementById('lobby-mise-input').value;
             try {
                 const response = await fetch('/create_lobby/', {
                     method: 'POST',
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrfToken  // Using the constant defined above
                     },
-                    body: JSON.stringify({ lobby: lobbyName, game: game })
+                    body: JSON.stringify({ lobby: lobbyName, game: game, mise: mise})
                 });
                 const resData = await response.json();
                 console.log("Lobby creation response:", resData);

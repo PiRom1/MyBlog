@@ -44,10 +44,19 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             return
         
         user_id = self.scope["user"].id
+        # get state value from lobby database
+        state = await sync_to_async(Lobby.objects.filter(name=self.room_name).values_list('state', flat=True).first)()
+        print(state)
 
         # Initialiser l'état de la salle si nécessaire
         if self.room_name not in WaitingRoomConsumer.waiting_room:
-            WaitingRoomConsumer.waiting_room[self.room_name] = {'players': {}, 'game': self.game_name, 'size': self.game_size, 'type': self.game_type}
+            if state == 'waiting':
+                WaitingRoomConsumer.waiting_room[self.room_name] = {'players': {}, 'game': self.game_name, 'size': self.game_size, 'type': self.game_type}
+            else:
+                await self.accept()
+                await self.send_json({"type": "game_started", "message": "Le jeu a déjà démarré."})
+                await self.close(code=4001)
+                return
 
         # Refuser la connexion si la salle d'attente est pleine
         elif len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) >= WaitingRoomConsumer.waiting_room[self.room_name]['size']:
@@ -76,22 +85,21 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         user_id = self.scope["user"].id
+        # Retirer le canal du groupe
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
         # Supprimer l'utilisateur de la salle d'attente
         if self.room_name in WaitingRoomConsumer.waiting_room:
             WaitingRoomConsumer.waiting_room[self.room_name]['players'].pop(user_id, None)
-        
-        # Retirer le canal du groupe
-        await self.channel_layer.group_discard(self.group_name, self.channel_name)
-        
-        # Informer le groupe qu'un joueur a quitté
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                "type": "lobby_update",
-                "message": f"{self.scope['user'].username} a quitté la salle d'attente",
-                "players": WaitingRoomConsumer.waiting_room[self.room_name]['players'],
-            }
-        )
+         
+            # Informer le groupe qu'un joueur a quitté
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "lobby_update",
+                    "message": f"{self.scope['user'].username} a quitté la salle d'attente",
+                    "players": WaitingRoomConsumer.waiting_room[self.room_name]['players'],
+                }
+            )
         
         # Si aucun joueur n'est connecté, lancer le nettoyage après 5 secondes
         if len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) == 0:
@@ -103,6 +111,8 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
         if self.room_name in WaitingRoomConsumer.waiting_room and len(WaitingRoomConsumer.waiting_room[self.room_name]['players']) == 0:
             # Supprimer la salle du cache en mémoire
             WaitingRoomConsumer.waiting_room.pop(self.room_name, None)
+
+        if await sync_to_async(Lobby.objects.filter(name=self.room_name).values_list('state', flat=True).first)() == 'waiting':
             # Supprimer le lobby de la DB s'il existe
             await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
 
@@ -236,7 +246,9 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             # Générer un token unique pour la salle d'attente de 16 caractères
             token = self.room_name+'_'+''.join(random.choices(string.ascii_letters + string.digits, k=16))
             # Enregistrer le token dans la base de données
-            await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)      
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(token=token)
+            # Modifier l'attribut "state" du lobby dans la base de données
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).update)(state='playing')      
             # Attribuer des équipes et rôles aux joueurs
             await self.assign_teams()
             for player in current_players.values():

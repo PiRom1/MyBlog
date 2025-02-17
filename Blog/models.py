@@ -390,6 +390,9 @@ class Lobby(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     token = models.CharField(max_length=16, default="")
+    STATE = [('waiting', 'Waiting'), ('playing', 'Playing'), ('finished', 'Finished')]
+    state = models.CharField(max_length=10, choices = STATE, default = 'waiting')
+    mise = models.IntegerField(default=0)
 
     # Added async save method for asynchronous operations
     async def asave(self, *args, **kwargs):
