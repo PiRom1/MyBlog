@@ -40,13 +40,6 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         print(self.cache)
 
     async def disconnect(self, close_code):
-        await self.group_send(
-            self.group_name,
-            {
-                'type': 'all_desconnected_info',
-                'cache': self.cache
-            }
-        )
         user_id = self.scope["user"].id
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
