@@ -35,7 +35,7 @@
         <form id="create-lobby-form" method="POST">
             {% csrf_token %}
             <input type="text" id="lobby-name-input" placeholder="Nom du lobby" required>
-            <input type="number" id="lobby-mise-input" placeholder="Mise" required>
+            <input type="number" id="lobby-mise-input" placeholder="Mise" required min="0">
             <select id="lobby-game-selector">
                 {% for jeu in liste_jeux_multi %}
                     <option value="{{jeu}}">{{jeu}}</option>

@@ -167,7 +167,7 @@ def get_open_lobbies(request):
 def create_lobby(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        lobby_name = data.get('lobby')
+        lobby_name = data.get('lobby').strip()
         mise = data.get('mise')
         game = Game.objects.get(name=data.get('game'))
         if Lobby.objects.filter(name=lobby_name).exists():
