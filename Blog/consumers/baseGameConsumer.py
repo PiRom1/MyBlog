@@ -14,7 +14,7 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         if not self.scope["user"].is_authenticated:
             print('User not authenticated')
-            await self.close()
+            await self.close(4000, 'User not authenticated')
             return
         user_id = self.scope["user"].id
         await self.accept()

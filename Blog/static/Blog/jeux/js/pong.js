@@ -54,7 +54,9 @@ ws.onopen = function() {
     }));
 };
 
-ws.onclose = function() {
+ws.onclose = function(event) {
+    console.log("Disconnected from game websocket");
+    console.log("close code:", event.code, "reason:", event.reason);
     if (gameState.game_finished) {
         return;
     }
@@ -76,7 +78,7 @@ ws.onmessage = function(event) {
         }
     } else if(data.type === 'print_cache'){
         // Print the cache of the backend
-        console.log(data.cache);
+        console.log("cache : ",data.cache);
     } else if(data.type === 'start_game'){
         // Initialize game state if required
         console.log("Game started", data.game_state);
