@@ -38,29 +38,6 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         
         print('User', user_id, 'connected to', self.group_name)
         print(self.cache)
-        if user_id in self.cache['players']:
-            self.cache['players'][user_id]['connected'] = True
-            if not self.cache['game_state']['started']:
-                if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
-                    await self.channel_layer.group_send(
-                        self.group_name,
-                        {
-                            'type': 'all_players_connected',
-                            'message': 'starting game'
-                        }
-                    )
-            else:
-                self.cache['waiting_to_reconnect'].remove(user_id)
-                if all(self.cache['players'][player]['connected'] for player in self.cache['players']):
-                    await self.channel_layer.group_send(
-                        self.group_name,
-                        {
-                            'type': 'all_players_connected',
-                            'message': 'unpause game'
-                        }
-                    )
-                    await asyncio.sleep(3)
-                    self.cache['game_task'].uncancel() 
 
     async def disconnect(self, close_code):
         await self.group_send(
@@ -133,15 +110,6 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             await self.send_json({
                 'type': 'player_disconnected',
                 'user_id': event['user_id']
-            })
-        except Exception as e:
-            self.cache['game_task'].cancel()
-
-    async def all_desconnected_info(self, event):
-        try:
-            await self.send_json({
-                'type': 'all_desconnected_info',
-                'cache': event['cache']
             })
         except Exception as e:
             self.cache['game_task'].cancel()

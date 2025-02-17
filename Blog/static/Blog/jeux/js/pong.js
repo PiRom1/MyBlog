@@ -64,10 +64,6 @@ ws.onmessage = function(event) {
             document.getElementById('score1').textContent = gameState.score.team1;
             document.getElementById('score2').textContent = gameState.score.team2;
         }
-
-    } else if(data.type === 'all_disconected_info'){
-        // Display a message to the user that the game has ended
-        console.log("All players disconnected: " + data.cache);
         
     } else if(data.type === 'start_game'){
         // Initialize game state if required
