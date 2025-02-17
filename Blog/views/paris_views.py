@@ -230,6 +230,10 @@ def parier(request):
     else:
         mise = float(mise)
 
+        if mise <= 0:
+            return JsonResponse({'success' : False, 'error' : "Veuillez mettre une mise positive (arnaqueur)."})
+
+
     if mise > request.user.coins:
         return JsonResponse({'success' : False, 'error' : "Vous n'avez pas assez d'argent pour miser autant. \nVous êtes un homme ou un animal bon sang ?"})
 
