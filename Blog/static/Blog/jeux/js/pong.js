@@ -16,7 +16,7 @@ const roomElem = document.querySelector('.game-container');
 const roomName = roomElem ? roomElem.dataset.roomName : 'default';
 // Update WebSocket connection URL to be relative:
 const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-const ws = new WebSocket(`${ws_scheme}://${window.location.host}/ws/pong/${roomName}/`);
+let ws = new WebSocket(`${ws_scheme}://${window.location.host}/ws/pong/${roomName}/`);
 
 // Retrieve game data passed in the template via data attributes
 const gameElem = document.querySelector('.game-data');
@@ -54,6 +54,16 @@ ws.onopen = function() {
     }));
 };
 
+ws.onclose = function() {
+    if (gameState.game_finished) {
+        return;
+    }
+    else {
+        console.log("trying to reconnect");
+        ws = new WebSocket(`${ws_scheme}://${window.location.host}/ws/pong/${roomName}/`);
+    }
+};
+
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
     if(data.type === 'game_update'){
@@ -64,7 +74,9 @@ ws.onmessage = function(event) {
             document.getElementById('score1').textContent = gameState.score.team1;
             document.getElementById('score2').textContent = gameState.score.team2;
         }
-        
+    } else if(data.type === 'print_cache'){
+        // Print the cache of the backend
+        console.log(data.cache);
     } else if(data.type === 'start_game'){
         // Initialize game state if required
         console.log("Game started", data.game_state);

@@ -42,6 +42,10 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
         
         print('User', user_id, 'connected to', self.group_name)
         print(self.cache)
+        await self.send_json({
+            'type': 'print_cache',
+            'cache': self.cache
+        })
 
     async def disconnect(self, close_code):
         user_id = self.scope["user"].id
@@ -66,7 +70,7 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                         if not self.cache['players']:
                             self.GLOBAL_STATE.pop(self.group_name)
             # Si aucun joueur n'est connecté, lancer le nettoyage après 3 secondes
-            if all(not self.cache['players'][player]['connected'] for player in self.cache['players']) and self.GLOBAL_STATE.get(self.group_name):
+            if all(not self.cache['players'][player]['connected'] for player in self.cache['players']):
                 asyncio.create_task(self.cleanup_room())
 
     async def cleanup_room(self):
@@ -76,9 +80,6 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                 self.GLOBAL_STATE.pop(self.group_name)
             # Supprimer le lobby de la DB s'il existe
             await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
-
-            
-
 
     async def receive_json(self, content):
         msg_type = content.get('type')

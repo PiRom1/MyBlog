@@ -112,6 +112,10 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             # Supprimer la salle du cache en mémoire
             WaitingRoomConsumer.waiting_room.pop(self.room_name, None)
 
+        if await sync_to_async(Lobby.objects.filter(name=self.room_name).values_list('state', flat=True).first)() == 'waiting':
+            # Supprimer le lobby de la DB s'il existe
+            await sync_to_async(Lobby.objects.filter(name=self.room_name).delete)()
+
     async def receive_json(self, content):
         """
         Le consumer attend des messages JSON contenant une action.
