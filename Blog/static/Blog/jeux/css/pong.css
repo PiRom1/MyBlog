@@ -11,6 +11,13 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* countdown id : large font*/
+#countdown {
+    font-size: 3em;
+    text-align: center;
+    margin-top: 20px;
+}
+
 .game-container {
     display: flex;
     justify-content: center;
