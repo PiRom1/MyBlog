@@ -202,7 +202,8 @@ def detail_pari(request, id):
                'labels' : json.dumps(labels),
                'pie_chart_cotes' : pie_chart_cotes,
                'fin_pari' : pari.published_date + pari.duration,
-               'duree_atteinte' : duree_atteinte}
+               'duree_atteinte' : duree_atteinte,
+               'user' : request.user}
     
     return render(request, url, context)
 
