@@ -63,6 +63,13 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                     self.cache['game_task'].uncancel() 
 
     async def disconnect(self, close_code):
+        await self.group_send(
+            self.group_name,
+            {
+                'type': 'all_desconnected_info',
+                'cache': self.cache
+            }
+        )
         user_id = self.scope["user"].id
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -117,6 +124,24 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             await self.send_json({
                 'type': 'all_players_connected',
                 'message': event['message']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()
+
+    async def player_disconnected(self, event):
+        try:
+            await self.send_json({
+                'type': 'player_disconnected',
+                'user_id': event['user_id']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()
+
+    async def all_desconnected_info(self, event):
+        try:
+            await self.send_json({
+                'type': 'all_desconnected_info',
+                'cache': event['cache']
             })
         except Exception as e:
             self.cache['game_task'].cancel()
