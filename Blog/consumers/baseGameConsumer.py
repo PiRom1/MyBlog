@@ -63,6 +63,13 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                     self.cache['game_task'].uncancel() 
 
     async def disconnect(self, close_code):
+        await self.group_send(
+            self.group_name,
+            {
+                'type': 'all_desconnected_info',
+                'cache': self.cache
+            }
+        )
         user_id = self.scope["user"].id
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -83,7 +90,9 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                     else:
                         self.cache['players'].pop(user_id)
                         if not self.cache['players']:
-                            await self.close()
+                            self.GLOBAL_STATE.pop(self.group_name)
+            if all(not self.cache['players'][player]['connected'] for player in self.cache['players']) and self.GLOBAL_STATE.get(self.group_name):
+                self.GLOBAL_STATE.pop(self.group_name)
 
     async def receive_json(self, content):
         msg_type = content.get('type')
@@ -98,7 +107,8 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
             self.cache['players'][content_player] = {'connected': True, 'team': content_team}
             if content_role:
                 self.cache['players'][content_player]['role'] = content_role
-
+            self.cache['players'][content_player]['channel'] = self.channel_name
+            
             if len(self.cache['players']) == self.cache['game_state']['size'] and all(self.cache['players'][player]['connected'] for player in self.cache['players']):
                 await self.channel_layer.group_send(
                     self.group_name,
@@ -107,9 +117,31 @@ class BaseGameConsumer(AsyncJsonWebsocketConsumer):
                         'message': 'starting game'
                     }
                 )
+                return
 
     async def all_players_connected(self, event):
-        await self.send_json({
-            'type': 'all_players_connected',
-            'message': event['message']
-        })
+        try:
+            await self.send_json({
+                'type': 'all_players_connected',
+                'message': event['message']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()
+
+    async def player_disconnected(self, event):
+        try:
+            await self.send_json({
+                'type': 'player_disconnected',
+                'user_id': event['user_id']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()
+
+    async def all_desconnected_info(self, event):
+        try:
+            await self.send_json({
+                'type': 'all_desconnected_info',
+                'cache': event['cache']
+            })
+        except Exception as e:
+            self.cache['game_task'].cancel()
