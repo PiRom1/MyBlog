@@ -458,7 +458,7 @@ def tkt_view(request):
              "Me toucher dix fois pour avoir un nouveau message, il faut le faire !",
              "Tu as bien mérité un petit cadeau alors !",
              "Tends l'oreille, je vais te confier un secret ...",
-             "Écoute attentivement ...",
+             "Écoute attentivement",
             
 ]
     
