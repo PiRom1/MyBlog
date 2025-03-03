@@ -4,7 +4,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.apps import AppConfig
 
-from Blog.scheduled_tasks import drop_lootbox
 
 class BlogConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -15,6 +14,7 @@ class BlogConfig(AppConfig):
 
         scheduler = BackgroundScheduler()
         scheduler.start()
+        from Blog.scheduled_tasks import drop_lootbox
 
         # box_trigger
         box_trigger = CronTrigger(
