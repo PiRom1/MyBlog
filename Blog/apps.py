@@ -4,6 +4,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.apps import AppConfig
 
+from Blog.scheduled_tasks import drop_lootbox
+
 class BlogConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'Blog'
@@ -11,7 +13,6 @@ class BlogConfig(AppConfig):
     def ready(self):
         import Blog.signals  # Charger les signaux
 
-        from .scripts import drop_lootbox # The script to launch
         scheduler = BackgroundScheduler()
         scheduler.start()
 
