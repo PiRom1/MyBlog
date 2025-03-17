@@ -13,6 +13,8 @@ import numpy as np
 from datetime import datetime, time
 from django.utils.timezone import now
 
+from Blog.views.quests_views import validate_objective_quest
+
 @login_required
 def enjoy_timeline(request):
 
@@ -94,6 +96,8 @@ def enjoy_timeline_hour_minute(request, hour, minute):
         instance.time = time(hour = hour, minute = minute)
         instance.writer = request.user
         instance.save()
+
+        validate_objective_quest(user = request.user, action = "enjoy")
 
         return HttpResponseRedirect(f'/enjoy_timeline/{hour}/{minute}')
     

@@ -10,7 +10,7 @@ from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
+from Blog.views.quests_views import validate_objective_quest
 
 def record_score(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
@@ -21,6 +21,9 @@ def record_score(request):
     score = data.get('score')
     game_score = GameScore(game = game, score = score, user = request.user)
     game_score.save()
+
+    validate_objective_quest(user = request.user, action = "jeu")
+
     return JsonResponse({'success' : True})
 
 

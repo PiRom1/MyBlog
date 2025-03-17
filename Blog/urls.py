@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -108,5 +108,8 @@ urlpatterns = [
     path('paris/<int:id>', paris_views.detail_pari, name='detail_pari'),
     path('parier/', paris_views.parier, name='parier'),
     path('conclure_pari/', paris_views.conclure, name='conclure_pari'),
+
+    # Quêtes
+    path('quêtes/', quests_views.quest, name='quest'),
 
 ]

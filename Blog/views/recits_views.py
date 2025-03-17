@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from ..utils.stats import *
 import random as rd
 
+from Blog.views.quests_views import validate_objective_quest
 
 
 
@@ -60,6 +61,9 @@ def detail_recit(request, pk):
             texte = form['message'].value()
             texte = Texte(text = texte, user = user, recit = recit)
             texte.save()
+
+            validate_objective_quest(user = request.user, action = "recit")
+            
 
             return HttpResponseRedirect('.#bottom')
     

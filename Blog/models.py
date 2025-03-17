@@ -400,3 +400,37 @@ class Lobby(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.game}"
+
+
+class ObjectifQuest(models.Model):
+    type = models.CharField(max_length=64)  # Type d'objectif
+    n_min = models.IntegerField()           # Nombre minimum à fournir
+    n_max = models.IntegerField()           # Nombre maximum à fournir
+
+    def __str__(self):
+        return f"{self.type} ({self.n_min} - {self.n_max})"
+
+
+class Quest(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)   # The user the quest is assigned
+    CHOICES = [("box", "Box"), ("coins", "Coins")]             
+    loot_type = models.CharField(choices=CHOICES, max_length=64) # The loot type of the quest (coin or box ?)
+    quantity = models.IntegerField(default=1)                    # Quantity of loot
+    start_date = models.DateTimeField(auto_now_add=True)         # Date of the beggining of the quest
+    duration = models.DurationField()                            # Duration of the quest
+    achieved = models.BooleanField(default = False)              # Is the quest achieved ? 
+
+    def __str__(self):
+        return f"Quest {self.user.username} : {self.quantity} {self.loot_type} ({self.start_date})"
+
+
+class ObjectifForQuest(models.Model):
+    quest = models.ForeignKey(Quest, on_delete = models.CASCADE)
+    objectif = models.ForeignKey(ObjectifQuest, on_delete=models.CASCADE)
+    objective_value = models.IntegerField(default = 1) # Quantity of task to do
+    current_value = models.IntegerField(default = 0)   # Current value you reached in your quest
+    achieved = models.BooleanField(default = False)    # Is the objectif achieved ?
+
+    def __str__(self):
+        return f"{self.quest} - {self.objectif} ({self.objective_value})"
+

@@ -5,6 +5,7 @@ from ..forms import *
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
+from Blog.views.quests_views import validate_objective_quest
 
 
 from ..utils.stats import *
@@ -58,7 +59,7 @@ def add_sounds(request):
             for user in User.objects.all():
                 UserSound(user=user, sound = sound).save()
 
-
+            validate_objective_quest(user = request.user, action = "soundbox")
 
             return HttpResponseRedirect('/list_sounds')
         else:

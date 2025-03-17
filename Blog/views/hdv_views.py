@@ -4,7 +4,7 @@ from ..models import UserInventory, Item, Skin, Box, Market, MarketHistory, Emoj
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-
+from Blog.views.quests_views import validate_objective_quest
 
 
 
@@ -171,6 +171,9 @@ def sell(request):
                                  user = user)
 
     # Taxe à voir + tard
+
+    # Valider la quête
+    validate_objective_quest(user = request.user, action = "hdv")
 
 
     return JsonResponse({'success': 'success',

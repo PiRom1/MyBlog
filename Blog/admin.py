@@ -164,3 +164,17 @@ class GameAdmin(admin.ModelAdmin):
 class LobbyAdmin(admin.ModelAdmin):
     list_display = ('name', 'game', 'created_at', 'token', 'state', 'mise')
 
+@admin.register(Quest)
+class QuestAdmin(admin.ModelAdmin):
+    list_display = ("user", "loot_type", "quantity", "start_date", "duration", "achieved")
+
+
+@admin.register(ObjectifQuest)
+class ObjectifQuestAdmin(admin.ModelAdmin):
+    list_display = ("type", "n_min", "n_max")
+
+
+@admin.register(ObjectifForQuest)
+class ObjectifForQuestAdmin(admin.ModelAdmin):
+    list_display = ("quest", "objectif", "achieved", "objective_value", "current_value")
+

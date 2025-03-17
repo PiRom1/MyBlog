@@ -1,0 +1,82 @@
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.gauche {
+    width: 60%;
+    border-right: 2px solid rgb(55, 45, 45);
+    padding: 20px;
+    position: relative;
+}
+
+.droite {
+    width: 40%;
+    background-color: rgba(250, 235, 215, 0.85);
+    padding: 5px;
+    position: relative;
+}
+
+.book {
+    width: 100%;
+}
+
+.dinosaur {
+    width: 100%;
+}
+
+.quete .title_quest {
+    position: absolute;
+    left: 10%;
+    top: 12%;
+    color: black;
+    font-family:papyrus;
+    font-size: 40px;
+    text-decoration: underline;
+    width: 38%;
+}
+
+.quete ul {
+    position: absolute;
+    left: 15%;
+    top: 25%;
+    color: black;
+    font-size: 17px;
+    
+}
+
+.quete ul li {
+    font-family: papyrus;
+    width: 50%;
+}
+
+
+.quest-text {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    color: black;
+    font-family: "EB Garamond", serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 20px;
+}
+
+
+.button {
+    background-color: ivory;
+    padding: 5px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(230, 230, 206);
+}
+
+
+.button:active {
+    background-color: rgb(210, 210, 190);
+}

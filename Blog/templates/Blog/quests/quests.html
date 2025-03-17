@@ -1,0 +1,57 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quêtes</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+
+    <link rel="stylesheet" href="{% static 'Blog/quests/css/quests.css' %}">
+    <script src="{% static 'Blog/quests/js/quests.js' %}" type="module"></script>
+
+    
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="gauche">
+            <img class="book" src="{% static 'img/quest_book.png' %}"/>
+            <div class="quete">
+                <span class="title_quest">Votre quête</span>
+                <ul>
+                    {% for objective in objectives %}
+                        <li class="objective" current_value="{{objective.current_value}}" objective_value="{{objective.objective_value}}" achieved="{{objective.achieved}}">
+                            {{objective.sentence}} ({{objective.current_value}} / {{objective.objective_value}})
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+            </div>
+
+
+        </div>
+
+        <div class="droite">
+            <img class="dinosaur" src="{% static 'img/quest_dinosaur.png' %}"/>
+            <span class="quest-text" id="quest-text">
+                {{sentence}}
+            </span>
+
+            <button class="button">Récupérer la récompense</button>
+
+
+        </div>
+    </div>
+
+    
+
+
+</body>

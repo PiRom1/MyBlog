@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 import numpy as np
 import json
 
+from Blog.views.quests_views import validate_objective_quest
+
 
 @login_required
 def list_paris(request):
@@ -83,6 +85,8 @@ def create_pari(request):
         except Exception as e:
             print(e)
             return JsonResponse({'success' : False, 'error' : ''})
+        
+        validate_objective_quest(user = request.user, action = "pari")
         
         return JsonResponse({'success' : True, 'pari_id' : pari.id})
 
