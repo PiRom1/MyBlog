@@ -20,8 +20,8 @@ class BlogConfig(AppConfig):
         box_trigger = CronTrigger(
             year="*", month="*", day="*", hour="0", minute="0", second="0"
         )
-        scheduler.add_job(
-            drop_lootbox, trigger=box_trigger, name="test task", kwargs = {'nb_coin' : 200, 'nb_box' : 1}
-        )
+        # scheduler.add_job(
+        #     drop_lootbox, trigger=box_trigger, name="test task", kwargs = {'nb_coin' : 200, 'nb_box' : 1}
+        # )
 
         
