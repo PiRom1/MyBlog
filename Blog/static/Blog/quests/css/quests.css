@@ -21,6 +21,11 @@
     width: 100%;
 }
 
+.closed_book {
+    width: 60%;
+    margin-left: 20%;
+}
+
 .dinosaur {
     width: 100%;
 }
@@ -79,4 +84,16 @@
 
 .button:active {
     background-color: rgb(210, 210, 190);
+}
+
+
+
+
+.pending-quest:hover {
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+}
+
+.pending-quest:active {
+    color: rgba(0, 0, 0, 0.4);
 }

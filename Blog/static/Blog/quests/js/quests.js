@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const objectives = document.querySelectorAll('.objective');
     let all_achieved = true;
@@ -41,4 +42,69 @@ document.addEventListener('DOMContentLoaded', function () {
     quest_text_span.innerHTML = '';
 
     displayWithDelay(quest_text, quest_text_span);
+
+
+
+
+    // Achieved button
+    const achieved_button = document.getElementById("achieved-button");
+
+    if (achieved_button) {
+        achieved_button.addEventListener('click', function() {
+            
+            fetch('/quêtes/achieved', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,  // Récupération du token CSRF
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data.success);
+                if (data.success) {
+                window.location.href = "/quêtes";
+                }
+            })
+        })
+    }
+
+
+
+    // Pending quests
+
+    const pending_quests = document.querySelectorAll(".pending-quest");
+    console.log(pending_quests);
+
+    pending_quests.forEach(quest => {
+
+        quest.addEventListener('click', function() {
+
+            const id = quest.getAttribute("id");
+
+            fetch('/quêtes/accept', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,  // Récupération du token CSRF
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({id})
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data.success);
+                if (data.success) {
+                window.location.href = "/quêtes";
+                }
+            })
+        
+
+
+        })
+
+
+    })
+    
+
 })

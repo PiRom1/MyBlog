@@ -418,6 +418,7 @@ class Quest(models.Model):
     quantity = models.IntegerField(default=1)                    # Quantity of loot
     start_date = models.DateTimeField(auto_now_add=True)         # Date of the beggining of the quest
     duration = models.DurationField()                            # Duration of the quest
+    accepted = models.BooleanField(default = False)              # Is the quest accepted by the user ?
     achieved = models.BooleanField(default = False)              # Is the quest achieved ? 
 
     def __str__(self):

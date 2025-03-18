@@ -166,7 +166,7 @@ class LobbyAdmin(admin.ModelAdmin):
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ("user", "loot_type", "quantity", "start_date", "duration", "achieved")
+    list_display = ("user", "loot_type", "quantity", "start_date", "duration", "accepted", "achieved")
 
 
 @admin.register(ObjectifQuest)

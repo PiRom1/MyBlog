@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quêtes</title>
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
     <!-- CSS -->
     
     {% load static %}
@@ -23,16 +25,39 @@
     
     <div class="container">
         <div class="gauche">
-            <img class="book" src="{% static 'img/quest_book.png' %}"/>
+            {% if status == 'waiting_quests' %}
+                <img class="closed_book" src="{% static 'img/closed_quest_book.png' %}"/>
+            {% else %}
+                <img class="book" src="{% static 'img/quest_book.png' %}"/>
+            {% endif %}
+
             <div class="quete">
-                <span class="title_quest">Votre quête</span>
-                <ul>
-                    {% for objective in objectives %}
-                        <li class="objective" current_value="{{objective.current_value}}" objective_value="{{objective.objective_value}}" achieved="{{objective.achieved}}">
-                            {{objective.sentence}} ({{objective.current_value}} / {{objective.objective_value}})
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% if status == 'is_questing' %}
+                    <span class="title_quest">Votre quête</span>
+
+                    <ul>
+                        {% for objective in data %}
+                            <li class="objective" current_value="{{objective.current_value}}" objective_value="{{objective.objective_value}}" achieved="{{objective.achieved}}">
+                                {{objective.sentence}} ({{objective.current_value}} / {{objective.objective_value}})
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif status == 'has_pending_quests' %}
+                    <span class="title_quest" style = "font-size:30px;">Nouvelles quêtes</span>
+
+                    <ul>
+                        {% for quest in data %}
+                            <li class="pending-quest" id="{{quest.id}}">
+                                Aider le dinosaure, et gagne {{quest.quantity}} {% if quest.loot_type == 'coins' %}diplodocoins{% else %}lootbox{% endif %}.
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% endif %}
+                
+                
+                
                 
             </div>
 
@@ -45,7 +70,9 @@
                 {{sentence}}
             </span>
 
-            <button class="button">Récupérer la récompense</button>
+            {% if ended %}
+            <button class="button" id="achieved-button">Récupérer la récompense</button>
+            {% endif %}
 
 
         </div>

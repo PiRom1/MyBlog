@@ -111,5 +111,7 @@ urlpatterns = [
 
     # Quêtes
     path('quêtes/', quests_views.quest, name='quest'),
+    path('quêtes/achieved', quests_views.achieve_quest, name='achieve_quest'),
+    path('quêtes/accept', quests_views.accept_quest, name='accept_quest'),
 
 ]
