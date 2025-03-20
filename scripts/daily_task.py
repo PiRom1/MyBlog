@@ -30,19 +30,19 @@ def generate_quest(user, type : str):
 
 def run():
     
-    # Drop boxes
-    nb_drop = 1
-    nb_coins = 200
+    # # Drop boxes
+    # nb_drop = 1
+    # nb_coins = 200
 
-    users = User.objects.all()
-    box_id = Box.objects.last().id
-    for user in users:
-        user.coins += nb_coins
-        user.save()
-        for _ in range(nb_drop):
-            UserInventory.objects.create(user=user, item=Item.objects.create(type='box', item_id=box_id))
+    # users = User.objects.all()
+    # box_id = Box.objects.last().id
+    # for user in users:
+    #     user.coins += nb_coins
+    #     user.save()
+    #     for _ in range(nb_drop):
+    #         UserInventory.objects.create(user=user, item=Item.objects.create(type='box', item_id=box_id))
 
-    print(f'{nb_drop} lootboxes dropped for each user | {nb_coins} coins added to each user')
+    # print(f'{nb_drop} lootboxes dropped for each user | {nb_coins} coins added to each user')
 
 
     # generate quests
