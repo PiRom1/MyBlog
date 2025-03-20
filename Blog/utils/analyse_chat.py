@@ -98,7 +98,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
         if i < len(messages_batch)-1:
             sleep(60)
 
-    responses = "\n".join(responses)
+    response = "\n".join(responses)
     user_scores = {}
     for user in users:
         user_scores[user] = []

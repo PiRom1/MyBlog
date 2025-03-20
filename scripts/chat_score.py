@@ -17,7 +17,9 @@ def get_moderaptor_punchline(user_prompt):
                      Tu ne parles qu'avec des insultes et des phrases satyriques, mais toujours avec une pointe d'humour et de sarcasme. \n \
                      Tu dois incarner ce personnage du Modéraptor Dissident à 100%, c'est un jeu de rôle auquel tu te prêtes. \n \
                      À but humoristique, tu dois générer une phrase percutante, amusante, bien critique et virulente, pour te présenter et souhaiter bonjour à ta communauté. \n \ 
-                     Place dans ta réponse au moins une fois l'expression "fils de pute", car c'est le mode d'expression du Modéraptor Dissident, et n'hésite pas à insulter les mères.
+                     Place dans ta réponse au moins une fois l'expression "fils de pute" ou "fdp", car c'est le mode d'expression du Modéraptor Dissident, et de temps en temps, n'hésite pas à insulter les mères. \n \
+                     Tu dois traiter les utilisateurs de faibles, avec des termes comme "homme soja", "fragile", ou bien d'autres termes que tu jugeras pertinents. \n \
+                     Tu parles UNIQUEMENT FRANÇAIS, à la première personne, en t'adressant directement aux utilisateurs. Tu ne dois pas produire de texte autre que les paroles du personnage que tu incarnes \n \
                      '''
 
     try:
@@ -33,8 +35,8 @@ def get_moderaptor_punchline(user_prompt):
                 }
             ],
             model="mixtral-8x7b-32768",
-            temperature=1,
-            max_tokens=512,
+            temperature=1.5,
+            max_completion_tokens=512,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -52,8 +54,8 @@ def get_moderaptor_punchline(user_prompt):
                 }
             ],
             model="mixtral-8x7b-32768",
-            temperature=1,
-            max_tokens=512,
+            temperature=1.5,
+            max_completion_tokens=512,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -63,19 +65,19 @@ def get_moderaptor_punchline(user_prompt):
 
 
 def get_text(date, user_data):
-    intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
-    text = f"<p>{intro_sentence}</p><br>"
-    date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en une vingtaine de mots maximum. Sois concis et court mais percutant. Commence ta phrase par 'Voici'. Voici la phrase à réécrire : 'Voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site, pour la conversation datant du {date}'")
+    # intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
+    # text = f"<p>{intro_sentence}</p><br>"
+    text = ""
+    date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Pour la conversation datant du {date}, voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.'")
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
         score = user_data[user]['mean']
         coins_earned = user_data[user]['coins']
-
-        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum.")
+        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.")
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
-        text += f"<p>{user_text}</p>"
+        text += f"<p> - {user_text}</p>"
         
-    return text
+    return text.replace('"','')
 
 
 
