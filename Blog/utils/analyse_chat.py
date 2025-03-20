@@ -1,14 +1,14 @@
 import datetime
-from Blog.models import User, Message
+from Blog.models import User, Message, Bot
 from groq import Groq
 
 def analyse_chat(date=datetime.date.today(), session_id=2):
     # Get all the messages of the day, for the session id 2
-    messages = Message.objects.filter(pub_date__date=date, session_id=session_id)
 
-    # remove messages from bots
-    messages = [message for message in messages if not message.writer.is_bot]
-    
+    bot_users = Bot.objects.all().values_list('user', flat = True)
+
+    messages = Message.objects.filter(pub_date__date=date, session_id=session_id).exclude(writer__in=bot_users)
+
     # Get all the users who sent a message today
     users = []
     for message in messages:
