@@ -94,16 +94,16 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     responses = "\n".join(responses)
     user_scores = {}
     for user in users:
-        user_scores[user] = []
+        user_scores[user] = {'scores' : []}
         for line in response.split("\n"):
             if user+":" in line:
                 score = line.split(user+": ")[1][0:2].strip()
-                user_scores[user].append(score)
+                user_scores[user]['scores'].append(int(score))
     print(user_scores)
     user_means = {}
     for user in user_scores:
-        user_means[user] = sum([int(score) for score in user_scores[user]])/len(user_scores[user])
-        print(user + " : " + str(sum([int(score) for score in user_scores[user]])/len(user_scores[user])))
+        user_means[user] = sum([score for score in user_scores[user]['scores']])/len(user_scores[user]['scores'])
+        print(user + " : " + str(sum([score for score in user_scores[user]['scores']])/len(user_scores[user]['scores'])))
     
     return user_scores, user_means
 
