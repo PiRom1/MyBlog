@@ -20,40 +20,58 @@ def get_moderaptor_punchline(user_prompt):
                      Place dans ta réponse au moins une fois l'expression "fils de pute", car c'est le mode d'expression du Modéraptor Dissident, et n'hésite pas à insulter les mères.
                      '''
 
-    
-    response = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": user_prompt
-            }
-        ],
-        model="mixtral-8x7b-32768",
-        temperature=1,
-        max_tokens=512,
-        presence_penalty=0.0,
-    )
-    response = response.choices[0].message.content
+    try:
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ],
+            model="mixtral-8x7b-32768",
+            temperature=1,
+            max_tokens=512,
+            presence_penalty=0.0,
+        )
+        response = response.choices[0].message.content
+    except:
+        sleep(60)
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ],
+            model="mixtral-8x7b-32768",
+            temperature=1,
+            max_tokens=512,
+            presence_penalty=0.0,
+        )
+        response = response.choices[0].message.content
 
 
     return response
 
 
-def get_text(date, user_scores):
+def get_text(date, user_data):
     intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
     text = f"<p>{intro_sentence}</p><br>"
     date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en une vingtaine de mots maximum. Sois concis et court mais percutant. Commence ta phrase par 'Voici'. Voici la phrase à réécrire : 'Voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site, pour la conversation datant du {date}'")
     text += f"<p>{date_sentence}</p><br>"
-    print(user_scores)
-    for user in user_scores.keys():
-        scores = user_scores[user]['scores']
-        coins_earned = user_scores[user]['coins']
+    for user in user_data.keys():
+        score = user_data[user]['mean']
+        coins_earned = user_data[user]['coins']
 
-        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins. Sois succint, fais une seule phrase d'une vingtaine de mots maximum.")
+        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum.")
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
         text += f"<p>{user_text}</p>"
         
@@ -66,9 +84,7 @@ def get_text(date, user_scores):
 def run():
     # Date of yesterday
     date = datetime.date.today() - datetime.timedelta(days=1)
-    user_scores, user_means = analyse_chat(date=date, session_id=2)
-
-    sleep(65)
+    user_data = analyse_chat(date=date, session_id=2)
 
     WINRATE_COINS = 100
     LOOSERATE_COINS = 0
@@ -79,8 +95,9 @@ def run():
     #               'louis' : 4}
 
 
-    for user, score in user_means.items():
+    for user, data in user_data.items():
         usr = User.objects.get(username=user)
+        score = data['mean']
         if score >= 0:
             coins_earned = WINRATE_COINS * score
         else:
@@ -88,10 +105,10 @@ def run():
         
         usr.coins += coins_earned
         usr.save()
-        user_scores[user]['coins'] = coins_earned
+        user_data[user]['coins'] = coins_earned
 
     text = get_text(date = date, 
-                    user_scores = user_scores)
+                    user_data = user_data)
     
     Message.objects.create(text=text, 
                            writer=User.objects.get(username="moderaptor"), 

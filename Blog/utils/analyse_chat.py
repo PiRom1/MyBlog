@@ -70,6 +70,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     )
     responses = []
     for i, messages_string in enumerate(messages_batch):
+        print('Batch ' + str(i+1) + ' out of ' + str(len(messages_batch)))
         response = client.chat.completions.create(
             messages=[
                 {
@@ -94,18 +95,24 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     responses = "\n".join(responses)
     user_scores = {}
     for user in users:
-        user_scores[user] = {'scores' : []}
+        user_scores[user] = []
         for line in response.split("\n"):
             if user+":" in line:
                 score = line.split(user+": ")[1][0:2].strip()
-                user_scores[user]['scores'].append(int(score))
+                user_scores[user].append(score)
     print(user_scores)
     user_means = {}
     for user in user_scores:
-        user_means[user] = sum([score for score in user_scores[user]['scores']])/len(user_scores[user]['scores'])
-        print(user + " : " + str(sum([score for score in user_scores[user]['scores']])/len(user_scores[user]['scores'])))
+        user_means[user] = sum([int(score) for score in user_scores[user]])/len(user_scores[user])
+        print(user + " : " + str(sum([int(score) for score in user_scores[user]])/len(user_scores[user])))
+
+    user_data = {}
+    for user in users:
+        user_data[user] = {}
+        user_data[user]["scores"] = user_scores[user]
+        user_data[user]["mean"] = user_means[user]
     
-    return user_scores, user_means
+    return user_data
 
     
 
