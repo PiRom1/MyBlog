@@ -83,7 +83,7 @@ class SessionUser(models.Model):
 
 class Message(models.Model):
 
-    pub_date = models.DateTimeField("Date publication")
+    pub_date = models.DateTimeField("Date publication", auto_now_add=True)
     writer = models.ForeignKey(User, on_delete = models.CASCADE)
     text = models.TextField("Texte")
     upvote = models.IntegerField("upvote", default = 0)
