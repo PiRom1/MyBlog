@@ -1,4 +1,5 @@
 import datetime
+from time import sleep
 from Blog.models import User, Message, Bot
 from groq import Groq
 
@@ -12,13 +13,28 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     # Get all the users who sent a message today
     users = []
     for message in messages:
-        if message.writer not in users:
+        if message.writer not in users and message.writer.username != "moderaptor":
             users.append(message.writer.username)
 
-    messages_string = ""
-    for message in messages:
-        messages_string += "USER : "+ message.writer.username + "\nMESSAGE : '''" + message.text + "'''\n\n"
-
+    messages_batch = [""]
+    i = 0
+    count = 0
+    curr_batch_size = 0
+    while i < len(messages):
+        count += len(messages[i].text.split()) * 1.1
+        if count < 4500:
+            messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + messages[i].text + "'''\n\n"
+            i += 1
+            curr_batch_size += 1
+        else:
+            if curr_batch_size < 3:
+                raise Exception("A message is too long to be analysed.")
+            messages_batch.append("")
+            count = 0
+            curr_batch_size = 0
+            print("Break at message " + str(i))
+            i -= 2
+            
     # For each user, analyse the contribution to the conversation
     # Use groq to analyse the conversation, and give a score to the user
     # The score is based on the relevance of the user's messages to the conversation, the amount of reactions to the user's messages, and the amount of content the user has brought to the conversation.
@@ -52,27 +68,30 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     client = Groq(
         api_key="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"
     )
+    responses = []
+    for i, messages_string in enumerate(messages_batch):
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": prompt + "\n\n" + messages_string + "\n\n" + prompt_end + user_dict
+                }
+            ],
+            model="mixtral-8x7b-32768",
+            temperature=0,
+            max_completion_tokens=512,
+            presence_penalty=0.0,
+        )
+        responses.append(response.choices[0].message.content)
+        print(responses[-1])
+        if i < len(messages_batch)-1:
+            sleep(60)
 
-    
-    response = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": prompt + "\n\n" + messages_string + "\n\n" + prompt_end + user_dict
-            }
-        ],
-        model="mixtral-8x7b-32768",
-        temperature=0,
-        max_tokens=512,
-        presence_penalty=0.0,
-    )
-    response = response.choices[0].message.content
-    print(response)
-    
+    responses = "\n".join(responses)
     user_scores = {}
     for user in users:
         user_scores[user] = []
