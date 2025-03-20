@@ -21,9 +21,15 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     count = 0
     curr_batch_size = 0
     while i < len(messages):
-        count += len(messages[i].text.split()) * 1.1
+        # Remove html tags from the message : replace any text between < and > by a space
+        msg_text = messages[i].text
+        while "<" in msg_text:
+            start = msg_text.find("<")
+            end = msg_text.find(">")
+            msg_text = msg_text[:start] + " " + msg_text[end+1:]
+        count += len(msg_text.split()) * 1.1
         if count < 4500:
-            messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + messages[i].text + "'''\n\n"
+            messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + msg_text + "'''\n\n"
             i += 1
             curr_batch_size += 1
         else:
