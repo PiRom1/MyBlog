@@ -90,8 +90,7 @@ def run():
     # Date of yesterday
     date = datetime.date.today() - datetime.timedelta(days=1)
     user_data = analyse_chat(date=date, session_id=2, model=model)
-    exit()
-    WINRATE_COINS = 50
+    WINRATE_COINS = 40
     LOOSERATE_COINS = 0
 
     # user_scores = {'theophile' : {'scores' : [1,3,5]},
