@@ -73,7 +73,8 @@ def get_text(date, user_data, model):
     date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Pour la conversation datant du {date}, voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.'", model)
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
-        score = user_data[user]['mean']
+        #limit score to 2 decimals
+        score = np.round(user_data[user]['mean'], 2)
         coins_earned = user_data[user]['coins']
         user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.", model)
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
