@@ -88,7 +88,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
                     "content": prompt + "\n\n" + messages_string + "\n\n" + prompt_end + user_dict
                 }
             ],
-            model="mixtral-8x7b-32768",
+            model="mixtral-8x7b",
             temperature=0,
             max_tokens=512,
             presence_penalty=0.0,
