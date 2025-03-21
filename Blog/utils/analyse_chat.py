@@ -90,7 +90,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
             ],
             model="mixtral-8x7b-32768",
             temperature=0,
-            max_completion_tokens=512,
+            max_tokens=512,
             presence_penalty=0.0,
         )
         responses.append(response.choices[0].message.content)

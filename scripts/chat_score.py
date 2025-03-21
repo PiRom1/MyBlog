@@ -36,7 +36,7 @@ def get_moderaptor_punchline(user_prompt):
             ],
             model="mixtral-8x7b-32768",
             temperature=1.5,
-            max_completion_tokens=512,
+            max_tokens=512,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -55,7 +55,7 @@ def get_moderaptor_punchline(user_prompt):
             ],
             model="mixtral-8x7b-32768",
             temperature=1.5,
-            max_completion_tokens=512,
+            max_tokens=512,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
