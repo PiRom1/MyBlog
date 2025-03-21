@@ -69,7 +69,7 @@ def get_moderaptor_punchline(user_prompt, model):
 def get_text(date, user_data, model):
     # intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
     # text = f"<p>{intro_sentence}</p><br>"
-    text = model
+    text = ""
     date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Pour la conversation datant du {date}, voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.'", model)
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
@@ -108,9 +108,9 @@ def run():
         else:
             coins_earned = LOOSERATE_COINS * score
         
-        usr.coins += coins_earned
+        usr.coins += int(coins_earned)
         usr.save()
-        user_data[user]['coins'] = coins_earned
+        user_data[user]['coins'] = int(coins_earned)
 
     text = get_text(date = date, 
                     user_data = user_data,

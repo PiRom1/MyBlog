@@ -97,9 +97,10 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
         response = response.choices[0].message.content
         if "</think>" in response:
             response = response.split("</think>")[1]
-        response.split("{")[1].split("}")[0]
+        response = response.split("{")[1].split("}")[0]
         responses.append(response)
         print(responses[-1])
+        exit()
         if i < len(messages_batch)-1:
             sleep(60)
 
