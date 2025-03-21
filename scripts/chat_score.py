@@ -34,7 +34,7 @@ def get_moderaptor_punchline(user_prompt):
                     "content": user_prompt
                 }
             ],
-            model="mixtral-8x7b",
+            model="mixtral-8x7b-32768",
             temperature=1.5,
             max_tokens=512,
             presence_penalty=0.0,
@@ -53,7 +53,7 @@ def get_moderaptor_punchline(user_prompt):
                     "content": user_prompt
                 }
             ],
-            model="mixtral-8x7b",
+            model="mixtral-8x7b-32768",
             temperature=1.5,
             max_tokens=512,
             presence_penalty=0.0,
