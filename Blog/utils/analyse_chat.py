@@ -58,6 +58,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
     "\nDO NOT penalize users for negative messages, only for contentless and spam messages." \
     "\nNegative content should be scored based on the amount of reactions and content it brings. It may score high if it brings a lot of reactions and content." \
     "\nReward content-rich messages and messages that bring reactions, more than responses" \
+    "\nTemper your scores on responses messages. In general, 8,9,10 should be extraordinary messages, 5,6,7 should be good messages, 2,3,4 should be average messages, and 0,1 should be ok messages. Negatives are for Spam content, killing-chat messages." \
     "\nDo not focus only on the first subject of the conversation, as it way evolve." \
     "\nProvide score for EACH MESSAGE of each user in the format: USERNAME: SCORE - BRIEF_REASON" \
     "\nDo not repeat the messages in the conversation, only the scores." \
