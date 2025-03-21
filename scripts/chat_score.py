@@ -5,7 +5,7 @@ import numpy as np
 from groq import Groq
 from time import sleep
 
-def get_moderaptor_punchline(user_prompt):
+def get_moderaptor_punchline(user_prompt, model):
 
     # Initialize Groq client with API key
     client = Groq(
@@ -34,9 +34,9 @@ def get_moderaptor_punchline(user_prompt):
                     "content": user_prompt
                 }
             ],
-            model="mixtral-8x7b-32768",
+            model=model,
             temperature=1.5,
-            max_completion_tokens=512,
+            max_completion_tokens=8192,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -53,27 +53,29 @@ def get_moderaptor_punchline(user_prompt):
                     "content": user_prompt
                 }
             ],
-            model="mixtral-8x7b-32768",
+            model=model,
             temperature=1.5,
-            max_completion_tokens=512,
+            max_completion_tokens=8192,
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
 
+    if "</think>" in response:
+        response = response.split("</think>")[1]
 
     return response
 
 
-def get_text(date, user_data):
+def get_text(date, user_data, model):
     # intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
     # text = f"<p>{intro_sentence}</p><br>"
-    text = ""
-    date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Pour la conversation datant du {date}, voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.'")
+    text = model
+    date_sentence = get_moderaptor_punchline(f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Pour la conversation datant du {date}, voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.'", model)
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
         score = user_data[user]['mean']
         coins_earned = user_data[user]['coins']
-        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.")
+        user_text = get_moderaptor_punchline(f"Ecris ici une unique phrase sur l'utilisateur {user}, en lui disant qu'il a gagné {coins_earned} diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de {score}. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.", model)
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
         text += f"<p> - {user_text}</p>"
         
@@ -84,11 +86,12 @@ def get_text(date, user_data):
 
 
 def run():
+    model = "llama-3.3-70b-specdec"
     # Date of yesterday
-    date = datetime.date.today() - datetime.timedelta(days=1)
-    user_data = analyse_chat(date=date, session_id=2)
+    date = datetime.date.today() - datetime.timedelta(days=2)
+    user_data = analyse_chat(date=date, session_id=2, model=model)
 
-    WINRATE_COINS = 100
+    WINRATE_COINS = 50
     LOOSERATE_COINS = 0
 
     # user_scores = {'theophile' : {'scores' : [1,3,5]},
@@ -110,7 +113,8 @@ def run():
         user_data[user]['coins'] = coins_earned
 
     text = get_text(date = date, 
-                    user_data = user_data)
+                    user_data = user_data,
+                    model = model)
     
     Message.objects.create(text=text, 
                            writer=User.objects.get(username="moderaptor"), 

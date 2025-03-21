@@ -3,7 +3,7 @@ from time import sleep
 from Blog.models import User, Message, Bot
 from groq import Groq
 
-def analyse_chat(date=datetime.date.today(), session_id=2):
+def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-32768"):
     # Get all the messages of the day, for the session id 2
 
     # bot_users = Bot.objects.all().values_list('user', flat = True)
@@ -68,7 +68,8 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
     user_dict = "{"
     for user in users:
         user_dict += user + ": SCORE - BRIEF_REASON\n"
-    user_dict += "}"
+    user_dict += "}\n"
+    "OUTPUT ONLY THE DICTIONARY, NOTHING ELSE"
     
     # Initialize Groq client with API key
     client = Groq(
@@ -88,12 +89,15 @@ def analyse_chat(date=datetime.date.today(), session_id=2):
                     "content": prompt + "\n\n" + messages_string + "\n\n" + prompt_end + user_dict
                 }
             ],
-            model="mixtral-8x7b-32768",
+            model=model,
             temperature=0,
-            max_completion_tokens=512,
+            max_completion_tokens=8192,
             presence_penalty=0.0,
         )
-        responses.append(response.choices[0].message.content)
+        response = response.choices[0].message.content
+        if "</think>" in response:
+            response = response.split("</think>")[1]
+        responses.append(response)
         print(responses[-1])
         if i < len(messages_batch)-1:
             sleep(60)
