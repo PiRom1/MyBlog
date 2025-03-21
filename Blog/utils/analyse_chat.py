@@ -29,7 +29,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
             msg_text = msg_text[:start] + " " + msg_text[end+1:]
         if msg_text == "":
             i += 1
-            continue
+            pass
         count += len(msg_text.split()) * 1.1
         if count < 4500:
             messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + msg_text + "'''\n\n"
