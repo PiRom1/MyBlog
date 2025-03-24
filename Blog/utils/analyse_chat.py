@@ -119,8 +119,8 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
     print(user_scores)
     user_means = {}
     for user in user_scores:
-        user_means[user] = sum([int(score) for score in user_scores[user]])/(len(user_scores[user]+2.5))
-        print(user + " : " + str(sum([int(score) for score in user_scores[user]])/(len(user_scores[user]+2.5))))
+        user_means[user] = sum([int(score) for score in user_scores[user]])/(len(user_scores[user])+2.5)
+        print(user + " : " + str(sum([int(score) for score in user_scores[user]])/(len(user_scores[user])+2.5)))
 
     user_data = {}
     for user in users:
