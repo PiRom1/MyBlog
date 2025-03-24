@@ -89,7 +89,7 @@ def get_text(date, user_data, model):
 def run():
     model = "llama-3.3-70b-specdec"
     # Date of yesterday
-    date = datetime.date.today() - datetime.timedelta(days=3)
+    date = datetime.date.today() - datetime.timedelta(days=1)
     user_data = analyse_chat(date=date, session_id=2, model=model)
     WINRATE_COINS = 40
     LOOSERATE_COINS = 0
