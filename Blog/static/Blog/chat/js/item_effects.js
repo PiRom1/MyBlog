@@ -1,6 +1,5 @@
-// Ajout d'un écouteur d'événement au clic sur l'image
+
 document.addEventListener('DOMContentLoaded', function () {
-    
     
     // Get every messages
     const messages = document.querySelectorAll('.text');
@@ -42,51 +41,48 @@ document.addEventListener('DOMContentLoaded', function () {
         skins = JSON.parse(skins);
         console.log(skins);
 
-        const box = boxes[i];
-        const name = names[i];
-        const user_avatar = user_avatars[i];
+        let box = boxes[i];
+        let name = names[i];
+        let user_avatar = user_avatars[i];
+
+
 
         // Loop on skins
         Object.keys(skins).forEach(function(key) {
             
             // text color
             if (key === "text_color") {
-                box.querySelectorAll('p').forEach((text) => {
-                    modifLastElement(text, key, skins[key]);
-                });
+                
+                box = text_color(box, skins[key]);
             }
 
             // border color
             else if (key === "border_color") {
-                box.style.setProperty('border-style', 'solid', 'important')
-                box.style.setProperty('border-width', '2px', 'important')
-                box.style.setProperty('border-color', skins[key], 'important')
+                
+                box = border_color(box, skins[key]);
             }
 
             // background color
             else if (key === "background_color") {
                 
-                box.style.setProperty('background', skins[key], 'important')
+                box = background_color(box, skins[key]);
             }
 
             // name color
             else if (key === "name_color") {
-                name.style.setProperty('color', skins[key], 'important');
+                name = name_color(name, skins[key]);
                 }
 
             // avatar color
             else if (key === "avatar_color") {
-                user_avatar.style.setProperty('border-style', 'solid', 'important');
-                user_avatar.style.setProperty('border-width', '3px', 'important');
-                user_avatar.style.setProperty('border-radius', '50%', 'important');
-                user_avatar.style.setProperty('border-color', skins[key], 'important');
+               
+                user_avatar = avatar_color(user_avatar, skins[key]);
                 }
 
             // font
             else if (key === "font") {
-                box.querySelectorAll('p').forEach((text) => {
-                    modifLastElement(text, key, skins[key]);
-                });
+                box = font_message(box, skins[key]);
+               
                 if (font_tab.includes(skins[key]) === false) {
                     font_tab.push(skins[key]);
                 }
@@ -94,45 +90,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // border image
             else if (key === "border_image") {
-                const borderDiv = document.createElement('div');
-                borderDiv.className = 'message-border-image';
-                messageContent = message.parentNode;
-                messageContent.parentNode.insertBefore(borderDiv, messageContent);
-                borderDiv.appendChild(messageContent);
-                borderDiv.style.setProperty('border-image-source', `url(${skins[key]})`, 'important');
+               
+                document = border_image(document, message, skins[key]);
             }
 
             // Rainbow border
             else if (key === "border_rgb") {
-                const rgbDiv = document.createElement('div');
-                rgbDiv.className = 'rainbow';
-                messageContent = message.parentNode;
-                messageContent.parentNode.insertBefore(rgbDiv, messageContent);
-                rgbDiv.appendChild(messageContent);
-                if(skins[key] !== 'rainbow') {defineRGBAnimation(skins[key], rgbDiv, rgb_tab);}
-                const rgbCss = document.getElementById('rainbow-css');
-                if (rgbCss === null) {
-                    const css = document.createElement('link');
-                    css.id = 'rainbow-css';
-                    css.rel = 'stylesheet';
-                    css.href = '/static/Blog/chat/css/rainbow.css';
-                    document.head.appendChild(css);
-                }
+               
+                document = border_rgb(document, message, skins[key]);
             }
             
             // Rainbow name
             else if (key === "name_rgb") {
-                name.classList.add('rainbow-text');
-                user_avatar.classList.add('rainbow-border');
-                if(skins[key] !== 'rainbow') {defineRGBAnimationName(skins[key], name, user_avatar, rgb_tab);}
-                const rgbCss = document.getElementById('rainbow-css');
-                if (rgbCss === null) {
-                    const css = document.createElement('link');
-                    css.id = 'rainbow-css';
-                    css.rel = 'stylesheet';
-                    css.href = '/static/Blog/chat/css/rainbow.css';
-                    document.head.appendChild(css);
-                }
+                
+                document, name, user_avatar = name_rgb(document, name, user_avatar, skins[key]);
             }
         });
         i = i+1;
@@ -147,52 +118,3 @@ document.addEventListener('DOMContentLoaded', function () {
     document.head.appendChild(font);
 });
 
-function defineRGBAnimation(pattern, div, rgb_tab){
-    if (pattern === '#000'){
-        div.setAttribute("style",
-            "--Background: linear-gradient(5deg,#333,#000,#333,#666,#999,#ccc,#fff,#ccc,#999,#666,#333,#000,#333);" +
-            "--Animation: steam 8s linear infinite;");
-    }
-    else{
-        var index = rgb_tab.indexOf(pattern) + rgb_tab.length;
-        var anim_str = 'linear-gradient(5deg';
-        [0,-1,0,1,0,-1,0,1,0,-1,0,1,0,-1,0].forEach((i) => {
-            anim_str += ',' + rgb_tab[(index + i) % rgb_tab.length];
-        });
-        anim_str += ');';
-        div.setAttribute("style", "--Background: " + anim_str + "--Position: 100% 0%;");
-    }
-}
-
-function defineRGBAnimationName(pattern, nameDiv, avatarDiv, rgb_tab){
-    if (pattern === '#000'){
-        ['#000','#333','#666','#999','#ccc','#fff','#fff','#ccc','#999','#666','#333','#000'].forEach((color, index) => {
-            nameDiv.style.setProperty('--TC' + (index+1), color);
-            avatarDiv.style.setProperty('--BC' + (index+1), color);
-        });
-    }
-    else {
-        var rgbIndex = rgb_tab.indexOf(pattern) + rgb_tab.length;
-        [0,1,0,-1,0,1,0,-1,0,1,0,-1].forEach((i, idx) => {
-            nameDiv.style.setProperty('--TC' + (idx+1), rgb_tab[(rgbIndex + i) % rgb_tab.length]);
-            avatarDiv.style.setProperty('--BC' + (idx+1), rgb_tab[(rgbIndex + i) % rgb_tab.length]);
-            nameDiv.style.setProperty("animation", "rainbow-text 16s linear infinite");
-            avatarDiv.style.setProperty("animation", "rainbow-border 16s linear infinite");
-        });
-    }
-}
-
-function modifLastElement(element, skin, pattern){
-    if (element.children.length > 0) {
-        modifLastElement(element.children[0], skin, pattern);
-    }
-    else {
-        if (skin === 'text_color') {
-            element.style.setProperty('color', pattern, 'important');
-        }
-        else if (skin === 'font') {
-            element.style.setProperty('font-family', pattern, 'important');
-            element.style.setProperty('font-size', '1.2em', 'important');
-        }
-    }
-}

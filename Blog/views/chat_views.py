@@ -108,8 +108,6 @@ def get_dates(messages):
 @login_required
 def Index(request, id):
 
-    
-
     session = Session.objects.get(id = id)
 
     page_number = int(request.GET.get('page', 1))
@@ -167,25 +165,28 @@ def Index(request, id):
         return JsonResponse(data={'messages_html': messages_html,
                                   'last_message_id': post_last_message_id})
 
+ # Get items
+            
+    items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
+    item_ids = [item.item.item_id for item in items]
+    dict_items = {}
+
+    for i,item_id in enumerate(item_ids):
+        skin = Skin.objects.get(id=item_id).type
+        dict_items[skin] = items[i].item.pattern
+    if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
+        del dict_items['avatar_color']
+    if 'border_image' in dict_items:
+        dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
+
+
+
     if request.method == "POST":
         # message_form = MessageForm(request.POST)
         message_text = request.POST.get('message_html')
         print("text : ", message_text)
         if message_text:
-            # Get items
-            items = UserInventory.objects.filter(user=user).filter(equipped=True)
-            item_ids = [item.item.item_id for item in items]
-
-            dict_items = {}
-
-            for i,item_id in enumerate(item_ids):
-                skin = Skin.objects.get(id=item_id).type
-                dict_items[skin] = items[i].item.pattern
-            if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
-                del dict_items['avatar_color']
-            if 'border_image' in dict_items:
-                dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
-            
+           
             print("Before : \n", message_text)
             processed_message_text = process_text(message_text, user, session)
             print("TEXTE : \n", processed_message_text)
@@ -314,6 +315,7 @@ def Index(request, id):
                "favorite_fonts" : favorite_fonts,
                "background" : background,
                "opening_logs": opening_logs,  # Ajout des opening logs
+               "current_skins" : str(dict_items),
                }
     
     # rappel

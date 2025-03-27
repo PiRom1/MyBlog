@@ -23,9 +23,11 @@
     <!-- JS -->
     <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/js/ckeditor.js' %}" type="module"></script>
+    <script src="{% static 'Blog/chat/js/update_example_message.js' %}"></script>
     <script src="{% static 'Blog/chat/js/index.js' %}" type="module"></script>
     <script src="{% static 'Blog/chat/js/yoda.js' %}"></script>
     <script src="{% static 'Blog/chat/js/badger.js' %}" type="module"></script>
+    <script src="{% static 'Blog/chat/js/item_effects_functions.js' %}"></script>
     <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
     <script src="{% static 'Blog/js/send_ctrl_enter.js' %}"></script>
     <script src="{% static 'Blog/chat/js/tkt.js' %}"></script>
@@ -144,6 +146,25 @@
                         <span id="close-skins-popup" class="close">&times;</span>
                         <h2>Vos skins équipés</h2>
                         <div id="skins-list"></div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
+                    </div>
+
+                    {% comment %} Example message {% endcomment %}
+                    <div class="example-message">
+                        
+                        <div class="message" id="example-message" skins="{{current_skins}}">
+                            <a href="/user/{{user.id}}" class="user-avatar" id="example-user-avatar" style="border-radius:50%; margin-right: 8px;">
+                                <img src="{{ user.image.image.url }}" alt="{{ user.image.image.name }}">
+                            </a>
+                            
+                            <div class="message-content" id="example-message-content" karma="0">
+                                <span class="message-meta">
+                                    <strong><span class="name"><a id="example-name" href="/user/{{user.id}}">{{user.username}}</a></span></strong>
+                                    <i>Aujourd'hui</i> 
+                                </span>
+                                <p class="text" id="example-text">Que vas-tu nous raconter aujourd'hui ?</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

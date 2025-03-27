@@ -14,10 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
 
-
-
-
-
     // Créer une instance de la classe Badger
     const badger = new Badger({
         size: 0.6,
@@ -39,6 +35,20 @@ document.addEventListener('DOMContentLoaded', function () {
     var border_color = document.getElementById('items').getAttribute('border-color');
     var skinRadios = document.querySelectorAll('.skin-radio');
     var previousPerCategory = {};
+
+
+    // Example message
+    let box = document.getElementById('example-message-content');
+    let message = document.getElementById('example-text');
+    let name = document.getElementById('example-name');
+    let avatar = document.getElementById('example-user-avatar');
+    let example_skins = document.getElementById('example-message').getAttribute('skins');
+    example_skins = example_skins.replace(/'/g, '"');
+    example_skins = JSON.parse(example_skins);
+    console.log(example_skins);
+
+    document, message, box, name, avatar = update_example_message(document, message, box, name, avatar, example_skins);
+    console.log('updated');
 
     // document.getElementById('message-meta').style.font-size=45;
 
@@ -123,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const skinsPopup = document.getElementById('skins-popup');
     const closeSkinsPopup = document.getElementById('close-skins-popup');
     const skinsList = document.getElementById('skins-list');
+    const exampleMessage = document.getElementById('example-message');
 
     const emojisButton = document.getElementById('emojis-button');
     const emojisPopup = document.getElementById('emojis-popup');
@@ -203,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ouvrir la popup des skins
     skinsButton.addEventListener('click', function () {
         skinsPopup.style.display = 'flex';
-        console.log('click !!! ');
         update_equipped(skinRadios);
     });
 
@@ -288,6 +298,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (data.action === 'unequip') {
                             radio.checked = false;
                         }
+                        example_skins = data.skins;
+                        example_skins = example_skins.replace(/'/g, '"');
+                        example_skins = JSON.parse(example_skins);
+                        document, message, box, name, avatar = update_example_message(document, message, box, name, avatar, example_skins);
+
                         
                     } else {
                         console.log('Erreur : ', data.message);
