@@ -23,15 +23,9 @@ def get_skin_type(type):
 
 
 
-@login_required
-def user_inventory_view(request):
-    # Récupérer l'inventaire de l'utilisateur connecté
-    # Trier par date d'obtention inverse
-    user_inventory = UserInventory.objects.filter(user=request.user).order_by('-obtained_date')
-    
+def get_items_list(user_inventory):
     items = []
-    
-    # Récupérer les informations pour chaque item d'inventaire
+
     for inventory in user_inventory:
         item = inventory.item
         
@@ -81,6 +75,18 @@ def user_inventory_view(request):
                 print("pattern : ", item.pattern)
                 border_image = BorderImage.objects.get(name=item.pattern)
                 items[-1]['url'] = border_image.image.url
+    
+    return items
+
+
+@login_required
+def user_inventory_view(request):
+    # Récupérer l'inventaire de l'utilisateur connecté
+    # Trier par date d'obtention inverse
+    user_inventory = UserInventory.objects.filter(user=request.user).order_by('-obtained_date')
+    
+    # Récupérer les informations pour chaque item d'inventaire
+    items = get_items_list(user_inventory)
     
 
     background_id = Skin.objects.get(type='background_image').id

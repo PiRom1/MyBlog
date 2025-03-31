@@ -8,6 +8,8 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}"> {% endcomment %}
     <!-- <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}"> -->
     <link rel="stylesheet" href="{% static 'Blog/inventory/css/inventory.css' %}">
     <script src="{% static 'Blog/inventory/js/inventory.js' %}" type="module"></script>
@@ -113,9 +115,9 @@
     </div>
 
    
-    <a href="/" style="position:absolute; bottom:8%; left:1%; color:antiquewhite; " >HOME</a>
-    <a href="/hdv" style="position:absolute; bottom:5%; left:1%; color:antiquewhite; " >HDV</a>
-    <!-- <a href="/lootbox/get" style="position:absolute; bottom:2%; left:1%; color:antiquewhite; " >Get Lootbox</a> -->
+    <div style="position: fixed; left:5px; bottom:5px; color:antiquewhite;">
+        <a href="/">HOME</a> / <a href="/hdv">HDV</a> / <a href="/atelier">ATELIER</a>
+    </div>
 
 </body>
 </html>

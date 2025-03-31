@@ -1,0 +1,80 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+
+    <link rel="stylesheet" href="{% static 'Blog/atelier/css/atelier.css' %}">
+    <script src="{% static 'Blog/atelier/js/atelier.js' %}"></script>
+
+    
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    {% include "../bg.html" %}
+</head>
+
+<body>
+    <h1>L'Atelier</h1>
+
+    <div class="container">
+    
+        <div class="inventory-grid" id="inventory-grid">
+            <!-- Boucle pour tous les items mélangés -->
+            {% for item in items %}
+            <div class="inventory-item" id="{{item.id}}" is-movable="true" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
+                data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}" data-url="{{item.url}}"
+                {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}" data-rarity-name="{{item.rarity_name}}" data-rarity-color="{{item.rarity_color}}"{% endif %}
+                {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
+
+                <img src="{{ item.image }}" alt="{{ item.name }}" id="img-{{item.item_id}}">
+                <!-- <h3>{{ item.name }}</h3> -->
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="context-popup" id="context-popup">Magnifique équipement ! Voulez-vous vraiment le recycler ?</div>
+        
+
+
+        <div class="right-panel">
+            <h1> Recycler vos équipements</h1>
+
+            <div class="recycled-items" id="recycled-items">
+                {% for i in ""|rjust:10 %}
+                    <div class="inventory-item" is-movable="false" id="example_{{forloop.counter}}">
+                        {{ forloop.counter }}/10
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="arrow"></div>
+            
+            <div class="recycler-broken" id="recycler">RECYCLER</div>
+            <div class="popup" id="popup">POPUP</div>
+
+            <div class="new-item">
+                <div class="inventory-item" is-movable="false" id="new-item">New item</div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div style="position:fixed; left:5px; bottom:5px;">
+        <a href="/inventory">INVENTAIRE</a> / <a href="/">HOME</a>
+    </div>
+
+
+
+
+
+</body>
+    
