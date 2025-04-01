@@ -43,7 +43,7 @@ urlpatterns = [
     path('lootbox/<int:pk>', lootbox_views.view_lootbox, name='view_lootbox'),  
     path('lootbox/open', lootbox_views.open_lootbox, name='open_lootbox'),  
     path('lootbox/drop_item', lootbox_views.drop_item, name='drop_item'),  
-    path('lootbox/get', lootbox_views.get_lootbox, name='get_lootbox'),
+    # path('lootbox/get', lootbox_views.get_lootbox, name='get_lootbox'),
 
     # Inventory
     path('inventory/', inventory_views.user_inventory_view, name='inventory'),

@@ -109,10 +109,3 @@ def drop_item(request):
                 skin=skin).save()
 
     return JsonResponse({'status': 'success', 'message': 'Item dropped successfully!'})
-
-@login_required
-def get_lootbox(request):
-    for _ in range(10):
-        UserInventory.objects.create(user=request.user, item=Item.objects.create(type='box', item_id=1))
-
-    return HttpResponseRedirect('/inventory')
