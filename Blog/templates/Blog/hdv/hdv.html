@@ -29,14 +29,16 @@
     <br><br>
     <span style='padding-left: 5px;'>{{user.coins}}</span><img class="coin" src="{% static 'img/coin.png' %}" width="45px"/>
     
-
+    
     <div class="container">
+        
         <!-- Column for Selling Items -->
         <div class="selling-items">
             <h2>Articles en Vente</h2>
+            <input type="text" placeholder="Filtrez par nom ..." id="selector-name">
             <ul>
                 {% for item in selling_items %}
-                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
+                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}" is_yours="False">
                         {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> - {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>            
@@ -50,7 +52,7 @@
             <h2>Vos Articles</h2>
             <ul>
                 {% for item in your_items %}
-                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}">
+                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}" is_yours="True">
                         {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
                         <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
                         <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
