@@ -20,7 +20,11 @@ def enjoy_timeline(request):
 
     url = "Blog/enjoy_timeline/enjoy_timeline.html"
 
-    hours =  [i for i in range(9, 19)]
+    MIN_HOUR = 8
+    MAX_HOUR = 20
+
+
+    hours =  [i for i in range(MIN_HOUR, MAX_HOUR)]
     minutes = [i for i in range(0, 60)]
 
     import numpy as np
@@ -71,12 +75,16 @@ def enjoy_timeline(request):
             nb[f"{hour}_{minute}"] = nb_timestamps
             colors[f"{hour}_{minute}"] = new_color
     
-    
+    current_hour = datetime.now().hour
+    current_minute = datetime.now().minute
 
-    context = {'hours' : [i for i in range(9, 19)],
+
+    context = {'hours' : [i for i in range(MIN_HOUR, MAX_HOUR)],
                'minutes' : [i for i in range(0, 60)],
                'nb' : nb,
                'colors' : colors,
+               'current_hour' : current_hour,
+               'current_minute' : current_minute
                 }
 
     return render(request, url, context)
