@@ -1,0 +1,792 @@
+.dino-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.user-info {
+    grid-column: 1;
+    grid-row: 1;
+    width: calc(50% - 1rem);
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #86868686;
+    border-radius: 8px;
+}
+
+.user-info h2 {
+    margin-bottom: 0.5rem;
+}
+
+.user-actions-section {
+    grid-column: 1;
+    grid-row: 1;
+    width: calc(50%);
+    margin-left: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    background-color: #86868686;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.hatch-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.arena-btn {
+    background-color: #864abe;
+    color: white;
+}
+
+.battle-btn {
+    background-color: #ea762e;
+    color: white;
+}
+
+.team-section {
+    grid-column: 1;
+    grid-row: 2;
+    background: #86868686;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+#teams-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.team-box {
+    background: #dcbfac99;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.dinos-collection {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    background: #86868686;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.dinos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.dino-card {
+    background: rgba(200,200,200,0.86);
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.dino-card:hover {
+    transform: translateY(-2px);
+}
+
+.dino-card p {
+    margin-top: 5px;
+    color: #222;
+}
+
+.dino-card h3 {
+    color: #222;
+}
+
+.dino-card .runes {
+    display: flex;
+    gap: 0.5rem;
+    color : #868686;
+}
+
+.runes i[class^="fi fi-s"] {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+i.fi-cyan {
+    color: #99E9E9;
+    border: #222;
+}
+
+i.fi-blue {
+    color: #0068FF ;
+}
+
+i.fi-purple {
+    color: #BB00FF;
+}
+
+i.fi-red {
+    color: #FF0000;
+}
+
+.team-members {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    flex-direction: row;
+    align-items: center;
+}
+
+.team-dino {
+    background: rgba(200,200,200,0.86);
+    padding: 0.5rem;
+    border-radius: 4px;
+    flex: 1;
+    text-align: center;
+    color: #222;
+}
+
+.create-team-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.create-team-btn:hover {
+    background: #218838;
+}
+
+.arena-warning {
+    color: #ff4444;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.team-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 1rem;
+    color: #ffffff;
+    transition: color 0.2s;
+}
+
+.edit-btn:hover {
+    color: #007bff;
+}
+
+.delete-btn:hover {
+    color: #dc3545;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.popup-content {
+    position: relative;
+    background-color: #dcbfac;
+    margin: 10vh auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: #222;
+}
+
+.close-popup {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-popup:hover {
+    color: #666;
+}
+
+#editTeamPopup .popup-content {
+    width: 25%;
+}
+
+#editTeamPopup form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group {
+    font-size: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group label {
+    color: #222;
+    font-weight: bold;
+}
+
+.form-group input {
+    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group select {
+    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+button[type="submit"] {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background: #218838;
+}
+
+.dino-details {
+    color: #222;
+    padding: 20px;
+}
+
+.dino-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.dino-attack {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Add common popup button styles */
+.popup-content button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 10px;
+    color: white;
+    background: #4CAF50;
+}
+
+.popup-content button:hover {
+    background: #45a049;
+}
+
+.empty-slot-btn {
+    background: #dc3545;
+}
+
+button[type="submit"] {
+    display: none;
+    background: #28a745;
+}
+
+.equip-runes-btn {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.runes-container {
+    display: flex;
+    width: 100%;
+    max-height: 70vh;
+    background: rgba(134, 89, 45, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.rune-slots {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.rune-slots h3, .inventory-panel h3 {
+    color: #222;
+    margin-bottom: 20px;
+}
+
+.inventory-panel {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    max-height: 70vh;
+}
+
+.inventory-header {
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.inventory-items {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+    min-height: 0; /* This is crucial for flex overflow to work */
+    max-height: calc(70vh - 100px);
+}
+
+.empty-slot-btn {
+    width: 100%;
+    padding: 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.empty-slot-btn:hover {
+    background: #c82333;
+}
+
+.inventory-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.inventory-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.inventory-items::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.inventory-item {
+    min-height: 40px;
+    width: 100%;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.inventory-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.inventory-item .item-name {
+    flex: 1;
+}
+
+.inventory-item .item-rarity {
+    font-size: 1em;
+}
+
+.inventory-item .item-rarity.fi-cyan {
+    color: #99E9E9;
+}
+
+.inventory-item .item-rarity.fi-blue {
+    color: #0068FF;
+}
+
+.inventory-item .item-rarity.fi-purple {
+    color: #BB00FF;
+}
+
+.inventory-item .item-rarity.fi-red {
+    color: #FF0000;
+}
+
+.rune-slot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+
+.slot-name {
+    min-width: 30px;
+}
+
+.slot-item {
+    width: 40px;
+    height: 40px;
+    border: 2px dashed rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.slot-item i {
+    margin-top: 10%;
+    font-size: 1.5rem;
+}
+
+.slot-item i[class^="fi fi-r"] {
+    color:#868686;
+}
+
+.slot-item i[class^="fi fi-s"] {
+    text-shadow: 1px 1.5px 1px rgba(0, 0, 0, 0.7);
+}
+
+.slot-item:hover i {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.empty-slot {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.current-item-info {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.current-item {
+    display: block;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+#hatchPopup .popup-content {
+    width: 90%;
+    max-width: 300px;
+    height: fit-content;
+    padding: 30px;
+    text-align: center;
+}
+
+#hatchPopup #hatchCost {
+    margin: 20px 0;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#hatchPopup #confirmHatchBtn {
+    margin: 0 auto;
+    width: 80%;
+    max-width: 200px;
+}
+
+/* Battle Popup Styles */
+.battle-popup-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.team-selector-section {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+.team-select {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.opponents-section {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+.opponents-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-section {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.player-section h4 {
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 18px;
+}
+
+.player-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.opponent-team {
+    padding: 5px;
+    border-color: #868686;
+    border-width: 1px;
+    border-style: dashed;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.opponent-team:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.opponent-team.selected {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+.opponent-team .team-dino {
+    font-size: 0.8em;
+}
+
+#startBattleBtn {
+    display: none;
+    margin: 20px auto 0;
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startBattleBtn:hover {
+    background-color: #45a049;
+}
+
+/* Custom scrollbar for opponents section */
+.opponents-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.opponents-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.opponents-section::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.opponents-section::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.battle-popup-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.champion-section {
+    background: rgba(134, 89, 45, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.champion-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.champion-info h4 {
+    color: #ea762e;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.arena-stats {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(134, 89, 45, 0.1);
+    border-radius: 6px;
+}
+
+.arena-stats p {
+    flex: 1;
+    margin: 0;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.champion-team {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.champion-team h5 {
+    color: #864abe;
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+
+.champion-team .team-dinos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.dino-card-arena {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.dino-card-arena .dino-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.dino-card-arena .dino-level {
+    font-size: 0.9em;
+}
+
+.dino-card-arena .dino-class {
+    background: rgba(134, 89, 45, 0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.energy-empty {
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}

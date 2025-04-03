@@ -9,7 +9,7 @@ def run():
 
     for skin in skins:
 
-        if skin.name == 'emoji' or skin.name == 'background_image':
+        if skin.name == 'emoji' or skin.name == 'background_image': # Ca crash car on ne doit pas filtrer par name mais par type
             pattern = ''
         else:
             pattern = '#abc'

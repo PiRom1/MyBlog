@@ -105,78 +105,140 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             selectedItem = item;
             const itemFavorite = item.getAttribute('data-favorite');
+            const itemType = item.getAttribute('data-type');
+            const isEquippedOnArenaDino = item.getAttribute('data-equipped-on-arena-dino') === 'True';
+            const isEquippedOnDino = item.getAttribute('data-equipped-on-dino') === 'True';
             
-            // Toujours afficher l'option "Infos", "Vendre" et "Échanger"
-            infoOption.style.display = 'block';
-            sellOption.style.display = 'block';
-            tradeOption.style.display = 'block';
-            useOption.style.display = 'none';
-            unequipOption.style.display = 'none';
-            equipOption.style.display = 'none';
-    
-            // Gérer les options spécifiques aux skins
-            if (itemType === 'skin') {
-                favoriteOption.style.display = 'block';
-                favoriteOption.textContent = itemFavorite === 'True' ? 'Retirer des favoris' : 'Ajouter en favori';
-            } else {
+            
+            if (isEquippedOnDino) {
+                // Hide all standard options
+                sellOption.style.display = 'none';
+                tradeOption.style.display = 'none';
                 favoriteOption.style.display = 'none';
-            }
-    
-            // Gérer l'option "Ouvrir" pour les boîtes
-            if (itemType === 'box') {
-                openOption.style.display = 'block';
-            } else {
                 openOption.style.display = 'none';
-            }
-            
-            console.log(itemSkinType);
-
-            // Gérer l'option "Utiliser" des émojis 
-            if (itemSkinType === 'emoji') {
-                favoriteOption.style.display = 'none';
-                if (itemPattern == '') {
-                    useOption.style.display = 'block';
+                useOption.style.display = 'none';
+                unequipOption.style.display = 'none';
+                equipOption.style.display = 'none';
+                
+                // Show arena warning message
+                if (isEquippedOnArenaDino) {
+                    if (contextMenu.querySelector('ul').querySelector('.dino-warning')) {
+                        contextMenu.querySelector('ul').querySelector('.dino-warning').remove();
+                    }
+                    if (!contextMenu.querySelector('ul').querySelector('.arena-warning')) {
+                        const arenaWarning = document.createElement('li');
+                        arenaWarning.textContent = "Item utilisé sur un Dino en arène";
+                        arenaWarning.className = 'arena-warning';
+                        contextMenu.querySelector('ul').appendChild(arenaWarning);
+                    }
+                        
+                } else if (!contextMenu.querySelector('ul').querySelector('.dino-warning')) {
+                    if (contextMenu.querySelector('ul').querySelector('.arena-warning')) {
+                        contextMenu.querySelector('ul').querySelector('.arena-warning').remove();
+                    }
+                    const dinoWarning = document.createElement('li');
+                    dinoWarning.textContent = "Item utilisé sur un Dino. Déséquiper ?";
+                    dinoWarning.className = 'dino-warning';
+                    contextMenu.querySelector('ul').appendChild(dinoWarning);
+                    dinoWarning.addEventListener('click', function() {
+                        const itemId = selectedItem.getAttribute('data-id');
+                        fetch('/unequip_dino_item', {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRFToken': csrftoken
+                            },
+                            body: `item_id=${itemId}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                contextMenu.querySelector('ul').querySelector('.dino-warning').remove();
+                                selectedItem.setAttribute('data-equipped-on-dino', 'False');
+                            }
+                        });
+                    });
+                }
+            } else {
+                // Regular context menu logic
+                // Toujours afficher l'option "Infos", "Vendre" et "Échanger"
+                if (contextMenu.querySelector('ul').querySelector('.arena-warning')) {
+                    contextMenu.querySelector('ul').querySelector('.arena-warning').remove();
+                } else if (contextMenu.querySelector('ul').querySelector('.dino-warning')) {
+                    contextMenu.querySelector('ul').querySelector('.dino-warning').remove();
+                }
+                infoOption.style.display = 'block';
+                sellOption.style.display = 'block';
+                tradeOption.style.display = 'block';
+                useOption.style.display = 'none';
+                unequipOption.style.display = 'none';
+                equipOption.style.display = 'none';
+        
+                // Gérer les options spécifiques aux skins
+                if (itemType === 'skin') {
+                    favoriteOption.style.display = 'block';
+                    favoriteOption.textContent = itemFavorite === 'True' ? 'Retirer des favoris' : 'Ajouter en favori';
                 } else {
-                    useOption.style.display = 'none';
+                    favoriteOption.style.display = 'none';
                 }
-            }
-
-            // Gérer l'option "Utiliser" et "Déséquiper" des Backgrounds 
-            if (itemSkinType === 'background_image') {
-                favoriteOption.style.display = 'none';
-
-                if (itemPattern === "") {
-                    useOption.style.display = 'block';
+        
+                // Gérer l'option "Ouvrir" pour les boîtes
+                if (itemType === 'box') {
+                    openOption.style.display = 'block';
+                } else {
+                    openOption.style.display = 'none';
                 }
-
-                else {
-
-                    if (itemEquipped === "True") {
-                        unequipOption.style.display = 'block';
+                
+                console.log(itemSkinType);
+    
+                // Gérer l'option "Utiliser" des émojis 
+                if (itemSkinType === 'emoji') {
+                    favoriteOption.style.display = 'none';
+                    if (itemPattern == '') {
+                        useOption.style.display = 'block';
+                    } else {
+                        useOption.style.display = 'none';
                     }
+                }
+    
+                // Gérer l'option "Utiliser" et "Déséquiper" des Backgrounds 
+                if (itemSkinType === 'background_image') {
+                    favoriteOption.style.display = 'none';
+    
+                    if (itemPattern === "") {
+                        useOption.style.display = 'block';
+                    }
+    
                     else {
-                        equipOption.style.display = 'block';
+    
+                        if (itemEquipped === "True") {
+                            unequipOption.style.display = 'block';
+                        }
+                        else {
+                            equipOption.style.display = 'block';
+                        }
                     }
                 }
-            }
-
-            if (itemSkinType === 'border_image') {
-                infoModal.style.flex = '1';
-                infoModal.style.borderImageSlice = '31 16 30 15 fill';
-                infoModal.style.borderImageOutset = '0px';
-                infoModal.style.borderImageRepeat = 'round';
-                infoModal.style.borderStyle = 'solid';
-                infoModal.style.borderWidth = '30px 15px';
-                infoModal.style.setProperty('border-image-source', `url(${itemUrl})`, 'important'); // Avec priorité 'important'
-            }
-
-            else {
-                infoModal.style.borderImageSource = ''
-                infoModal.style.borderImageSlice = ''
-                infoModal.style.borderImageOutset = '';
-                infoModal.style.borderImageRepeat = '';
-                infoModal.style.borderStyle = '';
-                infoModal.style.borderWidth = '';
+    
+                if (itemSkinType === 'border_image') {
+                    infoModal.style.flex = '1';
+                    infoModal.style.borderImageSlice = '31 16 30 15 fill';
+                    infoModal.style.borderImageOutset = '0px';
+                    infoModal.style.borderImageRepeat = 'round';
+                    infoModal.style.borderStyle = 'solid';
+                    infoModal.style.borderWidth = '30px 15px';
+                    infoModal.style.setProperty('border-image-source', `url(${itemUrl})`, 'important'); // Avec priorité 'important'
+                }
+    
+                else {
+                    infoModal.style.borderImageSource = ''
+                    infoModal.style.borderImageSlice = ''
+                    infoModal.style.borderImageOutset = '';
+                    infoModal.style.borderImageRepeat = '';
+                    infoModal.style.borderStyle = '';
+                    infoModal.style.borderWidth = '';
+                }
             }
                 
 

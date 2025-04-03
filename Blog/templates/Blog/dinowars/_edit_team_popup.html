@@ -1,0 +1,52 @@
+<form method="post" action="{% if current_team %}{% url 'edit_team_view_with_id' team_id=current_team.id %}{% else %}{% url 'edit_team_view' %}{% endif %}" {% if current_team %}data-team-id="{{ current_team.id }}"{% endif %}>
+    {% csrf_token %}
+    <h2>{% if current_team %}Editer l'{% else %}Créer une {% endif %}équipe</h2>
+    
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+    
+    <div class="form-group">
+        <label for="team_name">Nom de l'équipe:</label>
+        <input type="text" id="team_name" name="team_name" class="form-control" 
+               value="{{ current_team.name|default:'' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="dino1">1er Dino:</label>
+        <select name="dino1" id="dino1" required>
+            <option value="">Sélectionner un Dino</option>
+            {% for dino in user_dinos %}
+                <option value="{{ dino.id }}" {% if current_team and current_team.dino1.id == dino.id %}selected{% endif %}>
+                    {{ dino.dino.name }} (Nv. {{ dino.level }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="dino2">2e Dino:</label>
+        <select name="dino2" id="dino2" required>
+            <option value="">Sélectionner un Dino</option>
+            {% for dino in user_dinos %}
+                <option value="{{ dino.id }}" {% if current_team and current_team.dino2.id == dino.id %}selected{% endif %}>
+                    {{ dino.dino.name }} (Nv. {{ dino.level }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="dino3">3e Dino:</label>
+        <select name="dino3" id="dino3" required>
+            <option value="">Sélectionner un Dino</option>
+            {% for dino in user_dinos %}
+                <option value="{{ dino.id }}" {% if current_team and current_team.dino3.id == dino.id %}selected{% endif %}>
+                    {{ dino.dino.name }} (Nv. {{ dino.level }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="edit-team-btn">Save Team</button>
+</form>

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views, dinowars_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -52,6 +52,7 @@ urlpatterns = [
     path('inventory/update_equipped', inventory_views.update_equipped, name='update_equipped'),
     path('equip_bg', inventory_views.equip_bg, name='equip_bg'),
     path('unequip_bg', inventory_views.unequip_bg, name='unequip_bg'),
+    path('unequip_dino_item', inventory_views.unequip_dino_item, name='unequip_dino_item'),
 
     # Emojis
     path('emoji/<int:pk>', inventory_views.use_emoji, name='use_emoji'),
@@ -114,4 +115,17 @@ urlpatterns = [
     path('quêtes/achieved', quests_views.achieve_quest, name='achieve_quest'),
     path('quêtes/accept', quests_views.accept_quest, name='accept_quest'),
 
+    # DinoWars
+    path('dinowars/', dinowars_views.user_dinos_view, name='user_dinos_view'),
+    path('dinowars/edit_team/', dinowars_views.edit_team_view, name='edit_team_view'),
+    path('dinowars/edit_team/<int:team_id>/', dinowars_views.edit_team_view, name='edit_team_view_with_id'),
+    path('dinowars/delete_team/<int:team_id>/', dinowars_views.delete_team_view, name='delete_team_view'),
+    path('dinowars/dino/<int:dino_id>/', dinowars_views.dino_details_view, name='dino_details_view'),
+    path('dinowars/dino/<int:dino_id>/runes/', dinowars_views.dino_runes_view, name='dino_runes_view'),
+    path('dinowars/inventory/runes/', dinowars_views.runes_inventory_view, name='runes_inventory_view'),
+    path('dinowars/dino/<int:dino_id>/equip-rune/', dinowars_views.equip_rune, name='equip_rune'),
+    path('dinowars/fuse-dinos/', dinowars_views.fuse_dinos, name='fuse_dinos'),
+    path('dinowars/hatch/', dinowars_views.hatch_dino, name='hatch_dino'),
+    path('dinowars/battle/', dinowars_views.battle_view, name='battle_view'),
+    path('dinowars/arena/', dinowars_views.arena_view, name='arena_view'),
 ]

@@ -230,6 +230,19 @@ h1 {
     pointer-events: none;
 }
 
+.context-menu .arena-warning {
+    color: #ff4444;
+    font-weight: bold;
+    padding: 8px 12px;
+    cursor: default;
+}
+
+.context-menu .dino-warning {
+    color: #ff8944;
+    font-weight: bold;
+    padding: 8px 12px;
+}
+
 /* Flou de fond lorsque la modale est active */
 .blur-background {
     position: fixed;

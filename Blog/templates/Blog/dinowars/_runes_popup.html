@@ -1,0 +1,50 @@
+{% load dino_tags %}
+
+<div class="runes-container" data-dino-id="{{ dino.id }}">
+    <div class="rune-slots">
+        <h3>Runes</h3>
+        {% for slot in slots %}
+        <div class="rune-slot" data-slot="{{ slot.type }}">
+            <div class="slot-item" onclick="showInventory('{{ slot.type }}')">
+                {% if slot.rarity %}
+                    <i class="fi fi-ss-{{ slot.type|get_icon_class }} equipped {{ slot.rarity|get_rarity_class }}"></i>
+                {% else %}
+                    <i class="fi fi-rs-{{ slot.type|get_icon_class }}"></i>
+                {% endif %}
+            </div>
+            <span class="slot-name"><strong>{{ slot.name }}:</strong></span>
+            <div class="slot-number">
+                {{ slot.total }} ({{ slot.base }}+{{ slot.bonus }})
+            </div>
+            <div class="slot-item-skin" style="display: none;" data="{{ slot.skin_name|default:'None' }}"></div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="inventory-panel" style="display: none;">
+        <h3>Inventaire</h3>
+        <div class="inventory-header" style="display: none;">
+            <div class="current-item-info">
+                <span>Item équippé:</span>
+                <span class="current-item" id="currentItem"></span>
+            </div>
+            <button class="empty-slot-btn" onclick="emptySlot()">Retirer l'item</button>
+        </div>
+        <div class="inventory-items">
+            <!-- Items will be loaded here dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize icons
+    document.querySelectorAll('.rune-slot').forEach(slot => {
+        const slotType = slot.dataset.slot;
+        const iconClass = getIconClass(slotType);
+        const slotItem = slot.querySelector('.slot-item i');
+        if (slotItem) {
+            slotItem.className = slotItem.className.replace(slotType, iconClass);
+        }
+    });
+});
+</script>

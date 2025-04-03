@@ -435,3 +435,117 @@ class ObjectifForQuest(models.Model):
     def __str__(self):
         return f"{self.quest} - {self.objectif} ({self.objective_value})"
 
+class DWAttack(models.Model):
+    name = models.CharField(max_length=100)
+    atk_mult_low = models.FloatField(default=0.5)
+    atk_mult_high = models.FloatField(default=1.5)
+    spe_effect = models.TextField(default='')
+
+    def __str__(self):
+        return self.name
+    
+class DWDino(models.Model):
+    name = models.CharField(max_length=100)
+    CLASS = [('tank', 'Tank'), ('dps', 'DPS'), ('support', 'Support')]
+    classe = models.CharField(max_length=10, choices=CLASS, default='dps')
+    base_hp = models.IntegerField(default=3000)
+    base_atk = models.IntegerField(default=100)
+    base_def = models.IntegerField(default=100)
+    base_spd = models.FloatField(default=1.0)
+    base_crit = models.FloatField(default=0.05)
+    base_crit_dmg = models.FloatField(default=1.5)
+    attack = models.ForeignKey(DWAttack, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+    
+class DWUserDino(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dino = models.ForeignKey(DWDino, on_delete=models.CASCADE)
+    level = models.IntegerField(default=1)
+    hp = models.IntegerField(default=3000)
+    atk = models.IntegerField(default=100)
+    defense = models.IntegerField(default=100)
+    spd = models.FloatField(default=1.0)
+    crit = models.FloatField(default=0.05)
+    crit_dmg = models.FloatField(default=1.5)
+    attack = models.ForeignKey(DWAttack, on_delete=models.CASCADE, null=True, blank=True)
+    in_arena = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.dino} de {self.user} (lvl{self.level})"
+
+class DWUserTeam(models.Model):
+    name = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dino1 = models.ForeignKey(DWUserDino, on_delete=models.CASCADE, related_name='dino1')
+    dino2 = models.ForeignKey(DWUserDino, on_delete=models.CASCADE, related_name='dino2')
+    dino3 = models.ForeignKey(DWUserDino, on_delete=models.CASCADE, related_name='dino3')
+    in_arena = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"{self.dino1} - {self.dino2} - {self.dino3}"
+    
+class DWUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    elo = models.IntegerField(default=1000)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    free_hatch = models.IntegerField(default=0)
+    arena_energy = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.username} ({self.elo}elo)"
+
+class DWArena(models.Model):
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    team = models.OneToOneField(DWUserTeam, null=True, blank=True, on_delete=models.SET_NULL)
+    user_str = models.CharField(max_length=100, default='')
+    team_str = models.CharField(max_length=100, default='')
+    date = models.DateTimeField(auto_now_add=True)
+    win_streak = models.IntegerField(default=1)
+    active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if self.user:
+            self.user_str = self.user.username
+        if self.team:
+            self.team_str = str(self.team)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user_str} ({self.team_str})"
+
+class DWFight(models.Model):
+    user1 = models.CharField(max_length=100)
+    user2 = models.CharField(max_length=100)
+    user1_team = models.CharField(max_length=100)
+    user2_team = models.CharField(max_length=100)
+    winner = models.CharField(max_length=100)
+    GAMEMODE = [('duel', 'Duel'), ('arena', 'Arena')]
+    gamemode = models.CharField(max_length=10, choices=GAMEMODE, default='duel')
+    date = models.DateTimeField(auto_now_add=True)
+    logs = models.TextField(default='')
+    
+    def __str__(self):
+        return f"{self.user1} vs {self.user2} ({self.date})"
+    
+class DWDinoItem(models.Model):
+    SLOT_TYPES = [
+        ('hp', 'Health'),
+        ('atk', 'Attack'),
+        ('defense', 'Defense'),
+        ('spd', 'Speed'),
+        ('crit', 'Critical Rate'),
+        ('crit_dmg', 'Critical Damage'),
+    ]
+    
+    dino = models.ForeignKey(DWUserDino, on_delete=models.CASCADE)
+    slot = models.CharField(max_length=8, choices=SLOT_TYPES)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('dino', 'slot')
+        
+    def __str__(self):
+        return f"{self.dino} - {self.get_slot_display()}: {self.item}"

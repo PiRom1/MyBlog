@@ -178,3 +178,34 @@ class ObjectifQuestAdmin(admin.ModelAdmin):
 class ObjectifForQuestAdmin(admin.ModelAdmin):
     list_display = ("quest", "objectif", "achieved", "objective_value", "current_value")
 
+@admin.register(DWAttack)
+class DWAttackAdmin(admin.ModelAdmin):
+    list_display = ('name', 'atk_mult_low', 'atk_mult_high', 'spe_effect')
+
+@admin.register(DWDino)
+class DWDinoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'classe', 'base_hp', 'base_atk', 'base_def', 'base_spd', 'base_crit', 'base_crit_dmg', 'attack')
+
+@admin.register(DWUserDino)
+class DWUserDinoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'dino', 'level', 'hp', 'atk', 'defense', 'spd', 'crit', 'crit_dmg', 'attack', 'in_arena')
+
+@admin.register(DWUserTeam)
+class DWUserTeamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'dino1', 'dino2', 'dino3', 'in_arena')
+
+@admin.register(DWUser)
+class DWUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 'elo', 'wins', 'losses', 'free_hatch', 'arena_energy')
+
+@admin.register(DWFight)
+class DWFightAdmin(admin.ModelAdmin):
+    list_display = ('user1', 'user2', 'winner', 'gamemode', 'date')
+
+@admin.register(DWDinoItem)
+class DWDinoItemAdmin(admin.ModelAdmin):
+    list_display = ('dino', 'slot', 'item')
+
+@admin.register(DWArena)
+class DWArenaAdmin(admin.ModelAdmin):
+    list_display = ('user', 'team', 'user_str', 'team_str', 'win_streak', 'date', 'active')

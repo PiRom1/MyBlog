@@ -1,0 +1,59 @@
+<div class="arena-popup-content">
+    <div class="team-selector-section" id="teamSelectorSection" data-arenaEnergy="{{ arena_energy }}">
+        <h3>Combattre avec</h3>
+        <select id="userTeamSelect" class="team-select" data-username="{{ user.username }}">
+            <option value="">Choisissez une équipe...</option>
+            {% for team in user_teams %}
+                <option value="{{ team.id }}">{{ team.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="opponents-section" id="opponentsSection" style="max-height: 60vh;">
+        <h3>Champion de l'arène</h3>
+        <div class="champion-section">
+            {% if arena_team %}
+                <div class="champion-info">
+                    <h4 id="championUsername">{{ arena_team.user.username }}</h4>
+                    {% if arena_info %}
+                        <div class="arena-stats">
+                            <p>Victoires consécutives: {{ arena_info.win_streak }}</p>
+                            <p>Depuis: 
+                                {% if time_diff %}
+                                    {% if time_diff.days > 0 %}
+                                        {{ time_diff.days }}j 
+                                    {% endif %}
+                                    {% if time_diff.hours > 0 %}
+                                        {{ time_diff.hours }}h 
+                                    {% endif %}
+                                    {{ time_diff.minutes }}m
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="champion-team">
+                    <h5>Équipe: {{ arena_team.name }}</h5>
+                    <div class="team-dinos">
+                        <div class="dino-card-arena">
+                            <p class="dino-name">{{ arena_team.dino1.dino.name }}</p>
+                            <p class="dino-level">Niveau {{ arena_team.dino1.level }}</p>
+                        </div>
+                        <div class="dino-card-arena">
+                            <p class="dino-name">{{ arena_team.dino2.dino.name }}</p>
+                            <p class="dino-level">Niveau {{ arena_team.dino2.level }}</p>
+                        </div>
+                        <div class="dino-card-arena">
+                            <p class="dino-name">{{ arena_team.dino3.dino.name }}</p>
+                            <p class="dino-level">Niveau {{ arena_team.dino3.level }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucun champion actuel dans l'arène</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <button id="startBattleBtn" class="battle-btn" style="display: none;">Combattre!</button>
+</div>

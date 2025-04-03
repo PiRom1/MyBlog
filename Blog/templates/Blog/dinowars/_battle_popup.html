@@ -1,0 +1,38 @@
+<div class="battle-popup-content">
+    <div class="team-selector-section">
+        <h3>Combattre avec</h3>
+        <select id="userTeamSelect" class="team-select">
+            <option value="">Choisissez une équipe...</option>
+            {% for team in user_teams %}
+                <option value="{{ team.id }}">{{ team.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="opponents-section" id="opponentsSection" style="max-height: 60vh;">
+        <h3>Joueurs et équipes</h3>
+        <div class="opponents-list">
+            {% for player in players %}
+                <div class="player-section">
+                    <h4>{{ player.username }}</h4>
+                    <div class="player-teams">
+                        {% for team in player.teams %}
+                            <div class="team-box opponent-team" data-team-id="{{ team.id }}">
+                                <div class="team-header">
+                                    <h3>{{ team.name }}</h3>
+                                </div>
+                                <div class="team-members">
+                                    <div class="team-dino">{{ team.dino1.dino.name }} (Nv. {{ team.dino1.level }})</div>
+                                    <div class="team-dino">{{ team.dino2.dino.name }} (Nv. {{ team.dino2.level }})</div>
+                                    <div class="team-dino">{{ team.dino3.dino.name }} (Nv. {{ team.dino3.level }})</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button id="startBattleBtn" class="battle-btn" style="display: none;">Combattre!</button>
+</div>

@@ -48,7 +48,8 @@
         {% for item in items %}
         <div class="inventory-item" id="{{item.id}}" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
              data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}" data-url="{{item.url}}"
-             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}" data-rarity-name="{{item.rarity_name}}" data-rarity-color="{{item.rarity_color}}"{% endif %}
+             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}" data-rarity-name="{{item.rarity_name}}" data-rarity-color="{{item.rarity_color}}"
+             data-equipped-on-dino="{{ item.equipped_on_dino }}" data-equipped-on-arena-dino="{{ item.equipped_on_arena_dino }}"{% endif %}
              {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
 
             <img src="{{ item.image }}" alt="{{ item.name }}" id="img-{{item.item_id}}">

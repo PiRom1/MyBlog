@@ -1,0 +1,143 @@
+{% extends 'Blog/layout/base.html' %}
+{% load static %}
+{% load dino_tags %}
+
+{% block content %}
+{% csrf_token %}
+<div class="dino-container">
+    <div class="user-info">
+        <h2>User Stats</h2>
+        {% if user_stats %}
+            <div class="stats">
+                <p>Elo: {{ user_stats.elo }}</p>
+                <p>Victoires: {{ user_stats.wins }}</p>
+                <p>Défaites: {{ user_stats.losses }}</p>
+                <p>---------------------</p>
+                <p>Oeufs gratuits: {{ user_stats.free_hatch }}</p>
+                <p>Energie d'arène: {{ user_stats.arena_energy }}</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="user-actions-section">
+        <button class="action-btn hatch-btn">Faire éclore un Dino</button>
+        <button class="action-btn arena-btn">Arène</button>
+        <button class="action-btn battle-btn">Combattre un joueur</button>
+    </div>
+
+    <div class="team-section">
+        <h2>Tes Equipes</h2>
+        <div id="teams-container">
+            {% if user_team %}
+                {% for team in user_team %}
+                    <div class="team-box" data-team-id="{{ team.id }}" {% if team.in_arena %}data-in-arena="true"{% endif %}>
+                        <div class="team-header">
+                            <h3>{{ team.name }}</h3>
+                            <div class="team-actions">
+                                {% if team.in_arena %}
+                                    <span class="arena-warning">Equipe dans l'arène!</span>
+                                {% else %}
+                                    <button class="icon-btn edit-btn" onclick="openEditTeamPopup({{ team.id }})">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button class="icon-btn delete-btn" onclick="deleteTeam({{ team.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="team-members">
+                            <div class="team-dino">{{ team.dino1.dino.name }} (Nv. {{ team.dino1.level }})</div>
+                            <div class="team-dino">{{ team.dino2.dino.name }} (Nv. {{ team.dino2.level }})</div>
+                            <div class="team-dino">{{ team.dino3.dino.name }} (Nv. {{ team.dino3.level }})</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button class="create-team-btn" onclick="openEditTeamPopup()">Créer une équipe</button>
+    </div>
+
+    <div class="dinos-collection">
+        <h2>Tes Dinos</h2>
+        <div class="dinos-grid" id="dinosGrid">
+            {% for dino in user_dinos %}
+                <div class="dino-card" 
+                     data-level="{{ dino.level }}" 
+                     data-name="{{ dino.name }}" 
+                     data-dino-id="{{ dino.id }}"
+                     {% if dino.in_arena %}data-in-arena="true"{% endif %}
+                     {% if dino.in_arena_team %}data-in-arena-team="true"{% endif %}>
+                    <h3>{{ dino.dino.name }}</h3>
+                    <p>Niveau {{ dino.level }}</p>
+                    <p class="runes">
+                        {% with 'hp,atk,defense,spd,crit,crit_dmg' as slot_types %}
+                        {% for slot_type in slot_types|split_string %}
+                            {% if dino.equipped_runes|get_item:slot_type %}
+                                <i class="fi fi-ss-{{ slot_type|get_icon_class }} {{ dino.equipped_runes_rarity|get_item:slot_type|get_rarity_class }}"></i>
+                            {% else %}
+                                <i class="fi fi-rs-{{ slot_type|get_icon_class }}"></i>
+                            {% endif %}
+                        {% endfor %}
+                        {% endwith %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div id="editTeamPopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeEditTeamPopup()">&times;</span>
+        <div id="editTeamContent"></div>
+    </div>
+</div>
+
+<div id="hatchPopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeHatchPopup()">&times;</span>
+        <h3>Faire éclore un nouveau Dino</h3>
+        <p id="hatchCost">
+            {% if user_stats.free_hatch > 0 %}
+                Tu as {{ user_stats.free_hatch }} {% if user_stats.free_hatch > 1 %}oeufs gratuits restants{% else %}oeuf gratuit restant{% endif %}!
+            {% else %}
+                Cost: 30 <img src="{% static 'img/coin.png' %}" width="20">
+            {% endif %}
+        </p>
+        <button id="confirmHatchBtn" class="action-btn">Faire éclore!</button>
+    </div>
+</div>
+
+<div id="battlePopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeBattlePopup()">&times;</span>
+        <div id="battleContent"></div>
+    </div>
+</div>
+
+<div id="arenaPopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeArenaPopup()">&times;</span>
+        <div id="arenaContent"></div>
+    </div>
+</div>
+
+<div id="dinoDetailPopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeDinoDetailPopup()">&times;</span>
+        <div id="dinoDetailContent"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Blog/dinowars/css/user_dinos.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'Blog/dinowars/js/user_dinos.js' %}"></script>
+{% endblock %}

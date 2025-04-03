@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from ..models import UserInventory, Item, Skin, Box, Emojis, Background, BorderImage
+from ..models import UserInventory, Item, Skin, Box, Emojis, Background, BorderImage, DWDinoItem
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from ..forms import EmojiForm, BackgroundForm
@@ -35,6 +35,17 @@ def user_inventory_view(request):
     for inventory in user_inventory:
         item = inventory.item
         
+        # Check if item is equipped on an arena dino
+        equipped_on_arena_dino = False
+        equipped_on_dino = DWDinoItem.objects.filter(item=item).exists()
+        if item.type == 'skin':
+            equipped_on_arena_dino = DWDinoItem.objects.filter(
+                item=item,
+                dino__in_arena=True
+            ).exists()
+
+        print(equipped_on_arena_dino)
+        
         # Si l'item est un box
         if item.type == 'box':
             box = Box.objects.get(id=item.item_id)
@@ -47,7 +58,7 @@ def user_inventory_view(request):
                 'open_price': box.open_price,
                 'equipped': inventory.equipped,
                 'favorite': inventory.favorite,
-                'obtained_date': inventory.obtained_date
+                'obtained_date': inventory.obtained_date,
             })
         # Si l'item est un skin
         elif item.type == 'skin':
@@ -65,7 +76,9 @@ def user_inventory_view(request):
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
                 'rarity_name': skin.rarity.name,
-                'rarity_color': skin.rarity.color
+                'rarity_color': skin.rarity.color,
+                'equipped_on_dino': equipped_on_dino,
+                'equipped_on_arena_dino': equipped_on_arena_dino
                 })
             
             if skin.type == 'emoji' and item.pattern != '':
@@ -284,3 +297,22 @@ def unequip_bg(request):
         user_bg.save()
 
     return JsonResponse({'success' : True})
+
+
+@login_required
+def unequip_dino_item(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        
+        try:
+            item = Item.objects.get(id=item_id)
+            # Delete all DWDinoItem entries for this item
+            DWDinoItem.objects.filter(item=item).delete()
+            return JsonResponse({'success': True})
+        except Item.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Item not found'})
+        
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
