@@ -14,6 +14,8 @@ class DinoStats:
     speed: float  # attacks per second
     crit_chance: float
     crit_damage: float
+    accuracy: float = 1.0  # 100% accuracy by default
+    dodge: float = 0.0  # 0% dodge chance by default
 
 
 @dataclass
@@ -21,6 +23,7 @@ class Attack:
     name: str
     dmg_multiplier: tuple  # (min, max)
     on_hit_effect: Callable[['Dino', 'Dino', 'GameState'], None] = None
+    before_attack_effect: Callable[['Dino', 'Dino', 'GameState'], None] = None
 
 
 @dataclass
@@ -32,6 +35,7 @@ class Dino:
     attack: Attack
     current_hp: float = field(init=False)
     current_statuses: List[str] = field(default_factory=list)
+    cooldown: bool = False # Indicates if the dino's attack's special effect is on cooldown
 
     def __post_init__(self):
         self.current_hp = self.stats.hp
@@ -45,6 +49,10 @@ class ScheduledAction:
     tick: int
     priority: int
     action: Callable[[], None] = field(compare=False)
+    action_type: str = field(default="generic", compare=False)
+    target_id: int = field(default=None, compare=False)  # ID of the target dino
+    source_id: int = field(default=None, compare=False)  # ID of the source dino (if applicable)
+    effect_name: str = field(default=None, compare=False)  # Name of the effect (if applicable)
 
 
 class GameState:
@@ -57,6 +65,7 @@ class GameState:
 
     def log_initial_state(self):
         initial_state = {
+            "type": "initial_state",
             "tick": 0,
             "initial_state": {
                 team_name: [asdict(dino) for dino in dinos]
@@ -65,15 +74,26 @@ class GameState:
         }
         self.fight_log.append(initial_state)
 
-    def schedule_action(self, tick_delay: int, priority: int, action: Callable[[], None]):
-        heapq.heappush(self.action_queue, ScheduledAction(self.tick + tick_delay, priority, action))
+    def schedule_action(self, tick_delay: int, priority: int, action: Callable[[], None], 
+                  action_type: str = "generic", target_id: int = None, 
+                  source_id: int = None, effect_name: str = None):
+        heapq.heappush(self.action_queue, ScheduledAction(
+                self.tick + tick_delay, 
+                priority, 
+                action,
+                action_type,
+                target_id,
+                source_id,
+                effect_name
+            )
+        )
 
     def run(self):
         # Schedule initial attacks for all dinos
         for team_name, dinos in self.teams.items():
             for dino in dinos:
                 interval = int(100 / dino.stats.speed)
-                self.schedule_action(interval, 1, lambda d=dino: self.dino_attack(d))
+                self.schedule_action(interval, 1, lambda d=dino: self.dino_action(d), "dino_action", dino.id)
 
         while self.action_queue and all(any(d.is_alive() for d in team) for team in self.teams.values()):
             next_tick = self.action_queue[0].tick
@@ -88,6 +108,7 @@ class GameState:
 
         # Log final state, export fight log, and return results
         final_state = {
+            "type": "final_state",
             "tick": self.tick,
             "final_state": {
                 team_name: [asdict(dino) for dino in dinos]
@@ -98,59 +119,89 @@ class GameState:
         self.fight_log.append(final_state)
         return json.dumps(self.fight_log, indent=2)
 
-    def dino_attack(self, attacker: Dino, target: Dino = None):
+    def dino_action(self, attacker: Dino, defender: Dino = None):
         if not attacker.is_alive():
             return
-
-        if target:
-            defender = target
-        else:
+        
+        if defender is None:
             defender = self.choose_target(attacker)
 
-        if defender:
-            damage, is_crit = self.calculate_damage(attacker, defender)
-            defender.current_hp -= damage
-
-            log_entry = {
-                "tick": self.tick,
-                "attacker": attacker.name,
-                "attacker_id": attacker.id,
-                "defender": defender.name,
-                "defender_id": defender.id,
-                "damage": damage,
-                "is_crit": is_crit,
-                "defender_hp": max(defender.current_hp, 0)
-            }
-
-            self.fight_log.append(log_entry)
-
+        if defender.is_alive():
+            do_attack = True
+            miss = False
+            # Apply before attack effect if any
+            if attacker.attack.before_attack_effect:
+                do_attack, miss = attacker.attack.before_attack_effect(attacker, defender, self)
+            if do_attack:
+                damage, miss = self.dino_attack(attacker, defender)
             # Apply on-hit effect if any
-            if attacker.attack.on_hit_effect:
-                attacker.attack.on_hit_effect(attacker, defender, self)
+            if attacker.attack.on_hit_effect and not miss:
+                attacker.attack.on_hit_effect(attacker, defender, self, damage)
 
         # Schedule next attack
         interval = int(100 / attacker.stats.speed)
-        self.schedule_action(interval, 1, lambda d=attacker: self.dino_attack(d))
+        self.schedule_action(interval, 1, lambda d=attacker: self.dino_action(d), "dino_action", attacker.id)
+
+    def dino_attack(self, attacker: Dino, defender: Dino, custom_stats: tuple = None, damage: int = None):
+        if not attacker.is_alive() or not defender.is_alive():
+            return
+        if damage is None:
+            stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
+            if custom_stats:
+                for i, stat in enumerate(custom_stats):
+                    if stat is not None:
+                        stats[i] = stat                
+            damage, is_crit = self.calculate_damage(*stats)
+        else:
+            is_crit = False
+        if "bleed" in defender.current_statuses:
+            damage = int(damage * 1.1)
+        miss = random.random() > attacker.stats.accuracy
+        if "dodge" in defender.current_statuses:
+            miss = miss or random.random() < defender.stats.dodge
+            defender.current_statuses.remove("dodge")
+        if miss:
+            damage = 0
+            is_crit = False
+        defender.current_hp -= damage
+        log_entry = {
+            "type": "attack",
+            "tick": self.tick,
+            "attacker": attacker.name,
+            "attacker_id": attacker.id,
+            "defender": defender.name,
+            "defender_id": defender.id,
+            "damage": damage,
+            "is_crit": is_crit,
+            "defender_hp": max(defender.current_hp, 0)
+        }
+        self.fight_log.append(log_entry)
+        if "reflect" in defender.current_statuses:
+            reflected_damage = int(damage * 0.3)
+            attacker.current_hp -= reflected_damage
+            self.log_effect("reflect_damage", attacker, "hp", reflected_damage)
+            defender.current_statuses.remove("reflect")
+
+        return damage, miss
 
     def choose_target(self, attacker: Dino):
         enemy_team = next(team for team in self.teams.values() if attacker not in team)
         opponents = [d for d in enemy_team if d.is_alive()]
         return random.choice(opponents) if opponents else None
 
-    def calculate_damage(self, attacker: Dino, defender: Dino):
-        atk_stats = attacker.stats
-        multiplier = random.uniform(*attacker.attack.dmg_multiplier)
-        base_dmg = atk_stats.atk * multiplier
-
-        is_crit = random.random() < atk_stats.crit_chance
+    def calculate_damage(self, atk: int, mult: float, defense: int, crit_chance: float, crit_damage: float) -> float:
+        # atk_stats = attacker.stats
+        # multiplier = random.uniform(*attacker.attack.dmg_multiplier)
+        base_dmg = atk * mult
+        is_crit = random.random() < crit_chance
         if is_crit:
-            base_dmg *= atk_stats.crit_damage
-
-        damage_after_def = base_dmg - defender.stats.defense
+            base_dmg *= crit_damage
+        damage_after_def = int(base_dmg) - defense
         return max(0, damage_after_def), is_crit
     
     def log_effect(self, event: str, dino: Dino, stat: str, value: float):
         log_entry = {
+            "type": "effect",
             "tick": self.tick,
             "event": event, # event name or description
             "dino": dino.name, # dino affected
@@ -167,8 +218,11 @@ class GameState:
                 return next(team for team in self.teams if team != team_name)
         return None
     
+# ------------------------- LOADING DINOS ------------------------- #
+    
 # Example of loading from Django models
 def load_dino_from_model(userDino: Model, stats: Dict[str, float]) -> Dino:
+    atk_name = str(userDino.attack.name).replace(" ", "_").lower()
     return Dino(
         id=userDino.id,
         name=str(userDino.dino),
@@ -182,23 +236,196 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float]) -> Dino:
             crit_damage=stats['crit_dmg']
         ),
         attack=Attack(
-            name=userDino.attack.name,
+            name=atk_name,
             dmg_multiplier=(userDino.attack.min_dmg, userDino.attack.max_dmg),
-            # On-hit effect is the name of the attack, concatenated with "_effect"
-            on_hit_effect=globals().get(f"{userDino.attack.name}_effect", None)
+            before_attack_effect=globals().get(f"{atk_name}_before_effect", None),
+            on_hit_effect=globals().get(f"{atk_name}_effect", None)
         )
     )
 
 
 # ------------------------- ATTACK EFFECTS ------------------------- #
 
-# Example of an attack effect (debuff for 5 seconds)
-def defense_debuff_effect(attacker: Dino, defender: Dino, game_state: GameState):
-    original_defense = defender.stats.defense
-    defender.stats.defense = max(0, defender.stats.defense - 20)
+# ARMOR SLAM
+# Buffs the attacker's defense by 20% for 3 seconds (300 ticks); 5s cooldown
+def armor_slam_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown:
+        return
+    original_defense = attacker.stats.defense
+    flat_modifier = original_defense * 0.2  # 20% of original defense
+    attacker.stats.defense += flat_modifier
+    game_state.log_effect("defense_buff", attacker, "defense", flat_modifier)
+    attacker.cooldown = True  # Set cooldown to true
 
     def restore_defense():
-        defender.stats.defense = original_defense
+        attacker.stats.defense -= flat_modifier
+        game_state.log_effect("defense_debuff", attacker, "defense", -flat_modifier)
 
-    # Debuff lasts for 500 ticks (5 seconds)
-    game_state.schedule_action(500, 2, restore_defense)
+    def reset_cooldown():
+        attacker.cooldown = False
+
+    game_state.schedule_action(300, 2, restore_defense, "armor_slam", attacker.id, attacker.id, "restore_defense")
+    game_state.schedule_action(500, 2, reset_cooldown, "armor_slam", attacker.id, attacker.id, "reset_cooldown")
+
+
+# SPIKE TAIL SWEEP
+# Reflects 30% of damage back to the attacker on next attack received
+def spike_tail_sweep_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if "reflect" in defender.current_statuses:
+        return
+    defender.current_statuses.append("reflect")
+
+
+# HORNED CHARGE
+# Stuns the target for 1.5 seconds (150 ticks); 2s cooldown
+def horned_charge_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown:
+        return
+    defender.current_statuses.append("stun")
+    # reschedule the defender's next action to be 100 ticks later (remove existing action if any)
+    for action in game_state.action_queue:
+        if action.action_type == "dino_action" and action.target_id == defender.id:
+            game_state.action_queue.remove(action)
+            heapq.heapify(game_state.action_queue)  # Re-heapify after removing the action
+            break
+    game_state.schedule_action(150, 1, lambda d=defender: game_state.dino_action(d), "dino_action", defender.id)  # Schedule the defender's next action after the stun duration
+    game_state.log_effect("stun", defender, "stun", 150)  # Log the stun effect
+    attacker.cooldown = True  
+    
+    def reset_cooldown():
+        attacker.cooldown = False
+    game_state.schedule_action(200, 2, reset_cooldown, "horned_charge", attacker.id, attacker.id, "reset_cooldown")
+
+
+# CRUSHING BITE
+# has a 30% chance to ignore the target's defense for this attack
+def crushing_bite_before_effect(attacker: Dino, defender: Dino, game_state: GameState):
+    if random.random() < 0.3:  # 30% chance to ignore defense
+        damage, miss = game_state.dino_attack(attacker, defender, custom_stats=(None, None, 0, None, None))
+        return False, miss  # Skip the normal attack
+    return True, False  # Proceed with the normal attack
+
+# RAPID SLASH
+# Hits 2 to 5 times in a row, defense is applied at the end.
+def rapid_slash_before_effect(attacker: Dino, defender: Dino, game_state: GameState):
+    # hit distribution : 45% 2 hits, 35% 3 hits, 15% 4 hits, 5% 5 hits
+    hit_distribution = [2, 3, 4, 5]
+    probabilities = [0.45, 0.35, 0.15, 0.05]
+    hits = random.choices(hit_distribution, probabilities)[0]
+    total_damage = 0
+    for _ in range(hits):
+        damage, is_crit = game_state.calculate_damage(attacker.stats.atk, attacker.attack.dmg_multiplier, 0, attacker.stats.crit_chance, attacker.stats.crit_damage)
+        total_damage += damage
+    total_damage -= defender.stats.defense  # Apply defense at the end
+    total_damage = max(0, total_damage)  # Ensure damage is not negative
+    damage, miss = game_state.dino_attack(attacker, defender, None, total_damage)  # Apply the total damage to the defender
+    return False, miss  # Skip the normal attack
+
+
+# BLEEDING STRIKE
+# Applies bleed for 3 seconds (300 ticks); 5s cooldown
+# Bleed status increases damage taken by 10% 
+def bleeding_strike_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown:
+        return
+    
+    attacker.cooldown = True
+    if "bleed" not in defender.current_statuses:
+        defender.current_statuses.append("bleed")
+        game_state.log_effect("bleed", defender, "bleed", 0.1)  # Log the bleed effect
+    else:
+        for action in game_state.action_queue:
+            if action.effect_name == "remove_bleed" and action.target_id == defender.id:
+                game_state.action_queue.remove(action)
+                heapq.heapify(game_state.action_queue)
+                break
+                
+    def remove_bleed():
+        if "bleed" in defender.current_statuses:
+            defender.current_statuses.remove("bleed")
+            game_state.log_effect("bleed_remove", defender, "bleed", -0.1)
+
+    def reset_cooldown():
+        attacker.cooldown = False
+
+    game_state.schedule_action(300, 2, remove_bleed, "bleeding_strike", defender.id, attacker.id, "remove_bleed")
+    game_state.schedule_action(500, 2, reset_cooldown, "bleeding_strike", attacker.id, attacker.id, "reset_cooldown")
+    
+
+# ECHOING ROAR
+# Buffs attacker's team speed by 15% for 3 seconds (300 ticks); 5s cooldown
+def echoing_roar_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown:
+        return
+    attacker_team = next(team for team in game_state.teams.values() if attacker in team)
+    team_modifiers = {}
+    for dino in attacker_team:
+        flat_modifier = dino.stats.speed * 0.15
+        team_modifiers[dino.id] = flat_modifier
+        dino.stats.speed += flat_modifier
+        game_state.log_effect("speed_buff", dino, "speed", flat_modifier)
+
+    def restore_speed():
+        for dino in attacker_team:
+            if dino.id in team_modifiers:
+                dino.stats.speed -= team_modifiers[dino.id]
+                game_state.log_effect("speed_debuff", dino, "speed", -team_modifiers[dino.id])
+
+    def reset_cooldown():
+        attacker.cooldown = False
+
+    game_state.schedule_action(300, 2, restore_speed, "echoing_roar", attacker.id, attacker.id, "restore_speed")
+    game_state.schedule_action(500, 2, reset_cooldown, "echoing_roar", attacker.id, attacker.id, "reset_cooldown")
+
+
+# VENOM SPIT
+# Inflicts poison for 3 seconds (300 ticks); 5s cooldown
+# Poison status deals 5% of current HP as damage every half second (50 ticks)
+def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown:
+        return
+    
+    attacker.cooldown = True
+    if "poison" not in defender.current_statuses:
+        defender.current_statuses.append("poison")
+        game_state.log_effect("poison", defender, "poison", 0.05)  # Log the poison effect
+    else:
+        for action in game_state.action_queue:
+            if action.effect_name == "remove_poison" and action.target_id == defender.id:
+                game_state.action_queue.remove(action)
+                heapq.heapify(game_state.action_queue)
+                break
+
+    def poison_damage():
+        if "poison" in defender.current_statuses:
+            poison_damage = int(defender.current_hp * 0.05)
+            defender.current_hp -= poison_damage
+            game_state.log_effect("poison_damage", defender, "hp", poison_damage)
+
+    def remove_poison():
+        if "poison" in defender.current_statuses:
+            defender.current_statuses.remove("poison")
+            game_state.log_effect("poison_remove", defender, "poison", -0.05)
+
+    def reset_cooldown():
+        attacker.cooldown = False
+
+    game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, attacker.id, "poison_damage")
+    game_state.schedule_action(300, 2, remove_poison, "venom_spit", defender.id, attacker.id, "remove_poison")
+    game_state.schedule_action(500, 2, reset_cooldown, "venom_spit", attacker.id, attacker.id, "reset_cooldown")
+
+
+# SKY DIVE
+# Grants a 50% chance to dodge the next attack; 1s cooldown
+def sky_dive_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
+    if attacker.cooldown or "sky_dive" in attacker.current_statuses:
+        return
+    attacker.cooldown = True
+    attacker.current_statuses.append("sky_dive")
+    attacker.stats.dodge += 0.5  # Increase dodge chance by 50%
+    game_state.log_effect("dodge_buff", attacker, "dodge", 0.5)  # Log the dodge effect
+
+    def reset_cooldown():
+        attacker.cooldown = False
+
+    game_state.schedule_action(100, 2, reset_cooldown, "sky_dive", attacker.id, attacker.id, "reset_cooldown")
