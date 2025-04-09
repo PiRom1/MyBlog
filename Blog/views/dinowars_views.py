@@ -630,8 +630,8 @@ def start_battle(request):
                     defender_user.elo -= elo
                 else:         
                     elo = 100 - int(pow(math.e,-(pow(abs(eloDiff),2)/100000))*80)
-                    attacker_user.elo -= elo
-                    defender_user.elo += elo                                                                              
+                    attacker_user.elo += elo
+                    defender_user.elo -= elo                                                                              
                 attacker_user.wins += 1
                 defender_user.losses += 1
                 attacker_user.save()
@@ -647,8 +647,8 @@ def start_battle(request):
                 eloDiff = defender_user.elo - attacker_user.elo
                 if eloDiff >= 0:
                     elo = int(pow(math.e,-(pow(abs(eloDiff),1.6)/5000))*20+1)
-                    attacker_user.elo += elo
-                    defender_user.elo -= elo
+                    attacker_user.elo -= elo
+                    defender_user.elo += elo
                 else:         
                     elo = 100 - int(pow(math.e,-(pow(abs(eloDiff),2)/100000))*80)
                     attacker_user.elo -= elo
