@@ -1,4 +1,4 @@
-from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest
+from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser
 from datetime import timedelta
 import random as rd
 
@@ -53,6 +53,10 @@ def run():
 
         generate_quest(user, type = "coins")
         generate_quest(user, type = "lootbox")
+
+        dwuser = DWUser.objects.get(user = user)
+        dwuser.arena_energy = 5
+        dwuser.save()
     
     print("Quests generated for every user")
 
