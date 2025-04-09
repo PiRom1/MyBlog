@@ -47,12 +47,14 @@
     top: 25%;
     color: black;
     font-size: 17px;
-    
 }
 
-.quete ul li {
+.quete a {
     font-family: papyrus;
     width: 50%;
+    color: black;
+    text-decoration: none;
+    display: block;
 }
 
 
@@ -86,6 +88,15 @@
     background-color: rgb(210, 210, 190);
 }
 
+
+
+.pending-quest {
+    font-family: papyrus;
+    width: 50%;
+    color: black;
+    text-decoration: none;
+    display: block;
+}
 
 
 

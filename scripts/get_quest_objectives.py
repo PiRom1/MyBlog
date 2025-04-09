@@ -28,3 +28,7 @@ def run():
                                  n_min = 1,
                                  n_max = 1)
     
+    ObjectifQuest.objects.create(type = "dw_arena",
+                                 n_min = 1,
+                                 n_max = 1)
+    

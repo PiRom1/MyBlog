@@ -10,6 +10,8 @@ from ..models import DWArena, DWDino, DWUserDino, DWUser, User
 from django.utils import timezone
 from datetime import datetime
 from Blog.utils.dw_battle_logic import load_dino_from_model, GameState
+from Blog.views.quests_views import validate_objective_quest
+
 
 @login_required
 def user_dinos_view(request):
@@ -550,6 +552,8 @@ def start_battle(request):
 
         # Check arena energy if gamemode is arena
         if (gamemode == 'arena'):
+            validate_objective_quest(user = request.user, action = "dw_arena")
+
             user_stats = DWUser.objects.get(user=request.user)
             if user_stats.arena_energy <= 0:
                 return JsonResponse({
@@ -636,6 +640,8 @@ def start_battle(request):
                 defender_user.losses += 1
                 attacker_user.save()
                 defender_user.save()
+
+
 
             else:
                 # If defender wins, increment their win streak

@@ -15,22 +15,32 @@ def get_data_of_objective(objective_for_quest):
 
     if type_objective == "hdv":
         sentence = f"Mettre {objective_for_quest.objective_value} objets dans l'Hôtel des Ventes."
+        url = "/inventory"
     elif type_objective == "jeu":
         sentence = f"Jouer {objective_for_quest.objective_value} parties dans la salle de jeux."
+        url = "/jeux"
     elif type_objective == "enjoy":
         sentence = f"Ajouter {objective_for_quest.objective_value} commentaires dans la timeline Enjoy."
+        url = "/enjoy_timeline"
     elif type_objective == "recit":
         sentence = f"Ajouter {objective_for_quest.objective_value} message dans un récit."
+        url = "/recits"
     elif type_objective == "soundbox":
         sentence = f"Ajouter {objective_for_quest.objective_value} son dans la soundbox."
+        url = "/add_sounds"
     elif type_objective == "pari":
         sentence = f"Créer {objective_for_quest.objective_value} pari."
+        url = "/paris/create"
+    elif type_objective == "dw_arena":
+        sentence = f"Faire {objective_for_quest.objective_value} combat DinoWars en arène."
+        url = "/dinowars"
 
 
     return {"achieved" : objective_for_quest.achieved,
             "objective_value" : objective_for_quest.objective_value,
             "current_value" : objective_for_quest.current_value,
-            "sentence" : sentence
+            "sentence" : sentence,
+            "url" : url,
             }
 
 
