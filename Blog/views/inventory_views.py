@@ -23,15 +23,9 @@ def get_skin_type(type):
 
 
 
-@login_required
-def user_inventory_view(request):
-    # Récupérer l'inventaire de l'utilisateur connecté
-    # Trier par date d'obtention inverse
-    user_inventory = UserInventory.objects.filter(user=request.user).order_by('-obtained_date')
-    
+def get_items_list(user_inventory):
     items = []
-    
-    # Récupérer les informations pour chaque item d'inventaire
+
     for inventory in user_inventory:
         item = inventory.item
         
@@ -94,6 +88,18 @@ def user_inventory_view(request):
                 print("pattern : ", item.pattern)
                 border_image = BorderImage.objects.get(name=item.pattern)
                 items[-1]['url'] = border_image.image.url
+    
+    return items
+
+
+@login_required
+def user_inventory_view(request):
+    # Récupérer l'inventaire de l'utilisateur connecté
+    # Trier par date d'obtention inverse
+    user_inventory = UserInventory.objects.filter(user=request.user).order_by('-obtained_date')
+    
+    # Récupérer les informations pour chaque item d'inventaire
+    items = get_items_list(user_inventory)
     
 
     background_id = Skin.objects.get(type='background_image').id
@@ -170,7 +176,21 @@ def update_equipped(request):
                 if item.equipped:
                     item.equipped = False
                     item.save()
-                    return JsonResponse({'status': 'success', 'action' : 'unequip'})
+
+                    # get new_skins
+                    items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
+                    item_ids = [item.item.item_id for item in items]
+                    dict_items = {}
+
+                    for i,item_id in enumerate(item_ids):
+                        skin = Skin.objects.get(id=item_id).type
+                        dict_items[skin] = items[i].item.pattern
+                    if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
+                        del dict_items['avatar_color']
+                    if 'border_image' in dict_items:
+                        dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
+
+                    return JsonResponse({'status': 'success', 'action' : 'unequip', 'skins' : str(dict_items)})
             try :
                 old_item = UserInventory.objects.get(user=request.user, item_id=old_equipped)
             except :
@@ -181,7 +201,22 @@ def update_equipped(request):
             item = UserInventory.objects.get(user=request.user, item_id=item_id)
             item.equipped = True
             item.save()
-            return JsonResponse({'status': 'success', 'action' : 'equip'})
+
+            # get new_skins
+            items = UserInventory.objects.filter(user=request.user).filter(equipped=True)
+            item_ids = [item.item.item_id for item in items]
+            dict_items = {}
+
+            for i,item_id in enumerate(item_ids):
+                skin = Skin.objects.get(id=item_id).type
+                dict_items[skin] = items[i].item.pattern
+            if 'name_rgb' in dict_items and 'avatar_color' in dict_items:
+                del dict_items['avatar_color']
+            if 'border_image' in dict_items:
+                dict_items['border_image'] = BorderImage.objects.get(name=dict_items['border_image']).image.url
+
+
+            return JsonResponse({'status': 'success', 'action' : 'equip', 'skins' : str(dict_items)})
         except UserInventory.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
     return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')

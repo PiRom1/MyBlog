@@ -251,4 +251,35 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
 
+
+
+    const selector_name = document.getElementById('selector-name');
+    console.log("items : ", items);
+    selector_name.addEventListener('input', function() {
+        
+
+        items.forEach(item => {
+
+            if (item.getAttribute("is_yours") === "True") {
+                return;
+            }
+
+            if (selector_name.value === '') {
+                item.style.display = 'block';
+            }
+            else {
+                let skin_type = item.getAttribute('skin-type');
+                console.log(skin_type);
+                if (skin_type.toLowerCase().includes(selector_name.value.toLowerCase())) {
+                    item.style.display = 'block';
+                }
+                else  {
+                    item.style.display = 'none';
+                }
+            }
+        })
+
+    })
+
+
 });
