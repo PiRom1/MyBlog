@@ -599,6 +599,35 @@ function openBattlePopup() {
                 updateBattleButton();
             });
         });
+
+        // Add battle button event listener here
+        startBattleBtn.addEventListener('click', function() {
+            const userTeamSelect = document.getElementById('userTeamSelect');
+            let opponentTeamId;
+            let gamemode = 'duel';
+            opponentTeamId = document.querySelector('.opponent-team.selected').dataset.teamId;
+
+            fetch('/dinowars/start_battle/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    attacker_team_id: userTeamSelect.value,
+                    defender_team_id: opponentTeamId,
+                    gamemode: gamemode
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = `/dinowars/battle/analytics/${data.fight_id}/`;
+                } else {
+                    alert(data.error || 'An error occurred during battle');
+                }
+            });
+        });
         
         function updateBattleButton() {
             startBattleBtn.style.display = 
@@ -635,7 +664,7 @@ function openArenaPopup() {
         // Setup event listeners
         const userTeamSelect = document.getElementById('userTeamSelect');
         const startBattleBtn = document.getElementById('startBattleBtn');
-        const ChampionUsername = document.getElementById('championUsername');
+        const championUsername = document.getElementById('championUsername');
         const teamSelectorSection = document.getElementById('teamSelectorSection');
         const arenaEnergy = parseInt(teamSelectorSection.getAttribute('data-arenaEnergy') || 0);
 
@@ -646,12 +675,46 @@ function openArenaPopup() {
         }
 
         // If the current user is the champion, hide the user team select
-        if (ChampionUsername.innerText === userTeamSelect.getAttribute('data-username')) {
+        if (championUsername.innerText === userTeamSelect.getAttribute('data-username')) {
             teamSelectorSection.style.display = 'none';
+            return;
         }
+
         userTeamSelect.addEventListener('change', () => {
             startBattleBtn.style.display = userTeamSelect.value ? 'block' : 'none';
         });
+
+        // Add arena battle button event listener
+        if (startBattleBtn) {
+            startBattleBtn.addEventListener('click', function() {
+                const championTeam = document.querySelector('.champion-team');
+                if (!championTeam) {
+                    alert('No champion team found!');
+                    return;
+                }
+
+                fetch('/dinowars/start_battle/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({
+                        attacker_team_id: userTeamSelect.value,
+                        defender_team_id: championTeam.dataset.teamId,
+                        gamemode: 'arena'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = `/dinowars/battle/analytics/${data.fight_id}/`;
+                    } else {
+                        alert(data.error || 'An error occurred during arena battle');
+                    }
+                });
+            });
+        }
     });
 }
 

@@ -1,0 +1,180 @@
+.analytics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #222;
+}
+
+.analytics-container h1 {
+    color: #ffe5d4;
+}
+
+.battle-info {
+    background-color: #868686cd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.battle-info p {
+    margin: 5px 20px 5px 0;
+    font-weight: bold;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.duration {
+    grid-column: 1 / -1;
+    width: 200px;
+    margin: 0 auto;
+    background: #dcbfac99;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.team-kpis {
+    background-color: #868686cd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.team-kpis h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.team-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.kpi-card {
+    background: #dcbfac99;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.kpi-card h3, .kpi-card h4 {
+    margin-bottom: 8px;
+    color: #222;
+}
+
+.kpi-card p {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #222;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.chart-container {
+    background: #dcbfaccd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.chart-container h2 {
+    margin-bottom: 15px;
+    color: #222;
+    text-align: center;
+}
+
+.effects-timeline {
+    background: #868686cd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.effects-timeline h2 {
+    margin-bottom: 15px;
+    color: #222;
+    text-align: center;
+}
+
+.timeline-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.dino-effects {
+    background: #dcbfac99;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.dino-effects h3 {
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.dino-effects ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dino-effects li {
+    background: rgba(255, 255, 255, 0.5);
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Button styles that match user_dinos.css */
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Colors matching user_dinos.css */
+.green-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.purple-btn {
+    background-color: #864abe;
+    color: white;
+}
+
+.orange-btn {
+    background-color: #ea762e;
+    color: white;
+}

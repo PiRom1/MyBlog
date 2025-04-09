@@ -128,4 +128,6 @@ urlpatterns = [
     path('dinowars/hatch/', dinowars_views.hatch_dino, name='hatch_dino'),
     path('dinowars/battle/', dinowars_views.battle_view, name='battle_view'),
     path('dinowars/arena/', dinowars_views.arena_view, name='arena_view'),
+    path('dinowars/start_battle/', dinowars_views.start_battle, name='start_battle'),
+    path('dinowars/battle/analytics/<int:fight_id>/', dinowars_views.battle_analytics_view, name='battle_analytics_view'),
 ]

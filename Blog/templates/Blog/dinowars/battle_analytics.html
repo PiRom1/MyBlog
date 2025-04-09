@@ -1,0 +1,216 @@
+{% extends 'Blog/layout/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'Blog/dinowars/css/battle_analytics.css' %}">
+
+<div class="analytics-container">
+    <h1>Battle Analytics</h1>
+    <div class="battle-info">
+        <p>{{ fight.user1 }} vs {{ fight.user2 }}</p>
+        <p>Winner: {{ winner }}</p>
+        <p>Game Mode: {{ fight.gamemode }}</p>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card duration">
+            <h3>Duration</h3>
+            <p>{{ kpis.duration|floatformat:1 }}s</p>
+        </div>
+        <div class="team-kpis">
+            <h3>{{ fight.user1 }}</h3>
+            <div class="team-stats">
+                <div class="kpi-card">
+                    <h4>Total Attacks</h4>
+                    <p>{{ kpis.team1.total_attacks }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Total Damage</h4>
+                    <p>{{ kpis.team1.total_damage }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Avg Damage/Hit</h4>
+                    <p>{{ kpis.team1.avg_damage_per_hit|floatformat:1 }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Crit Rate</h4>
+                    <p>{{ kpis.team1.crit_rate|floatformat:1 }}%</p>
+                </div>
+            </div>
+        </div>
+        <div class="team-kpis">
+            <h3>{{ fight.user2 }}</h3>
+            <div class="team-stats">
+                <div class="kpi-card">
+                    <h4>Total Attacks</h4>
+                    <p>{{ kpis.team2.total_attacks }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Total Damage</h4>
+                    <p>{{ kpis.team2.total_damage }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Avg Damage/Hit</h4>
+                    <p>{{ kpis.team2.avg_damage_per_hit|floatformat:1 }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Crit Rate</h4>
+                    <p>{{ kpis.team2.crit_rate|floatformat:1 }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-container">
+            <h2>HP Timeline</h2>
+            <canvas id="hpChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Damage Timeline</h2>
+            <canvas id="damageTimelineChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h2>Damage Distribution</h2>
+        <canvas id="damageChart"></canvas>
+    </div>
+
+    <div class="effects-timeline">
+        <h2>Effects Timeline</h2>
+        <div class="timeline-container">
+            {% for dino, effects in effects_timeline.items %}
+            <div class="dino-effects">
+                <h3>{{ dino }}</h3>
+                <ul>
+                    {% for tick, event, value in effects %}
+                    <li>{{ value }} {{ event }} at {{ tick|divisibleby:"100"|yesno:"second ,tick " }}{{ tick }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // HP Timeline Chart
+    const hpData = {{ dino_hp_timeline|safe }};
+    const hpCtx = document.getElementById('hpChart').getContext('2d');
+    
+    new Chart(hpCtx, {
+        type: 'line',
+        data: {
+            datasets: Object.entries(hpData).map(([dino, data]) => ({
+                label: dino,
+                data: data.map(([tick, hp]) => ({x: tick/100, y: hp})),
+                borderWidth: 2,
+                tension: 0.1
+            }))
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: 'Time (seconds)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'HP'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Damage Timeline Chart
+    const damageTimelineData = {{ dino_damage_timeline|safe }};
+    const damageTimelineCtx = document.getElementById('damageTimelineChart').getContext('2d');
+    
+    new Chart(damageTimelineCtx, {
+        type: 'line',
+        data: {
+            datasets: Object.entries(damageTimelineData).map(([dino, data]) => ({
+                label: dino,
+                data: data.map(([tick, damage]) => ({x: tick/100, y: damage})),
+                borderWidth: 2,
+                tension: 0.1
+            }))
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: 'Time (seconds)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Cumulative Damage'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Damage Distribution Chart
+    const damageData = {{ damage_dealt|safe }};
+    const damageCtx = document.getElementById('damageChart').getContext('2d');
+    
+    new Chart(damageCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(damageData),
+            datasets: [
+                {
+                    label: 'Attack Damage',
+                    data: Object.values(damageData).map(d => d.total),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    stack: 'Stack 0'
+                },
+                {
+                    label: 'Reflect Damage',
+                    data: Object.values(damageData).map(d => d.reflect_damage || 0),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    stack: 'Stack 0'
+                },
+                {
+                    label: 'Poison Damage',
+                    data: Object.values(damageData).map(d => d.poison_damage || 0),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    stack: 'Stack 0'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Damage'
+                    },
+                    stacked: true
+                },
+                x: {
+                    stacked: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

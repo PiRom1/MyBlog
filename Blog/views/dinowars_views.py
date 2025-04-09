@@ -8,6 +8,7 @@ import random
 from ..models import DWArena, DWDino, DWUserDino, DWUser, User
 from django.utils import timezone
 from datetime import datetime
+from Blog.utils.dw_battle_logic import load_dino_from_model, GameState
 
 @login_required
 def user_dinos_view(request):
@@ -533,3 +534,311 @@ def arena_view(request):
     }
     
     return render(request, 'Blog/dinowars/_arena_popup.html', context)
+
+@login_required
+@require_POST
+def start_battle(request):
+        data = json.loads(request.body)
+        attacker_team_id = data.get('attacker_team_id')
+        defender_team_id = data.get('defender_team_id')
+        gamemode = data.get('gamemode', 'duel')  # Default to duel if not specified
+
+        # Validate team ownership and existence
+        attacker_team = get_object_or_404(DWUserTeam, id=attacker_team_id, user=request.user)
+        defender_team = get_object_or_404(DWUserTeam, id=defender_team_id)
+
+        # Check arena energy if gamemode is arena
+        if (gamemode == 'arena'):
+            user_stats = DWUser.objects.get(user=request.user)
+            if user_stats.arena_energy <= 0:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Not enough arena energy'
+                })
+            user_stats.arena_energy -= 1
+            user_stats.save()
+
+        # Load teams with their stats
+        attacker_dinos = []
+        for dino in [attacker_team.dino1, attacker_team.dino2, attacker_team.dino3]:
+            dino_stats = calculate_total_stats(dino)
+            attacker_dinos.append(load_dino_from_model(dino, dino_stats,1))
+
+        defender_dinos = []
+        for dino in [defender_team.dino1, defender_team.dino2, defender_team.dino3]:
+            dino_stats = calculate_total_stats(dino)
+            defender_dinos.append(load_dino_from_model(dino, dino_stats,2))
+
+        team1_name = request.user.username+'_'+attacker_team.name
+        team2_name = defender_team.user.username+'_'+defender_team.name
+
+        # Start battle simulation
+        battle = GameState(
+            (team1_name, attacker_dinos),
+            (team2_name, defender_dinos)
+        )
+        battle_log = battle.run()
+        winner = battle.get_winner()
+
+        # Save fight result
+        fight = DWFight.objects.create(
+            user1=str(request.user),
+            user2=str(defender_team.user),
+            user1_team=str(attacker_team),
+            user2_team=str(defender_team),
+            winner=str(request.user) if winner == str(request.user) else str(defender_team.user),
+            gamemode=gamemode,
+            logs=battle_log
+        )
+
+        # Handle arena specific logic
+        if gamemode == 'arena':
+            current_arena = DWArena.objects.filter(active=True).first()
+            if winner == str(request.user):
+                # If attacker wins, make their team the new arena team
+                if current_arena:
+                    current_arena.active = False
+                    current_arena.save()
+                    
+                # Create new arena entry
+                DWArena.objects.create(
+                    user=request.user,
+                    team=attacker_team,
+                )
+                # Update team status
+                defender_team.in_arena = False
+                attacker_team.in_arena = True
+                defender_team.save()
+                attacker_team.save()
+            else:
+                # If defender wins, increment their win streak
+                if current_arena:
+                    current_arena.win_streak += 1
+                    current_arena.save()
+
+        return JsonResponse({
+            'success': True,
+            'battle_log': json.loads(battle_log),
+            'fight_id': fight.id,
+            'winner': winner,
+            'gamemode': gamemode
+        })
+
+    # except Exception as e:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'error': str(e)
+    #     })
+
+@login_required
+def battle_analytics_view(request, fight_id):
+    fight = get_object_or_404(DWFight, id=fight_id)
+    logs = json.loads(fight.logs)
+    
+    # Extract initial and final states
+    initial_state = next(log for log in logs if log['type'] == 'initial_state')
+    final_state = next(log for log in logs if log['type'] == 'final_state')
+    
+    # Process battle events
+    dino_hp_timeline = {}
+    damage_dealt = {}
+    crit_counts = {}
+    effects_timeline = {}
+    
+    # Create mappings from ID to team and name to ID
+    dino_id_to_team = {}
+    dino_name_to_id = {}
+    team_names = list(initial_state['initial_state'].keys())
+    
+    # Initialize HP timeline with initial values and create mappings
+    for team_idx, team_name in enumerate(team_names):
+        team = initial_state['initial_state'][team_name]
+        for dino in team:
+            dino_id = dino['id']
+            dino_name = dino['name']
+            
+            # Create a unique display name that includes team info
+            display_name = f"{dino_name} (Team {team_idx+1})"
+            
+            # Store mappings
+            dino_id_to_team[dino_id] = team_name
+            dino_name_to_id[display_name] = dino_id
+            
+            # Initialize HP timeline
+            dino_hp_timeline[display_name] = [(0, dino['stats']['hp'])]  # Start at tick 0
+    
+    for log in logs:
+        if log['type'] == 'attack':
+            tick = log['tick']
+            attacker_id = log['attacker_id']
+            defender_id = log['defender_id']
+            damage = log['damage']
+            defender_hp = log['defender_hp']
+            is_crit = log['is_crit']
+            
+            # Get display names from IDs
+            attacker_team = dino_id_to_team[attacker_id]
+            defender_team = dino_id_to_team[defender_id]
+            attacker_display = f"{log['attacker']} (Team {team_names.index(attacker_team)+1})"
+            defender_display = f"{log['defender']} (Team {team_names.index(defender_team)+1})"
+            
+            # Update HP timeline from attacks
+            dino_hp_timeline[defender_display].append((tick, defender_hp))
+            
+            # Update damage dealt stats
+            if attacker_display not in damage_dealt:
+                damage_dealt[attacker_display] = {
+                    'total': 0, 
+                    'hits': 0, 
+                    'crits': 0, 
+                    'team': attacker_team,
+                    'reflect_damage': 0,
+                    'poison_damage': 0
+                }
+            damage_dealt[attacker_display]['total'] += damage
+            damage_dealt[attacker_display]['hits'] += 1
+            if is_crit:
+                damage_dealt[attacker_display]['crits'] += 1
+                
+        elif log['type'] == 'effect':
+            tick = log['tick']
+            dino_id = log['dino_id']
+            event = log['event']
+            value = log['value']
+            
+            # Get display name from ID
+            dino_team = dino_id_to_team[dino_id]
+            dino_display = f"{log['dino']} (Team {team_names.index(dino_team)+1})"
+            
+            # Track effects for timeline display
+            if dino_display not in effects_timeline:
+                effects_timeline[dino_display] = []
+            effects_timeline[dino_display].append((tick, event, value))
+            
+            # Update HP timeline if effect modifies HP
+            if log['stat'] == 'hp':
+                # Get the last known HP value
+                last_hp = dino_hp_timeline[dino_display][-1][1]
+                # Add new HP point after effect
+                dino_hp_timeline[dino_display].append((tick, last_hp - log['value']))  # Subtract value since damage is positive
+                
+                # Track reflect and poison damage
+                if event == 'reflect_damage' or event == 'poison_damage':
+                    # Get the opposing team name
+                    dino_team_idx = team_names.index(dino_team)
+                    opposing_team_idx = 1 - dino_team_idx  # 0 becomes 1, 1 becomes 0
+                    opposing_team = team_names[opposing_team_idx]
+                    
+                    # Find the appropriate source dino based on damage type
+                    source_dino_name = "Stegosaurus" if event == "reflect_damage" else "Dilophosaurus"
+                    source_found = False
+                    
+                    # Look for the source dino in the opposing team
+                    for dino in initial_state['initial_state'][opposing_team]:
+                        if dino['name'] == source_dino_name:
+                            source_display = f"{source_dino_name} (Team {opposing_team_idx+1})"
+                            source_found = True
+                            break
+                    
+                    if source_found:
+                        # Initialize if not exists
+                        if source_display not in damage_dealt:
+                            damage_dealt[source_display] = {
+                                'total': 0, 
+                                'hits': 0, 
+                                'crits': 0, 
+                                'team': opposing_team,
+                                'reflect_damage': 0,
+                                'poison_damage': 0
+                            }
+                            
+                        # Add to appropriate damage type
+                        if event == 'reflect_damage':
+                            damage_dealt[source_display]['reflect_damage'] += value
+                        elif event == 'poison_damage':
+                            damage_dealt[source_display]['poison_damage'] += value
+
+    # Initialize damage timeline
+    dino_damage_timeline = {}
+    for team_idx, team_name in enumerate(team_names):
+        for dino in initial_state['initial_state'][team_name]:
+            dino_name = dino['name']
+            display_name = f"{dino_name} (Team {team_idx+1})"
+            dino_damage_timeline[display_name] = [(0, 0)]  # Start at tick 0 with 0 damage
+            
+    # Process attacks to build damage timeline
+    for log in logs:
+        if log['type'] == 'attack':
+            tick = log['tick']
+            attacker_id = log['attacker_id']
+            damage = log['damage']
+            
+            # Get display name from ID
+            attacker_team = dino_id_to_team[attacker_id]
+            attacker_display = f"{log['attacker']} (Team {team_names.index(attacker_team)+1})"
+            
+            # Add damage point to timeline
+            last_damage = dino_damage_timeline[attacker_display][-1][1]
+            dino_damage_timeline[attacker_display].append((tick, last_damage + damage))
+
+    # Calculate KPIs
+    fight_duration = final_state['tick']
+    total_attacks = sum(stats['hits'] for stats in damage_dealt.values())
+    total_damage = sum(stats['total'] for stats in damage_dealt.values())
+    total_crits = sum(stats['crits'] for stats in damage_dealt.values())
+    
+    # Calculate team-specific KPIs
+    team1_name = team_names[0]
+    team2_name = team_names[1]
+    
+    team1_damage = sum(stats['total'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
+    team1_hits = sum(stats['hits'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
+    team1_crits = sum(stats['crits'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
+
+    team2_damage = sum(stats['total'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
+    team2_hits = sum(stats['hits'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
+    team2_crits = sum(stats['crits'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
+
+    kpis = {
+        'duration': fight_duration / 100,  # Convert ticks to seconds
+        'team1': {
+            'name': team1_name,
+            'total_attacks': team1_hits,
+            'total_damage': team1_damage,
+            'avg_damage_per_hit': team1_damage / team1_hits if team1_hits > 0 else 0,
+            'crit_rate': (team1_crits / team1_hits * 100) if team1_hits > 0 else 0
+        },
+        'team2': {
+            'name': team2_name,
+            'total_attacks': team2_hits,
+            'total_damage': team2_damage,
+            'avg_damage_per_hit': team2_damage / team2_hits if team2_hits > 0 else 0,
+            'crit_rate': (team2_crits / team2_hits * 100) if team2_hits > 0 else 0
+        }
+    }
+    
+    # Sort damage_dealt by team number first, then by dino name
+    def get_sort_key(dino_display):
+        # Extract team number and dino name from display name format "DinoName (Team X)"
+        parts = dino_display.split(" (Team ")
+        dino_name = parts[0]
+        team_number = int(parts[1].rstrip(")"))
+        return (team_number, dino_name)
+    
+    # Sort damage_dealt
+    sorted_damage_dealt = dict(sorted(damage_dealt.items(), key=lambda x: get_sort_key(x[0])))
+    
+    # Sort effects_timeline
+    sorted_effects_timeline = dict(sorted(effects_timeline.items(), key=lambda x: get_sort_key(x[0])))
+    
+    context = {
+        'fight': fight,
+        'dino_hp_timeline': json.dumps(dino_hp_timeline),
+        'dino_damage_timeline': json.dumps(dino_damage_timeline),
+        'damage_dealt': sorted_damage_dealt,
+        'effects_timeline': sorted_effects_timeline,
+        'kpis': kpis,
+        'winner': final_state['winner']
+    }
+    
+    return render(request, 'Blog/dinowars/battle_analytics.html', context)
