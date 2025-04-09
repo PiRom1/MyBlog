@@ -1,3 +1,4 @@
+import math
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from Blog.models import DWUserDino, DWUserTeam, DWUser, DWFight, DWDinoItem, Skin, UserInventory, Item
@@ -591,6 +592,9 @@ def start_battle(request):
             logs=battle_log
         )
 
+        attacker_user = DWUser.objects.get(user=request.user)
+        defender_user = DWUser.objects.get(user=defender_team.user)
+
         # Handle arena specific logic
         if gamemode == 'arena':
             current_arena = DWArena.objects.filter(active=True).first()
@@ -610,11 +614,42 @@ def start_battle(request):
                 attacker_team.in_arena = True
                 defender_team.save()
                 attacker_team.save()
+
+                # Update elo and wins/losses
+                eloDiff = attacker_user.elo - defender_user.elo
+                if eloDiff >= 0:
+                    elo = int(pow(math.e,-(pow(abs(eloDiff),1.6)/5000))*20+1)
+                    attacker_user.elo += elo
+                    defender_user.elo -= elo
+                else:         
+                    elo = 100 - int(pow(math.e,-(pow(abs(eloDiff),2)/100000))*80)
+                    attacker_user.elo -= elo
+                    defender_user.elo += elo                                                                              
+                attacker_user.wins += 1
+                defender_user.losses += 1
+                attacker_user.save()
+                defender_user.save()
+
             else:
                 # If defender wins, increment their win streak
                 if current_arena:
                     current_arena.win_streak += 1
                     current_arena.save()
+                
+                # Update elo and wins/losses
+                eloDiff = defender_user.elo - attacker_user.elo
+                if eloDiff >= 0:
+                    elo = int(pow(math.e,-(pow(abs(eloDiff),1.6)/5000))*20+1)
+                    attacker_user.elo += elo
+                    defender_user.elo -= elo
+                else:         
+                    elo = 100 - int(pow(math.e,-(pow(abs(eloDiff),2)/100000))*80)
+                    attacker_user.elo -= elo
+                    defender_user.elo += elo                                                                              
+                attacker_user.losses += 1
+                defender_user.wins += 1
+                attacker_user.save()
+                defender_user.save()
 
         return JsonResponse({
             'success': True,
