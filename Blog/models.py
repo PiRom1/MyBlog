@@ -498,8 +498,8 @@ class DWUser(models.Model):
         return f"{self.user.username} ({self.elo}elo)"
 
 class DWArena(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
-    team = models.OneToOneField(DWUserTeam, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey(DWUserTeam, null=True, blank=True, on_delete=models.SET_NULL)
     user_str = models.CharField(max_length=100, default='')
     team_str = models.CharField(max_length=100, default='')
     date = models.DateTimeField(auto_now_add=True)

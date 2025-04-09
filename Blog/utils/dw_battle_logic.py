@@ -157,7 +157,7 @@ class GameState:
         else:
             is_crit = False
         if "bleed" in defender.current_statuses:
-            damage = int(damage * 1.1)
+            damage = int(damage * 1.2)
         miss = random.random() > attacker.stats.accuracy
         if "dodge" in defender.current_statuses and not miss:
             miss = random.random() < defender.stats.dodge
@@ -370,7 +370,7 @@ def bleeding_strike_effect(attacker: Dino, defender: Dino, game_state: GameState
     attacker.cooldown = True
     if "bleed" not in defender.current_statuses:
         defender.current_statuses.append("bleed")
-        game_state.log_effect("bleed", defender, "bleed", 0.1)  # Log the bleed effect
+        game_state.log_effect("bleed", defender, "bleed", 0.2)  # Log the bleed effect
     else:
         new_queue = []
         for action in game_state.action_queue:
@@ -384,7 +384,7 @@ def bleeding_strike_effect(attacker: Dino, defender: Dino, game_state: GameState
     def remove_bleed():
         if "bleed" in defender.current_statuses:
             defender.current_statuses.remove("bleed")
-            game_state.log_effect("bleed_remove", defender, "bleed", -0.1)
+            game_state.log_effect("bleed_remove", defender, "bleed", -0.2)
 
     def reset_cooldown():
         attacker.cooldown = False

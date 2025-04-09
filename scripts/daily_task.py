@@ -1,4 +1,4 @@
-from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser
+from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam
 from datetime import timedelta
 import random as rd
 
@@ -57,6 +57,14 @@ def run():
         dwuser = DWUser.objects.get(user = user)
         dwuser.arena_energy = 5
         dwuser.save()
+
+    for team in DWUserTeam.objects.all():
+        if team.in_arena:
+            user = team.user
+            user.coins += 150
+            user.save()
+            print(f'150 coins added to {user.username}')
+            break
     
     print("Quests generated for every user")
 

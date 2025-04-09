@@ -587,7 +587,7 @@ def start_battle(request):
             user2=str(defender_team.user),
             user1_team=str(attacker_team),
             user2_team=str(defender_team),
-            winner=str(request.user) if winner == str(request.user) else str(defender_team.user),
+            winner=str(request.user) if winner == team1_name else str(defender_team.user),
             gamemode=gamemode,
             logs=battle_log
         )
@@ -598,7 +598,7 @@ def start_battle(request):
         # Handle arena specific logic
         if gamemode == 'arena':
             current_arena = DWArena.objects.filter(active=True).first()
-            if winner == str(request.user):
+            if winner == team1_name:
                 # If attacker wins, make their team the new arena team
                 if current_arena:
                     current_arena.active = False
@@ -614,6 +614,13 @@ def start_battle(request):
                 attacker_team.in_arena = True
                 defender_team.save()
                 attacker_team.save()
+                # Update dinos' status
+                for dino in attacker_team.dino1, attacker_team.dino2, attacker_team.dino3:
+                    dino.in_arena = True
+                    dino.save()
+                for dino in defender_team.dino1, defender_team.dino2, defender_team.dino3:
+                    dino.in_arena = False
+                    dino.save()
 
                 # Update elo and wins/losses
                 eloDiff = attacker_user.elo - defender_user.elo

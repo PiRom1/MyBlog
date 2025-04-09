@@ -712,7 +712,7 @@ function openArenaPopup() {
                     } else {
                         alert(data.error || 'An error occurred during arena battle');
                     }
-                });
+                })
             });
         }
     });
