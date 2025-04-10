@@ -890,3 +890,19 @@ def battle_analytics_view(request, fight_id):
     }
     
     return render(request, 'Blog/dinowars/battle_analytics.html', context)
+
+
+
+def remove_runes(request):
+    
+    data = json.loads(request.body)
+
+    if 'dino_id' not in data:
+        return JsonResponse({'success' : False, 'error' : "Dino id not in data"})
+
+    dino = DWUserDino.objects.get(id = data.get('dino_id'))
+    runes = DWDinoItem.objects.filter(dino = dino)
+    runes_id = list(runes.values_list('id', flat=True))
+    runes.delete()
+
+    return JsonResponse({'success' : True, 'runes_id' : runes_id})

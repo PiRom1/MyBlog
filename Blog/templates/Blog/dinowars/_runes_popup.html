@@ -3,6 +3,7 @@
 <div class="runes-container" data-dino-id="{{ dino.id }}">
     <div class="rune-slots">
         <h3>Runes</h3>
+        <button class="remove-runes" id="remove-runes">Retirer toutes les runes</button>
         {% for slot in slots %}
         <div class="rune-slot" data-slot="{{ slot.type }}">
             <div class="slot-item" onclick="showInventory('{{ slot.type }}')">
