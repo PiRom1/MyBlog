@@ -299,6 +299,34 @@ function showDinoDetails(dinoId) {
     .then(html => {
         content.innerHTML = html;
         popup.style.display = 'block';
+
+        document.getElementById('remove-runes').addEventListener('click', function() {
+            fetch(`/dinowars/remove_runes/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    dino_id: dinoId,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+
+                    // Remove runes from main page
+                    const dino_card = document.querySelector(`.dino-card[data-dino-id="${dinoId}"]`);
+                    const dino_card_runes = dino_card.querySelector('.runes');
+                    const runes_li = dino_card_runes.querySelectorAll('i');
+                    const class_names = ['fi fi-rs-heart', 'fi fi-rs-sword-alt', 'fi fi-rs-shield', 'fi fi-rs-bolt', 'fi fi-rs-location-crosshairs', 'fi fi-rs-burst'];
+                    runes_li.forEach((rune_li, index) => {
+                        rune_li.classList = class_names[index];
+                    })
+
+                }
+            })          
+        })
         
         document.addEventListener('mousedown', handleDinoDetailClickOutside);
         document.addEventListener('keydown', handleDinoDetailEscKey);
@@ -345,40 +373,7 @@ function openRunesPopup(dinoId) {
             document.addEventListener('keydown', handleDinoDetailEscKey);
         }
         // Manage remove all runes
-        document.getElementById('remove-runes').addEventListener('click', function() {
-            fetch(`/dinowars/remove_runes/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    dino_id: dinoId,
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-
-                    // Remove runes from main page
-                    const dino_card = document.querySelector(`.dino-card[data-dino-id="${dinoId}"]`);
-                    const dino_card_runes = dino_card.querySelector('.runes');
-                    const runes_li = dino_card_runes.querySelectorAll('i');
-                    const class_names = ['fi fi-rs-heart', 'fi fi-rs-sword-alt', 'fi fi-rs-shield', 'fi fi-rs-bolt', 'fi fi-rs-location-crosshairs', 'fi fi-rs-burst'];
-                    runes_li.forEach((rune_li, index) => {
-                        rune_li.classList = class_names[index];
-                    })
-
-                    // Remove runes from runes page
-                    const runes_card = document.querySelector(`.runes-container[data-dino-id="${dinoId}"]`);
-                    const runes_slots = runes_card.querySelectorAll('.rune-slot');
-                    runes_slots.forEach((rune_slot, index) => {
-                        rune_slot.querySelector('i').classList = class_names[index];
-                    })
-
-                }
-            })          
-        })
+        
     });
 }
 
