@@ -157,6 +157,8 @@ def youtube_parsing(text):
 
 def calembours(text):
 
+    print("text avant calembour : ", text)
+
     # Calembours
     if rd.random() < 0.1:
         calembour = False
@@ -167,8 +169,11 @@ def calembours(text):
                 calembour = True
                 index = text.lower().find(pattern[0])
         if calembour:
-            text = text.split('</p>')[0] + '\n' + SENTENCE_CALEMBOUR + '</p>'
+            text = ' '.join(text.split('</p>')[:-1]) + '\n' + SENTENCE_CALEMBOUR + '</p>'
     
+    print("text après : ", text)
+
+
     return text
 
 
