@@ -60,13 +60,56 @@ def create_pari(request):
         if not data.get('duration'):
             return JsonResponse({'success' : False, 'error' : "Le pari n'a pas de durée."})
         
+        duration = data.get('duration')
+        days = 0
+        hours = 0
+        minutes = 0
 
+
+        if 'mn' in duration:
+            print(duration.split('mn'))
+            if duration.split('mn')[-1]:
+                return JsonResponse({'success' : False, 'error' : "N'écrivez rien après 'mn'"})
+        elif 'h' in duration:
+            print(duration.split('h'))
+            if duration.split('h')[-1]:
+                return JsonResponse({'success' : False, 'error' : "Rajouter 'mn' si vous voulez ajouter des minutes.<br>Sinon laissez vide"})
+        elif 'd' in duration:
+            print(duration.split('d'))
+            if duration.split('d')[-1]:
+                return JsonResponse({'success' : False, 'error' : "Rajouter 'h' si vous voulez ajouter des heures.<br>Sinon laissez vide"})
+
+
+
+        if len(duration.split('d')) > 1: # if d in duration
+            try:
+                days = int(duration.split('d')[0])
+            except:
+                return JsonResponse({'success' : False, 'error' : 'Erreur dans la durée en jours'})
+            
+            duration = duration.split('d')[-1]
+        
+        if len(duration.split('h')) > 1: # if d in duration
+            try:
+                hours = int(duration.split('h')[0])
+            except:                
+                return JsonResponse({'success' : False, 'error' : 'Erreur dans la durée en heures'})
+
+            duration = duration.split('h')[-1]
+        
+        if len(duration.split('mn')) > 1: # if d in duration
+            try:
+                minutes = int(duration.split('mn')[0])
+            except:
+                return JsonResponse({'success' : False, 'error' : 'Erreur dans la durée en minutes'})
+        
+        
 
         try:
             pari = Pari(name = data.get('name'),
                         description = data.get('description'),
                         creator = request.user,
-                        duration = timedelta(hours = int(data.get('duration'))),
+                        duration = timedelta(days = days, hours = hours, minutes = minutes),
             )
 
             pari.save()
@@ -78,10 +121,8 @@ def create_pari(request):
                 
                 pari_issue.save()
 
-            
 
 
-        
         except Exception as e:
             print(e)
             return JsonResponse({'success' : False, 'error' : ''})

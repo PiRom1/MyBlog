@@ -122,6 +122,7 @@ urlpatterns = [
     path('dinowars/delete_team/<int:team_id>/', dinowars_views.delete_team_view, name='delete_team_view'),
     path('dinowars/dino/<int:dino_id>/', dinowars_views.dino_details_view, name='dino_details_view'),
     path('dinowars/dino/<int:dino_id>/runes/', dinowars_views.dino_runes_view, name='dino_runes_view'),
+    path('dinowars/remove_runes/', dinowars_views.remove_runes, name='remove_runes'),
     path('dinowars/inventory/runes/', dinowars_views.runes_inventory_view, name='runes_inventory_view'),
     path('dinowars/dino/<int:dino_id>/equip-rune/', dinowars_views.equip_rune, name='equip_rune'),
     path('dinowars/fuse-dinos/', dinowars_views.fuse_dinos, name='fuse_dinos'),
@@ -130,6 +131,7 @@ urlpatterns = [
     path('dinowars/arena/', dinowars_views.arena_view, name='arena_view'),
     path('dinowars/start_battle/', dinowars_views.start_battle, name='start_battle'),
     path('dinowars/battle/analytics/<int:fight_id>/', dinowars_views.battle_analytics_view, name='battle_analytics_view'),
+    
 
     # Atelier
     path('atelier/', atelier_views.atelier, name='atelier'),

@@ -17,8 +17,11 @@ def generate_quest(user, type : str):
                                  quantity = quantity,
                                  duration = timedelta(days=1))
     
-    # Create quest_objectives
-    objectives = rd.sample(list(ObjectifQuest.objects.all()), 3)
+    # Create quest_objectives (exclude if you're already in arena)
+    if DWUserTeam.objects.filter(in_arena=True).first().user == user:
+        objectives = rd.sample(list(ObjectifQuest.objects.exclude(type='dw_arena')), 3)
+    else:
+        objectives = rd.sample(list(ObjectifQuest.objects.all()), 3)
 
     for objective in objectives:
         value = rd.randint(objective.n_min, objective.n_max)
@@ -58,13 +61,12 @@ def run():
         dwuser.arena_energy = 5
         dwuser.save()
 
-    for team in DWUserTeam.objects.all():
-        if team.in_arena:
-            user = team.user
-            user.coins += 150
-            user.save()
-            print(f'150 coins added to {user.username}')
-            break
+    for team in DWUserTeam.objects.filter(in_arena=True):
+        user = team.user
+        user.coins += 150
+        user.save()
+        print(f'150 coins added to {user.username}')
+        break
     
     print("Quests generated for every user")
 

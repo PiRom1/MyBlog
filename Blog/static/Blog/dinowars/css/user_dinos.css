@@ -355,6 +355,10 @@ button[type="submit"]:hover {
     background: #45a049;
 }
 
+.popup-content button:active {
+    background: #3f8342;
+}
+
 .empty-slot-btn {
     background: #dc3545;
 }
@@ -388,7 +392,11 @@ button[type="submit"] {
     flex: 1;
     padding: 20px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    scrollbar-width: thin; 
+    scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
 }
+
 
 .rune-slots h3, .inventory-panel h3 {
     color: #222;
@@ -789,4 +797,14 @@ button[type="submit"] {
     font-weight: bold;
     text-align: center;
     width: 100%;
+}
+
+
+
+.remove-runes {
+    font-weight: bold;
+    text-align: center;
+    background-color:#4CAF50;
+    padding: 5px;
+    border-radius: 5px;
 }

@@ -38,7 +38,7 @@
                     <ul>
                         {% for objective in data %}
                             <li class="objective" current_value="{{objective.current_value}}" objective_value="{{objective.objective_value}}" achieved="{{objective.achieved}}">
-                                {{objective.sentence}} ({{objective.current_value}} / {{objective.objective_value}})
+                                <a href="{{objective.url}}">{{objective.sentence}} ({{objective.current_value}} / {{objective.objective_value}})</a>
                             </li>
                         {% endfor %}
                     </ul>

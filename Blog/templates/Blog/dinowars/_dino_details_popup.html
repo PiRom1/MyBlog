@@ -23,6 +23,7 @@
         <p class="arena-warning">Dino dans l'arène!</p>
     {% else %}
         <button class="equip-runes-btn" onclick="openRunesPopup({{ dino.id }})">Equiper des runes</button>
+        <button class="remove-runes" id="remove-runes">Retirer toutes les runes</button>
         {% if has_fusion_candidates %}
             <button class="fusion-btn" onclick="fuseDinos({{ dino.id }})">Fusion</button>
         {% endif %}
