@@ -160,7 +160,7 @@ def calembours(text):
     print("text avant calembour : ", text)
 
     # Calembours
-    if rd.random() < 1:
+    if rd.random() < 0.1:
         calembour = False
         for pattern in CALEMBOURS_PATTERNS:    
             index = text.lower().find(pattern[0])
