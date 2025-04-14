@@ -181,7 +181,7 @@ class GameState:
         }
         self.fight_log.append(log_entry)
         if "reflect" in defender.current_statuses:
-            reflected_damage = int(damage * 0.5)
+            reflected_damage = int(damage * 0.75)
             attacker.current_hp -= reflected_damage
             self.log_effect("reflect_damage", attacker, "hp", reflected_damage)
             defender.current_statuses.remove("reflect")
@@ -280,7 +280,7 @@ def armor_slam_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
     attacker_team = next(team for team in game_state.teams.values() if attacker in team)
     team_modifiers = {}
     for dino in attacker_team:
-        flat_modifier = int(dino.stats.defense * 0.2)  # 20% of original defense
+        flat_modifier = int(dino.stats.defense * 0.25)  # 20% of original defense
         team_modifiers[dino.id] = flat_modifier
         dino.stats.defense += flat_modifier
         game_state.log_effect("defense_buff", dino, "defense", flat_modifier)
@@ -308,7 +308,7 @@ def spike_tail_sweep_effect(attacker: Dino, defender: Dino, game_state: GameStat
 
 
 # HORNED CHARGE
-# Stuns the target for 2 seconds (200 ticks); 2s cooldown
+# Stuns the target for 1.5 seconds (150 ticks); 2s cooldown
 def horned_charge_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
     if attacker.cooldown:
         return
@@ -323,14 +323,14 @@ def horned_charge_effect(attacker: Dino, defender: Dino, game_state: GameState, 
     game_state.action_queue = new_queue
     heapq.heapify(game_state.action_queue)
 
-    game_state.schedule_action(200, 1, lambda d=defender: game_state.dino_action(d), "dino_action", defender.id)  # Schedule the defender's next action after the stun duration
+    game_state.schedule_action(150, 1, lambda d=defender: game_state.dino_action(d), "dino_action", defender.id)  # Schedule the defender's next action after the stun duration
     
-    game_state.log_effect("stun", defender, "stun", 200)  # Log the stun effect
+    game_state.log_effect("stun", defender, "stun", 150)  # Log the stun effect
     attacker.cooldown = True  
     
     def reset_cooldown():
         attacker.cooldown = False
-    game_state.schedule_action(200, 2, reset_cooldown, "horned_charge", attacker.id, "reset_cooldown")
+    game_state.schedule_action(300, 2, reset_cooldown, "horned_charge", attacker.id, "reset_cooldown")
 
 
 # CRUSHING BITE
@@ -403,7 +403,7 @@ def echoing_roar_effect(attacker: Dino, defender: Dino, game_state: GameState, d
     attacker_team = next(team for team in game_state.teams.values() if attacker in team)
     team_modifiers = {}
     for dino in attacker_team:
-        flat_modifier = round(dino.stats.speed * 0.15, 2)  # 15% of original speed
+        flat_modifier = round(dino.stats.speed * 0.2, 2)  # 20% of original speed
         team_modifiers[dino.id] = flat_modifier
         dino.stats.speed += flat_modifier
         game_state.log_effect("speed_buff", dino, "speed", flat_modifier)
@@ -423,7 +423,7 @@ def echoing_roar_effect(attacker: Dino, defender: Dino, game_state: GameState, d
 
 # VENOM SPIT
 # Inflicts poison for 3 seconds (300 ticks); 5s cooldown
-# Poison status deals 5% of current HP as damage every half second (50 ticks)
+# Poison status deals 4% of current HP as damage every half second (50 ticks)
 def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
     if attacker.cooldown:
         return
@@ -434,7 +434,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
             defender.current_hp -= damage
             game_state.log_effect("poison_damage", defender, "hp", damage)
             if defender.is_alive():
-                game_state.schedule_action(60, 2, poison_damage, "venom_spit", defender.id, "poison_damage")
+                game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, "poison_damage")
 
     def remove_poison():
         if "poison" in defender.current_statuses:
@@ -448,7 +448,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
     if "poison" not in defender.current_statuses:
         defender.current_statuses.append("poison")
         game_state.log_effect("poison", defender, "poison", 0.04)  # Log the poison effect
-        game_state.schedule_action(60, 2, poison_damage, "venom_spit", defender.id, "poison_damage") # Schedule the first poison damage
+        game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, "poison_damage") # Schedule the first poison damage
     else:
         new_queue = []
         for action in game_state.action_queue:
@@ -460,7 +460,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
         heapq.heapify(game_state.action_queue)
 
     game_state.schedule_action(300, 2, remove_poison, "venom_spit", defender.id, "remove_poison")
-    game_state.schedule_action(500, 2, reset_cooldown, "venom_spit", attacker.id, "reset_cooldown")
+    game_state.schedule_action(450, 2, reset_cooldown, "venom_spit", attacker.id, "reset_cooldown")
 
 
 # SKY DIVE
@@ -470,8 +470,8 @@ def sky_dive_effect(attacker: Dino, defender: Dino, game_state: GameState, damag
         return
     attacker.cooldown = True
     attacker.current_statuses.append("dodge")
-    attacker.stats.dodge += 0.6  # Increase dodge chance by 50%
-    game_state.log_effect("dodge_buff", attacker, "dodge", 0.6)  # Log the dodge effect
+    attacker.stats.dodge += 0.75  # Increase dodge chance by 50%
+    game_state.log_effect("dodge_buff", attacker, "dodge", 0.75)  # Log the dodge effect
 
     def reset_cooldown():
         attacker.cooldown = False

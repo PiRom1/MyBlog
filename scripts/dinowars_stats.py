@@ -55,13 +55,17 @@ def run():
     
     assert len(possible_teams) == 84, f"Expected 84 teams, got {len(possible_teams)}"
     
-    team_pairs = []
+    team_pairs, final_pairs = [], []
     for team1 in possible_teams:
         for team2 in possible_teams:
             if team1 != team2:
                 team_pairs.append((team1, team2))
+
+    nb_fights_multiplier = 2
+    for _ in range(nb_fights_multiplier):
+        final_pairs.extend(team_pairs)
     
-    for team1, team2 in tqdm(team_pairs, desc='Calculating stats'):
+    for team1, team2 in tqdm(final_pairs, desc='Calculating stats'):
         # Load teams with their stats
         attacker_dinos = []
         for dino in team1:
