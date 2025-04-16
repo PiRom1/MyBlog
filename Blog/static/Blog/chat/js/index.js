@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Requête AJAX pour obtenir plus de messages
         var url = `/${session}/?page=${page}`;
-
+        console.log("url : ", url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             var messagesContainer = document.querySelector('.messages');
             messagesContainer.innerHTML = '';
             // Ajouter les nouveaux messages au début
