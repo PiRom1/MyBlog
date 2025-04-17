@@ -298,7 +298,6 @@ def runes_inventory_view(request):
     inventory_items = UserInventory.objects.filter(
         user=request.user,
         item__type='skin',
-        favorite=False 
     ).exclude(
         item__id__in=equipped_item_ids
     ).select_related('item')
