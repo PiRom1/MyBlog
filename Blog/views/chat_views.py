@@ -163,7 +163,7 @@ def Index(request, id):
             'new_message': new_message})
         
         return JsonResponse(data={'messages_html': messages_html,
-                                  'last_message_id': post_last_message_id})
+                                  'last_message_id': messages[-1].id})
 
  # Get items
             
