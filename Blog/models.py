@@ -549,3 +549,57 @@ class DWDinoItem(models.Model):
         
     def __str__(self):
         return f"{self.dino} - {self.get_slot_display()}: {self.item}"
+    
+class DWPvmDino(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dino = models.ForeignKey(DWDino, on_delete=models.CASCADE)
+    hp = models.IntegerField(default=3000)
+    atk = models.IntegerField(default=100)
+    defense = models.IntegerField(default=100)
+    spd = models.FloatField(default=1.0)
+    crit = models.FloatField(default=0.05)
+    crit_dmg = models.FloatField(default=1.5)
+    attack = models.ForeignKey(DWAttack, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.dino} PvM"
+
+class DWPvmAbility(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(default='')
+
+    def __str__(self):
+        return self.name
+    
+class DWPvmRun(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dino1 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino1')
+    dino2 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino2')
+    dino3 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino3')
+    life = models.IntegerField(default=3)
+    level = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user.username} - lvl{self.level} ({self.life} vies)"
+    
+class DWPvmRunAbility(models.Model):
+    run = models.ForeignKey(DWPvmRun, on_delete=models.CASCADE)
+    ability = models.ForeignKey(DWPvmAbility, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.run} - {self.ability}"
+    
+class DWPvmNextFightDino(models.Model):
+    run = models.ForeignKey(DWPvmRun, on_delete=models.CASCADE)
+    dino = models.ForeignKey(DWDino, on_delete=models.CASCADE)
+    hp = models.IntegerField(default=3000)
+    atk = models.IntegerField(default=100)
+    defense = models.IntegerField(default=100)
+    spd = models.FloatField(default=1.0)
+    crit = models.FloatField(default=0.05)
+    crit_dmg = models.FloatField(default=1.5)
+    attack = models.ForeignKey(DWAttack, on_delete=models.CASCADE, null=True, blank=True)
+
+class DWPvmNextAbility(models.Model):
+    run = models.ForeignKey(DWPvmRun, on_delete=models.CASCADE)
+    ability = models.ForeignKey(DWPvmAbility, on_delete=models.CASCADE)

@@ -756,4 +756,9 @@ function closeArenaPopup() {
 // Add event listener to arena button
 document.querySelector('.arena-btn').addEventListener('click', openArenaPopup);
 
+// Add event listener to PvM button
+document.querySelector('.pvm-btn').addEventListener('click', function() {
+    window.location.href = '/dinowars/pvm/';
+});
+
 

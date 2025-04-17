@@ -1,0 +1,21 @@
+<div class="dino-details">
+    <h2>{{ dino.dino.name }}</h2>
+    <div class="dino-stats">
+        <p><strong>Classe:</strong> {{ dino.dino.classe }}</p>
+        <p><strong>Vie:</strong> {{ stats.hp.total }} ({{ stats.hp.base }}+{{ stats.hp.bonus }})</p>
+        <p><strong>Attaque:</strong> {{ stats.atk.total }} ({{ stats.atk.base }}+{{ stats.atk.bonus }})</p>
+        <p><strong>Défense:</strong> {{ stats.defense.total }} ({{ stats.defense.base }}+{{ stats.defense.bonus }})</p>
+        <p><strong>Vitesse:</strong> {{ stats.spd.total }} ({{ stats.spd.base }}+{{ stats.spd.bonus }})</p>
+        <p><strong>Taux de Crit:</strong> {{ stats.crit.total }} ({{ stats.crit.base }}+{{ stats.crit.bonus }})</p>
+        <p><strong>Mult de Crit:</strong> {{ stats.crit_dmg.total }} ({{ stats.crit_dmg.base }}+{{ stats.crit_dmg.bonus }})</p>
+    </div>
+    {% if dino.attack %}
+    <div class="dino-attack">
+        <h3>{{ dino.attack.name }}</h3>
+        <p><strong>Multiplicateur de dégats:</strong> {{ dino.attack.atk_mult_low }} - {{ dino.attack.atk_mult_high }}</p>
+        {% if dino.attack.spe_effect %}
+        <p><strong>Effet spécial:</strong> {{ dino.attack.spe_effect }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views, dinowars_views, atelier_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views, dinowars_views, atelier_views, dinowars_pvm_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -131,6 +131,8 @@ urlpatterns = [
     path('dinowars/arena/', dinowars_views.arena_view, name='arena_view'),
     path('dinowars/start_battle/', dinowars_views.start_battle, name='start_battle'),
     path('dinowars/battle/analytics/<int:fight_id>/', dinowars_views.battle_analytics_view, name='battle_analytics_view'),
+    path('dinowars/pvm/', dinowars_pvm_views.pvm_view, name='pvm_view'),
+    path('dinowars/pvm/dino/<int:dino_id>/', dinowars_pvm_views.run_dino_details_view, name='run_dino_details_view'), 
     
 
     # Atelier

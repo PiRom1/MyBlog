@@ -1,0 +1,96 @@
+{% extends 'Blog/layout/base.html' %}
+{% load static %}
+{% load dino_tags %}
+
+{% block content %}
+{% csrf_token %}
+<div class="pvm-container">
+    <div class="user-info">
+        <h2>Run Stats</h2>
+        {% if run_info %}
+            <div class="stats">
+                <p>Level: {{ run_info.level }}</p>
+                <p>Remaining Lives: {{ run_info.life }}</p>
+                <p>---------------------</p>
+            </div>
+        {% else %}
+            <div class="stats">
+                <p>No active run</p>
+                <p>Start a new run to begin your adventure!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="user-actions-section">
+        <button class="action-btn back-btn">Retour</button>
+        <button class="action-btn next-fight-btn">Prochain Combat</button>
+    </div>
+
+    <div class="run-dinos-section">
+        <h2>Dinosaures de l'équipe</h2>
+        {% if run_info %}
+            <div class="dinos-grid" id="dinosGrid">
+                {% for dino in run_dinos %}
+                    <div class="dino-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}">
+                        <h3>{{ dino.dino.name }}</h3>
+                        <p class="runes"></p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Pas de run actif. Commencez un nouveau run pour continuer.</p>
+        {% endif %}
+    </div>
+
+    <div class="next-fight-dinos-section">
+        <h2>Prochain combat</h2>
+        {% if run_info %}
+            <div class="dinos-grid" id="dinosGrid">
+                {% for dino in next_fight_dinos %}
+                    <div class="dino-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}" data-enemy="true">
+                        <h3>{{ dino.dino.name }}</h3>
+                        <p class="runes"></p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Pas de run actif. Commencez un nouveau run pour continuer.</p>
+        {% endif %}
+    </div>
+
+    <div id="dinoDetailPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closeDinoDetailPopup()">&times;</span>
+            <div id="dinoDetailContent"></div>
+        </div>
+    </div>
+
+    <div class="run-abilities-section">
+        <h2>Capacités obtenues</h2>
+        <div id="abilities-container">
+            {% if run_abilities %}
+                {% for ability in run_abilities %}
+                    <div class="ability-card">
+                        <h3>{{ ability.ability.name }}</h3>
+                        <p>{{ ability.ability.description }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucune capacité obtenue pour l'instant.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Blog/dinowars/css/pvm.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'Blog/dinowars/js/pvm.js' %}"></script>
+{% endblock %}

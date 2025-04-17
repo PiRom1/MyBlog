@@ -66,6 +66,11 @@
     color: white;
 }
 
+.pvm-btn {
+    background-color: #971423;
+    color: white;
+}
+
 .team-section {
     grid-column: 1;
     grid-row: 2;
