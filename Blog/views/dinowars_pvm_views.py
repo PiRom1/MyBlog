@@ -160,12 +160,15 @@ def level_up_stat_view(request, dino_id, stat_name):
         elif stat_name == 'spd':
             dino.spd_lvl += 1
             dino.spd += 0.1
+            dino.spd = round(dino.spd, 1)
         elif stat_name == 'crit':
             dino.crit_lvl += 1
             dino.crit += 0.04
+            dino.crit = round(dino.crit, 2)
         elif stat_name == 'crit_dmg':
             dino.crit_dmg_lvl += 1
             dino.crit_dmg += 0.1
+            dino.crit_dmg = round(dino.crit_dmg, 1)
         else:
             return JsonResponse({'success': False, 'error': 'Statistique invalide!'})
         
