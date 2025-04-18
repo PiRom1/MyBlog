@@ -52,18 +52,19 @@
 }
 
 .back-btn {
-    background-color: #dc3545;
+    background-color: #868686;
     color: white;
 }
 
 .next-fight-btn {
-    background-color: #28a745;
+    background-color: #971423;
     color: white;
 }
 
 .run-dinos-section {
     grid-column: 1;
     grid-row: 2;
+    height: calc(50% - 0.5rem);
     background: #86868686;
     padding: 1rem;
     border-radius: 8px;
@@ -72,11 +73,13 @@
 
 .next-fight-dinos-section {
     grid-column: 1;
-    grid-row: 3;
-    background: #86868686;
+    grid-row: 2;
+    height: calc(50% - 0.5rem);
+    background: #97142386;
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: auto;
 }
 
 .dinos-grid {
@@ -115,6 +118,19 @@
     color : #868686;
 }
 
+.enemy-header {
+    color: #971423;
+}
+
+.enemy-card {
+    background: #ff8667dd;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
 .runes i[class^="fi fi-s"] {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
@@ -151,9 +167,26 @@ i.fi-red {
     font-style: italic;
 }
 
+.next-abilities-section {
+    grid-column: 2;
+    grid-row: 1;
+    background: #86868686;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#next-abilities-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+}
+
 .run-abilities-section {
     grid-column: 2;
-    grid-row: 1 / span 3;
+    grid-row: 2;
     background: #86868686;
     padding: 1rem;
     border-radius: 8px;
@@ -172,6 +205,7 @@ i.fi-red {
     background: rgba(200,200,200,0.86);
     padding: 0.5rem;
     border-radius: 6px;
+    width: -webkit-fill-available;
 }
 
 .ability-card h3 {
@@ -221,6 +255,7 @@ i.fi-red {
 
 /* Add common popup button styles */
 .popup-content button {
+    margin-top: 5px;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -229,13 +264,13 @@ i.fi-red {
     font-size: 1rem;
     transition: all 0.2s;
     width: 100%;
-    margin-top: 10px;
     color: white;
     background: #4CAF50;
 }
 
 .popup-content button:hover {
     background: #45a049;
+    transform: none;
 }
 
 .popup-content button:active {
@@ -268,4 +303,84 @@ button[type="submit"] {
     padding: 15px;
     border-radius: 8px;
     margin-top: 20px;
+}
+
+/* Stat Points Allocation Styles */
+
+.stat-points-info {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.stat-allocation-container {
+    color: #222;
+    padding: 15px;
+}
+
+.stat-points-available {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #45a049;
+}
+
+.stat-allocation-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+}
+
+.stat-name {
+    font-weight: bold;
+}
+
+.stat-cost {
+    margin-right: 10px;
+    color: #666;
+}
+
+.stat-level-up-btn {
+    margin-top: 0px;
+    padding: 5px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.stat-level-up-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.stat-level-up-btn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.stat-level-up-btn:disabled:hover {
+    background-color: #cccccc;
+    transform: none;
+}
+
+.allocation-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
 }

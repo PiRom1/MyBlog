@@ -6,12 +6,17 @@
 {% csrf_token %}
 <div class="pvm-container">
     <div class="user-info">
-        <h2>Run Stats</h2>
+        <h2>Infos de la Run</h2>
         {% if run_info %}
             <div class="stats">
-                <p>Level: {{ run_info.level }}</p>
-                <p>Remaining Lives: {{ run_info.life }}</p>
+                <p>Niveau: {{ run_info.level }}</p>
+                <p>Vies restantes: 
+                    {% for i in life_counter %}
+                        <i class="fi fi-ss-heart"></i>
+                    {% endfor %}
+                </p>
                 <p>---------------------</p>
+                <p>Points de stats à répartir: {{ run_info.stat_points }}</p>
             </div>
         {% else %}
             <div class="stats">
@@ -22,7 +27,7 @@
     </div>
     
     <div class="user-actions-section">
-        <button class="action-btn back-btn">Retour</button>
+        <button class="action-btn back-btn">Retour au PvP</button>
         <button class="action-btn next-fight-btn">Prochain Combat</button>
     </div>
 
@@ -47,7 +52,7 @@
         {% if run_info %}
             <div class="dinos-grid" id="dinosGrid">
                 {% for dino in next_fight_dinos %}
-                    <div class="dino-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}" data-enemy="true">
+                    <div class="dino-card enemy-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}" data-enemy="true">
                         <h3>{{ dino.dino.name }}</h3>
                         <p class="runes"></p>
                     </div>
@@ -65,6 +70,22 @@
         </div>
     </div>
 
+    <div class="next-abilities-section">
+        <h2>Choisir une nouvelle capacité</h2>
+        <div id="next-abilities-container">
+            {% if next_abilities %}
+                {% for ability in next_abilities %}
+                    <div class="ability-card">
+                        <h3>{{ ability.ability.name }}</h3>
+                        <p>{{ ability.ability.description }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucune capacité obtenue pour l'instant.</p>
+            {% endif %}
+        </div>
+    </div>
+
     <div class="run-abilities-section">
         <h2>Capacités obtenues</h2>
         <div id="abilities-container">
@@ -78,6 +99,13 @@
             {% else %}
                 <p>Aucune capacité obtenue pour l'instant.</p>
             {% endif %}
+        </div>
+    </div>
+
+    <div id="statAllocationPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closeStatAllocationPopup()">&times;</span>
+            <div id="statAllocationContent"></div>
         </div>
     </div>
 </div>

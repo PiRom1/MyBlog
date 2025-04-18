@@ -133,7 +133,8 @@ urlpatterns = [
     path('dinowars/battle/analytics/<int:fight_id>/', dinowars_views.battle_analytics_view, name='battle_analytics_view'),
     path('dinowars/pvm/', dinowars_pvm_views.pvm_view, name='pvm_view'),
     path('dinowars/pvm/dino/<int:dino_id>/', dinowars_pvm_views.run_dino_details_view, name='run_dino_details_view'), 
-    
+    path('dinowars/pvm/dino/<int:dino_id>/level-up/', dinowars_pvm_views.stat_allocation_view, name='pvm_dino_level_up'),
+    path('dinowars/pvm/dino/<int:dino_id>/level-up/<str:stat_name>/', dinowars_pvm_views.level_up_stat_view, name='pvm_dino_level_up_stat'),
 
     # Atelier
     path('atelier/', atelier_views.atelier, name='atelier'),

@@ -1,0 +1,52 @@
+<div class="stat-allocation-container">
+    <h2>Amélioration des statistiques de {{ dino.dino.name }}</h2>
+    <p class="stat-points-available">Points disponibles: <span id="availableStatPoints">{{ run_info.stat_points }}</span></p>
+    
+    <div class="stat-allocation-grid">
+        <div class="stat-item">
+            <span class="stat-name">Vie : {{ dino.hp }} (Niveau: {{ stat_levels.hp_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.hp_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="hp" data-cost="{{ stat_costs.hp_cost }}" 
+                    {% if run_info.stat_points < stat_costs.hp_cost %}disabled{% endif %}>+</button>
+        </div>
+        
+        <div class="stat-item">
+            <span class="stat-name">Attaque : {{ dino.atk }} (Niveau: {{ stat_levels.atk_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.atk_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="atk" data-cost="{{ stat_costs.atk_cost }}" 
+                    {% if run_info.stat_points < stat_costs.atk_cost %}disabled{% endif %}>+</button>
+        </div>
+        
+        <div class="stat-item">
+            <span class="stat-name">Défense : {{ dino.defense }} (Niveau: {{ stat_levels.defense_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.defense_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="defense" data-cost="{{ stat_costs.defense_cost }}" 
+                    {% if run_info.stat_points < stat_costs.defense_cost %}disabled{% endif %}>+</button>
+        </div>
+        
+        <div class="stat-item">
+            <span class="stat-name">Vitesse : {{ dino.spd }} (Niveau: {{ stat_levels.spd_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.spd_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="spd" data-cost="{{ stat_costs.spd_cost }}" 
+                    {% if run_info.stat_points < stat_costs.spd_cost %}disabled{% endif %}>+</button>
+        </div>
+        
+        <div class="stat-item">
+            <span class="stat-name">Taux de Crit : {{ dino.crit }} (Niveau: {{ stat_levels.crit_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.crit_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="crit" data-cost="{{ stat_costs.crit_cost }}" 
+                    {% if run_info.stat_points < stat_costs.crit_cost %}disabled{% endif %}>+</button>
+        </div>
+        
+        <div class="stat-item">
+            <span class="stat-name">Mult de Crit : {{ dino.crit_dmg }} (Niveau: {{ stat_levels.crit_dmg_lvl }})</span>
+            <span class="stat-cost">Coût: {{ stat_costs.crit_dmg_cost }}</span>
+            <button class="stat-level-up-btn" data-stat="crit_dmg" data-cost="{{ stat_costs.crit_dmg_cost }}" 
+                    {% if run_info.stat_points < stat_costs.crit_dmg_cost %}disabled{% endif %}>+</button>
+        </div>
+    </div>
+    
+    <div class="allocation-actions">
+        <button id="closeStatAllocationBtn" class="action-btn back-btn">Fermer</button>
+    </div>
+</div>

@@ -559,6 +559,12 @@ class DWPvmDino(models.Model):
     spd = models.FloatField(default=1.0)
     crit = models.FloatField(default=0.05)
     crit_dmg = models.FloatField(default=1.5)
+    hp_lvl = models.IntegerField(default=1)
+    atk_lvl = models.IntegerField(default=1)
+    defense_lvl = models.IntegerField(default=1)
+    spd_lvl = models.IntegerField(default=1)
+    crit_lvl = models.IntegerField(default=1)
+    crit_dmg_lvl = models.IntegerField(default=1)
     attack = models.ForeignKey(DWAttack, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
@@ -578,6 +584,8 @@ class DWPvmRun(models.Model):
     dino3 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino3')
     life = models.IntegerField(default=3)
     level = models.IntegerField(default=1)
+    stat_points = models.IntegerField(default=0)
+    run_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - lvl{self.level} ({self.life} vies)"

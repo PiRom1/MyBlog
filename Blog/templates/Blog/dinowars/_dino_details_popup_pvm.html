@@ -2,12 +2,13 @@
     <h2>{{ dino.dino.name }}</h2>
     <div class="dino-stats">
         <p><strong>Classe:</strong> {{ dino.dino.classe }}</p>
-        <p><strong>Vie:</strong> {{ stats.hp.total }} ({{ stats.hp.base }}+{{ stats.hp.bonus }})</p>
-        <p><strong>Attaque:</strong> {{ stats.atk.total }} ({{ stats.atk.base }}+{{ stats.atk.bonus }})</p>
-        <p><strong>Défense:</strong> {{ stats.defense.total }} ({{ stats.defense.base }}+{{ stats.defense.bonus }})</p>
-        <p><strong>Vitesse:</strong> {{ stats.spd.total }} ({{ stats.spd.base }}+{{ stats.spd.bonus }})</p>
-        <p><strong>Taux de Crit:</strong> {{ stats.crit.total }} ({{ stats.crit.base }}+{{ stats.crit.bonus }})</p>
-        <p><strong>Mult de Crit:</strong> {{ stats.crit_dmg.total }} ({{ stats.crit_dmg.base }}+{{ stats.crit_dmg.bonus }})</p>
+        <p><strong>Niveau moyen:</strong> {{ stats.mean_lvl }}</p>
+        <p><strong>Vie:</strong> {{ stats.hp.total }} (Nv. {{ stats.hp.lvl }})</p>
+        <p><strong>Attaque:</strong> {{ stats.atk.total }} (Nv. {{ stats.atk.lvl }})</p>
+        <p><strong>Défense:</strong> {{ stats.defense.total }} (Nv. {{ stats.defense.lvl }})</p>
+        <p><strong>Vitesse:</strong> {{ stats.spd.total }} (Nv. {{ stats.spd.lvl }})</p>
+        <p><strong>Taux de Crit:</strong> {{ stats.crit.total }} (Nv. {{ stats.crit.lvl }})</p>
+        <p><strong>Mult de Crit:</strong> {{ stats.crit_dmg.total }} (Nv. {{ stats.crit_dmg.lvl }})</p>
     </div>
     {% if dino.attack %}
     <div class="dino-attack">
@@ -16,6 +17,15 @@
         {% if dino.attack.spe_effect %}
         <p><strong>Effet spécial:</strong> {{ dino.attack.spe_effect }}</p>
         {% endif %}
+    </div>
+    {% endif %}
+    
+    {% if not enemy and run_info %}
+    <div class="stat-points-info">
+        <p><strong>Points de statistiques disponibles:</strong> {{ run_info.stat_points }}</p>
+        <button id="levelUpStatsBtn" class="action-btn lvl-up-btn" data-dino-id="{{ dino.id }}" {% if run_info.stat_points <= 0 %}disabled{% endif %}>
+            Améliorer les statistiques
+        </button>
     </div>
     {% endif %}
 </div>

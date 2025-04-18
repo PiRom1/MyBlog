@@ -291,7 +291,7 @@ class DWPvmAbilityAdmin(admin.ModelAdmin):
 
 @admin.register(DWPvmRun)
 class DWPvmRunAdmin(admin.ModelAdmin):
-    list_display = ('user', 'dino1', 'dino2', 'dino3', 'life', 'level')
+    list_display = ('user', 'dino1', 'dino2', 'dino3', 'life', 'level', 'stat_points', 'run_date')
     list_filter = ('user', 'level')
     search_fields = ('user__username',)
 
