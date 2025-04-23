@@ -23,7 +23,7 @@
     {% if not enemy and run_info %}
     <div class="stat-points-info">
         <p><strong>Points de statistiques disponibles:</strong> {{ run_info.stat_points }}</p>
-        <button id="levelUpStatsBtn" class="action-btn lvl-up-btn" data-dino-id="{{ dino.id }}" {% if run_info.stat_points <= 0 %}disabled{% endif %}>
+        <button id="levelUpStatsBtn" class="action-btn lvl-up-btn" data-dino-id="{{ dino.id }}">
             Améliorer les statistiques
         </button>
     </div>

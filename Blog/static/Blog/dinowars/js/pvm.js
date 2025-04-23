@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize run dino cards
     initializeDinoCards();
+    
+    // Initialize ability cards
+    initializeAbilityCards();
 });
 
 function initializeUIElements() {
@@ -41,9 +44,7 @@ function setupEventListeners() {
             // In a real implementation, this would send a request to get the next enemy
         });
     }
-    
 }
-
 
 function initializeDinoCards() {
     const dinoCards = document.querySelectorAll('.dino-card');
@@ -53,6 +54,18 @@ function initializeDinoCards() {
             const enemy = this.getAttribute('data-enemy');
             showDinoDetails(dinoId, enemy);
         });
+    });
+}
+
+function initializeAbilityCards() {
+    const nextAbilityCards = document.querySelectorAll('#next-abilities-container .ability-card:not(.selected-ability):not(.discarded-ability)');
+    nextAbilityCards.forEach(card => {
+        if (card.getAttribute('data-selected') !== 'true' && card.getAttribute('data-discarded') !== 'true') {
+            card.addEventListener('click', function() {
+                const abilityId = this.getAttribute('data-ability-id');
+                selectAbility(abilityId);
+            });
+        }
     });
 }
 
@@ -164,8 +177,8 @@ function levelUpStat(dinoId, statName, cost) {
                 availablePointsElem.textContent = data.remaining_points;
             }
             
-            // Update buttons based on remaining points
-            updateLevelUpButtons(data.remaining_points);
+            // Update the main page's stat points counter
+            updateMainPageStatPoints(data.remaining_points);
         } else {
             alert('Erreur: ' + data.error);
         }
@@ -176,12 +189,13 @@ function levelUpStat(dinoId, statName, cost) {
     });
 }
 
-function updateLevelUpButtons(remainingPoints) {
-    const buttons = document.querySelectorAll('.stat-level-up-btn');
-    buttons.forEach(button => {
-        const cost = parseInt(button.getAttribute('data-cost'));
-        button.disabled = (cost > remainingPoints);
-    });
+// Function to update the main page's stat points counter
+function updateMainPageStatPoints(remainingPoints) {
+    // Update the stat points counter in the user info section
+    const mainStatPointsElement = document.getElementById('main-stat-points-counter');
+    if (mainStatPointsElement) {
+        mainStatPointsElement.textContent = remainingPoints;
+    }
 }
 
 function closeStatAllocationPopup() {
@@ -211,6 +225,211 @@ function handleStatAllocationEscKey(event) {
     if (event.key === 'Escape') {
         closeStatAllocationPopup();
     }
+}
+
+function selectAbility(abilityId) {
+    fetch(`/dinowars/pvm/ability/${abilityId}/select/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the appearance of all ability cards
+            const nextAbilitiesContainer = document.getElementById('next-abilities-container');
+            const allAbilityCards = nextAbilitiesContainer.querySelectorAll('.ability-card');
+            
+            allAbilityCards.forEach(card => {
+                const cardAbilityId = card.getAttribute('data-ability-id');
+                
+                if (cardAbilityId === abilityId) {
+                    // This is the selected card
+                    card.classList.remove('selectable-ability');
+                    card.classList.add('selected-ability');
+                    
+                    // Update the prompt text
+                    const promptSpan = card.querySelector('.select-prompt');
+                    if (promptSpan) {
+                        promptSpan.className = 'selected-prompt';
+                        promptSpan.textContent = 'Capacité sélectionnée';
+                    }
+                    
+                    // Remove click event listener
+                    card.removeEventListener('click', function() {});
+                    card.style.cursor = 'default';
+                } else {
+                    // These are discarded cards
+                    card.classList.remove('selectable-ability');
+                    card.classList.add('discarded-ability');
+                    
+                    // Remove the prompt text
+                    const promptSpan = card.querySelector('.select-prompt');
+                    if (promptSpan) {
+                        promptSpan.remove();
+                    }
+                    
+                    // Remove click event listener
+                    card.removeEventListener('click', function() {});
+                    card.style.cursor = 'default';
+                }
+            });
+            
+            // Check if this ability needs to be assigned to a dino
+            if (data.to_dino) {
+                // Show the dino selection popup
+                showDinoSelectionPopup(data.ability_id);
+            } else {
+                // Add the selected ability to the abilities container directly
+                addSelectedAbilityToList(data);
+            }
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors de la sélection de la capacité: ' + error);
+    });
+}
+
+function addSelectedAbilityToList(data) {
+    // Add the selected ability to the abilities container
+    const abilitiesContainer = document.getElementById('abilities-container');
+    const newAbilityCard = document.createElement('div');
+    newAbilityCard.className = 'ability-card newly-added';
+    newAbilityCard.innerHTML = `
+        <h3>${data.ability_name}</h3>
+        <p>${data.ability_description}</p>
+        <span class="ability-status">Nouvellement acquise</span>
+    `;
+    
+    // Add to top of list
+    if (abilitiesContainer.firstChild) {
+        abilitiesContainer.insertBefore(newAbilityCard, abilitiesContainer.firstChild);
+    } else {
+        abilitiesContainer.appendChild(newAbilityCard);
+    }
+    
+    // Clear "no abilities" message if it exists
+    const noAbilitiesMessage = abilitiesContainer.querySelector('p:not(:has(*))');
+    if (noAbilitiesMessage && !noAbilitiesMessage.parentElement.classList.contains('ability-card')) {
+        noAbilitiesMessage.remove();
+    }
+    
+    // Highlight the new ability card
+    setTimeout(() => {
+        newAbilityCard.classList.remove('newly-added');
+    }, 5000); // Remove the highlight after 5 seconds
+}
+
+function showDinoSelectionPopup(abilityId) {
+    const popup = document.getElementById('dinoSelectionPopup');
+    if (!popup) return;
+    
+    // Set the current ability ID in the hidden field
+    document.getElementById('currentAbilityId').value = abilityId;
+    
+    // Show the popup
+    popup.style.display = 'block';
+    
+    // Add click event listeners to the dino cards
+    const dinoCards = document.querySelectorAll('#dinosSelectionGrid .dino-card');
+    dinoCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const dinoId = this.getAttribute('data-dino-id');
+            selectAbilityDino(abilityId, dinoId);
+        });
+    });
+    
+    // Add event listeners for closing the popup
+    document.addEventListener('mousedown', handleDinoSelectionClickOutside);
+    document.addEventListener('keydown', handleDinoSelectionEscKey);
+}
+
+function closeDinoSelectionPopup() {
+    const popup = document.getElementById('dinoSelectionPopup');
+    popup.style.display = 'none';
+    document.removeEventListener('mousedown', handleDinoSelectionClickOutside);
+    document.removeEventListener('keydown', handleDinoSelectionEscKey);
+}
+
+function handleDinoSelectionClickOutside(event) {
+    const popup = document.getElementById('dinoSelectionPopup');
+    const content = document.getElementById('dinoSelectionContent');
+    
+    if (popup && !content.contains(event.target) && !event.target.classList.contains('close-popup')) {
+        closeDinoSelectionPopup();
+    }
+}
+
+function handleDinoSelectionEscKey(event) {
+    if (event.key === 'Escape') {
+        closeDinoSelectionPopup();
+    }
+}
+
+function selectAbilityDino(abilityId, dinoId) {
+    fetch(`/dinowars/pvm/ability/${abilityId}/select-dino/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ dino_id: dinoId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close the dino selection popup
+            closeDinoSelectionPopup();
+            
+            // Add the selected ability to the abilities list with dino info
+            const abilitiesContainer = document.getElementById('abilities-container');
+            const newAbilityCard = document.createElement('div');
+            newAbilityCard.className = 'ability-card newly-added';
+            
+            // Get ability name and description from the selected ability card
+            const selectedAbilityCard = document.querySelector(`.selected-ability`);
+            const abilityName = selectedAbilityCard.querySelector('h3').textContent;
+            const abilityDesc = selectedAbilityCard.querySelector('p').textContent;
+            
+            newAbilityCard.innerHTML = `
+                <h3>${abilityName}</h3>
+                <p>${abilityDesc}</p>
+                <p class="ability-dino-info">Assignée à: ${data.dino_name}</p>
+                <span class="ability-status">Nouvellement acquise</span>
+            `;
+            
+            // Add to top of list
+            if (abilitiesContainer.firstChild) {
+                abilitiesContainer.insertBefore(newAbilityCard, abilitiesContainer.firstChild);
+            } else {
+                abilitiesContainer.appendChild(newAbilityCard);
+            }
+            
+            // Clear "no abilities" message if it exists
+            const noAbilitiesMessage = abilitiesContainer.querySelector('p:not(:has(*))');
+            if (noAbilitiesMessage && !noAbilitiesMessage.parentElement.classList.contains('ability-card')) {
+                noAbilitiesMessage.remove();
+            }
+            
+            // Highlight the new ability card
+            setTimeout(() => {
+                newAbilityCard.classList.remove('newly-added');
+            }, 5000); // Remove the highlight after 5 seconds
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors de la sélection du dinosaure: ' + error);
+    });
 }
 
 // Helper function to get CSRF token

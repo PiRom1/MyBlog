@@ -573,6 +573,7 @@ class DWPvmDino(models.Model):
 class DWPvmAbility(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(default='')
+    to_dino = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -593,6 +594,7 @@ class DWPvmRun(models.Model):
 class DWPvmRunAbility(models.Model):
     run = models.ForeignKey(DWPvmRun, on_delete=models.CASCADE)
     ability = models.ForeignKey(DWPvmAbility, on_delete=models.CASCADE)
+    dino = models.ForeignKey(DWPvmDino, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.run} - {self.ability}"
@@ -611,3 +613,5 @@ class DWPvmNextFightDino(models.Model):
 class DWPvmNextAbility(models.Model):
     run = models.ForeignKey(DWPvmRun, on_delete=models.CASCADE)
     ability = models.ForeignKey(DWPvmAbility, on_delete=models.CASCADE)
+    is_selected = models.BooleanField(default=False)
+    is_discarded = models.BooleanField(default=False)

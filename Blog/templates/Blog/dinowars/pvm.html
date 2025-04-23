@@ -16,7 +16,7 @@
                     {% endfor %}
                 </p>
                 <p>---------------------</p>
-                <p>Points de stats à répartir: {{ run_info.stat_points }}</p>
+                <p>Points de statistiques: <span id="main-stat-points-counter">{{ run_info.stat_points }}</span></p>
             </div>
         {% else %}
             <div class="stats">
@@ -38,7 +38,14 @@
                 {% for dino in run_dinos %}
                     <div class="dino-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}">
                         <h3>{{ dino.dino.name }}</h3>
-                        <p class="runes"></p>
+                        <div class="small-stats">
+                            <p><i class="fi fi-ss-heart"></i> {{ dino.hp }}</p>
+                            <p><i class="fi fi-ss-sword-alt"></i> {{ dino.atk }}</p>
+                            <p><i class="fi fi-ss-shield"></i> {{ dino.defense }}</p>
+                            <p><i class="fi fi-ss-bolt"></i> {{ dino.spd }}</p>
+                            <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.crit }}</p>
+                            <p><i class="fi fi-ss-burst"></i> {{ dino.crit_dmg }}</p>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -54,7 +61,14 @@
                 {% for dino in next_fight_dinos %}
                     <div class="dino-card enemy-card" data-name="{{ dino.dino.name }}" data-dino-id="{{ dino.id }}" data-enemy="true">
                         <h3>{{ dino.dino.name }}</h3>
-                        <p class="runes"></p>
+                        <div class="small-stats">
+                            <p><i class="fi fi-ss-heart"></i> {{ dino.hp }}</p>
+                            <p><i class="fi fi-ss-sword-alt"></i> {{ dino.atk }}</p>
+                            <p><i class="fi fi-ss-shield"></i> {{ dino.defense }}</p>
+                            <p><i class="fi fi-ss-bolt"></i> {{ dino.spd }}</p>
+                            <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.crit }}</p>
+                            <p><i class="fi fi-ss-burst"></i> {{ dino.crit_dmg }}</p>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -75,13 +89,21 @@
         <div id="next-abilities-container">
             {% if next_abilities %}
                 {% for ability in next_abilities %}
-                    <div class="ability-card">
+                    <div class="ability-card {% if ability.is_selected %}selected-ability{% elif ability.is_discarded %}discarded-ability{% else %}selectable-ability{% endif %}" 
+                         data-ability-id="{{ ability.id }}" 
+                         data-selected="{{ ability.is_selected|yesno:"true,false" }}"
+                         data-discarded="{{ ability.is_discarded|yesno:"true,false" }}">
                         <h3>{{ ability.ability.name }}</h3>
                         <p>{{ ability.ability.description }}</p>
+                        {% if not ability.is_selected and not ability.is_discarded %}
+                            <span class="select-prompt">Cliquez pour sélectionner</span>
+                        {% elif ability.is_selected %}
+                            <span class="selected-prompt">Capacité sélectionnée</span>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% else %}
-                <p>Aucune capacité obtenue pour l'instant.</p>
+                <p>Aucune capacité disponible pour l'instant.</p>
             {% endif %}
         </div>
     </div>
@@ -94,6 +116,9 @@
                     <div class="ability-card">
                         <h3>{{ ability.ability.name }}</h3>
                         <p>{{ ability.ability.description }}</p>
+                        {% if ability.dino %}     
+                            <p class="ability-dino-info">Assignée à: {{ ability.dino.dino.name }}</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% else %}
@@ -106,6 +131,37 @@
         <div class="popup-content">
             <span class="close-popup" onclick="closeStatAllocationPopup()">&times;</span>
             <div id="statAllocationContent"></div>
+        </div>
+    </div>
+
+    <div id="dinoSelectionPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closeDinoSelectionPopup()">&times;</span>
+            <div id="dinoSelectionContent">
+                <h2>Sélectionner un dinosaure pour cette capacité</h2>
+                <p class="selection-instruction">Cette capacité doit être assignée à un dinosaure spécifique.</p>
+                <div class="dinos-selection-grid" id="dinosSelectionGrid">
+                    {% if run_dinos %}
+                        {% for dino in run_dinos %}
+                            <div class="dino-card selectable-dino" data-dino-id="{{ dino.id }}">
+                                <h3>{{ dino.dino.name }}</h3>
+                                <div class="small-stats">
+                                    <p><i class="fi fi-ss-heart"></i> {{ dino.hp }}</p>
+                                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.atk }}</p>
+                                    <p><i class="fi fi-ss-shield"></i> {{ dino.defense }}</p>
+                                    <p><i class="fi fi-ss-bolt"></i> {{ dino.spd }}</p>
+                                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.crit }}</p>
+                                    <p><i class="fi fi-ss-burst"></i> {{ dino.crit_dmg }}</p>
+                                </div>
+                                <span class="select-prompt">Cliquez pour sélectionner</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Aucun dinosaure disponible.</p>
+                    {% endif %}
+                </div>
+                <input type="hidden" id="currentAbilityId" value="">
+            </div>
         </div>
     </div>
 </div>

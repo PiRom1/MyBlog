@@ -10,7 +10,7 @@ def pvm_view(request):
     # Get current run info if exists
     try:
         run_info = DWPvmRun.objects.get(user=request.user)
-        run_abilities = DWPvmRunAbility.objects.filter(run=run_info).select_related('ability')
+        run_abilities = DWPvmRunAbility.objects.filter(run=run_info).select_related('ability').order_by('-id')
         run_dinos = [run_info.dino1, run_info.dino2, run_info.dino3]
         next_fight_dinos = DWPvmNextFightDino.objects.filter(run=run_info).select_related('dino')
         next_abilities = DWPvmNextAbility.objects.filter(run=run_info).select_related('ability')
@@ -92,6 +92,9 @@ def fib(i):
 def sumfib(i):
     return sum(fib(j) for j in range(1, i+1))
 
+def stat_cost(i):
+    return int(sumfib(i)/6)+1
+
 @login_required
 def stat_allocation_view(request, dino_id):
     """View function to display the stat allocation interface for a dino."""
@@ -114,12 +117,12 @@ def stat_allocation_view(request, dino_id):
         
         # Calculate the cost for leveling up each stat
         stat_costs = {
-            'hp_cost': sumfib(stat_levels['hp_lvl'])-4,
-            'atk_cost': sumfib(stat_levels['atk_lvl'])-4,
-            'defense_cost': sumfib(stat_levels['defense_lvl'])-4,
-            'spd_cost': sumfib(stat_levels['spd_lvl'])-4,
-            'crit_cost': sumfib(stat_levels['crit_lvl'])-4,
-            'crit_dmg_cost': sumfib(stat_levels['crit_dmg_lvl'])-4,
+            'hp_cost': stat_cost(stat_levels['hp_lvl']),
+            'atk_cost': stat_cost(stat_levels['atk_lvl']),
+            'defense_cost': stat_cost(stat_levels['defense_lvl']),
+            'spd_cost': stat_cost(stat_levels['spd_lvl']),
+            'crit_cost': stat_cost(stat_levels['crit_lvl']),
+            'crit_dmg_cost': stat_cost(stat_levels['crit_dmg_lvl']),
         }
         
         return render(request, 'Blog/dinowars/_stat_points_allocation_popup.html', {
@@ -141,7 +144,7 @@ def level_up_stat_view(request, dino_id, stat_name):
         run_info = get_object_or_404(DWPvmRun, user=request.user)
 
         stat_name_lvl = f"{stat_name}_lvl"
-        cost = sumfib(getattr(dino, stat_name_lvl)) - 4
+        cost = stat_cost(getattr(dino, stat_name_lvl))
         
         # Check if enough stat points are available
         if run_info.stat_points < cost:
@@ -183,6 +186,65 @@ def level_up_stat_view(request, dino_id, stat_name):
             'stat_name': stat_name,
             'new_level': getattr(dino, f'{stat_name}_lvl'),
             'new_value': getattr(dino, stat_name),
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@login_required
+@require_POST
+def select_ability_view(request, ability_id):
+    """View function to handle ability selection."""
+    try:
+        # Fetch the ability from the next abilities
+        next_ability = get_object_or_404(DWPvmNextAbility, id=ability_id, run__user=request.user)
+        run_info = next_ability.run
+        
+        # Create a new run ability based on the selected next ability
+        run_ability = DWPvmRunAbility.objects.create(
+            run=run_info,
+            ability=next_ability.ability
+        )
+        
+        # Instead of deleting, mark this as selected (we'll add this field to the model)
+        next_ability.is_selected = True
+        next_ability.save()
+        
+        # Mark other abilities as discarded
+        DWPvmNextAbility.objects.filter(run=run_info).exclude(id=ability_id).update(is_discarded=True)
+        
+        return JsonResponse({
+            'success': True,
+            'ability_name': run_ability.ability.name,
+            'ability_description': run_ability.ability.description,
+            'ability_id': run_ability.id,
+            'next_ability_id': next_ability.id,
+            'to_dino': next_ability.ability.to_dino  # Include to_dino field
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@login_required
+@require_POST
+def select_ability_dino_view(request, ability_id):
+    """View function to associate a dino with an ability."""
+    try:
+        # Parse the request data
+        data = json.loads(request.body)
+        dino_id = data.get('dino_id')
+        
+        # Fetch the run ability and the dino
+        run_ability = get_object_or_404(DWPvmRunAbility, id=ability_id, run__user=request.user)
+        dino = get_object_or_404(DWPvmDino, id=dino_id, user=request.user)
+        
+        # Associate the dino with the ability
+        run_ability.dino = dino
+        run_ability.save()
+        
+        return JsonResponse({
+            'success': True,
+            'ability_id': run_ability.id,
+            'dino_id': dino.id,
+            'dino_name': dino.dino.name
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
