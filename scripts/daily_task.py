@@ -60,13 +60,6 @@ def run():
         dwuser = DWUser.objects.get(user = user)
         dwuser.arena_energy = 5
         dwuser.save()
-
-    for team in DWUserTeam.objects.filter(in_arena=True):
-        user = team.user
-        user.coins += 150
-        user.save()
-        print(f'150 coins added to {user.username}')
-        break
     
     print("Quests generated for every user")
 
