@@ -312,3 +312,9 @@ class DWPvmNextAbilityAdmin(admin.ModelAdmin):
     list_display = ('run', 'ability')
     list_filter = ('run__user', 'ability')
     search_fields = ('run__user__username', 'ability__name')
+
+@admin.register(DWPvmNewRun)
+class DWPvmNewRunAdmin(admin.ModelAdmin):
+    list_display = ('user', 'state', 'dino1', 'dino2', 'dino3', 'date')
+    list_filter = ('user',)
+    search_fields = ('user__username',)

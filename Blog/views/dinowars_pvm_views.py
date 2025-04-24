@@ -1,9 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from Blog.models import DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility
+from Blog.models import DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun
 import json
+import random
 from django.views.decorators.http import require_POST
+from django.db import transaction
 
 @login_required
 def pvm_view(request):
@@ -12,26 +14,24 @@ def pvm_view(request):
         run_info = DWPvmRun.objects.get(user=request.user)
         run_abilities = DWPvmRunAbility.objects.filter(run=run_info).select_related('ability').order_by('-id')
         run_dinos = [run_info.dino1, run_info.dino2, run_info.dino3]
+        if None in run_dinos:
+            raise ValueError("One or more dinos isn't selected.")
         next_fight_dinos = DWPvmNextFightDino.objects.filter(run=run_info).select_related('dino')
         next_abilities = DWPvmNextAbility.objects.filter(run=run_info).select_related('ability')
         life_counter = ''
         for _ in range(run_info.life): life_counter += '1'
-    except DWPvmRun.DoesNotExist:
-        run_info = None
-        run_abilities = None
-        run_dinos = None
-        next_fight_dinos = None
-        next_abilities = None
-    
-    context = {
-        'run_info': run_info,
-        'life_counter': life_counter,
-        'run_abilities': run_abilities,
-        'run_dinos': run_dinos,
-        'next_fight_dinos': next_fight_dinos,
-        'next_abilities': next_abilities,
-    }
-    return render(request, 'Blog/dinowars/pvm.html', context)
+    except (DWPvmRun.DoesNotExist, ValueError) as e:
+        return redirect('new_run_view')
+    else :    
+        context = {
+            'run_info': run_info,
+            'life_counter': life_counter,
+            'run_abilities': run_abilities,
+            'run_dinos': run_dinos,
+            'next_fight_dinos': next_fight_dinos,
+            'next_abilities': next_abilities,
+        }
+        return render(request, 'Blog/dinowars/pvm.html', context)
 
 @login_required
 def run_dino_details_view(request, dino_id):
@@ -245,6 +245,235 @@ def select_ability_dino_view(request, ability_id):
             'ability_id': run_ability.id,
             'dino_id': dino.id,
             'dino_name': dino.dino.name
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def set_new_run_dinos(new_run, random_dinos):
+    """Helper function to set new run dinos."""
+    new_run.dino1 = DWPvmDino.objects.create(
+        user=new_run.user,
+        dino=random_dinos[0],
+        hp=random_dinos[0].base_hp,
+        atk=random_dinos[0].base_atk,
+        defense=random_dinos[0].base_def,
+        spd=random_dinos[0].base_spd,
+        crit=random_dinos[0].base_crit,
+        crit_dmg=random_dinos[0].base_crit_dmg,
+        hp_lvl=1,
+        atk_lvl=1,
+        defense_lvl=1,
+        spd_lvl=1,
+        crit_lvl=1,
+        crit_dmg_lvl=1,
+        attack=random_dinos[0].attack
+    )
+    new_run.dino2 = DWPvmDino.objects.create(
+        user=new_run.user,
+        dino=random_dinos[1],
+        hp=random_dinos[1].base_hp,
+        atk=random_dinos[1].base_atk,
+        defense=random_dinos[1].base_def,
+        spd=random_dinos[1].base_spd,
+        crit=random_dinos[1].base_crit,
+        crit_dmg=random_dinos[1].base_crit_dmg,
+        hp_lvl=1,
+        atk_lvl=1,
+        defense_lvl=1,
+        spd_lvl=1,
+        crit_lvl=1,
+        crit_dmg_lvl=1,
+        attack=random_dinos[1].attack
+    )
+    new_run.dino3 = DWPvmDino.objects.create(
+        user=new_run.user,
+        dino=random_dinos[2],
+        hp=random_dinos[2].base_hp,
+        atk=random_dinos[2].base_atk,
+        defense=random_dinos[2].base_def,
+        spd=random_dinos[2].base_spd,
+        crit=random_dinos[2].base_crit,
+        crit_dmg=random_dinos[2].base_crit_dmg,
+        hp_lvl=1,
+        atk_lvl=1,
+        defense_lvl=1,
+        spd_lvl=1,
+        crit_lvl=1,
+        crit_dmg_lvl=1,
+        attack=random_dinos[2].attack
+    )
+    new_run.save()
+    return new_run
+
+@login_required
+def new_run_view(request):
+    """View function to start a new PvM run."""
+    # Check if there's an existing run for this user
+    try:
+        existing_run = DWPvmRun.objects.get(user=request.user)
+        run_dinos = [existing_run.dino1, existing_run.dino2, existing_run.dino3]
+        if None in run_dinos:
+            raise ValueError("One or more dinos isn't selected.")
+        return redirect('pvm_view')
+    except (DWPvmRun.DoesNotExist, ValueError) as e:
+        # Check if there's an existing selection in progress
+        try:
+            existing_run = DWPvmRun.objects.get(user=request.user)
+            new_run = DWPvmNewRun.objects.get(user=request.user)
+            if new_run.state < 4:  # Selection not completed
+                random_dinos = [new_run.dino1.dino, new_run.dino2.dino, new_run.dino3.dino]
+                selected_dinos = [dino.dino for dino in [existing_run.dino1, existing_run.dino2, existing_run.dino3] if dino is not None]
+                print(selected_dinos)
+                context = {
+                    'random_dinos': random_dinos,
+                    'selection_step': new_run.state,
+                    'selected_dinos': selected_dinos
+                }
+                return render(request, 'Blog/dinowars/new_run.html', context)
+        except (DWPvmRun.DoesNotExist, DWPvmNewRun.DoesNotExist) as e:
+            pass
+    
+    # Create a new DWPvmNewRun object for this user
+    DWPvmNewRun.objects.filter(user=request.user).delete()  # Clear any existing entries
+    new_run = DWPvmNewRun.objects.create(user=request.user, state=1)
+    final_run = DWPvmRun.objects.create(user=request.user)
+    
+    # Get three random dinos for initial selection
+    all_dinos = list(DWDino.objects.all())
+    if len(all_dinos) < 3:
+        return JsonResponse({'error': 'Not enough dinos in database.'}, status=500)
+    
+    random_dinos = random.sample(all_dinos, 3)
+    set_new_run_dinos(new_run, random_dinos)
+    
+    context = {
+        'random_dinos': random_dinos,
+        'selection_step': 1,
+        'selected_dinos': []
+    }
+    return render(request, 'Blog/dinowars/new_run.html', context)
+
+@login_required
+@require_POST
+def select_run_dino_view(request):
+    """Handle the dino selection process for a new run."""
+    try:
+        data = json.loads(request.body)
+        dino_id = data.get('dino_id')
+        
+        # Retrieve or create the DWPvmNewRun object
+        try:
+            new_run = DWPvmNewRun.objects.get(user=request.user)
+            final_run = DWPvmRun.objects.get(user=request.user)
+        except DWPvmRun.DoesNotExist:
+            final_run = DWPvmRun.objects.create(user=request.user)
+        except DWPvmNewRun.DoesNotExist:
+            new_run = DWPvmNewRun.objects.create(user=request.user, state=1)
+        
+        # Get selected dino details for display
+        selected_dinos = []
+        if final_run.dino1:
+            selected_dinos.append({
+                'id': final_run.dino1.dino.id,
+                'name': final_run.dino1.dino.name,
+                'hp': final_run.dino1.hp,
+                'atk': final_run.dino1.atk,
+                'defense': final_run.dino1.defense,
+                'spd': final_run.dino1.spd,
+                'crit': final_run.dino1.crit,
+                'crit_dmg': final_run.dino1.crit_dmg,
+                'attack': final_run.dino1.attack.spe_effect,
+            })
+        if final_run.dino2:
+            selected_dinos.append({
+                'id': final_run.dino2.dino.id,
+                'name': final_run.dino2.dino.name,
+                'hp': final_run.dino2.hp,
+                'atk': final_run.dino2.atk,
+                'defense': final_run.dino2.defense,
+                'spd': final_run.dino2.spd,
+                'crit': final_run.dino2.crit,
+                'crit_dmg': final_run.dino2.crit_dmg,
+                'attack': final_run.dino2.attack.spe_effect,
+            })
+        
+        # Add the newly selected dino
+        if dino_id:
+            selected_dino = get_object_or_404(DWDino, id=dino_id)
+            pvm_dino = get_object_or_404(DWPvmDino, dino=selected_dino, user=request.user)
+            
+            # Update the new_run object based on current state
+            if new_run.state == 1:
+                final_run.dino1 = pvm_dino
+                new_run.state = 2
+            elif new_run.state == 2:
+                final_run.dino2 = pvm_dino
+                new_run.state = 3
+            elif new_run.state == 3:
+                final_run.dino3 = pvm_dino
+                if new_run.dino1 and new_run.dino1 != pvm_dino:
+                    new_run.dino1.delete()
+                if new_run.dino2 and new_run.dino2 != pvm_dino:
+                    new_run.dino2.delete()
+                if new_run.dino3 and new_run.dino3 != pvm_dino:
+                    new_run.dino3.delete()
+                new_run.delete()
+                final_run.save()
+                return JsonResponse({
+                    'success': True,
+                    'redirect': '/dinowars/pvm/'
+                })
+            
+            new_run.save()
+            final_run.save()
+
+            # Add the selected dino to our display list
+            selected_dinos.append({
+                'id': selected_dino.id,
+                'name': selected_dino.name,
+                'hp': pvm_dino.hp,
+                'atk': pvm_dino.atk,
+                'defense': pvm_dino.defense,
+                'spd': pvm_dino.spd,
+                'crit': pvm_dino.crit,
+                'crit_dmg': pvm_dino.crit_dmg,
+                'attack': pvm_dino.attack.spe_effect,
+            })
+
+        # Delete old dinos from the new_run object
+        if new_run.dino1 and new_run.dino1 != pvm_dino:
+            new_run.dino1.delete()
+        if new_run.dino2 and new_run.dino2 != pvm_dino:
+            new_run.dino2.delete()
+        if new_run.dino3 and new_run.dino3 != pvm_dino:
+            new_run.dino3.delete()
+        
+        # Get dinos for the next selection that haven't been selected yet
+        selected_dino_ids = [d['id'] for d in selected_dinos]
+        all_dinos = list(DWDino.objects.exclude(id__in=selected_dino_ids))
+        if len(all_dinos) < 3:
+            random_dinos = all_dinos
+        else:
+            random_dinos = random.sample(all_dinos, 3)
+
+        set_new_run_dinos(new_run, random_dinos)
+            
+        # Return the next set of dinos to choose from
+        return JsonResponse({
+            'success': True,
+            'selection_step': new_run.state,
+            'selected_dinos': selected_dinos,
+            'random_dinos': [{
+                'id': dino.id,
+                'name': dino.name,
+                'hp': dino.base_hp,
+                'atk': dino.base_atk,
+                'defense': dino.base_def,
+                'spd': dino.base_spd,
+                'crit': dino.base_crit,
+                'crit_dmg': dino.base_crit_dmg,
+                'attack': dino.attack.spe_effect,
+            } for dino in random_dinos]
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)

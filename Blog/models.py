@@ -615,3 +615,11 @@ class DWPvmNextAbility(models.Model):
     ability = models.ForeignKey(DWPvmAbility, on_delete=models.CASCADE)
     is_selected = models.BooleanField(default=False)
     is_discarded = models.BooleanField(default=False)
+
+class DWPvmNewRun(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    state = models.IntegerField(default=1)
+    dino1 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino1_new')
+    dino2 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino2_new')
+    dino3 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino3_new')
+    date = models.DateTimeField(auto_now_add=True)

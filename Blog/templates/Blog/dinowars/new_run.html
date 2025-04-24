@@ -1,0 +1,82 @@
+{% extends "Blog/layout/base.html" %}
+{% load static %}
+
+{% block title %}Start New Run - DinoWars PvM{% endblock %}
+
+{% block content %}
+<div class="container pvm-container">    
+    <div id="dino-selection-container" class="dino-selection-container" data-step="{{ selection_step }}">
+        <div class="selection-step-indicator">
+            {% if selection_step == 1 %}
+                <h2 id="selection-step-title">Sélectionnez votre 1er Dino</h2>
+                <div id="step-circles" class="step-circles">
+                    <span class="step-circle active"></span>
+                    <span class="step-circle"></span>
+                    <span class="step-circle"></span>
+                </div>
+            {% elif selection_step == 2 %}
+                <h2 id="selection-step-title">Sélectionnez votre 2ème Dino</h2>
+                <div id="step-circles" class="step-circles">
+                    <span class="step-circle active"></span>
+                    <span class="step-circle active"></span>
+                    <span class="step-circle"></span>
+                </div>
+            {% elif selection_step == 3 %}
+                <h2 id="selection-step-title">Sélectionnez votre 3ème Dino</h2>
+                <div id="step-circles" class="step-circles">
+                    <span class="step-circle active"></span>
+                    <span class="step-circle active"></span>
+                    <span class="step-circle active"></span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div id="selected-dinos-container" class="selected-dinos">
+            {% for dino in selected_dinos %}
+            <div class="selected-dino" data-dino-id="{{ dino.id }}">
+                <h3 class="dino-name">{{ dino.name }}</h3>
+                <div class="dino-stats">
+                    <p><i class="fi fi-ss-heart"></i> {{ dino.base_hp }}</p>
+                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.base_atk }}</p>
+                    <p><i class="fi fi-ss-shield"></i> {{ dino.base_def }}</p>
+                    <p><i class="fi fi-ss-bolt"></i> {{ dino.base_spd }}</p>
+                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.base_crit }}</p>
+                    <p><i class="fi fi-ss-burst"></i> {{ dino.base_crit_dmg }}</p>
+                </div>
+                <p class="dino-attack">{{ dino.attack.spe_effect }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div id="dino-options" class="dino-options">
+            {% for dino in random_dinos %}
+            <div class="dino-option" data-dino-id="{{ dino.id }}">
+                <h3 class="dino-name">{{ dino.name }}</h3>
+                <div class="dino-stats">
+                    <p><i class="fi fi-ss-heart"></i> {{ dino.base_hp }}</p>
+                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.base_atk }}</p>
+                    <p><i class="fi fi-ss-shield"></i> {{ dino.base_def }}</p>
+                    <p><i class="fi fi-ss-bolt"></i> {{ dino.base_spd }}</p>
+                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.base_crit }}</p>
+                    <p><i class="fi fi-ss-burst"></i> {{ dino.base_crit_dmg }}</p>
+                </div>
+                <p class="dino-attack">{{ dino.attack.spe_effect }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% csrf_token %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'Blog/dinowars/css/new_run.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'Blog/dinowars/js/new_run.js' %}"></script>
+{% endblock %}
