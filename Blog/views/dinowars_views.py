@@ -10,7 +10,9 @@ from ..models import DWArena, DWDino, DWUserDino, DWUser, User
 from django.utils import timezone
 from datetime import datetime
 from Blog.utils.dw_battle_logic import load_dino_from_model, GameState
+from Blog.utils.dw_arena import get_minutes_in_arena, get_arena_coins
 from Blog.views.quests_views import validate_objective_quest
+from django.utils.timezone import now
 
 
 @login_required
@@ -640,6 +642,16 @@ def start_battle(request):
                 attacker_user.save()
                 defender_user.save()
 
+                # Give a reward to team2 (the team who left the arena)
+                nb_minutes_in_arena = min(get_minutes_in_arena(current_arena), 540)
+                nb_victories = current_arena.win_streak
+                nb_coins = get_arena_coins(minutes = nb_minutes_in_arena, 
+                                           victories = nb_victories)
+                
+                print(f"L'utilisateur {defender_user.user} a gagné {nb_coins} pièces en restant {nb_minutes_in_arena}mn dans l'arène, et en encaissant {nb_victories} victoires !")
+                
+                defender_user.user.coins += nb_coins
+                defender_user.user.save()
 
 
             else:
