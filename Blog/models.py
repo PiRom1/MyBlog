@@ -493,6 +493,8 @@ class DWUser(models.Model):
     losses = models.IntegerField(default=0)
     free_hatch = models.IntegerField(default=0)
     arena_energy = models.IntegerField(default=0)
+    free_pvm = models.IntegerField(default=0)
+    pvm_runs_td = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.username} ({self.elo}elo)"
@@ -522,7 +524,7 @@ class DWFight(models.Model):
     user1_team = models.CharField(max_length=100)
     user2_team = models.CharField(max_length=100)
     winner = models.CharField(max_length=100)
-    GAMEMODE = [('duel', 'Duel'), ('arena', 'Arena')]
+    GAMEMODE = [('duel', 'Duel'), ('arena', 'Arena'), ('pvm', 'PvM')]
     gamemode = models.CharField(max_length=10, choices=GAMEMODE, default='duel')
     date = models.DateTimeField(auto_now_add=True)
     logs = models.TextField(default='')
@@ -587,6 +589,7 @@ class DWPvmRun(models.Model):
     level = models.IntegerField(default=1)
     stat_points = models.IntegerField(default=0)
     run_date = models.DateTimeField(auto_now_add=True)
+    seen_abilities = models.TextField(default='[]')
 
     def __str__(self):
         return f"{self.user.username} - lvl{self.level} ({self.life} vies)"
@@ -623,3 +626,10 @@ class DWPvmNewRun(models.Model):
     dino2 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino2_new')
     dino3 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino3_new')
     date = models.DateTimeField(auto_now_add=True)
+
+class DWPvmTerrain(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(default='')
+
+    def __str__(self):
+        return self.name

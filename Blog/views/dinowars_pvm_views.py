@@ -1,7 +1,11 @@
+import math
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from Blog.models import DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun
+from Blog.models import DWFight, DWPvmTerrain, DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun, DWPvmAbility
+from Blog.utils.random_seed import get_daily_seed
+from Blog.utils.dw_pvm_battle_logic import load_dino_from_model, GameState
+from constance import config as constance_cfg
 import json
 import random
 from django.views.decorators.http import require_POST
@@ -20,6 +24,7 @@ def pvm_view(request):
         next_abilities = DWPvmNextAbility.objects.filter(run=run_info).select_related('ability')
         life_counter = ''
         for _ in range(run_info.life): life_counter += '1'
+        terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
     except (DWPvmRun.DoesNotExist, ValueError) as e:
         return redirect('new_run_view')
     else :    
@@ -30,6 +35,7 @@ def pvm_view(request):
             'run_dinos': run_dinos,
             'next_fight_dinos': next_fight_dinos,
             'next_abilities': next_abilities,
+            'terrain': terrain,
         }
         return render(request, 'Blog/dinowars/pvm.html', context)
 
@@ -38,15 +44,27 @@ def run_dino_details_view(request, dino_id):
     """View function to display details of a run dino."""
     try:        
         enemy = request.headers['enemy'] == 'true'
+        # Get run info for stat points display
+        try:
+            run_info = DWPvmRun.objects.get(user=request.user)
+        except DWPvmRun.DoesNotExist:
+            run_info = None
+
         if enemy:
+            if run_info.level < 3: lvl = -3 + run_info.level
+            elif run_info.level < 5: lvl = run_info.level - 2
+            elif run_info.level < 10: lvl = 3 + 0.5 * (run_info.level - 5)
+            elif run_info.level < 15: lvl = 6 + 0.5 * (run_info.level - 10)
+            elif run_info.level < 20: lvl = 9 + 0.5 * (run_info.level - 15)
+            else: lvl = 12 + 0.5 * (run_info.level - 20)
             # Fetch the enemy dino details
             dino = get_object_or_404(DWPvmNextFightDino, id=dino_id, run__user=request.user)
-            hp_lvl = int(((dino.hp - dino.dino.base_hp) / dino.dino.base_hp) * 10) + 1
-            atk_lvl = int(((dino.atk - dino.dino.base_atk) / dino.dino.base_atk) * 10) + 1
-            defense_lvl = int(((dino.defense - dino.dino.base_def) / dino.dino.base_def) * 10) + 1
-            spd_lvl = int((dino.spd - dino.dino.base_spd) * 10) + 1
-            crit_lvl = int((dino.crit - dino.dino.base_crit) * 25) + 1
-            crit_dmg_lvl = int((dino.crit_dmg - dino.dino.base_crit_dmg) * 10) + 1
+            hp_lvl = lvl
+            atk_lvl = lvl
+            defense_lvl = lvl
+            spd_lvl = lvl
+            crit_lvl = lvl
+            crit_dmg_lvl = lvl
         else:
             # Fetch the user's dino details
             dino = get_object_or_404(DWPvmDino, id=dino_id, user=request.user)
@@ -68,12 +86,6 @@ def run_dino_details_view(request, dino_id):
             'mean_lvl': round(sum([hp_lvl, atk_lvl, defense_lvl, spd_lvl, crit_lvl, crit_dmg_lvl]) / 6, 2),
         }
         
-        # Get run info for stat points display
-        try:
-            run_info = DWPvmRun.objects.get(user=request.user)
-        except DWPvmRun.DoesNotExist:
-            run_info = None
-        
         # Render the template with the dino details
         return render(request, 'Blog/dinowars/_dino_details_popup_pvm.html', {
             'dino': dino,
@@ -84,16 +96,14 @@ def run_dino_details_view(request, dino_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     
-def fib(i):
-    if i == 1 : return 5
-    if i == 2 : return 8
-    return fib(i-1) + fib(i-2)
+def reward(i):
+    return pow(2, math.ceil(i/3)) * (3 + ((i-1) % 3))
 
-def sumfib(i):
-    return sum(fib(j) for j in range(1, i+1))
+def sumreward(i):
+    return sum(reward(j) for j in range(1, i+1))
 
 def stat_cost(i):
-    return int(sumfib(i)/6)+1
+    return pow(2,i-1)
 
 @login_required
 def stat_allocation_view(request, dino_id):
@@ -305,6 +315,11 @@ def set_new_run_dinos(new_run, random_dinos):
     new_run.save()
     return new_run
 
+def get_random_dinos(all_dinos, step):
+    seed = get_daily_seed(purpose=f"dino_select_{step}")
+    rand = random.Random(seed)
+    return rand.sample(all_dinos, 3)
+
 @login_required
 def new_run_view(request):
     """View function to start a new PvM run."""
@@ -343,7 +358,7 @@ def new_run_view(request):
     if len(all_dinos) < 3:
         return JsonResponse({'error': 'Not enough dinos in database.'}, status=500)
     
-    random_dinos = random.sample(all_dinos, 3)
+    random_dinos = get_random_dinos(all_dinos, 1)
     set_new_run_dinos(new_run, random_dinos)
     
     context = {
@@ -419,6 +434,7 @@ def select_run_dino_view(request):
                     new_run.dino3.delete()
                 new_run.delete()
                 final_run.save()
+                set_next_fight_dinos(final_run)
                 return JsonResponse({
                     'success': True,
                     'redirect': '/dinowars/pvm/'
@@ -454,7 +470,7 @@ def select_run_dino_view(request):
         if len(all_dinos) < 3:
             random_dinos = all_dinos
         else:
-            random_dinos = random.sample(all_dinos, 3)
+            random_dinos = get_random_dinos(all_dinos, new_run.state)
 
         set_new_run_dinos(new_run, random_dinos)
             
@@ -477,3 +493,195 @@ def select_run_dino_view(request):
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+def set_next_fight_dinos(run, life=None):
+    dinos = DWPvmNextFightDino.objects.filter(run=run)
+    if dinos.exists():
+        for dino in dinos:
+            dino.delete()
+
+    if run.level < 4:
+        lvl_mult = 0.7 + 0.1 * run.level
+        lvl_add = -0.3 + 0.1 * run.level
+    elif run.level < 10:
+        lvl_mult = 1.1 + 0.05 * (run.level - 4)
+        lvl_add = 0.1 + 0.05 * (run.level - 4)
+    elif run.level < 15:
+        lvl_mult = 1.4 + 0.05 * (run.level - 10)
+        lvl_add = 0.4 + 0.05 * (run.level - 10)
+    elif run.level < 20:
+        lvl_mult = 1.65 + 0.05 * (run.level - 15)
+        lvl_add = 0.65 + 0.05 * (run.level - 15)
+    else:
+        lvl_mult = 1.9 + 0.05 * (run.level - 20)
+        lvl_add = 0.9 + 0.05 * (run.level - 20)
+
+    dw_user = DWUser.objects.get(user=run.user)
+
+    seed = get_daily_seed(purpose=f"enemy_dino_select", run_number=dw_user.pvm_runs_td, run_lvl=run.level, additional=life)
+    rand = random.Random(seed)
+    all_dinos = list(DWDino.objects.all())
+    random_dinos = rand.sample(all_dinos, 3)
+    for dino in random_dinos:
+        DWPvmNextFightDino.objects.create(
+            run=run,
+            dino=dino,
+            hp=int(dino.base_hp * lvl_mult),
+            atk=int(dino.base_atk * lvl_mult),
+            defense=int(dino.base_def * lvl_mult),
+            spd=round(dino.base_spd + lvl_add, 2),
+            crit=round(dino.base_crit + lvl_add*0.4, 2),
+            crit_dmg=round(dino.base_crit_dmg + lvl_add, 2),
+            attack=dino.attack,
+        )
+    return random_dinos
+
+def set_next_abilities(run):
+    abilities = DWPvmNextAbility.objects.filter(run=run)
+    if abilities.exists():
+        for ability in abilities:
+            ability.delete()
+
+    dw_user = DWUser.objects.get(user=run.user)
+    dw_run = DWPvmRun.objects.get(user=run.user)
+    seen_abilities = json.loads(dw_run.seen_abilities)
+
+    seed = get_daily_seed(purpose=f"ability_select", run_number=dw_user.pvm_runs_td, run_lvl=run.level)
+    rand = random.Random(seed)
+    all_abilities = list(DWPvmAbility.objects.exclude(id__in=seen_abilities))
+    random_abilities = rand.sample(all_abilities, 2)
+    for ability in random_abilities:
+        DWPvmNextAbility.objects.create(
+            run=run,
+            ability=ability,
+        )
+        seen_abilities.append(ability.id)
+    dw_run.seen_abilities = json.dumps(seen_abilities)
+    dw_run.save()
+
+    return random_abilities
+
+def calculate_total_stats(dino):
+    """Calculate total stats including all abilities bonuses"""
+    base_stats = {
+        'hp': dino.hp,
+        'atk': dino.atk,
+        'defense': dino.defense,
+        'spd': dino.spd,
+        'crit': dino.crit,
+        'crit_dmg': dino.crit_dmg
+    }
+    
+    total_stats = base_stats.copy()
+    # Get all abilities for the dino
+    try :
+        abilities = DWPvmRunAbility.objects.filter(dino=dino).select_related('ability')
+        for ability in abilities:
+            if ability.ability.name == "Boost de vie":
+                total_stats['hp'] += int(total_stats['hp'] * 0.2)
+            elif ability.ability.name == "Boost d'attaque":
+                total_stats['atk'] += int(total_stats['atk'] * 0.2)
+            elif ability.ability.name == "Boost de défense":
+                total_stats['defense'] += int(total_stats['defense'] * 0.2)
+            elif ability.ability.name == "Boost de vitesse":
+                total_stats['spd'] += 0.2
+                total_stats['spd'] = round(total_stats['spd'], 1)
+            elif ability.ability.name == "Boost de % critique":
+                total_stats['crit'] += 0.08
+                total_stats['crit'] = round(total_stats['crit'], 2)
+            elif ability.ability.name == "Boost de dégats critiques":
+                total_stats['crit_dmg'] += 0.2
+                total_stats['crit_dmg'] = round(total_stats['crit_dmg'], 1)
+    except:
+        pass
+    
+    return total_stats
+
+@login_required
+@require_POST
+def start_battle_pvm(request):
+    try:
+        # Fetch the run info and dino details
+        run_info = get_object_or_404(DWPvmRun, user=request.user)
+        user_dinos = []
+        enemy_dinos = []
+        for dino in [run_info.dino1, run_info.dino2, run_info.dino3]:
+            dino_stats = calculate_total_stats(dino)
+            user_dinos.append(load_dino_from_model(dino, dino_stats, 1))
+        
+        # Enemy dino details
+        next_fight_dinos = DWPvmNextFightDino.objects.filter(run=run_info).select_related('dino')
+        enemy_dino1 = next_fight_dinos[0] if len(next_fight_dinos) > 0 else None
+        enemy_dino2 = next_fight_dinos[1] if len(next_fight_dinos) > 1 else None
+        enemy_dino3 = next_fight_dinos[2] if len(next_fight_dinos) > 2 else None
+        for dino in [enemy_dino1, enemy_dino2, enemy_dino3]:
+            if dino:
+                dino_stats = calculate_total_stats(dino)
+                enemy_dinos.append(load_dino_from_model(dino, dino_stats, 2))
+        
+        team1_name = "team_"+request.user.username
+        team2_name = "team_ennemie"
+
+        # Start battle simulation
+        battle = GameState(
+            (team1_name, user_dinos),
+            (team2_name, enemy_dinos),
+        )
+        battle_log = battle.run()
+        winner = battle.get_winner()
+
+        # Save fight result
+        fight = DWFight.objects.create(
+            user1=str(request.user),
+            user2='Pvm_Enemy',
+            user1_team=f"{run_info.dino1.dino.name} - {run_info.dino2.dino.name} - {run_info.dino3.dino.name}",
+            user2_team=f"{enemy_dino1.dino.name} - {enemy_dino2.dino.name} - {enemy_dino3.dino.name}",
+            winner=str(request.user) if winner == team1_name else 'Pvm_Enemy',
+            gamemode="pvm",
+            logs=battle_log
+        )
+
+        # Update run info
+        if winner == team1_name:
+            run_info.stat_points += reward(run_info.level)
+            run_info.level += 1
+            run_info.save()
+            set_next_fight_dinos(run_info)
+            if run_info.level % 2 == 0:
+                set_next_abilities(run_info)
+            else:
+                DWPvmNextAbility.objects.filter(run=run_info).delete()
+
+            return JsonResponse({
+                'success': True,
+                'fight_id': fight.id,
+                'winner': winner,
+            })
+
+        else:
+            run_info.life -= 1
+            run_info.save()
+            if run_info.life <= 0:
+                DWPvmDino.objects.filter(user=request.user).delete()
+                run_info.delete()
+                # dw_user = DWUser.objects.get(user=request.user)
+                # dw_user.pvm_runs_td += 1
+                # dw_user.save()
+                return JsonResponse({
+                    'success': False, 
+                    'redirect': '/dinowars/pvm/', 
+                    'fight_id': fight.id,
+                    'winner': winner,
+                })
+            else:
+                set_next_fight_dinos(run_info, run_info.life)
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'Vous avez perdu!', 
+                    'fight_id': fight.id,
+                    'winner': winner,
+                })
+
+    except Exception as e:
+        print(f"Error in start_battle_pvm: {e}")
+        return JsonResponse({'error': str(e)}, status=500)

@@ -4,7 +4,11 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'Blog/dinowars/css/battle_analytics.css' %}">
 
-<a href="{% url 'user_dinos_view' %}" class="return-button">← Return to DinoWars</a>
+{% if fight.gamemode == 'pvm' %}
+<a href="{% url 'pvm_view' %}" class="return-button">← Retour à l'aventure</a>
+{% else %}
+<a href="{% url 'user_dinos_view' %}" class="return-button">← Retour à DinoWars</a>
+{% endif %}
 
 <div class="analytics-container">
     <h1>Battle Analytics</h1>

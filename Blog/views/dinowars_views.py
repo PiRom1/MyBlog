@@ -891,10 +891,9 @@ def battle_analytics_view(request, fight_id):
     
     return render(request, 'Blog/dinowars/battle_analytics.html', context)
 
-
-
-def remove_runes(request):
-    
+@login_required
+@require_POST
+def remove_runes(request):    
     data = json.loads(request.body)
 
     if 'dino_id' not in data:

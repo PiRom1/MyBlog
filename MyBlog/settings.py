@@ -43,6 +43,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'constance',
     'Blog.apps.BlogConfig',
     'convertor.apps.ConvertorConfig',
     'django.contrib.admin',
@@ -242,11 +243,19 @@ ITEM_TYPES = ['text_color',
               'border_image',
               'other',]
 
-
 JEUX = [('Flex', 'Flex'),
         ('Tracker', 'Tracker'),
         ('Kingboard', 'Kingboard'),
-        ('Bullet_Hell', 'Bullet_Hell'),]
+        ('Bullet_Hell', 'Bullet_Hell'),
+        ('DinoWars', 'DinoWars'),]
+
+# Constance settings
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
+
+CONSTANCE_CONFIG = {
+    'DW_DAILY_TERRAIN_ID': (1, 'Id du terrain du jour', int),
+}
 
 # Add/update the following cookie settings:
 SESSION_COOKIE_SAMESITE = 'Lax'  # ou 'None' si vous utilisez HTTPS avec SESSION_COOKIE_SECURE = True

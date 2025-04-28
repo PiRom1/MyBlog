@@ -256,7 +256,7 @@ class DWUserTeamAdmin(admin.ModelAdmin):
 
 @admin.register(DWUser)
 class DWUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'elo', 'wins', 'losses', 'free_hatch', 'arena_energy')
+    list_display = ('user', 'elo', 'wins', 'losses', 'free_hatch', 'arena_energy', 'free_pvm', 'pvm_runs_td')
     list_filter = ('free_hatch', 'arena_energy')
     search_fields = ('user__username',)
 
@@ -291,7 +291,7 @@ class DWPvmAbilityAdmin(admin.ModelAdmin):
 
 @admin.register(DWPvmRun)
 class DWPvmRunAdmin(admin.ModelAdmin):
-    list_display = ('user', 'dino1', 'dino2', 'dino3', 'life', 'level', 'stat_points', 'run_date')
+    list_display = ('user', 'dino1', 'dino2', 'dino3', 'life', 'level', 'stat_points', 'run_date', 'seen_abilities')
     list_filter = ('user', 'level')
     search_fields = ('user__username',)
 
@@ -318,3 +318,8 @@ class DWPvmNewRunAdmin(admin.ModelAdmin):
     list_display = ('user', 'state', 'dino1', 'dino2', 'dino3', 'date')
     list_filter = ('user',)
     search_fields = ('user__username',)
+
+@admin.register(DWPvmTerrain)
+class DWPvmTerrainAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name', 'description')

@@ -3,3 +3,4 @@ django-extensions
 djangorestframework
 groq
 channels
+"django-constance[redis]"

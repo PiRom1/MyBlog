@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize ability cards
     initializeAbilityCards();
+    
+    // Initialize terrain tooltip functionality
+    initializeTerrainTooltip();
 });
 
 function initializeUIElements() {
@@ -39,9 +42,7 @@ function setupEventListeners() {
     const nextFightButton = document.querySelector('.next-fight-btn');
     if (nextFightButton) {
         nextFightButton.addEventListener('click', function() {
-            // This would trigger the next fight in the run
-            alert('Preparing next fight... Feature coming soon!');
-            // In a real implementation, this would send a request to get the next enemy
+            startBattle();
         });
     }
 }
@@ -57,14 +58,20 @@ function initializeDinoCards() {
     });
 }
 
+// Store ability click handlers in a map (abilityId -> function)
+const abilityClickHandlers = new Map();
+
 function initializeAbilityCards() {
     const nextAbilityCards = document.querySelectorAll('#next-abilities-container .ability-card:not(.selected-ability):not(.discarded-ability)');
     nextAbilityCards.forEach(card => {
         if (card.getAttribute('data-selected') !== 'true' && card.getAttribute('data-discarded') !== 'true') {
-            card.addEventListener('click', function() {
-                const abilityId = this.getAttribute('data-ability-id');
+            const abilityId = card.getAttribute('data-ability-id');
+            // Create and store a named function for this card
+            const clickHandler = function() {
                 selectAbility(abilityId);
-            });
+            };
+            abilityClickHandlers.set(abilityId, clickHandler);
+            card.addEventListener('click', clickHandler);
         }
     });
 }
@@ -246,6 +253,14 @@ function selectAbility(abilityId) {
             allAbilityCards.forEach(card => {
                 const cardAbilityId = card.getAttribute('data-ability-id');
                 
+                // Properly remove event listener using the stored reference
+                const clickHandler = abilityClickHandlers.get(cardAbilityId);
+                if (clickHandler) {
+                    card.removeEventListener('click', clickHandler);
+                    // Clear from the map
+                    abilityClickHandlers.delete(cardAbilityId);
+                }
+                
                 if (cardAbilityId === abilityId) {
                     // This is the selected card
                     card.classList.remove('selectable-ability');
@@ -258,8 +273,6 @@ function selectAbility(abilityId) {
                         promptSpan.textContent = 'Capacité sélectionnée';
                     }
                     
-                    // Remove click event listener
-                    card.removeEventListener('click', function() {});
                     card.style.cursor = 'default';
                 } else {
                     // These are discarded cards
@@ -272,8 +285,6 @@ function selectAbility(abilityId) {
                         promptSpan.remove();
                     }
                     
-                    // Remove click event listener
-                    card.removeEventListener('click', function() {});
                     card.style.cursor = 'default';
                 }
             });
@@ -345,31 +356,11 @@ function showDinoSelectionPopup(abilityId) {
         });
     });
     
-    // Add event listeners for closing the popup
-    document.addEventListener('mousedown', handleDinoSelectionClickOutside);
-    document.addEventListener('keydown', handleDinoSelectionEscKey);
 }
 
 function closeDinoSelectionPopup() {
     const popup = document.getElementById('dinoSelectionPopup');
     popup.style.display = 'none';
-    document.removeEventListener('mousedown', handleDinoSelectionClickOutside);
-    document.removeEventListener('keydown', handleDinoSelectionEscKey);
-}
-
-function handleDinoSelectionClickOutside(event) {
-    const popup = document.getElementById('dinoSelectionPopup');
-    const content = document.getElementById('dinoSelectionContent');
-    
-    if (popup && !content.contains(event.target) && !event.target.classList.contains('close-popup')) {
-        closeDinoSelectionPopup();
-    }
-}
-
-function handleDinoSelectionEscKey(event) {
-    if (event.key === 'Escape') {
-        closeDinoSelectionPopup();
-    }
 }
 
 function selectAbilityDino(abilityId, dinoId) {
@@ -430,6 +421,64 @@ function selectAbilityDino(abilityId, dinoId) {
         console.error('Error:', error);
         alert('Une erreur est survenue lors de la sélection du dinosaure: ' + error);
     });
+}
+
+function startBattle() {
+    // Show loading indicator or disable button
+    const nextFightButton = document.querySelector('.next-fight-btn');
+    if (nextFightButton) {
+        nextFightButton.disabled = true;
+        nextFightButton.textContent = 'Combat en cours...';
+    }
+    
+    fetch('/dinowars/pvm/start_battle/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.fight_id) {
+            // Redirect to battle analytics page with the fight ID
+            window.location.href = `/dinowars/battle/analytics/${data.fight_id}/`;
+        } else if (data.redirect) {
+            window.location.href = data.redirect;
+        } else if (data.message) {
+            alert(data.message);
+            // Reset button
+            if (nextFightButton) {
+                nextFightButton.disabled = false;
+                nextFightButton.textContent = 'Combat';
+            }
+        }
+        else {
+            return response.json().then(data => {
+                throw new Error(errorData.message || 'Server error: ' + response.status);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors du lancement du combat.');
+        // Reset button
+        if (nextFightButton) {
+            nextFightButton.disabled = false;
+            nextFightButton.textContent = 'Combat';
+        }
+    });
+}
+
+function initializeTerrainTooltip() {
+    const terrainElement = document.getElementById('terrain');
+    if (terrainElement) {
+        const description = terrainElement.getAttribute('data-desc');
+        if (description) {
+            terrainElement.setAttribute('title', description);
+        }
+    }
 }
 
 // Helper function to get CSRF token

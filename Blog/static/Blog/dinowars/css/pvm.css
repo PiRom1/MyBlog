@@ -26,7 +26,6 @@
 .user-info p {
     display: flex;
     align-items: center;
-    margin-top: 5px;
 }
 
 .user-info i {
@@ -216,7 +215,7 @@ i.fi-red {
     padding: 1rem;
     justify-content: center;
     align-items: flex-start; /* Aligns items to the top */
-    min-height: 150px; /* Ensures consistent height */
+    min-height: 130px; /* Ensures consistent height */
 }
 
 .run-abilities-section {
@@ -433,11 +432,12 @@ button[type="submit"] {
 .select-prompt {
     display: block;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 0.5rem;
     color: #4CAF50;
     font-weight: bold;
     font-style: italic;
-    opacity: 0.7;
+    opacity: 0.8;
+    font-size: 0.9rem;
 }
 
 .selectable-ability:hover .select-prompt {
@@ -543,4 +543,37 @@ button[type="submit"] {
     0% { background-color: rgba(76, 175, 80, 0.3); }
     90% { background-color: rgba(76, 175, 80, 0.1); }
     100% { background-color: rgba(200,200,200,0.86); }
+}
+
+/* Tooltip styles for terrain description */
+.has-tooltip {
+    position: relative;
+    cursor: help;
+}
+    
+.tooltip {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+    
+.has-tooltip:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+    
+.info-icon {
+    font-size: 0.8em;
+    color: #0088cc;
 }

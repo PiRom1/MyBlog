@@ -9,6 +9,10 @@
         <h2>Infos de la Run</h2>
         {% if run_info %}
             <div class="stats">
+                <p id="terrain" data-desc="{{terrain.description}}" class="has-tooltip">Terrain: {{ terrain.name }}<i class="fi fi-rs-info"></i>
+                    <span class="tooltip">{{terrain.description}}</span>
+                </p>
+                <p>---------------------</p>
                 <p>Niveau: {{ run_info.level }}</p>
                 <p>Vies restantes: 
                     {% for i in life_counter %}
@@ -28,7 +32,7 @@
     
     <div class="user-actions-section">
         <button class="action-btn back-btn">Retour au PvP</button>
-        <button class="action-btn next-fight-btn">Prochain Combat</button>
+        <button class="action-btn next-fight-btn">Combattre</button>
     </div>
 
     <div class="run-dinos-section">
@@ -103,7 +107,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p>Aucune capacité disponible pour l'instant.</p>
+                <p>Aucune nouvelle capacité débloquée pour l'instant.</p>
             {% endif %}
         </div>
     </div>
@@ -136,7 +140,6 @@
 
     <div id="dinoSelectionPopup" class="popup-overlay">
         <div class="popup-content">
-            <span class="close-popup" onclick="closeDinoSelectionPopup()">&times;</span>
             <div id="dinoSelectionContent">
                 <h2>Sélectionner un dinosaure pour cette capacité</h2>
                 <p class="selection-instruction">Cette capacité doit être assignée à un dinosaure spécifique.</p>
