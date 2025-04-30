@@ -12,11 +12,12 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    
+    {% include "Blog/layout/base.html" %}
+
 
 </head>
 <body>
-    {% include "../bg.html" %}
 
     Photo actuelle : <img src="{{ user.image.image.url }}" alt= "{{ user.image.image.name }}" width="300" height="300">
     </br></br></br>

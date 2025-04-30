@@ -12,13 +12,15 @@
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/paris/css/create_pari.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/paris/js/create_pari.js' %}" type="module"></script>
-    {% include "../bg.html" %}
 </head>
 
 
 <body>
+
+    {% include "Blog/layout/base.html" %}
+
+    
     <h1>Création d'un pari</h1>
 
     <div class="form">

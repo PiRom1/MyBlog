@@ -1,6 +1,7 @@
 from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam
 from datetime import timedelta
 import random as rd
+from Blog.views.utils_views import write_journal_quest_new
 
 
 
@@ -61,6 +62,7 @@ def run():
         dwuser.arena_energy = 5
         dwuser.save()
     
+    write_journal_quest_new()
     print("Quests generated for every user")
 
 

@@ -27,6 +27,9 @@
 {% csrf_token %}
 <body>
 
+    {% include "Blog/layout/base.html" %}
+
+
     <h1>Enjoy Timeline</h1>
     <h2>- {{hour}}h{{minute}} -</h2>
     <br>

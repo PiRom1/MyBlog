@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from ..forms import *
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-
+from Blog.views.utils_views import write_journal_soundbox_add
 from Blog.views.quests_views import validate_objective_quest
 
 
@@ -60,6 +60,9 @@ def add_sounds(request):
                 UserSound(user=user, sound = sound).save()
 
             validate_objective_quest(user = request.user, action = "soundbox")
+
+            # Ajout JournalEntry
+            write_journal_soundbox_add(user = request.user, sound = sound)
 
             return HttpResponseRedirect('/list_sounds')
         else:

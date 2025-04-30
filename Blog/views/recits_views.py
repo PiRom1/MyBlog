@@ -6,6 +6,7 @@ from ..forms import *
 from django.contrib.auth.decorators import login_required
 from ..utils.stats import *
 import random as rd
+from Blog.views.utils_views import write_journal_recit_create, write_journal_recit_contribute
 
 from Blog.views.quests_views import validate_objective_quest
 
@@ -36,6 +37,8 @@ def create_recit(request):
             new_recit = Recit(name = message_form['message'].value())
             new_recit.save()
 
+            write_journal_recit_create(user = request.user, recit = new_recit)
+
             return HttpResponseRedirect(f"/recits/detail/{new_recit.id}")
     
     message_form = CharForm()
@@ -63,6 +66,8 @@ def detail_recit(request, pk):
             texte.save()
 
             validate_objective_quest(user = request.user, action = "recit")
+
+            write_journal_recit_contribute(user = request.user, recit = recit)
             
 
             return HttpResponseRedirect('.#bottom')

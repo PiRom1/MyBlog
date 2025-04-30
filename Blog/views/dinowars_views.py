@@ -13,6 +13,7 @@ from Blog.utils.dw_battle_logic import load_dino_from_model, GameState
 from Blog.utils.dw_arena import get_minutes_in_arena, get_arena_coins
 from Blog.views.quests_views import validate_objective_quest
 from django.utils.timezone import now
+from Blog.views.utils_views import write_journal_arena_get
 
 
 @login_required
@@ -652,6 +653,8 @@ def start_battle(request):
                 
                 defender_user.user.coins += nb_coins
                 defender_user.user.save()
+
+                write_journal_arena_get(user_in = attacker_user.user, user_out = defender_user.user, coin_earned = nb_coins)
 
 
             else:

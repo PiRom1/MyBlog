@@ -1,0 +1,61 @@
+{% load static %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<link rel="stylesheet" href="{% static 'Blog/css/journal.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+
+<script src="{% static 'Blog/js/journal.js' %}" type="module"></script>
+
+
+{% comment %} Journal {% endcomment %}
+
+<div id='open-journal' class="open-journal">
+    <img src="{% static 'img/journal.png' %}">
+    <span class="badge" id="badge"></span>
+</div>
+
+<div class="journal-container" id="journal-container">
+
+    <div class="journal">
+        <p class="journal-title">Le Journal</p>
+        <ul class="journal-content" id="journal-content"></ul>
+
+        <img src="{% static 'img/journal.png' %}">
+
+        <div class="journal-increase-page" id="journal-increase-page">
+            >
+        </div>
+
+        <div class="journal-decrease-page" id="journal-decrease-page">
+            <
+        </div>
+
+        <div class="journal-page-number" id="journal-page-number">1</div>
+
+    </div>
+
+    <div class="side-journal">
+        <p class="parameters-name">Paramètres du Journal</p>
+        <ul id="icons">
+            <span id="tooltip" class="tooltip"></span>
+            <li>Notifications suivies :
+                <i class="fi fi-rs-ear-sound" label="Soundbox"></i> 
+                <i class="fi fi-rs-poll-h" label="Sondage"></i> 
+                <i class="fi fi-rs-ticket-alt" label="Ticket"></i> 
+                <i class="fi fi-rs-book-alt" label="Récit"></i> 
+                <i class="fi fi-rs-scroll-old" label="Quête"></i> 
+                <i class="fi fi-rs-dice-alt" label="Pari"></i> 
+                <i class="fi fi-rs-treasure-chest" label="Boîte"></i> 
+                <i class="fi fi-rs-t-rex" label="Arène"></i> 
+                <i class="fi fi-rs-shop" label="HDV"></i> 
+            </li>
+            <li>Nombre d'entrées par page : <input type="number" id="input-number" min=1 max=20 value=10></li>
+    </div>
+
+    
+
+</div>

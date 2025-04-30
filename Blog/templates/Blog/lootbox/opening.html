@@ -18,12 +18,14 @@
 
   <!-- JS -->
   <script src="{% static 'Blog/lootbox/js/opening.js' %}"></script>
-  <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-  {% include "../bg.html" %}
+  
 
 
 </head>
   <body>
+
+    {% include "Blog/layout/base.html" %}
+
     
     <div id="data" skins="{{skin_images}}" probas="{{skin_probas}}" rarity-colors="{{rarity_colors}}"></div>
 

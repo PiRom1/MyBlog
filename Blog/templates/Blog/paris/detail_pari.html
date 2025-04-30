@@ -12,11 +12,12 @@
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/paris/css/detail_pari.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/paris/js/detail_pari.js' %}" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    {% include "../bg.html" %}
     {% load custom_filters %}
+
+    {% include "Blog/layout/base.html" %}
+
 
 </head>
 

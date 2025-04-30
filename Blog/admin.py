@@ -178,6 +178,20 @@ class ObjectifQuestAdmin(admin.ModelAdmin):
 class ObjectifForQuestAdmin(admin.ModelAdmin):
     list_display = ("quest", "objectif", "achieved", "objective_value", "current_value")
 
+
+@admin.register(JournalEntryType)
+class JournalEntryTypeAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type")
+
+@admin.register(JournalEntryTypeForUser)
+class JournalEntryTypeForUserAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type", "user", "get_notification")
+
+@admin.register(JournalEntry)
+class JournalEntryAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type", "user", "entry", "date", "is_viewed")
+    
+
 @admin.register(DWAttack)
 class DWAttackAdmin(admin.ModelAdmin):
     list_display = ('name', 'atk_mult_low', 'atk_mult_high', 'spe_effect')

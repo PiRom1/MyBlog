@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import numpy as np
 import json
 
+from Blog.views.utils_views import write_journal_pari_create, write_journal_pari_bet
 from Blog.views.quests_views import validate_objective_quest
 
 
@@ -128,6 +129,7 @@ def create_pari(request):
             return JsonResponse({'success' : False, 'error' : ''})
         
         validate_objective_quest(user = request.user, action = "pari")
+        write_journal_pari_create(user = request.user, pari = pari)
         
         return JsonResponse({'success' : True, 'pari_id' : pari.id})
 
@@ -282,13 +284,15 @@ def parier(request):
     if mise > request.user.coins:
         return JsonResponse({'success' : False, 'error' : "Vous n'avez pas assez d'argent pour miser autant. \nVous êtes un homme ou un animal bon sang ?"})
 
-    UserForIssue.objects.create(user = request.user,
-                                pari_issue = PariIssue.objects.get(id=id_issue),
-                                mise = mise,
-                                comment = commentaire)
+    user_for_issue = UserForIssue.objects.create(user = request.user,
+                                                 pari_issue = PariIssue.objects.get(id=id_issue),
+                                                 mise = mise,
+                                                 comment = commentaire)
     
     request.user.coins -= mise
     request.user.save()
+
+    write_journal_pari_bet(user = request.user, pari = pari_issue.pari, user_for_issue = user_for_issue)
 
 
     return JsonResponse({'success' : True})

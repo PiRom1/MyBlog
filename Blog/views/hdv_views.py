@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from Blog.views.quests_views import validate_objective_quest
-
+from Blog.views.utils_views import write_journal_hdv_sold, write_journal_hdv_is_selling
 
 
 def list_hdv(request):
@@ -124,8 +124,11 @@ def buy(request):
     history_buyer.save()
     
 
+    write_journal_hdv_sold(seller = transaction.seller, buyer = request.user, item = item, price = transaction.price)
+
     # Delete market line
     transaction.delete()
+
 
 
     return JsonResponse({'success': 'success',
@@ -174,6 +177,8 @@ def sell(request):
 
     # Valider la quête
     validate_objective_quest(user = request.user, action = "hdv")
+
+    write_journal_hdv_is_selling(seller = request.user, item = item, price = price)
 
 
     return JsonResponse({'success': 'success',

@@ -12,15 +12,13 @@
         <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-        <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+        
+        {% include "Blog/layout/base.html" %}
+
 
     </head>
 
-    <!-- <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
-    <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script> -->
-
     <body>
-        {% include "../bg.html" %}
 
         <h1>Ajouter un son à la soundbox </h1>
 

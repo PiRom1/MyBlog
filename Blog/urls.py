@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views, dinowars_views, atelier_views
+from .views import chat_views, recits_views, lootbox_views, sondages_views, soundbox_views, tickets_views, user_views, utils_views, inventory_views, inventory_2_views, hdv_views, enjoy_timeline_views, jeux_views, paris_views, quests_views, dinowars_views, atelier_views, journal_views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -136,5 +136,11 @@ urlpatterns = [
     # Atelier
     path('atelier/', atelier_views.atelier, name='atelier'),
     path('atelier/recycler', atelier_views.recycler, name='recycler'),
+
+    # Journal
+    path('get_journal_entries/', journal_views.get_journal_entries, name='get_journal_entries'),
+    path('get_notifications_number/', journal_views.get_notifications_number, name='get_notifications_number'),
+    path('manage_notification_entry/', journal_views.manage_notification_entry, name='manage_notification_entry'),
+    
 
 ]
