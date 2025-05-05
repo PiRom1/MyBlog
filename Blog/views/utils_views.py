@@ -132,7 +132,7 @@ def write_journal_recit_create(user, recit):
 
 def write_journal_recit_contribute(user, recit):
 
-    users = User.objects.filter(texte__recit=recit)
+    users = User.objects.filter(texte__recit=recit).distinct()
 
     for _user in users:
 
