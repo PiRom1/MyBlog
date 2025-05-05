@@ -227,13 +227,13 @@ def write_journal_arena_get(user_in, user_out, coin_earned):
     for _user in User.objects.all():
 
         if _user == user_out:
-            entry = f"{user_in.username} vous a expulsé de l'arène. Vous avez gagné {coin_earned}" + DIPLODOCOIN_STR
+            entry = f"{user_in.username} vous a expulsé de l'arène. Vous avez gagné {coin_earned} " + DIPLODOCOIN_STR
 
         elif _user == user_in:
-            entry = f"Vous avez expulsé {user_out.username} de l'arène. Il a gagné {coin_earned}" + DIPLODOCOIN_STR
+            entry = f"Vous avez expulsé {user_out.username} de l'arène. Il a gagné {coin_earned} " + DIPLODOCOIN_STR
         
         else:
-            entry = f"{user_in.username} a expulsé {user_out.username} de l'arène. {user_out.username} a gagné {coin_earned}" + DIPLODOCOIN_STR
+            entry = f"{user_in.username} a expulsé {user_out.username} de l'arène. {user_out.username} a gagné {coin_earned} " + DIPLODOCOIN_STR
 
 
         JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Arène'),
