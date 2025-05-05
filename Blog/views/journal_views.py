@@ -38,7 +38,7 @@ def get_journal_entries(request):
                 'can_decrease_page' : page > 1,
                 'n_pages' : n_pages,}
         
-        all_journal_entries.update(is_viewed = True)
+        all_journal_entries_page.update(is_viewed = True)
         
         return JsonResponse({'success' : True, 
                             'data' : data})
