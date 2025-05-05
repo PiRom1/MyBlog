@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
                    'Récit' : 'fi fi-rs-book-alt',
                    'Quête' : 'fi fi-rs-scroll-old',
                    'Pari' : 'fi fi-rs-dice-alt',
-                   'Boîte' : 'fi fi-rs-treasure-chest',
                    'Arène' : 'fi fi-rs-t-rex',
                    'HDV' : 'fi fi-rs-shop',
 
