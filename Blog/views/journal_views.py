@@ -29,6 +29,10 @@ def get_journal_entries(request):
         
         all_journal_entries_page = all_journal_entries[((page-1)*entries_by_page):(page*entries_by_page)]
         
+        for entry in all_journal_entries_page:
+            entry.is_viewed=True
+            entry.save()
+
         data = {'all_journal_entries' : [{'entry' : entry.entry ,
                                           'entry_type' : entry.entry_type.entry_type,
                                           'date' : entry.date.strftime('%d/%m/%y %H:%M'),
@@ -38,7 +42,7 @@ def get_journal_entries(request):
                 'can_decrease_page' : page > 1,
                 'n_pages' : n_pages,}
         
-        all_journal_entries_page.update(is_viewed = True)
+        
         
         return JsonResponse({'success' : True, 
                             'data' : data})
