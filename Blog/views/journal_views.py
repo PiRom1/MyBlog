@@ -30,8 +30,9 @@ def get_journal_entries(request):
         all_journal_entries_page = all_journal_entries[((page-1)*entries_by_page):(page*entries_by_page)]
         
         for entry in all_journal_entries_page:
-            entry.is_viewed=True
-            entry.save()
+            if not entry.is_viewed:
+                entry.is_viewed=True
+                entry.save()
 
         data = {'all_journal_entries' : [{'entry' : entry.entry ,
                                           'entry_type' : entry.entry_type.entry_type,
