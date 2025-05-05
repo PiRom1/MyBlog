@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
                    'Pari' : 'fi fi-rs-dice-alt',
                    'Arène' : 'fi fi-rs-t-rex',
                    'HDV' : 'fi fi-rs-shop',
-
                 }
 
     function add_entry(entry) {

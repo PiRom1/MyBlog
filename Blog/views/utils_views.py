@@ -95,7 +95,7 @@ def write_journal_soundbox_add(user, sound):
     for _user in User.objects.all():
 
         if user != _user:
-            entry = f"f{user.username} a ajouté le son '{sound.name}' à la soundbox"
+            entry = f"{user.username} a ajouté le son '{sound.name}' à la soundbox"
 
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Soundbox'),
                                         user = _user,
@@ -109,7 +109,7 @@ def write_journal_sondage_create(user, sondage):
     for _user in session_users:
 
         if user != _user:
-            entry = f"f{user.username} a créé le sondage '{sondage.question}' dans la session {sondage.session.session_name}"
+            entry = f"{user.username} a créé le sondage '{sondage.question}' dans la session {sondage.session.session_name}"
 
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Sondage'),
                                         user = _user,
@@ -122,7 +122,7 @@ def write_journal_recit_create(user, recit):
     for _user in User.objects.all():
 
         if user != _user:
-            entry = f"f{user.username} a créé le récit '{recit.name}'"
+            entry = f"{user.username} a créé le récit '{recit.name}'"
 
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Récit'),
                                         user = _user,
@@ -138,7 +138,7 @@ def write_journal_recit_contribute(user, recit):
 
         if _user != user:
 
-            entry = f"f{user.username} a contribué au récit '{recit.name}'"
+            entry = f"{user.username} a contribué au récit '{recit.name}'"
 
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Récit'),
                                         user = _user,
@@ -152,7 +152,7 @@ def write_journal_ticket_create(user, ticket):
 
         if user != _user:
 
-            entry = f"f{user.username} a créé le ticket '{ticket.title}'"
+            entry = f"{user.username} a créé le ticket '{ticket.title}'"
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Ticket'),
                                         user = _user,
                                         entry = entry)
@@ -165,7 +165,7 @@ def write_journal_ticket_update(user, ticket):
 
         if user != _user:
 
-            entry = f"f{user.username} a modifié le ticket '{ticket.title}'"
+            entry = f"{user.username} a modifié le ticket '{ticket.title}'"
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Ticket'),
                                         user = _user,
                                         entry = entry)
@@ -189,7 +189,7 @@ def write_journal_pari_create(user, pari):
 
         if user != _user:
 
-            entry = f"f{user.username} a créé le pari '{pari.name}'"
+            entry = f"{user.username} a créé le pari '{pari.name}'"
             JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Pari'),
                                         user = _user,
                                         entry = entry)

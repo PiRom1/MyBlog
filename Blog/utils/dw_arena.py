@@ -46,4 +46,4 @@ def get_arena_coins(minutes, victories):
     def logarithme(x, base):
         return log(x) / log(base)
 
-    return ceil((minutes/5) * ((logarithme(victories, base=9)**(1/1.4)) + 1))
+    return max(10, ceil((minutes/5) * ((logarithme(victories, base=9)**(1/1.4)) + 1)))
