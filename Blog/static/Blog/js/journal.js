@@ -147,25 +147,33 @@ document.addEventListener('DOMContentLoaded', function () {
     let badge = document.getElementById('badge');
     let nb_notifications;
     
-    fetch(`/get_notifications_number/`, {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',  // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        nb_notifications = data.data.nb_notifications;
-        console.log(data);
-        if (nb_notifications > 0) {
-            badge.innerHTML = nb_notifications;
-            badge.style.display = 'block';
-        }
-        else {
-            badge.style.display = 'none';
-        }
+    function get_notifications() {
 
-    })
+        fetch(`/get_notifications_number/`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',  // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            nb_notifications = data.data.nb_notifications;
+            console.log(data);
+            if (nb_notifications > 0) {
+                badge.innerHTML = nb_notifications;
+                badge.style.display = 'block';
+            }
+            else {
+                badge.style.display = 'none';
+            }
+        })
+    }
+
+    get_notifications();
+
+    setInterval(() => {
+        get_notifications()
+      }, 10000)
 
 
 
