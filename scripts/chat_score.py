@@ -4,9 +4,11 @@ import datetime
 import numpy as np
 from groq import Groq
 from time import sleep
+from django.conf import settings
+
 
 def get_moderaptor_punchline(user_prompt, model):
-
+    print(f"GROQ API KEY : {settings.GROQ_API_KEY}")
     # Initialize Groq client with API key
     client = Groq(
         api_key="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"
@@ -89,7 +91,7 @@ def get_text(date, user_data, model):
 def run():
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
-    date = datetime.date.today() - datetime.timedelta(days=5)
+    date = datetime.date.today() - datetime.timedelta(days=6)
     user_data = analyse_chat(date=date, session_id=2, model=model)
     WINRATE_COINS = 40
     LOOSERATE_COINS = 0
