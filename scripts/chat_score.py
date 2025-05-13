@@ -8,7 +8,6 @@ from django.conf import settings
 
 
 def get_moderaptor_punchline(user_prompt, model):
-    print(f"GROQ API KEY : {settings.GROQ_API_KEY}")
     # Initialize Groq client with API key
     client = Groq(
         api_key="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"
