@@ -29,17 +29,17 @@ def list_hdv(request):
             url = emoji.image.url
         
         if skin.type == 'emoji' and pattern == '':
-            url = Skin.objects.get(name='emoji').image.url
+            url = Skin.objects.get(type='emoji').image.url
 
         if skin.type == 'background_image' and pattern != '':
             background = Background.objects.get(id=pattern)
             url = background.image.url
         
         if skin.type == 'background_image' and pattern == '':
-            url = Skin.objects.get(name='background_image').image.url
+            url = Skin.objects.get(type='background_image').image.url
         
         if skin.type == 'border_image' and pattern == '':
-            url = Skin.objects.get(name='border_image').image.url
+            url = Skin.objects.get(type='border_image').image.url
         if skin.type == 'border_image' and pattern != '':
             url = BorderImage.objects.get(name=pattern).image.url
 
