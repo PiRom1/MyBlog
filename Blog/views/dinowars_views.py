@@ -906,7 +906,7 @@ def battle_analytics_view(request, fight_id):
     return render(request, 'Blog/dinowars/battle_analytics.html', context)
 
 
-
+@login_required
 def remove_runes(request):
     
     data = json.loads(request.body)
@@ -920,3 +920,24 @@ def remove_runes(request):
     runes.delete()
 
     return JsonResponse({'success' : True, 'runes_id' : runes_id})
+
+
+@login_required 
+def get_dino_nb_to_evolve(request, dino_id):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return JsonResponse({'success': False})
+    
+    user_dino = DWUserDino.objects.get(pk=dino_id)
+    all_user_dinos_of_this_type = DWUserDino.objects.filter(user=request.user, 
+                                                            dino=user_dino.dino,
+                                                            level__lte=user_dino.level)
+    
+    nb_to_reach = 2**user_dino.level
+    current_nb = sum([2**(dino.level-1) for dino in all_user_dinos_of_this_type])
+
+    if current_nb >= nb_to_reach:
+        message = "Vous pouvez faire évoluer ce dinosaure !"
+    else:
+        message = f"Il vous faut encore faire éclore {nb_to_reach - current_nb} {user_dino.dino.name} pour pouvoir le faire évoluer au niveau {user_dino.level + 1}"
+    
+    return JsonResponse({'success' : True, 'message' : message})
