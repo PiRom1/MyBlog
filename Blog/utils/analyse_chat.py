@@ -78,7 +78,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
     
     # Initialize Groq client with API key
     client = Groq(
-        api_key="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"
+        api_key="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"
     )
     responses = []
     for i, messages_string in enumerate(messages_batch):

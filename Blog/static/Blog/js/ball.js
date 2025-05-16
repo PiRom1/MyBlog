@@ -45,23 +45,32 @@ function draw() {
         }
 
         move() {
-            if (get_distance(this.x, this.y, contour.x, contour.y) >= CONTOUR_RADIUS - RADIUS) {
-                this.compute_new_angle();
-            }
+            // Vérification de la distance au contour
+            if (get_distance(this.x, this.y, contour.x, contour.y) >= CONTOUR_RADIUS - 1.1*RADIUS) {
+                // Calcul du vecteur normal (dirigé vers l'extérieur)
+                let nx = (this.x - contour.x) / get_distance(this.x, this.y, contour.x, contour.y);
+                let ny = (this.y - contour.y) / get_distance(this.x, this.y, contour.x, contour.y);
+        
+                // Produit scalaire entre vitesse et normale
+                let dotProduct = this.dx * nx + this.dy * ny;
+        
+                // Mise à jour de la vitesse après rebond
+                this.dx = this.dx - 2 * dotProduct * nx;
+                this.dy = this.dy - 2 * dotProduct * ny;
 
+                this.dx *= 1;
+                this.dy *= AMMORTISSEMENT;
+        
+                console.log(`Rebond détecté : Nouvelle vitesse -> dx: ${this.dx}, dy: ${this.dy}`);
+            }
+            
+            
+
+            // Application du déplacement
             this.x += this.dx;
             this.y += this.dy;
-
         }
 
-        compute_new_angle() {
-            // Get alpha
-            
-
-            new_dx = norm(this.dx, this.dy) * Math.cos(alpha);
-            new_dx = norm(this.dx, this.dy) * Math.sin(alpha) * -1;
-            
-        }
 
         draw() {
 
@@ -82,7 +91,7 @@ function draw() {
     const RADIUS = 10;
     const BG_COLOR = "#F09228";
     const GRAVITY = 0.2;
-
+        const AMMORTISSEMENT = 0.95;
 
 
     console.log('Script network')
