@@ -27,12 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
               popup.textContent = data.message;
               popup.style.position = 'absolute';
               popup.style.padding = '10px';
-              popup.style.backgroundColor = '#fddbc5';
+              popup.style.backgroundColor = '#dcbfac';
               popup.style.boxShadow = 'rgba(0, 0, 0, 0.5) 0px 5px 15px';
               popup.style.fontSize = '16px';
               popup.style.fontWeight = 'bold';
               popup.style.borderRadius = '4px';
-              popup.style.color = 'ivory';
+              popup.style.color = '#222';
               popup.style.border = '1px solid #ccc';
               popup.style.zIndex = '1000';
               popup.style.width = '200px'; // Taille fixe pour calculer plus facilement
