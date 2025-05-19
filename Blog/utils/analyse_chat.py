@@ -3,6 +3,7 @@ from time import sleep
 from Blog.models import User, Message, Bot
 from groq import Groq
 from django.conf import settings
+import os
 
 def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-32768"):
     # Get all the messages of the day, for the session id 2
@@ -78,7 +79,7 @@ def analyse_chat(date=datetime.date.today(), session_id=2, model="mixtral-8x7b-3
     
     # Initialize Groq client with API key
     client = Groq(
-        api_key="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"
+        api_key = os.environ.get('GROQ_API_KEY')
     )
     responses = []
     for i, messages_string in enumerate(messages_batch):

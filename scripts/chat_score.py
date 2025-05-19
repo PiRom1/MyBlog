@@ -5,12 +5,12 @@ import numpy as np
 from groq import Groq
 from time import sleep
 from django.conf import settings
-
+import os
 
 def get_moderaptor_punchline(user_prompt, model):
     # Initialize Groq client with API key
     client = Groq(
-        api_key="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"
+        api_key = os.environ.get('GROQ_API_KEY')
     )
 
     system_prompt = '''' \
