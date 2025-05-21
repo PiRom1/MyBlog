@@ -24,7 +24,7 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
    
         # Initialize Groq client with API key
         client = Groq(
-            api_key="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"
+            api_key = os.environ.get('GROQ_API_KEY')
         )
 
 
@@ -82,7 +82,7 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
         
             # Initialize Groq client with API key
             client = Groq(
-                api_key="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"
+                api_key = os.environ.get('GROQ_API_KEY')
             )
 
             prompt = f"""{bot.preprompt}\n\n Tu dois ecrire un nouveau message en incarnant le personnage de {bot.user}.

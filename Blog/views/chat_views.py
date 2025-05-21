@@ -481,7 +481,7 @@ def tkt_view(request):
 def ask_heure_enjoy(request):
     # Initialize Groq client with API key
     client = Groq(
-        api_key="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"
+        api_key = os.environ.get('GROQ_API_KEY')
     )
     bot = Bot.objects.get(user__username='enjoy')
     user = request.user
