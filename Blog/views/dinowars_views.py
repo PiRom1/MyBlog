@@ -649,6 +649,10 @@ def start_battle(request):
                 nb_coins = get_arena_coins(minutes = nb_minutes_in_arena, 
                                            victories = nb_victories)
                 
+                # Restaurer l'énergie d'arène de l'attaquant
+                attacker_user.arena_energy = 5
+                attacker_user.save()
+                
                 print(f"L'utilisateur {defender_user.user} a gagné {nb_coins} pièces en restant {nb_minutes_in_arena}mn dans l'arène, et en encaissant {nb_victories} victoires !")
                 
                 defender_user.user.coins += nb_coins
