@@ -3,6 +3,7 @@ from Blog.models import User, JournalEntry, JournalEntryType, JournalEntryTypeFo
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from numpy import ceil
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import localtime
 
 
 @login_required
@@ -28,16 +29,15 @@ def get_journal_entries(request):
         n_pages = ceil(len(all_journal_entries)/entries_by_page)
         
         all_journal_entries_page = all_journal_entries[((page-1)*entries_by_page):(page*entries_by_page)]
-        
         data = {'all_journal_entries' : [{'entry' : entry.entry ,
                                           'entry_type' : entry.entry_type.entry_type,
-                                          'date' : entry.date.strftime('%d/%m/%y %H:%M'),
+                                          'date' : localtime(entry.date).strftime('%d/%m/%y %H:%M'),
                                           'is_viewed' : entry.is_viewed,} for entry in all_journal_entries_page],
                 'notifying_journal_entrytypes' : [entry_type.entry_type for entry_type in notifying_journal_entrytypes],
                 'can_increase_page' : can_increase_page,
                 'can_decrease_page' : page > 1,
                 'n_pages' : n_pages,}
-        
+                
         for entry in all_journal_entries_page:
             if not entry.is_viewed:
                 entry.is_viewed=True
