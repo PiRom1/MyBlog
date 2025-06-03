@@ -577,3 +577,23 @@ class DWDinoItem(models.Model):
         
     def __str__(self):
         return f"{self.dino} - {self.get_slot_display()}: {self.item}"
+
+
+
+
+class DCDungeon(models.Model):
+    dungeon = models.TextField()
+    nb_chests = models.IntegerField()
+    date = models.DateField(default=datetime.date.today)
+    nb_rooms = models.IntegerField()
+    stability = models.FloatField()
+
+    def __str__(self):
+        return f"Donjon DinoCrypt du {self.date}"
+
+
+
+class DCChest(models.Model):
+    dungeon = models.ForeignKey(DCDungeon, on_delete=models.CASCADE)
+    rarity = # ?? Soit rareté déjà présente mais trop grande proba. Sinon Nouvelles proba de modèle DCChestProbability. 93% de commun pour 1/2 d'avoir 1 peu commun pendant le donjon si 10 coffres
+    coordinates = #?
