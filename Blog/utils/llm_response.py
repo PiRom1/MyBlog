@@ -5,6 +5,7 @@ from groq import Groq
 from .llm_prompts import USERLIST, USERPROMPTS, USER_CONTEXTS
 from Blog.models import Bot, User, SessionUser, SessionBot
 from datetime import datetime
+import traceback
 
 # Fonction qui génère une réponse à partir d'un message et optionnellement d'un utilisateur
 def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) -> Optional[str]:
@@ -66,6 +67,7 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
+        print(traceback.print_exc())
         return None, None
     
 
@@ -107,4 +109,5 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
+        print(traceback.print_exc())
         return None, None
