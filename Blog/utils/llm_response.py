@@ -7,6 +7,9 @@ from Blog.models import Bot, User, SessionUser, SessionBot
 from datetime import datetime
 import traceback
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Fonction qui génère une réponse à partir d'un message et optionnellement d'un utilisateur
 def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) -> Optional[str]:
     
