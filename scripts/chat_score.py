@@ -91,7 +91,9 @@ def run():
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
     date = datetime.date.today() - datetime.timedelta(days=1)
-    user_data = analyse_chat(date=date, session_id=2, model=model)
+
+    sessions = Session.objects.all()
+    sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
     WINRATE_COINS = 40
     LOOSERATE_COINS = 0
 
@@ -100,24 +102,26 @@ def run():
     # user_means = {'theophile' : 5,
     #               'louis' : 4}
 
+    for session_name, session_data in sessions_data.items():
 
-    for user, data in user_data.items():
-        usr = User.objects.get(username=user)
-        score = data['mean']
-        if score >= 0:
-            coins_earned = WINRATE_COINS * score
-        else:
-            coins_earned = LOOSERATE_COINS * score
+        for user, data in session_data.items():
+            usr = User.objects.get(username=user)
+            score = data['mean']
+            if score >= 0:
+                coins_earned = WINRATE_COINS * score
+            else:
+                coins_earned = LOOSERATE_COINS * score
+            
+            usr.coins += int(coins_earned)
+            usr.save()
+            session_data[user]['coins'] = int(coins_earned)
+
+        text = get_text(date = date, 
+                        user_data = session_data,
+                        model = model)
         
-        usr.coins += int(coins_earned)
-        usr.save()
-        user_data[user]['coins'] = int(coins_earned)
-
-    text = get_text(date = date, 
-                    user_data = user_data,
-                    model = model)
-    
-    Message.objects.create(text=text, 
-                           writer=User.objects.get(username="moderaptor"), 
-                           session_id=Session.objects.get(id=2))
+        Message.objects.create(text=text, 
+                               writer=User.objects.get(username="moderaptor"), 
+                               session_id=Session.objects.get(session_name=session_name))
+        print()
 
