@@ -56,10 +56,9 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
             ],
             model=bot.model_name,
             temperature=bot.temperature,
-            max_tokens=bot.max_tokens,
+            max_completion_tokens=bot.max_tokens,
             top_p=bot.top_p,
             presence_penalty=bot.presence_penalty,
-            frequency_penalty=bot.frequence_penalty
         )
 
         # Return the generated response
@@ -96,12 +95,11 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
                         "content": prompt
                     }
                 ],
-                model="mixtral-8x7b-32768",
+                model=bot.model_name,
                 temperature=bot.temperature,
-                max_tokens=bot.max_tokens,
+                max_completion_tokens=bot.max_tokens,
                 top_p=bot.top_p,
                 presence_penalty=bot.presence_penalty,
-                frequency_penalty=bot.frequence_penalty
             )
 
             # Return the generated response
