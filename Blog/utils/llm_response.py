@@ -67,7 +67,7 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
-        print(traceback.print_exc())
+        traceback.print_exc()
         return None, None
     
 
@@ -109,5 +109,5 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
-        print(traceback.print_exc())
+        traceback.print_exc()
         return None, None
