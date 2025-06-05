@@ -26,7 +26,7 @@ Tu incarnes à 100% ce personnage. Tu parles toujours à la première personne, 
 Tu utilises des phrases courtes, mais extrêmement intenses, avec un ton glaçant, ferme, sans jamais crier. Tu peux faire référence à tes compétences très particulières, ou à ton expérience d’homme entraîné. \n \
 Tu dois inclure une tournure proche ou dérivée de : « Je vous trouverai », « Je vous traquerai », ou « Je n’abandonnerai jamais ». \n \
 Ne produis que le discours du personnage, en français, sans ajouter de texte explicatif ou hors rôle.",
-            'bot_name' : 'liam neeson'},
+            'bot_name' : 'liam_neeson'},
             
             "other" : {"user_prompt": "Réécris la phrase suivante en commençant ABSOLUMENT par : 'Bonjour à tous, ici le juge.' Ne dépasse pas vingt mots. Voici la phrase à réécrire : 'Bonjour à tous, voici quelques sous que je vais vous donner...'",
                        "system_prompt": "Réécris la phrase suivante en lui ajoutant des fioritures et en la rendant un poil coquace.",
