@@ -7,7 +7,8 @@ from time import sleep
 from django.conf import settings
 import os
 
-PROMPTS = {"Chat Acelys" : {"user_prompt" : f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Bonjour à tous, c'est le Modéraptor Dissident ! Voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.",
+PROMPTS = {"Chat Acelys" : {"intro_prompt" : f"Réécris la phrase suivante à ta manière, en commençant ABSOLUMENT par 'Bonjour à tous c'est le Modéraptor Dissident', en une vingtaine de mots maximum. Sois concis et court mais percutant.\n Voici la phrase à réécrire : 'Bonjour à tous, c'est le Modéraptor Dissident ! Voici les miettes que je vais donner aux utilisateurs inutiles et demeurés de ce site.",
+                            "reward_prompt" : "Ecris ici une unique phrase sur l'utilisateur --USER, en lui disant qu'il a gagné --COINS diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de --SCORE. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.",
                             "system_prompt" : ''' \
                      Tu es 'Le Modéraptor Dissident'. Tu vis pour la punchline critique, acerbe, énergique. \n \
                      Tu ne parles qu'avec des insultes et des phrases satyriques, mais toujours avec une pointe d'humour et de sarcasme. \n \
@@ -19,7 +20,8 @@ PROMPTS = {"Chat Acelys" : {"user_prompt" : f"Réécris la phrase suivante à ta
                      ''',
                      'bot_name' : 'moderaptor'},
             
-            "Zap Webook des copains !" : {"user_prompt": "Réécris la phrase suivante à la manière de Liam Neeson dans *Taken*, avec une voix grave, calme mais menaçante. Commence ABSOLUMENT par : 'Bonjour à tous, ici Liam Neeson.' Ne dépasse pas vingt mots. Voici la phrase à réécrire : 'Bonjour à tous, c'est le Liam Neeson ! Voici quelques sous que je vais vous donner, si vous êtes sages...'",
+            "Zap Webook des copains !" : {"intro_prompt": "Réécris la phrase suivante à la manière de Liam Neeson dans *Taken*, avec une voix grave, calme mais menaçante. Commence ABSOLUMENT par : 'Bonjour à tous, ici Liam Neeson.' Ne dépasse pas vingt mots. Voici la phrase à réécrire : 'Bonjour à tous, c'est le Liam Neeson ! Voici quelques sous que je vais vous donner, si vous êtes sages...'",
+                                          "reward_prompt" : "Ecris ici une unique phrase sur l'utilisateur --USER, en lui disant qu'il a gagné --COINS diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de --SCORE. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.",
                                           "system_prompt": "Tu es Bryan Mills, l'ancien agent des forces spéciales du film *Taken*, incarné par Liam Neeson. Tu es calme, méthodique, terriblement déterminé. \n \
 Tu t’adresses toujours de manière posée, mais ta menace est palpable. Tu as une voix grave, chaque mot que tu dis est pesé, précis, glacial. \n \
 Tu incarnes à 100% ce personnage. Tu parles toujours à la première personne, et tu fais sentir à ton interlocuteur qu’il ne pourra pas t’échapper. \n \
@@ -28,7 +30,8 @@ Tu dois inclure une tournure proche ou dérivée de : « Je vous trouverai », �
 Ne produis que le discours du personnage, en français, sans ajouter de texte explicatif ou hors rôle.",
             'bot_name' : 'liam_neeson'},
             
-            "other" : {"user_prompt": "Réécris la phrase suivante en commençant ABSOLUMENT par : 'Bonjour à tous, ici le juge.' Ne dépasse pas vingt mots. Voici la phrase à réécrire : 'Bonjour à tous, voici quelques sous que je vais vous donner...'",
+            "other" : {"intro_prompt": "Réécris la phrase suivante en commençant ABSOLUMENT par : 'Bonjour à tous, ici le juge.' Ne dépasse pas vingt mots. Voici la phrase à réécrire : 'Bonjour à tous, voici quelques sous que je vais vous donner...'",
+                       "reward_prompt" : "Ecris ici une unique phrase sur l'utilisateur --USER, en lui disant qu'il a gagné --COINS diplodocoins, en récompense de ses messages tous pourris qui lui ont valu un score de --SCORE. Sois succint, fais une seule phrase d'une vingtaine de mots maximum. Les infos sur son nom, ses diplodocoins et son score doivent être ABSOLUMENT présentes et ne doive PAS être modifiées.",
                        "system_prompt": "Réécris la phrase suivante en lui ajoutant des fioritures et en la rendant un poil coquace.",
                        "bot_name" : "juge"},
           }
@@ -36,17 +39,15 @@ Ne produis que le discours du personnage, en français, sans ajouter de texte ex
 
 
 
-def get_punchline(model, session_name):
+def get_punchline(user_prompt, model, session_name):
     # Initialize Groq client with API key
     client = Groq(
         api_key = os.environ.get('GROQ_API_KEY')
     )
 
     if session_name in PROMPTS:
-        user_prompt = PROMPTS.get(session_name).get("user_prompt")
         system_prompt = PROMPTS.get(session_name).get("system_prompt")
     else:
-        user_prompt = PROMPTS.get("other").get("user_prompt")
         system_prompt = PROMPTS.get("other").get("system_prompt")
 
     try:
@@ -96,14 +97,30 @@ def get_punchline(model, session_name):
 def get_text(date, user_data, model, session_name):
     # intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
     # text = f"<p>{intro_sentence}</p><br>"
+
+    print("user_data : ", user_data)
+
+    # get prompt
+    if session_name in PROMPTS:
+        intro_prompt = PROMPTS.get(session_name).get("intro_prompt")
+        reward_prompt = PROMPTS.get(session_name).get("reward_prompt")
+    else:
+        intro_prompt = PROMPTS.get("other").get("intro_prompt")
+        reward_prompt = PROMPTS.get("other").get("reward_prompt")
+
     text = ""
-    date_sentence = get_punchline(model, session_name)
+    date_sentence = get_punchline(intro_prompt, model, session_name)
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
+        user_reward_prompt = reward_prompt
+        user_reward_prompt = user_reward_prompt.replace('--USER', user)
+        user_reward_prompt = user_reward_prompt.replace('--COINS', str(user_data.get(user).get('coins')))
+        user_reward_prompt = user_reward_prompt.replace('--SCORE', str(round(user_data.get(user).get('mean'), 2)))
+
         #limit score to 2 decimals
         score = np.round(user_data[user]['mean'], 2)
         coins_earned = user_data[user]['coins']
-        user_text = get_punchline(model, session_name)
+        user_text = get_punchline(user_reward_prompt, model, session_name)
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
         text += f"<p> - {user_text}</p>"
         
@@ -120,6 +137,7 @@ def run():
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
+    
     WINRATE_COINS = 40
     LOOSERATE_COINS = 0
 
