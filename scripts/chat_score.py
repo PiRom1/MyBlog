@@ -133,7 +133,7 @@ def get_text(date, user_data, model, session_name):
 def run():
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
-    date = datetime.date.today() - datetime.timedelta(days=3)
+    date = datetime.date.today() - datetime.timedelta(days=1)
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
