@@ -8,13 +8,17 @@ import os
 def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768"):
     # Get all the messages of the day, for the session id 2
 
-    # bot_users = Bot.objects.all().values_list('user', flat = True)
+    bot_users = Bot.objects.all().values_list('user', flat = True)
     sessions_data = {}
 
     for session in sessions:
         print(f"Notation pour la session {session.session_name}")
 
         messages = Message.objects.filter(pub_date__date=date, session_id=session.id)#.exclude(writer__in=bot_users)
+
+        if messages.count() == 0 or messages.exclude(writer__in=bot_users).count() == 0:
+            print(f"Pas de messages récents à noter pour la session {session.session_name}")
+            pass
 
         # Get all the users who sent a message today
         users = []

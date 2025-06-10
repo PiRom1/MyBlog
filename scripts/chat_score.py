@@ -137,6 +137,10 @@ def run():
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
+
+    if not sessions_data:
+        print("Pas de donées récentes à analyser")
+        return
     
     WINRATE_COINS = 40
     LOOSERATE_COINS = 0
