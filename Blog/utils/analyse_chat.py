@@ -14,11 +14,11 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
     for session in sessions:
         print(f"Notation pour la session {session.session_name}")
 
-        messages = Message.objects.filter(pub_date__date=date, session_id=session.id)#.exclude(writer__in=bot_users)
-
+        messages = Message.objects.filter(pub_date__date=date, session_id=session.id).exclude(writer__in=bot_users)
+        print("messages : ", messages, len(messages))
         if messages.count() == 0 or messages.exclude(writer__in=bot_users).count() == 0:
             print(f"Pas de messages récents à noter pour la session {session.session_name}")
-            pass
+            continue
 
         # Get all the users who sent a message today
         users = []

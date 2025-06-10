@@ -138,6 +138,8 @@ def run():
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
 
+    print("data : ", sessions_data)
+
     if not sessions_data:
         print("Pas de donées récentes à analyser")
         return
@@ -151,6 +153,10 @@ def run():
     #               'louis' : 4}
 
     for session_name, session_data in sessions_data.items():
+
+        if not session_data:
+            print(f"Pas de messages envoyés pour la session {session_name}")
+            continue
 
         for user, data in session_data.items():
             usr = User.objects.get(username=user)
