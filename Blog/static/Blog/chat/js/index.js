@@ -314,5 +314,40 @@ document.addEventListener('DOMContentLoaded', function () {
            
         });
     }
+
+
+
+
+    var popup = document.getElementById('tkt-popup');
+    var tqt_btn = document.getElementById('tkt-btn');
+    
+    let i = 0;
+
+    tqt_btn.addEventListener('click', function() {
+        i = 0;
+    })
+
+
+    document.addEventListener('keydown', function(e) {
+        console.log(e);
+        if (e.key === "AudioVolumeUp" && i < 3) {
+            popup.innerHTML += ".";
+            i += 1;
+
+            if (i === 3) {
+                popup.innerHTML = `
+                Lorsque voici l'heure du malin, <br>
+                Les cercles de l'enfer prennent vie. <br>
+                Sans prévenir, dirige-toi en leur sein, <br>
+                Guidé par Dante, le sage, l'érudit. <br>
+                Sois lucide, déjoue le mécanisme, <br> 
+                La ligne du temps vite s'émousse. <br>
+                Souviens-toi de ce bref aphorisme : <br>
+                Trois clics pour les modérer tous. <br>
+                `;
+            }
+        }
+    })
+
     
 });
