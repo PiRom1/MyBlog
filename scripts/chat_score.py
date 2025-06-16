@@ -98,7 +98,6 @@ def get_text(date, user_data, model, session_name):
     # intro_sentence = get_moderaptor_punchline("Ecris ici une unique phrase, commençant par 'Bonjour à tous c'est le Modéraptor Dissident', basée sur les instructions données précedemment.")
     # text = f"<p>{intro_sentence}</p><br>"
 
-    print("user_data : ", user_data)
 
     # get prompt
     if session_name in PROMPTS:
@@ -133,12 +132,11 @@ def get_text(date, user_data, model, session_name):
 def run():
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
-    date = datetime.date.today() - datetime.timedelta(days=1)
+    date = datetime.date.today() - datetime.timedelta(days=3)
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
 
-    print("data : ", sessions_data)
 
     if not sessions_data:
         print("Pas de donées récentes à analyser")
