@@ -15,7 +15,7 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
         print(f"Notation pour la session {session.session_name}")
 
         messages = Message.objects.filter(pub_date__date=date, session_id=session.id).exclude(writer__in=bot_users)
-        print("messages : ", messages, len(messages))
+       
         if messages.count() == 0 or messages.exclude(writer__in=bot_users).count() == 0:
             print(f"Pas de messages récents à noter pour la session {session.session_name}")
             continue
@@ -111,7 +111,7 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
             response = response.choices[0].message.content
             if "</think>" in response:
                 response = response.split("</think>")[1]
-            print(response)
+        
             if "{" in response:
                 response = response.split("{")[1].split("}")[0]
             responses.append(response)
@@ -126,7 +126,7 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
                 if user+":" in line:
                     score = line.split(user+": ")[1][0:2].strip()
                     user_scores[user].append(score)
-        print(user_scores)
+    
         user_means = {}
         for user in user_scores:
             user_means[user] = sum([int(score) for score in user_scores[user]])/(len(user_scores[user])+2.5)
