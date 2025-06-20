@@ -187,6 +187,13 @@ def Index(request, id):
         message_text = request.POST.get('message_html')
         print("text : ", message_text)
         if message_text:
+
+            # Journal
+            for _user in User.objects.filter(sessionuser__session = session):
+                if f"@{_user.username.lower()}" in message_text.lower():
+                    write_journal_tag(writer = user,
+                                      receiver = _user,
+                                      session = session)
            
             print("Before : \n", message_text)
             processed_message_text = process_text(message_text, user, session)
@@ -201,13 +208,6 @@ def Index(request, id):
 
             new_message.save()
             history.save()
-
-            # Journal
-            for _user in User.objects.filter(sessionuser__session = session):
-                if f"@{_user.username}" in processed_message_text:
-                    write_journal_tag(writer = user,
-                                      receiver = _user,
-                                      session = session)
                     
 
             agent_called = ask_agent_question(message_text, session)
