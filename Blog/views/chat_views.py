@@ -20,6 +20,7 @@ from ..utils.stats import *
 import random as rd
 from groq import Groq
 from datetime import datetime
+from Blog.views.utils_views import write_journal_tag
 
 
 
@@ -200,6 +201,15 @@ def Index(request, id):
 
             new_message.save()
             history.save()
+
+            # Journal
+            for _user in User.objects.filter(sessionuser__session = session):
+                if f"@{_user.username}" in processed_message_text:
+                    write_journal_tag(writer = user,
+                                      receiver = _user,
+                                      session = session)
+                    
+
             agent_called = ask_agent_question(message_text, session)
             # 1 chance sur 10 de déclencher une réponse de LLM
             if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
@@ -224,6 +234,7 @@ def Index(request, id):
                                 history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
                                 new_message.save()
                                 history.save()
+                    
 
             return HttpResponseRedirect('#bottom')
 

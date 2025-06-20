@@ -12,6 +12,7 @@ def run():
     JournalEntryType.objects.get_or_create(entry_type = 'Récit')
     JournalEntryType.objects.get_or_create(entry_type = 'Sondage')
     JournalEntryType.objects.get_or_create(entry_type = 'Soundbox')
+    JournalEntryType.objects.get_or_create(entry_type = 'Tag')
 
     for user in User.objects.all():
         for entry_type in JournalEntryType.objects.all():

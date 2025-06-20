@@ -272,7 +272,15 @@ def write_journal_hdv_is_selling(seller, item, price):
                                             entry = entry)
 
 
+def write_journal_tag(writer, receiver, session):
 
+    if writer != receiver and receiver not in User.objects.filter(bot__isnull=False).distinct():
+
+        entry = f"Vous avez été tagué par {writer.username.capitalize()} dans la session {session.session_name}"
+
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Tag'),
+                                    user = receiver,
+                                    entry = entry)
 
 
 

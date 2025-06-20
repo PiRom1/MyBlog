@@ -111,6 +111,8 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
             response = response.choices[0].message.content
             if "</think>" in response:
                 response = response.split("</think>")[1]
+            
+            print(response)
         
             if "{" in response:
                 response = response.split("{")[1].split("}")[0]
