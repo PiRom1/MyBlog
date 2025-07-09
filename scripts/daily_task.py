@@ -2,6 +2,7 @@ from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest,
 from datetime import timedelta
 import random as rd
 from Blog.views.utils_views import write_journal_quest_new
+from Blog.utils.analyse_chat import chat_score
 
 
 
@@ -64,6 +65,11 @@ def run():
     
     write_journal_quest_new()
     print("Quests generated for every user")
+
+
+    # Chat score
+    chat_score()
+
 
 
 
