@@ -12,3 +12,4 @@ numpy
 matplotlib
 uvicorn[standard]
 python-dotenv
+django-constance

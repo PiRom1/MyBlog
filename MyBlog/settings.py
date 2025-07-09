@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from django.utils import timezone
 
 # PARAMETERS
 os.environ["GROQ_API_KEY"] = os.getenv('GROQ_API_KEY', '')
@@ -59,8 +60,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'clearcache',
     'channels',
+    'constance',
+    'constance.backends.database'
     # "corsheaders",
 ]
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +76,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CONSTANCE_CONFIG = {
+    'last_daily_task_date': (timezone.now(), "Last date where the daily_tasks scripts has been called.")
+}
+
 
 # MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
 
