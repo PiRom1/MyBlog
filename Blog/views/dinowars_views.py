@@ -48,7 +48,8 @@ def user_dinos_view(request):
     context = {
         'user_dinos': user_dinos,
         'user_team': user_team,
-        'user_stats': user_stats
+        'user_stats': user_stats,
+        'user' : DWUser.objects.get(user = user_team.first().user),
     }
     return render(request, 'Blog/dinowars/user_dinos.html', context)
 
@@ -529,13 +530,17 @@ def arena_view(request):
         time_diff = None
 
     arena_energy = DWUser.objects.get(user=request.user).arena_energy
+
+    elo = DWUser.objects.get(user = arena_team.user).elo
+    
     
     context = {
         'user_teams': user_teams,
         'arena_team': arena_team,
         'arena_info': arena_info,
         'arena_energy': arena_energy,
-        'time_diff': time_diff
+        'time_diff': time_diff,
+        'elo' : elo,
     }
     
     return render(request, 'Blog/dinowars/_arena_popup.html', context)
