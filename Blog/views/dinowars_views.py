@@ -49,7 +49,7 @@ def user_dinos_view(request):
         'user_dinos': user_dinos,
         'user_team': user_team,
         'user_stats': user_stats,
-        'user' : DWUser.objects.get(user = user_team.first().user),
+        'user' : request.user,
     }
     return render(request, 'Blog/dinowars/user_dinos.html', context)
 
