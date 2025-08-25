@@ -33,6 +33,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     })
 
+    // Modify input form
+    const note_label = document.querySelector('label[for="id_note"]');
+    note_label.innerHTML = "Note (sur 5) : ";
+
+    const note_form = document.getElementById('id_note');
+    note_form.style.width = '3%';
+    note_form.value = 1;
+
+    note_form.addEventListener('change', function() {
+        console.log(note_form.value);
+        if (note_form.value < 1) {
+            note_form.value = 1;
+        }
+        if (note_form.value > 5) {
+            note_form.value = 5;
+        }
+    })
+    
+
+
 
 
     // Manage non existent hour minutes

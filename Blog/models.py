@@ -334,6 +334,7 @@ class EnjoyTimestamp(models.Model):
     published_date = models.DateTimeField()
     writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     comment = models.TextField()
+    note = models.IntegerField("note", null = True, blank = True, default = None)
 
     def __str__(self):
         return f"{self.time} ({self.writer.username})"

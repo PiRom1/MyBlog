@@ -135,7 +135,7 @@ class SessionBotAdmin(admin.ModelAdmin):
 
 @admin.register(EnjoyTimestamp)
 class EnjoyTimestampAdmin(admin.ModelAdmin):
-    list_display = ('time', 'published_date', 'writer', 'comment')
+    list_display = ('time', 'published_date', 'writer', 'comment', 'note')
 
 
 @admin.register(GameScore)
