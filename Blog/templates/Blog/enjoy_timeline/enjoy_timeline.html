@@ -65,7 +65,7 @@
         <h3 style="padding-bottom:10px;">Les derniers commentaires</h3>
         <ul class="no-bullets">
             {% for stamp in last_stamps %}
-            <li><u>{{stamp.writer|capfirst}}</u> ({{ stamp.published_date|date:"d/m/Y, H:i" }}) <strong>{{stamp.time.hour}}h{{stamp.time.minute}}mn</strong> : [{{stamp.note}}/5] {{stamp.comment}}</li>
+            <li><u>{{stamp.writer|capfirst}}</u> ({{ stamp.published_date|date:"d/m/Y, H:i" }}) <strong class="hour_minute" hour="{{stamp.time.hour}}" minute="{{stamp.time.minute}}">{{stamp.time.hour}}h{{stamp.time.minute}}mn</strong> : [{{stamp.note}}/5] {{stamp.comment}}</li>
             {% endfor %}
         </ul>
     </div>
