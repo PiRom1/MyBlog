@@ -1,0 +1,32 @@
+/* Ciblage par ID */
+#speaker {
+  font-size: 24px;   /* taille */
+  color: rgba(255, 255, 255, 0.753);        /* couleur */
+  position: absolute; /* pour le placer où tu veux */
+  top: 20px;
+  right: 20px;
+  cursor: pointer;   /* curseur clic */
+}
+
+
+.canvas {
+    border: 10px solid rgba(245, 235, 242, 0.8);
+    width:90vw;
+    height:80vh;
+    margin-left: 5vw;
+    margin-top: 15vh;
+    /* opacity: 80%; */
+}
+
+
+.title {
+    font-size: 24px;
+    color: ivory;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    text-align: center;
+    width: 100%;
+    font-weight: bolder;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}

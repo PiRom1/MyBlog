@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinocrypt</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Flaticons -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    
+    <!-- CSS -->
+    {% load static %}
+    {% load custom_filters %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/dinocrypt/css/dungeon.css' %}">
+
+    
+
+</head>
+
+    <body>
+
+        <div id="data" dungeon="{{dungeon}}" start_coord="{{start_coord}}"></div>
+        <i class="fi fi-ss-volume-slash" id="speaker" value="false"></i>
+        <i class="fi fi-rs-volume" style="opacity:0%;"></i>
+
+
+        <p class="title">DinoCrypt - Explorez le donjon !</p>
+        <canvas id="canvas" class="canvas"></canvas>
+
+        <script src="index.js"></script>
+        <script src="{% static 'Blog/dinocrypt/js/config.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Tile.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Player.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Dungeon.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/main.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/sound.js' %}"></script>
+    </body>
+
+</html>
