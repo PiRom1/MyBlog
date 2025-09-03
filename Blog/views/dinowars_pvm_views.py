@@ -288,6 +288,19 @@ def set_new_run_dinos(new_run, random_dinos):
                 'crit': dino.base_crit,
                 'crit_dmg': dino.base_crit_dmg
             }
+            
+            # Apply terrain-based stat modifications
+            if terrain.name == "Montagne Rocheuse":
+                if dino.classe == "tank":
+                    dino_stats['defense'] = int(dino_stats['defense'] * 1.10)  # +10% defense for tanks
+                elif dino.classe == "dps":
+                    dino_stats['atk'] = int(dino_stats['atk'] * 0.80)  # -20% attack for DPS
+            elif terrain.name == "Erruption Volcanique":
+                if dino.classe == "dps":
+                    dino_stats['atk'] = int(dino_stats['atk'] * 1.10)  # +10% attack for DPS
+                elif dino.classe == "tank":
+                    dino_stats['defense'] = int(dino_stats['defense'] * 0.80)  # -20% defense for tanks
+            
             dinos_stats[f'dino{i+1}'] = dino_stats
 
     new_run.dino1 = DWPvmDino.objects.create(
@@ -566,15 +579,37 @@ def set_next_fight_dinos(run, life=None):
             )
     else:
         for i, dino in enumerate(random_dinos):
+            # Apply terrain stat modifications
+            base_stats = {
+                'hp': int(dino.base_hp * lvl_mult),
+                'atk': int(dino.base_atk * lvl_mult),
+                'defense': int(dino.base_def * lvl_mult),
+                'spd': round(1.0 + lvl_add, 2) if terrain.name == "Ere Glaciaire" else round(dino.base_spd + lvl_add, 2),
+                'crit': round(dino.base_crit + lvl_add*0.4, 2),
+                'crit_dmg': round(dino.base_crit_dmg + lvl_add, 2)
+            }
+            
+            # Apply terrain-based stat modifications
+            if terrain.name == "Montagne Rocheuse":
+                if dino.classe == "tank":
+                    base_stats['defense'] = int(base_stats['defense'] * 1.10)  # +10% defense for tanks
+                elif dino.classe == "dps":
+                    base_stats['atk'] = int(base_stats['atk'] * 0.80)  # -20% attack for DPS
+            elif terrain.name == "Erruption Volcanique":
+                if dino.classe == "dps":
+                    base_stats['atk'] = int(base_stats['atk'] * 1.10)  # +10% attack for DPS
+                elif dino.classe == "tank":
+                    base_stats['defense'] = int(base_stats['defense'] * 0.80)  # -20% defense for tanks
+            
             DWPvmNextFightDino.objects.create(
                 run=run,
                 dino=dino,
-                hp=int(dino.base_hp * lvl_mult),
-                atk=int(dino.base_atk * lvl_mult),
-                defense=int(dino.base_def * lvl_mult),
-                spd=round(1.0 + lvl_add, 2) if terrain.name == "Ere Glaciaire" else round(dino.base_spd + lvl_add, 2),
-                crit=round(dino.base_crit + lvl_add*0.4, 2),
-                crit_dmg=round(dino.base_crit_dmg + lvl_add, 2),
+                hp=base_stats['hp'],
+                atk=base_stats['atk'],
+                defense=base_stats['defense'],
+                spd=base_stats['spd'],
+                crit=base_stats['crit'],
+                crit_dmg=base_stats['crit_dmg'],
                 attack=dino.attack,
             )
     
