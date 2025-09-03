@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from Blog.models import DWFight, DWPvmTerrain, DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun, DWPvmAbility
+from Blog.utils.dw_terrains import distorsion_terrain
 from Blog.utils.random_seed import get_daily_seed
 from Blog.utils.dw_pvm_battle_logic import load_dino_from_model, GameState
 from constance import config as constance_cfg
@@ -261,15 +262,43 @@ def select_ability_dino_view(request, ability_id):
 
 def set_new_run_dinos(new_run, random_dinos):
     """Helper function to set new run dinos."""
+    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+    print(terrain.name)
+    dinos_stats = {'dino1': {}, 'dino2': {}, 'dino3': {}}
+    if terrain.name == "Distorsion Spatio-Temporelle":
+        ids, rearanged_stats = distorsion_terrain()
+        for i, dino in enumerate(random_dinos):
+            index = ids.index(dino.id)
+            dino_stats = {
+                'hp': rearanged_stats['base_hp'][index],
+                'atk': rearanged_stats['base_atk'][index],
+                'defense': rearanged_stats['base_def'][index],
+                'spd': rearanged_stats['base_spd'][index],
+                'crit': rearanged_stats['base_crit'][index],
+                'crit_dmg': rearanged_stats['base_crit_dmg'][index]
+            }
+            dinos_stats[f'dino{i+1}'] = dino_stats
+    else:
+        for i, dino in enumerate(random_dinos):
+            dino_stats = {
+                'hp': dino.base_hp,
+                'atk': dino.base_atk,
+                'defense': dino.base_def,
+                'spd': 1.0 if terrain.name == "Ere Glaciaire" else dino.base_spd,
+                'crit': dino.base_crit,
+                'crit_dmg': dino.base_crit_dmg
+            }
+            dinos_stats[f'dino{i+1}'] = dino_stats
+
     new_run.dino1 = DWPvmDino.objects.create(
         user=new_run.user,
         dino=random_dinos[0],
-        hp=random_dinos[0].base_hp,
-        atk=random_dinos[0].base_atk,
-        defense=random_dinos[0].base_def,
-        spd=random_dinos[0].base_spd,
-        crit=random_dinos[0].base_crit,
-        crit_dmg=random_dinos[0].base_crit_dmg,
+        hp=dinos_stats['dino1']['hp'],
+        atk=dinos_stats['dino1']['atk'],
+        defense=dinos_stats['dino1']['defense'],
+        spd=dinos_stats['dino1']['spd'],
+        crit=dinos_stats['dino1']['crit'],
+        crit_dmg=dinos_stats['dino1']['crit_dmg'],
         hp_lvl=1,
         atk_lvl=1,
         defense_lvl=1,
@@ -281,12 +310,12 @@ def set_new_run_dinos(new_run, random_dinos):
     new_run.dino2 = DWPvmDino.objects.create(
         user=new_run.user,
         dino=random_dinos[1],
-        hp=random_dinos[1].base_hp,
-        atk=random_dinos[1].base_atk,
-        defense=random_dinos[1].base_def,
-        spd=random_dinos[1].base_spd,
-        crit=random_dinos[1].base_crit,
-        crit_dmg=random_dinos[1].base_crit_dmg,
+        hp=dinos_stats['dino2']['hp'],
+        atk=dinos_stats['dino2']['atk'],
+        defense=dinos_stats['dino2']['defense'],
+        spd=dinos_stats['dino2']['spd'],
+        crit=dinos_stats['dino2']['crit'],
+        crit_dmg=dinos_stats['dino2']['crit_dmg'],
         hp_lvl=1,
         atk_lvl=1,
         defense_lvl=1,
@@ -298,12 +327,12 @@ def set_new_run_dinos(new_run, random_dinos):
     new_run.dino3 = DWPvmDino.objects.create(
         user=new_run.user,
         dino=random_dinos[2],
-        hp=random_dinos[2].base_hp,
-        atk=random_dinos[2].base_atk,
-        defense=random_dinos[2].base_def,
-        spd=random_dinos[2].base_spd,
-        crit=random_dinos[2].base_crit,
-        crit_dmg=random_dinos[2].base_crit_dmg,
+        hp=dinos_stats['dino3']['hp'],
+        atk=dinos_stats['dino3']['atk'],
+        defense=dinos_stats['dino3']['defense'],
+        spd=dinos_stats['dino3']['spd'],
+        crit=dinos_stats['dino3']['crit'],
+        crit_dmg=dinos_stats['dino3']['crit_dmg'],
         hp_lvl=1,
         atk_lvl=1,
         defense_lvl=1,
@@ -313,12 +342,14 @@ def set_new_run_dinos(new_run, random_dinos):
         attack=random_dinos[2].attack
     )
     new_run.save()
-    return new_run
+    return [new_run.dino1, new_run.dino2, new_run.dino3]
 
-def get_random_dinos(all_dinos, step):
+def get_random_dinos(all_dinos, new_run):
+    step = new_run.state
     seed = get_daily_seed(purpose=f"dino_select_{step}")
     rand = random.Random(seed)
-    return rand.sample(all_dinos, 3)
+    random_dinos = rand.sample(all_dinos, 3)
+    return set_new_run_dinos(new_run, random_dinos)
 
 @login_required
 def new_run_view(request):
@@ -336,8 +367,8 @@ def new_run_view(request):
             existing_run = DWPvmRun.objects.get(user=request.user)
             new_run = DWPvmNewRun.objects.get(user=request.user)
             if new_run.state < 4:  # Selection not completed
-                random_dinos = [new_run.dino1.dino, new_run.dino2.dino, new_run.dino3.dino]
-                selected_dinos = [dino.dino for dino in [existing_run.dino1, existing_run.dino2, existing_run.dino3] if dino is not None]
+                random_dinos = [new_run.dino1, new_run.dino2, new_run.dino3]
+                selected_dinos = [dino for dino in [existing_run.dino1, existing_run.dino2, existing_run.dino3] if dino is not None]
                 print(selected_dinos)
                 context = {
                     'random_dinos': random_dinos,
@@ -358,8 +389,7 @@ def new_run_view(request):
     if len(all_dinos) < 3:
         return JsonResponse({'error': 'Not enough dinos in database.'}, status=500)
     
-    random_dinos = get_random_dinos(all_dinos, 1)
-    set_new_run_dinos(new_run, random_dinos)
+    random_dinos = get_random_dinos(all_dinos, new_run)
     
     context = {
         'random_dinos': random_dinos,
@@ -467,12 +497,7 @@ def select_run_dino_view(request):
         # Get dinos for the next selection that haven't been selected yet
         selected_dino_ids = [d['id'] for d in selected_dinos]
         all_dinos = list(DWDino.objects.exclude(id__in=selected_dino_ids))
-        if len(all_dinos) < 3:
-            random_dinos = all_dinos
-        else:
-            random_dinos = get_random_dinos(all_dinos, new_run.state)
-
-        set_new_run_dinos(new_run, random_dinos)
+        random_dinos = get_random_dinos(all_dinos, new_run)
             
         # Return the next set of dinos to choose from
         return JsonResponse({
@@ -480,14 +505,14 @@ def select_run_dino_view(request):
             'selection_step': new_run.state,
             'selected_dinos': selected_dinos,
             'random_dinos': [{
-                'id': dino.id,
-                'name': dino.name,
-                'hp': dino.base_hp,
-                'atk': dino.base_atk,
-                'defense': dino.base_def,
-                'spd': dino.base_spd,
-                'crit': dino.base_crit,
-                'crit_dmg': dino.base_crit_dmg,
+                'id': dino.dino.id,
+                'name': dino.dino.name,
+                'hp': dino.hp,
+                'atk': dino.atk,
+                'defense': dino.defense,
+                'spd': dino.spd,
+                'crit': dino.crit,
+                'crit_dmg': dino.crit_dmg,
                 'attack': dino.attack.spe_effect,
             } for dino in random_dinos]
         })
@@ -522,18 +547,37 @@ def set_next_fight_dinos(run, life=None):
     rand = random.Random(seed)
     all_dinos = list(DWDino.objects.all())
     random_dinos = rand.sample(all_dinos, 3)
-    for dino in random_dinos:
-        DWPvmNextFightDino.objects.create(
-            run=run,
-            dino=dino,
-            hp=int(dino.base_hp * lvl_mult),
-            atk=int(dino.base_atk * lvl_mult),
-            defense=int(dino.base_def * lvl_mult),
-            spd=round(dino.base_spd + lvl_add, 2),
-            crit=round(dino.base_crit + lvl_add*0.4, 2),
-            crit_dmg=round(dino.base_crit_dmg + lvl_add, 2),
-            attack=dino.attack,
-        )
+    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+    print(terrain.name)
+    if terrain.name == "Distorsion Spatio-Temporelle":
+        ids, rearanged_stats = distorsion_terrain()
+        for i, dino in enumerate(random_dinos):
+            index = ids.index(dino.id)
+            DWPvmNextFightDino.objects.create(
+                run=run,
+                dino=dino,
+                hp=int(rearanged_stats['base_hp'][index] * lvl_mult),
+                atk=int(rearanged_stats['base_atk'][index] * lvl_mult),
+                defense=int(rearanged_stats['base_def'][index] * lvl_mult),
+                spd=round(rearanged_stats['base_spd'][index] + lvl_add, 2),
+                crit=round(rearanged_stats['base_crit'][index] + lvl_add*0.4, 2),
+                crit_dmg=round(rearanged_stats['base_crit_dmg'][index] + lvl_add, 2),
+                attack=dino.attack,
+            )
+    else:
+        for i, dino in enumerate(random_dinos):
+            DWPvmNextFightDino.objects.create(
+                run=run,
+                dino=dino,
+                hp=int(dino.base_hp * lvl_mult),
+                atk=int(dino.base_atk * lvl_mult),
+                defense=int(dino.base_def * lvl_mult),
+                spd=round(1.0 + lvl_add, 2) if terrain.name == "Ere Glaciaire" else round(dino.base_spd + lvl_add, 2),
+                crit=round(dino.base_crit + lvl_add*0.4, 2),
+                crit_dmg=round(dino.base_crit_dmg + lvl_add, 2),
+                attack=dino.attack,
+            )
+    
     return random_dinos
 
 def set_next_abilities(run):
@@ -594,6 +638,18 @@ def calculate_total_stats(dino):
                 total_stats['crit_dmg'] = round(total_stats['crit_dmg'], 1)
     except:
         pass
+
+    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+    if terrain.name == "Erruption Volcanique":
+        if dino.dino.classe == "DPS":
+            total_stats['atk'] += int(total_stats['atk'] * 0.1)
+        elif dino.dino.classe == "Tank":
+            total_stats['defense'] -= int(total_stats['defense'] * 0.2)
+    elif terrain.name == "Montagne Rocheuse":
+        if dino.dino.classe == "DPS":
+            total_stats['atk'] -= int(total_stats['atk'] * 0.2)
+        elif dino.dino.classe == "Tank":
+            total_stats['defense'] += int(total_stats['defense'] * 0.1)
     
     return total_stats
 
@@ -603,11 +659,13 @@ def start_battle_pvm(request):
     try:
         # Fetch the run info and dino details
         run_info = get_object_or_404(DWPvmRun, user=request.user)
+        terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+
         user_dinos = []
         enemy_dinos = []
         for dino in [run_info.dino1, run_info.dino2, run_info.dino3]:
             dino_stats = calculate_total_stats(dino)
-            user_dinos.append(load_dino_from_model(dino, dino_stats, 1))
+            user_dinos.append(load_dino_from_model(dino, dino_stats, 1, terrain.name))
         
         # Enemy dino details
         next_fight_dinos = DWPvmNextFightDino.objects.filter(run=run_info).select_related('dino')
@@ -617,15 +675,16 @@ def start_battle_pvm(request):
         for dino in [enemy_dino1, enemy_dino2, enemy_dino3]:
             if dino:
                 dino_stats = calculate_total_stats(dino)
-                enemy_dinos.append(load_dino_from_model(dino, dino_stats, 2))
+                enemy_dinos.append(load_dino_from_model(dino, dino_stats, 2, terrain.name))
         
         team1_name = "team_"+request.user.username
         team2_name = "team_ennemie"
-
+        
         # Start battle simulation
         battle = GameState(
             (team1_name, user_dinos),
             (team2_name, enemy_dinos),
+            terrain=terrain.name,
         )
         battle_log = battle.run()
         winner = battle.get_winner()

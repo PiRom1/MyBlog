@@ -55,8 +55,9 @@ class ScheduledAction:
 
 
 class GameState:
-    def __init__(self, team1: tuple[str, List[Dino]], team2: tuple[str, List[Dino]]):
+    def __init__(self, team1: tuple[str, List[Dino]], team2: tuple[str, List[Dino]], terrain: str = None):
         self.teams = {team1[0]: team1[1], team2[0]: team2[1]}
+        self.terrain = terrain
         self.tick = 0
         self.action_queue: List[ScheduledAction] = []
         self.fight_log: List[Dict] = []
@@ -91,6 +92,9 @@ class GameState:
             for dino in dinos:
                 interval = int(100 / dino.stats.speed)
                 self.schedule_action(interval, 1, lambda d=dino: self.dino_action(d), "dino_action", dino.id)
+
+        if self.terrain == "Lac Putrefie":
+            self.schedule_action(100, 1, self.lac_putrefie, "lac_putrefie", None, None)
 
         while self.action_queue and all(any(d.is_alive() for d in team) for team in self.teams.values()) and self.tick < 10000:
             next_tick = self.action_queue[0].tick
@@ -241,10 +245,18 @@ class GameState:
         }
         return dino_dict
     
+    def lac_putrefie(self):
+        for team_name, dinos in self.teams.items():
+            for dino in dinos:
+                if dino.is_alive() and dino.stats.hp > 0:
+                    dino.current_hp = max(0, dino.current_hp - int(dino.stats.hp * 0.05))
+                    self.log_effect("lac_putrefie", dino, "hp", -int(dino.stats.hp * 0.05))
+        self.schedule_action(100, 1, self.lac_putrefie, "lac_putrefie", None, None)  # Schedule next effect application
+    
 # ------------------------- LOADING DINOS ------------------------- #
     
 # Example of loading from Django models
-def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifier: int = None) -> Dino:
+def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifier: int = None, terrain: str = None) -> Dino:
     atk_name = str(userDino.attack.name).replace(" ", "_").lower()
     dino_id = userDino.id
     user = userDino.user.username if hasattr(userDino, "user") else "Pvm_Bot"
@@ -263,7 +275,8 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifi
             defense=stats['defense'],
             speed=stats['spd'],
             crit_chance=stats['crit'],
-            crit_damage=stats['crit_dmg']
+            crit_damage=stats['crit_dmg'],
+            accuracy=0.5 if terrain == "Brouillard Epais" else 1.0,
         ),
         attack=Attack(
             name=atk_name,
@@ -273,6 +286,13 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifi
         )
     )
 
+# ------------------------- TERRAIN EFFECTS ------------------------ #
+
+# SUPPORT PLACEHOLDER
+def support_placeholder_terrain(time: int, game_state: GameState):
+    if game_state.terrain == "Support Placeholder":
+        return time - int(0.2 * time)  # 20% of the time is removed
+    return time  # No change in time for other terrains
 
 # ------------------------- ATTACK EFFECTS ------------------------- #
 
@@ -421,8 +441,9 @@ def echoing_roar_effect(attacker: Dino, defender: Dino, game_state: GameState, d
     def reset_cooldown():
         attacker.cooldown = False
 
+    cooldown = support_placeholder_terrain(500, game_state)  # Adjust cooldown based on terrain
     game_state.schedule_action(300, 2, restore_speed, "echoing_roar", attacker.id, "restore_speed")
-    game_state.schedule_action(500, 2, reset_cooldown, "echoing_roar", attacker.id, "reset_cooldown")
+    game_state.schedule_action(cooldown, 2, reset_cooldown, "echoing_roar", attacker.id, "reset_cooldown")
 
 
 # VENOM SPIT
@@ -463,8 +484,9 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
         game_state.action_queue = new_queue
         heapq.heapify(game_state.action_queue)
 
+    cooldown = support_placeholder_terrain(450, game_state)  # Adjust cooldown based on terrain
     game_state.schedule_action(300, 2, remove_poison, "venom_spit", defender.id, "remove_poison")
-    game_state.schedule_action(450, 2, reset_cooldown, "venom_spit", attacker.id, "reset_cooldown")
+    game_state.schedule_action(cooldown, 2, reset_cooldown, "venom_spit", attacker.id, "reset_cooldown")
 
 
 # SKY DIVE
@@ -480,4 +502,5 @@ def sky_dive_effect(attacker: Dino, defender: Dino, game_state: GameState, damag
     def reset_cooldown():
         attacker.cooldown = False
 
-    game_state.schedule_action(150, 2, reset_cooldown, "sky_dive", attacker.id, "reset_cooldown")
+    cooldown = support_placeholder_terrain(150, game_state)  # Adjust cooldown based on terrain
+    game_state.schedule_action(cooldown, 2, reset_cooldown, "sky_dive", attacker.id, "reset_cooldown")

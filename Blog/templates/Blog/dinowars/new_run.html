@@ -33,15 +33,15 @@
         
         <div id="selected-dinos-container" class="selected-dinos">
             {% for dino in selected_dinos %}
-            <div class="selected-dino" data-dino-id="{{ dino.id }}">
-                <h3 class="dino-name">{{ dino.name }}</h3>
+            <div class="selected-dino" data-dino-id="{{ dino.dino.id }}">
+                <h3 class="dino-name">{{ dino.dino.name }}</h3>
                 <div class="dino-stats">
-                    <p><i class="fi fi-ss-heart"></i> {{ dino.base_hp }}</p>
-                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.base_atk }}</p>
-                    <p><i class="fi fi-ss-shield"></i> {{ dino.base_def }}</p>
-                    <p><i class="fi fi-ss-bolt"></i> {{ dino.base_spd }}</p>
-                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.base_crit }}</p>
-                    <p><i class="fi fi-ss-burst"></i> {{ dino.base_crit_dmg }}</p>
+                    <p><i class="fi fi-ss-heart"></i> {{ dino.hp }}</p>
+                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.atk }}</p>
+                    <p><i class="fi fi-ss-shield"></i> {{ dino.defense }}</p>
+                    <p><i class="fi fi-ss-bolt"></i> {{ dino.spd }}</p>
+                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.crit }}</p>
+                    <p><i class="fi fi-ss-burst"></i> {{ dino.crit_dmg }}</p>
                 </div>
                 <p class="dino-attack">{{ dino.attack.spe_effect }}</p>
             </div>
@@ -50,15 +50,15 @@
         
         <div id="dino-options" class="dino-options">
             {% for dino in random_dinos %}
-            <div class="dino-option" data-dino-id="{{ dino.id }}">
-                <h3 class="dino-name">{{ dino.name }}</h3>
+            <div class="dino-option" data-dino-id="{{ dino.dino.id }}">
+                <h3 class="dino-name">{{ dino.dino.name }}</h3>
                 <div class="dino-stats">
-                    <p><i class="fi fi-ss-heart"></i> {{ dino.base_hp }}</p>
-                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.base_atk }}</p>
-                    <p><i class="fi fi-ss-shield"></i> {{ dino.base_def }}</p>
-                    <p><i class="fi fi-ss-bolt"></i> {{ dino.base_spd }}</p>
-                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.base_crit }}</p>
-                    <p><i class="fi fi-ss-burst"></i> {{ dino.base_crit_dmg }}</p>
+                    <p><i class="fi fi-ss-heart"></i> {{ dino.hp }}</p>
+                    <p><i class="fi fi-ss-sword-alt"></i> {{ dino.atk }}</p>
+                    <p><i class="fi fi-ss-shield"></i> {{ dino.defense }}</p>
+                    <p><i class="fi fi-ss-bolt"></i> {{ dino.spd }}</p>
+                    <p><i class="fi fi-ss-location-crosshairs"></i> {{ dino.crit }}</p>
+                    <p><i class="fi fi-ss-burst"></i> {{ dino.crit_dmg }}</p>
                 </div>
                 <p class="dino-attack">{{ dino.attack.spe_effect }}</p>
             </div>
