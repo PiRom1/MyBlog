@@ -64,28 +64,39 @@ def get_team_abilities(team_dinos, game_state=None):
     Returns:
         dict: Dictionary mapping ability names to lists of dinos that have them
     """
-    # Import here to avoid circular imports
-    from Blog.models import DWPvmRunAbility
-    
     team_abilities = {}
     
-    for dino in team_dinos:
-        try:
-            # Get abilities for this dino based on the original dino ID
-            # The battle dino ID might be modified with team_identifier
-            original_dino_id = dino.id
-            if original_dino_id > 1000:
-                original_dino_id = original_dino_id // 1000
-            
-            abilities = DWPvmRunAbility.objects.filter(dino_id=original_dino_id).select_related('ability')
-            for ability in abilities:
-                ability_name = ability.ability.name
-                if ability_name not in team_abilities:
-                    team_abilities[ability_name] = []
-                team_abilities[ability_name].append(dino)
-        except Exception as e:
-            # In case of any database access issues, continue
-            continue
+    try:
+        # Import here to avoid circular imports
+        from Blog.models import DWPvmRunAbility, DWPvmDino
+        
+        for dino in team_dinos:
+            try:
+                # Get abilities for this dino based on the original dino ID
+                # The battle dino ID might be modified with team_identifier
+                original_dino_id = dino.id
+                if original_dino_id > 1000:
+                    original_dino_id = original_dino_id // 1000
+                
+                # Find the DWPvmDino object that corresponds to this battle dino
+                pvm_dino = DWPvmDino.objects.get(id=original_dino_id)
+                
+                # Get abilities for this PvM dino
+                abilities = DWPvmRunAbility.objects.filter(dino=pvm_dino).select_related('ability')
+                for ability in abilities:
+                    ability_name = ability.ability.name
+                    if ability_name not in team_abilities:
+                        team_abilities[ability_name] = []
+                    team_abilities[ability_name].append(dino)
+            except Exception as e:
+                # In case of any database access issues, continue
+                continue
+    except ImportError:
+        # Django models not available (e.g., in testing environment)
+        pass
+    except Exception as e:
+        # Any other database-related errors
+        pass
     
     return team_abilities
 
