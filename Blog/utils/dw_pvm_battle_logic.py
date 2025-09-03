@@ -33,6 +33,7 @@ class Dino:
     user: str
     stats: DinoStats
     attack: Attack
+    dino_class: str = "dps"  # Store the dino class for terrain effects
     current_hp: float = field(init=False)
     current_statuses: List[str] = field(default_factory=list)
     cooldown: bool = False # Indicates if the dino's attack's special effect is on cooldown
@@ -233,6 +234,7 @@ class GameState:
             "id": dino.id,
             "name": dino.name,
             "user": dino.user,
+            "dino_class": dino.dino_class,
             "stats": asdict(dino.stats),
             "current_hp": dino.current_hp,
             "current_statuses": dino.current_statuses,
@@ -265,17 +267,21 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifi
     if team_identifier is not None:
         dino_id = userDino.id * 1000 + team_identifier  # This ensures unique IDs across teams
     
+    # Apply terrain-based stat modifications
+    modified_stats = apply_terrain_stats(stats, userDino.dino.classe, terrain)
+    
     return Dino(
         id=dino_id,
         name=str(userDino.dino),
         user=user,
+        dino_class=userDino.dino.classe,
         stats=DinoStats(
-            hp=stats['hp'],
-            atk=stats['atk'],
-            defense=stats['defense'],
-            speed=stats['spd'],
-            crit_chance=stats['crit'],
-            crit_damage=stats['crit_dmg'],
+            hp=modified_stats['hp'],
+            atk=modified_stats['atk'],
+            defense=modified_stats['defense'],
+            speed=modified_stats['spd'],
+            crit_chance=modified_stats['crit'],
+            crit_damage=modified_stats['crit_dmg'],
             accuracy=0.5 if terrain == "Brouillard Epais" else 1.0,
         ),
         attack=Attack(
@@ -286,9 +292,33 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifi
         )
     )
 
+def apply_terrain_stats(stats: Dict[str, float], dino_class: str, terrain: str) -> Dict[str, float]:
+    """Apply terrain-based stat modifications based on dino class"""
+    modified_stats = stats.copy()
+    
+    if terrain == "Montagne Rocheuse":
+        if dino_class == "tank":
+            modified_stats['defense'] = int(stats['defense'] * 1.10)  # +10% defense for tanks
+        elif dino_class == "dps":
+            modified_stats['atk'] = int(stats['atk'] * 0.80)  # -20% attack for DPS
+    
+    elif terrain == "Erruption Volcanique":
+        if dino_class == "dps":
+            modified_stats['atk'] = int(stats['atk'] * 1.10)  # +10% attack for DPS
+        elif dino_class == "tank":
+            modified_stats['defense'] = int(stats['defense'] * 0.80)  # -20% defense for tanks
+    
+    return modified_stats
+
 # ------------------------- TERRAIN EFFECTS ------------------------ #
 
-# SUPPORT PLACEHOLDER
+# JUNGLE PERFIDE - Cooldown reduced by 20% for Support dinos
+def jungle_perfide_terrain(time: int, game_state: GameState, dino: 'Dino') -> int:
+    if game_state.terrain == "Jungle Perfide" and dino.dino_class == "support":
+        return time - int(0.2 * time)  # 20% of the time is removed for support dinos
+    return time  # No change in time for other terrains or non-support dinos
+
+# SUPPORT PLACEHOLDER (deprecated - replaced by jungle_perfide_terrain)
 def support_placeholder_terrain(time: int, game_state: GameState):
     if game_state.terrain == "Support Placeholder":
         return time - int(0.2 * time)  # 20% of the time is removed
@@ -441,7 +471,7 @@ def echoing_roar_effect(attacker: Dino, defender: Dino, game_state: GameState, d
     def reset_cooldown():
         attacker.cooldown = False
 
-    cooldown = support_placeholder_terrain(500, game_state)  # Adjust cooldown based on terrain
+    cooldown = jungle_perfide_terrain(500, game_state, attacker)  # Adjust cooldown based on terrain
     game_state.schedule_action(300, 2, restore_speed, "echoing_roar", attacker.id, "restore_speed")
     game_state.schedule_action(cooldown, 2, reset_cooldown, "echoing_roar", attacker.id, "reset_cooldown")
 
@@ -484,7 +514,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
         game_state.action_queue = new_queue
         heapq.heapify(game_state.action_queue)
 
-    cooldown = support_placeholder_terrain(450, game_state)  # Adjust cooldown based on terrain
+    cooldown = jungle_perfide_terrain(450, game_state, attacker)  # Adjust cooldown based on terrain
     game_state.schedule_action(300, 2, remove_poison, "venom_spit", defender.id, "remove_poison")
     game_state.schedule_action(cooldown, 2, reset_cooldown, "venom_spit", attacker.id, "reset_cooldown")
 
@@ -502,5 +532,5 @@ def sky_dive_effect(attacker: Dino, defender: Dino, game_state: GameState, damag
     def reset_cooldown():
         attacker.cooldown = False
 
-    cooldown = support_placeholder_terrain(150, game_state)  # Adjust cooldown based on terrain
+    cooldown = jungle_perfide_terrain(150, game_state, attacker)  # Adjust cooldown based on terrain
     game_state.schedule_action(cooldown, 2, reset_cooldown, "sky_dive", attacker.id, "reset_cooldown")

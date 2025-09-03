@@ -33,6 +33,7 @@ class Dino:
     user: str
     stats: DinoStats
     attack: Attack
+    dino_class: str = "dps"  # Store the dino class for terrain effects
     current_hp: float = field(init=False)
     current_statuses: List[str] = field(default_factory=list)
     cooldown: bool = False # Indicates if the dino's attack's special effect is on cooldown
@@ -253,6 +254,7 @@ def load_dino_from_model(userDino: Model, stats: Dict[str, float], team_identifi
         id=dino_id,
         name=str(userDino.dino),
         user=str(userDino.user),
+        dino_class=userDino.dino.classe,
         stats=DinoStats(
             hp=stats['hp'],
             atk=stats['atk'],
