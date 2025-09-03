@@ -88,6 +88,11 @@ class GameState:
         )
 
     def run(self):
+        # Apply team abilities on battle start
+        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_battle_start
+        for team_name, dinos in self.teams.items():
+            apply_team_abilities_on_battle_start(dinos, self)
+        
         # Schedule initial attacks for all dinos
         for team_name, dinos in self.teams.items():
             for dino in dinos:
@@ -173,6 +178,16 @@ class GameState:
             damage = 0
             is_crit = False
         defender.current_hp -= damage
+        
+        # Check if defender died and trigger death abilities
+        if defender.current_hp <= 0 and damage > 0:
+            # Find the defender's team
+            defender_team = next(team for team in self.teams.values() if defender in team)
+            
+            # Apply death-triggered abilities
+            from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death
+            apply_team_abilities_on_death(defender, defender_team, self)
+        
         log_entry = {
             "type": "attack",
             "tick": self.tick,
