@@ -30,7 +30,7 @@
 
     <body>
 
-        <div id="data" dungeon="{{dungeon}}" start_coord="{{start_coord}}"></div>
+        <div id="data" dungeon="{{dungeon}}" dungeon_size="{{dungeon_size}}" start_coord="{{start_coord}}"></div>
         <i class="fi fi-ss-volume-slash" id="speaker" value="false"></i>
         <i class="fi fi-rs-volume" style="opacity:0%;"></i>
 
@@ -45,6 +45,9 @@
         <script src="{% static 'Blog/dinocrypt/js/Dungeon.js' %}"></script>
         <script src="{% static 'Blog/dinocrypt/js/main.js' %}"></script>
         <script src="{% static 'Blog/dinocrypt/js/sound.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Minimap/Minimap.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Minimap/MinimapTile.js' %}"></script>
+        <script src="{% static 'Blog/dinocrypt/js/Minimap/move_minimap.js' %}"></script>
     </body>
 
 </html>

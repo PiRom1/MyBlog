@@ -8,8 +8,7 @@
 
         // Get a list of the tiles of the dungeon
         get_tiles() {
-            console.log(this.dungeon_array.length);
-            console.log(this.dungeon_array[0].length);
+        
             let tiles = Array();
             let color;
             let type;
@@ -34,7 +33,6 @@
                 
                     let tile = new Tile(pos_x, pos_y, TILE_WIDTH, TILE_HEIGHT, color, type);
                     tiles.push(tile);            
-                    // console.log(this.dungeon_array[y][x]);
                 }
             }
 

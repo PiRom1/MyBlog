@@ -8,7 +8,28 @@
             this.width = TILE_WIDTH;
             this.height = TILE_HEIGHT;
             this.color = 'tomato';
+            this.is_moving = false;
+            this.facing = 'down';
+            this.image = new Image();
+            this.get_image();
             
+        }
+
+
+        get_image() {
+            
+            if (this.facing === 'down') {
+                this.image.src = `/static/img/dinocrypt/characters/front_1.png`;
+            }
+            if (this.facing === 'up') {
+                this.image.src = `/static/img/dinocrypt/characters/back_1.png`;
+            }
+            if (this.facing === 'right') {
+                this.image.src = `/static/img/dinocrypt/characters/right_1.png`;
+            }
+            if (this.facing === 'left') {
+                this.image.src = `/static/img/dinocrypt/characters/left_1.png`;
+            }
         }
 
 
@@ -30,31 +51,33 @@
                 this.y = start_coord[0];
             }
 
-            console.log("Get start pos ... ");
-            console.log("offset x/y : ", this.offset_x, this.offset_y);
+        
 
             dungeon.tiles.forEach(tile => {
-                                // console.log("tile x/y : ", tile.x, tile.y);
                                 tile.x -= this.offset_x;
                                 tile.y -= this.offset_y;
                             })
-            
-                        
             
         }
 
 
         // Draw the player
         draw() {
-            ctx.fillStyle = this.color;
+            this.get_image();
+            // ctx.fillStyle = this.color;
             let pos_x = (this.x - this.offset_x) * this.width;
             let pos_y = (this.y - this.offset_y) * this.height;
-            ctx.fillRect(pos_x, pos_y, this.width, this.height);
+            // ctx.fillRect(pos_x, pos_y, this.width, this.height);
+            ctx.drawImage(this.image, pos_x, pos_y, this.width, this.height);
         }
 
 
         // Move the player, or the dungeon of the offset is reached
-        move(key, dungeon) {
+        move(movement, dungeon) {
+
+            if (this.is_moving) {
+                return;
+            }
 
             let offset_x_value = 0;
             let offset_y_value = 0;
@@ -62,72 +85,62 @@
             let y_value = 0;
             let tile_x = 0;
             let tile_y = 0;
-            let is_moving = false;
 
-            if (key === 'ArrowRight') {
+            if (movement === 'right') {
+                this.facing = 'right';
                 if (dungeon.is_ground(Math.round(this.x + 1), Math.round(this.y))) {
-                    console.log("going to ground");
                     if (this.x - this.offset_x >= TILES_PER_ROW - MOVE_THRESHOLD_X) {
                         tile_x = -1;
                         offset_x_value = 1;
                     }
                         x_value = 1;
-                    is_moving = true;
-                }
-                else {
-                    console.log("going to wall");
+                    this.is_moving = true;
                 }
             }
 
 
-            if (key === 'ArrowLeft') {
+            if (movement === 'left') {
+                this.facing = 'left';
                 if (dungeon.is_ground(Math.round(this.x - 1), Math.round(this.y))) {
-                    console.log("going to ground");
                     if (this.x - this.offset_x < MOVE_THRESHOLD_X) {
                         tile_x = 1;
                         offset_x_value = -1;
                     }
                     x_value = -1;
-                is_moving = true;
-                }
-                else {
-                    console.log("going to wall");
+                this.is_moving = true;
                 }
             }
             
 
-            if (key === 'ArrowDown') {
+            if (movement === 'down') {
+                this.facing = 'down';
                 if (dungeon.is_ground(Math.round(this.x), Math.round(this.y + 1))) {
-                    console.log("going to ground");
                     if (this.y - this.offset_y >= TILES_PER_COLUMN - MOVE_THRESHOLD_y) {
                         tile_y = -1;
                         offset_y_value = 1;
                     }
                     y_value = 1;
-                is_moving = true;
-                }
-                else {
-                    console.log("going to wall");
+                this.is_moving = true;
                 }
             }
 
 
-            if (key === 'ArrowUp') {
+            if (movement === 'up') {
+                this.facing = 'up';
                 if (dungeon.is_ground(Math.round(this.x), Math.round(this.y - 1))) {
-                    console.log("going to ground");
                     if ((this.y - this.offset_y) <= MOVE_THRESHOLD_y) {
                         tile_y = 1;
                         offset_y_value = -1;
                     }
                     y_value = -1;
-                is_moving = true;
-                }
-                else {
-                    console.log("going to wall");
+                this.is_moving = true;
                 }
             }
+
+
+           
             
-            if (is_moving) {
+            if (this.is_moving) {
 
                 let frame = 0;
 
@@ -157,6 +170,7 @@
                         this.y = Math.round(this.y);
                         this.offset_x = Math.round(this.offset_x);
                         this.offset_y = Math.round(this.offset_y);
+                        this.is_moving = false;
                     }
                 };
 

@@ -450,17 +450,20 @@ def dungeon(request):
         
 
     dungeon_generator = DungeonGenerator()
+    dungeon_size = [100, 100]
     while True:
         try:
-            dungeon = dungeon_generator.generate_dungeon(dungeon_size = (100, 100), room_size = (15, 15), nb_rooms = 10, stability = 1, nb_chests = 10)
+            dungeon = dungeon_generator.generate_dungeon(dungeon_size = dungeon_size, room_size = (15, 15), nb_rooms = 10, stability = 1, nb_chests = 10)
             print("Donjon géneré avec succès !")
             break
         except:
             print("Erreur lors de la génération du donjon... Tentative de re-géneration en cours.")
     
     start_coord = np.where(dungeon.dungeon == 1)
+    index_random_start_coord = rd.randint(0, len(start_coord[0]) - 1)
         
     context = {"dungeon" : json.dumps(dungeon.dungeon.tolist()),
+               "dungeon_size" : json.dumps(dungeon_size),
                "start_coord" : [int(start_coord[0][0]), int(start_coord[1][0])]}
     print(context)
 
