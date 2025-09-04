@@ -42,6 +42,9 @@ class Dino:
         self.current_hp = self.stats.hp
 
     def is_alive(self):
+        # Special case for Mort-vivant: dino is considered alive if it has mort_vivant status
+        if "mort_vivant" in self.current_statuses:
+            return True
         return self.current_hp > 0
 
 
@@ -168,6 +171,11 @@ class GameState:
             is_crit = False
         if "bleed" in defender.current_statuses:
             damage = int(damage * 1.2)
+        
+        # Apply individual abilities that modify damage taken (Peau dure)
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken
+        damage = apply_individual_abilities_on_damage_taken(defender, damage, self)
+        
         miss = random.random() > attacker.stats.accuracy
         if "dodge" in defender.current_statuses and not miss:
             miss = random.random() < defender.stats.dodge
@@ -178,6 +186,12 @@ class GameState:
             damage = 0
             is_crit = False
         defender.current_hp -= damage
+        
+        # Apply individual abilities on HP change (Frénésie)
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_hp_change
+        apply_individual_abilities_on_hp_change(defender, self)
+        # Also check attacker's HP for Frénésie (in case of reflect damage)
+        apply_individual_abilities_on_hp_change(attacker, self)
         
         # Check if defender died and trigger death abilities
         if defender.current_hp <= 0 and damage > 0:
@@ -200,6 +214,11 @@ class GameState:
             "defender_hp": max(defender.current_hp, 0)
         }
         self.fight_log.append(log_entry)
+        
+        # Apply individual abilities that trigger on attacks (Boureau, Inspiration héroïque)
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_attack
+        apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, self)
+        
         if "reflect" in defender.current_statuses:
             reflected_damage = int(damage * 0.75)
             attacker.current_hp -= reflected_damage
@@ -210,7 +229,8 @@ class GameState:
 
     def choose_target(self, attacker: Dino):
         enemy_team = next(team for team in self.teams.values() if attacker not in team)
-        opponents = [d for d in enemy_team if d.is_alive()]
+        # Filter out untargetable dinos (for Mort-vivant ability)
+        opponents = [d for d in enemy_team if d.is_alive() and "untargetable" not in d.current_statuses]
         return random.choice(opponents) if opponents else None
 
     def calculate_damage(self, atk: int, mult: float, defense: int, crit_chance: float, crit_damage: float) -> float:
