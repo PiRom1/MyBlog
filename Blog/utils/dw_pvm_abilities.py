@@ -21,6 +21,8 @@ Individual dino abilities:
 - "Boureau": Instant kill if target's remaining HP < damage dealt
 - "Peau dure": 15% damage reduction when HP > 70%
 - "Inspiration héroïque": +20% ATK for all allies for 1s on critical hit
+- "Vol de vie": Heals attacker for 15% of damage dealt after each attack
+- "Provocation": This dino is 2x more likely to be targeted by enemies
 """
 
 
