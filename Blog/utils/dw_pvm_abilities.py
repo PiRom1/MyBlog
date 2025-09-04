@@ -21,6 +21,8 @@ Individual dino abilities:
 - "Boureau": Instant kill if target's remaining HP < damage dealt
 - "Peau dure": 15% damage reduction when HP > 70%
 - "Inspiration héroïque": +20% ATK for all allies for 1s on critical hit
+- "Vol de vie": Heals attacker for 15% of damage dealt after each attack
+- "Provocation": This dino is 2x more likely to be targeted by enemies
 """
 
 
@@ -227,6 +229,21 @@ def apply_mort_vivant(dead_dino, team_dinos, game_state):
     game_state.log_effect("mort_vivant_start", dead_dino, "mort_vivant", 200)
 
 
+def apply_vol_de_vie(attacker, damage, game_state):
+    """
+    Vol de vie ability: After each attack, this dino heals for 15% of damage dealt
+    
+    Args:
+        attacker: The dino with Vol de vie ability
+        damage: The damage that was just dealt
+        game_state: Current game state
+    """
+    if damage > 0:  # Only heal if damage was actually dealt
+        heal_amount = int(damage * 0.15)
+        attacker.current_hp = min(attacker.stats.hp, attacker.current_hp + heal_amount)
+        game_state.log_effect("vol_de_vie", attacker, "hp", heal_amount)
+
+
 def apply_frenesie(dino, game_state):
     """
     Frénésie ability: +20% attack speed when this dino's HP drops below 30%
@@ -393,6 +410,10 @@ def apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, ga
         game_state: Current game state
     """
     attacker_abilities = get_dino_abilities(attacker, game_state)
+    
+    # Apply Vol de vie if the attacker has it
+    if "Vol de vie" in attacker_abilities:
+        apply_vol_de_vie(attacker, damage, game_state)
     
     # Apply Boureau if the attacker has it
     if "Boureau" in attacker_abilities:

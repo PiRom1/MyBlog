@@ -240,7 +240,22 @@ class GameState:
         enemy_team = next(team for team in self.teams.values() if attacker not in team)
         # Filter out untargetable dinos (for Mort-vivant ability)
         opponents = [d for d in enemy_team if d.is_alive() and "untargetable" not in d.current_statuses]
-        return random.choice(opponents) if opponents else None
+        
+        if not opponents:
+            return None
+        
+        # Check if any opponent has Provocation ability
+        from Blog.utils.dw_pvm_abilities import get_dino_abilities
+        weights = []
+        
+        for opponent in opponents:
+            opponent_abilities = get_dino_abilities(opponent, self)
+            # Dinos with Provocation are 2x more likely to be targeted
+            weight = 2.0 if "Provocation" in opponent_abilities else 1.0
+            weights.append(weight)
+        
+        # Use weighted random selection
+        return random.choices(opponents, weights=weights)[0]
 
     def calculate_damage(self, atk: int, mult: float, defense: int, crit_chance: float, crit_damage: float) -> float:
         multiplier = random.uniform(*mult)
