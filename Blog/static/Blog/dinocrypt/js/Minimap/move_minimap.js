@@ -41,7 +41,7 @@ canvas.addEventListener('mousemove', function(e) {
         minimap.x_max_coord = initial_max_minimap_x + offset_x;
         minimap.y_min_coord = initial_min_minimap_y + offset_y;
         minimap.y_max_coord = initial_max_minimap_y + offset_y;
-        minimap.get_tiles();
+        minimap.actualize();
         
     }
 })

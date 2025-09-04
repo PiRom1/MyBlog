@@ -79,6 +79,8 @@
                 return;
             }
 
+            minimap.discover(this.x, this.y);
+
             let offset_x_value = 0;
             let offset_y_value = 0;
             let x_value = 0;

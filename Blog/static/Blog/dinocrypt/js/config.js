@@ -1,7 +1,5 @@
 
 //// Create canva
-
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const canvas_x = canvas.getBoundingClientRect()["x"];
@@ -40,10 +38,14 @@ const MINIMAP_Y_MIN_COORD = Math.round(canvas.height * 0.55);
 const MINIMAP_Y_MAX_COORD = Math.round(canvas.height * 0.95);
 const MINIMAP_TILE_HEIGHT = (MINIMAP_Y_MAX_COORD - MINIMAP_Y_MIN_COORD) / DUNGEON_SIZE[0];
 const MINIMAP_TILE_WIDTH = (MINIMAP_X_MAX_COORD - MINIMAP_X_MIN_COORD) / DUNGEON_SIZE[1];
+const MINIMAP_BLINKING_PLAYER_RATE = 40 // Fréquence en frame du clignotement de la tile joueur sur la minimap
+const MINIMAP_PLAYER_TILE_COLOR = "#cd1040ff";
 
 console.log(`Minimap : x_min_coord : ${MINIMAP_X_MIN_COORD} / y_min_coord : ${MINIMAP_Y_MIN_COORD}`);
 console.log(`Minimap : y_max_coord : ${MINIMAP_X_MAX_COORD} / y_max_coord : ${MINIMAP_Y_MAX_COORD}`);
 
+// 
+let lap = 0;
 
 
 //// Controls
@@ -59,6 +61,12 @@ const move_right = ["ArrowRight", "d"];
 function large_random(min, max) {
     return min + (max - min) * Math.random();
 }
+
+// Compute distance between two points
+function distance(x1, y1, x2, y2) {
+  return Math.hypot(x2 - x1, y2 - y1);
+}
+
 
 // Returns a random integer number between max and min
 function randint(min, max) {

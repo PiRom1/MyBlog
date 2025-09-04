@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         MINIMAP_TILE_WIDTH, 
                         MINIMAP_TILE_HEIGHT, 
                         array);
+    minimap.discover(start_coord[1], start_coord[0]);
     
 
 
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         dungeon.draw();
         player.draw();
-        minimap.draw();
+        minimap.draw(player.x, player.y);
     }
 
     // La boucle principale du jeu (appelée à chaque frame)
@@ -79,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
         drawGame();
         // Appelle gameLoop de nouveau au prochain rafraîchissement
         requestAnimationFrame(gameLoop);
+
+        lap += 1;
     }
 
     // Démarrage de la boucle d’animation
