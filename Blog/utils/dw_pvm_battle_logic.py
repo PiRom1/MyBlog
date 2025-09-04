@@ -173,8 +173,11 @@ class GameState:
             damage = int(damage * 1.2)
         
         # Apply individual abilities that modify damage taken (Peau dure)
-        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken, apply_team_abilities_on_damage_taken
         damage = apply_individual_abilities_on_damage_taken(defender, damage, self)
+        
+        # Apply team abilities that modify damage taken (Bouclier collectif, Instinct protecteur)
+        damage = apply_team_abilities_on_damage_taken(defender, damage, is_crit, self)
         
         miss = random.random() > attacker.stats.accuracy
         if "dodge" in defender.current_statuses and not miss:
@@ -199,8 +202,14 @@ class GameState:
             defender_team = next(team for team in self.teams.values() if defender in team)
             
             # Apply death-triggered abilities
-            from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death
+            from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death, apply_individual_abilities_on_death, apply_team_abilities_on_enemy_death
             apply_team_abilities_on_death(defender, defender_team, self)
+            apply_individual_abilities_on_death(defender, defender_team, self)
+            
+            # Apply enemy death abilities for all other teams
+            for team in self.teams.values():
+                if team != defender_team:
+                    apply_team_abilities_on_enemy_death(defender, team, self)
         
         log_entry = {
             "type": "attack",

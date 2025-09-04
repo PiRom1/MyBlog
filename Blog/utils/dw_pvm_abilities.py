@@ -5,11 +5,17 @@ This module implements advanced PvM abilities that require special mechanics
 beyond simple stat modifications. These abilities are applied during battle
 execution rather than in stat calculation.
 
-Currently handles:
+Currently handles team abilities:
 - "Dernier souffle": When an ally dies, others recover 20% HP immediately
 - "Sprint préhistorique": +15% SPD to whole team for first 5 seconds of battle
+- "Esprit de meute": +20% ATK if all allies alive, -10% otherwise
+- "Bouclier collectif": 10% of damage received is shared among all living allies
+- "Instinct protecteur": +20% DEF for 1s when any team member takes a critical hit
+- "Pression croissante": +5% ATK every 3 seconds
+- "Seul contre tous": +20% DEF when only one dino remains alive
+- "Terreur collective": +8% ATK permanently when an enemy dies
 
-New individual dino abilities:
+Individual dino abilities:
 - "Mort-vivant": Continue attacking for 2s after death without being targetable
 - "Frénésie": +20% attack speed when HP < 30%
 - "Boureau": Instant kill if target's remaining HP < damage dealt
@@ -121,6 +127,14 @@ def apply_team_abilities_on_battle_start(team_dinos, game_state):
     # Apply Sprint préhistorique if any dino has it
     if "Sprint préhistorique" in team_abilities:
         apply_sprint_prehistorique(team_dinos, game_state)
+    
+    # Apply Esprit de meute if any dino has it
+    if "Esprit de meute" in team_abilities:
+        apply_esprit_de_meute(team_dinos, game_state)
+    
+    # Apply Pression croissante if any dino has it
+    if "Pression croissante" in team_abilities:
+        apply_pression_croissante(team_dinos, game_state)
 
 
 def apply_team_abilities_on_death(dead_dino, team_dinos, game_state):
@@ -137,6 +151,30 @@ def apply_team_abilities_on_death(dead_dino, team_dinos, game_state):
     # Apply Dernier souffle if any dino has it
     if "Dernier souffle" in team_abilities:
         apply_dernier_souffle(dead_dino, team_dinos, game_state)
+    
+    # Apply Esprit de meute if any dino has it (need to recalculate since team composition changed)
+    if "Esprit de meute" in team_abilities:
+        apply_esprit_de_meute(team_dinos, game_state, check_only=True)
+    
+    # Apply Seul contre tous if any dino has it
+    if "Seul contre tous" in team_abilities:
+        apply_seul_contre_tous(team_dinos, game_state)
+
+
+def apply_team_abilities_on_enemy_death(enemy_dino, team_dinos, game_state):
+    """
+    Apply team-wide abilities that trigger when an enemy dies
+    
+    Args:
+        enemy_dino: The enemy dino that just died
+        team_dinos: List of all dinos in the team (not the enemy team)
+        game_state: Current game state
+    """
+    team_abilities = get_team_abilities(team_dinos, game_state)
+    
+    # Apply Terreur collective if any dino has it
+    if "Terreur collective" in team_abilities:
+        apply_terreur_collective(team_dinos, game_state)
 
 
 # ------------------------- INDIVIDUAL DINO ABILITIES ------------------------- #
@@ -392,10 +430,220 @@ def apply_individual_abilities_on_damage_taken(defender, damage, game_state):
         damage = apply_peau_dure_defense(defender, damage, game_state)
     
     return damage
+
+
+def apply_team_abilities_on_damage_taken(defender, damage, is_crit, game_state):
+    """
+    Apply team-wide abilities that trigger when taking damage
     
+    Args:
+        defender: The dino taking damage
+        damage: The damage amount
+        is_crit: Whether it was a critical hit
+        game_state: Current game state
+        
+    Returns:
+        int: The modified damage amount
+    """
+    # Find the defender's team
+    defender_team = None
+    for team in game_state.teams.values():
+        if defender in team:
+            defender_team = team
+            break
+    
+    if not defender_team:
+        return damage
+    
+    team_abilities = get_team_abilities(defender_team, game_state)
+    
+    # Apply Bouclier collectif if any dino has it
+    if "Bouclier collectif" in team_abilities:
+        damage = apply_bouclier_collectif(defender, damage, defender_team, game_state)
+    
+    # Apply Instinct protecteur if any dino has it and this was a critical hit
+    if "Instinct protecteur" in team_abilities and is_crit:
+        apply_instinct_protecteur(defender_team, game_state)
+    
+    return damage
+
+
+def apply_individual_abilities_on_death(dead_dino, team_dinos, game_state):
+    """
+    Apply individual dino abilities that trigger when a dino dies
+    
+    Args:
+        dead_dino: The dino that just died
+        team_dinos: List of all dinos in the same team
+        game_state: Current game state
+    """
     # Check for individual dino abilities on the dead dino
     dino_abilities = get_dino_abilities(dead_dino, game_state)
     
     # Apply Mort-vivant if the dead dino has it
     if "Mort-vivant" in dino_abilities:
         apply_mort_vivant(dead_dino, team_dinos, game_state)
+
+
+# ------------------------- NEW TEAM ABILITIES ------------------------- #
+
+def apply_esprit_de_meute(team_dinos, game_state, check_only=False):
+    """
+    Esprit de meute ability: +20% ATK if all allies are alive, -10% otherwise
+    
+    Args:
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+        check_only: If True, only checks and applies current state without logging initial state
+    """
+    all_alive = all(dino.is_alive() for dino in team_dinos)
+    
+    # Remove any existing esprit de meute effects first
+    for dino in team_dinos:
+        if "esprit_de_meute" in dino.current_statuses:
+            if hasattr(dino, '_esprit_de_meute_modifier'):
+                dino.stats.atk -= dino._esprit_de_meute_modifier
+                delattr(dino, '_esprit_de_meute_modifier')
+            dino.current_statuses.remove("esprit_de_meute")
+    
+    # Apply new modifier based on current team state
+    modifier = 0.2 if all_alive else -0.1
+    for dino in team_dinos:
+        if dino.is_alive():
+            # Store original ATK if not already stored
+            if not hasattr(dino, '_original_atk'):
+                dino._original_atk = dino.stats.atk
+            
+            # Calculate modifier based on original ATK
+            atk_modifier = int(dino._original_atk * modifier)
+            dino.stats.atk += atk_modifier
+            dino._esprit_de_meute_modifier = atk_modifier
+            dino.current_statuses.append("esprit_de_meute")
+            game_state.log_effect("esprit_de_meute", dino, "atk", atk_modifier)
+
+
+def apply_bouclier_collectif(defender, damage, team_dinos, game_state):
+    """
+    Bouclier collectif ability: 10% of damage received is shared equally among all living allies
+    
+    Args:
+        defender: The dino taking the original damage
+        damage: The damage amount
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+        
+    Returns:
+        int: The modified damage for the original target
+    """
+    alive_allies = [dino for dino in team_dinos if dino.is_alive() and dino.id != defender.id]
+    
+    if not alive_allies:
+        return damage  # No allies to share with
+    
+    shared_damage = int(damage * 0.1)
+    damage_per_ally = shared_damage // len(alive_allies)
+    remaining_damage = damage - shared_damage
+    
+    # Apply shared damage to allies
+    for ally in alive_allies:
+        ally.current_hp -= damage_per_ally
+        game_state.log_effect("bouclier_collectif_share", ally, "hp", -damage_per_ally)
+    
+    game_state.log_effect("bouclier_collectif_reduce", defender, "damage_reduction", shared_damage)
+    return remaining_damage
+
+
+def apply_instinct_protecteur(team_dinos, game_state):
+    """
+    Instinct protecteur ability: When a team member takes a critical hit, 
+    the whole team gains +20% DEF for 1 second
+    
+    Args:
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+    """
+    team_modifiers = {}
+    
+    for dino in team_dinos:
+        if dino.is_alive():
+            def_boost = int(dino.stats.defense * 0.2)
+            team_modifiers[dino.id] = def_boost
+            dino.stats.defense += def_boost
+            game_state.log_effect("instinct_protecteur_buff", dino, "defense", def_boost)
+    
+    def remove_instinct_buff():
+        """Remove the defense buff after 1 second"""
+        for dino in team_dinos:
+            if dino.id in team_modifiers and dino.is_alive():
+                dino.stats.defense -= team_modifiers[dino.id]
+                game_state.log_effect("instinct_protecteur_debuff", dino, "defense", -team_modifiers[dino.id])
+    
+    # Schedule removal after 1 second (100 ticks)
+    game_state.schedule_action(100, 2, remove_instinct_buff, "instinct_protecteur", None, "remove_buff")
+
+
+def apply_pression_croissante(team_dinos, game_state):
+    """
+    Pression croissante ability: Every 3 seconds, the team's ATK increases by +5%
+    
+    Args:
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+    """
+    for dino in team_dinos:
+        if dino.is_alive():
+            atk_boost = int(dino.stats.atk * 0.05)
+            dino.stats.atk += atk_boost
+            game_state.log_effect("pression_croissante", dino, "atk", atk_boost)
+    
+    # Schedule the next application in 3 seconds (300 ticks)
+    def schedule_next_pression():
+        # Check if battle is still ongoing
+        if all(any(d.is_alive() for d in team) for team in game_state.teams.values()):
+            apply_pression_croissante(team_dinos, game_state)
+    
+    game_state.schedule_action(300, 2, schedule_next_pression, "pression_croissante", None, "next_boost")
+
+
+def apply_seul_contre_tous(team_dinos, game_state):
+    """
+    Seul contre tous ability: If only one dino remains alive, it gains +20% DEF
+    
+    Args:
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+    """
+    alive_dinos = [dino for dino in team_dinos if dino.is_alive()]
+    
+    # Remove existing seul_contre_tous effects first
+    for dino in team_dinos:
+        if "seul_contre_tous" in dino.current_statuses:
+            if hasattr(dino, '_seul_contre_tous_modifier'):
+                dino.stats.defense -= dino._seul_contre_tous_modifier
+                delattr(dino, '_seul_contre_tous_modifier')
+                game_state.log_effect("seul_contre_tous_remove", dino, "defense", -dino._seul_contre_tous_modifier)
+            dino.current_statuses.remove("seul_contre_tous")
+    
+    # Apply buff if only one dino is alive
+    if len(alive_dinos) == 1:
+        last_dino = alive_dinos[0]
+        def_boost = int(last_dino.stats.defense * 0.2)
+        last_dino.stats.defense += def_boost
+        last_dino._seul_contre_tous_modifier = def_boost
+        last_dino.current_statuses.append("seul_contre_tous")
+        game_state.log_effect("seul_contre_tous", last_dino, "defense", def_boost)
+
+
+def apply_terreur_collective(team_dinos, game_state):
+    """
+    Terreur collective ability: When an enemy dies, the whole team gains +8% ATK until the end of battle
+    
+    Args:
+        team_dinos: List of all dinos in the team
+        game_state: Current game state
+    """
+    for dino in team_dinos:
+        if dino.is_alive():
+            atk_boost = int(dino.stats.atk * 0.08)
+            dino.stats.atk += atk_boost
+            game_state.log_effect("terreur_collective", dino, "atk", atk_boost)
