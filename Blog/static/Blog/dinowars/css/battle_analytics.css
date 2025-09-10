@@ -59,8 +59,8 @@
 
 .team-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
 }
 
 .kpi-card {
@@ -146,6 +146,30 @@
     padding: 8px;
     border-radius: 4px;
     font-size: 0.9em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+.effect-time {
+    font-weight: bold;
+    color: #666;
+    min-width: 80px;
+}
+
+.effect-description {
+    color: #222;
+    flex: 1;
+}
+
+.effect-value {
+    font-weight: bold;
+    color: #1e7e34;
+    background: rgba(40, 167, 69, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.85em;
 }
 
 /* Button styles that match user_dinos.css */

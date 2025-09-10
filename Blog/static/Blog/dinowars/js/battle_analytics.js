@@ -94,6 +94,24 @@ new Chart(damageCtx, {
                 data: Object.values(damageData).map(d => d.poison_damage || 0),
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 stack: 'Stack 0'
+            },
+            {
+                label: 'Ability Damage',
+                data: Object.values(damageData).map(d => d.ability_damage || 0),
+                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                stack: 'Stack 0'
+            },
+            {
+                label: 'Execute Damage',
+                data: Object.values(damageData).map(d => d.execute_damage || 0),
+                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                stack: 'Stack 0'
+            },
+            {
+                label: 'Healing Done',
+                data: Object.values(damageData).map(d => d.healing_done || 0),
+                backgroundColor: 'rgba(76, 175, 80, 0.5)',
+                stack: 'Stack 1'
             }
         ]
     },
@@ -104,7 +122,7 @@ new Chart(damageCtx, {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Damage'
+                    text: 'Damage / Healing'
                 },
                 stacked: true
             },
