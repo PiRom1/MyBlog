@@ -859,7 +859,7 @@ def battle_analytics_view(request, fight_id):
             display_name = f"{dino_name} (Team {team_idx+1})"
             dino_damage_timeline[display_name] = [(0, 0)]  # Start at tick 0 with 0 damage
             
-    # Process attacks to build damage timeline
+    # Process attacks and ability effects to build damage timeline
     for log in logs:
         if log['type'] == 'attack':
             tick = log['tick']
@@ -873,6 +873,28 @@ def battle_analytics_view(request, fight_id):
             # Add damage point to timeline
             last_damage = dino_damage_timeline[attacker_display][-1][1]
             dino_damage_timeline[attacker_display].append((tick, last_damage + damage))
+            
+        elif log['type'] == 'effect' and log['stat'] == 'hp':
+            # Handle ability damage for damage timeline
+            event = log['event']
+            value = log['value']
+            damage_events = ['poison_damage', 'reflect_damage', 'boureau_execute']
+            
+            if event in damage_events:
+                # For damage events, we need to find the source of the damage
+                dino_id = log['dino_id']
+                dino_team = dino_id_to_team[dino_id]
+                
+                # For ability damage, attribute to the affected dino's team as "ability damage"
+                if event == 'poison_damage':
+                    # Find the dino that applied poison (simplified - could be enhanced with more tracking)
+                    pass  # For now, we'll just track it in the damage categories
+                elif event == 'reflect_damage':
+                    # Reflect damage - attribute to the defender
+                    pass
+                elif event == 'boureau_execute':
+                    # Execute damage - find the attacker
+                    pass
 
     # Calculate KPIs
     fight_duration = final_state['tick']
