@@ -741,7 +741,10 @@ def battle_analytics_view(request, fight_id):
                     'crits': 0, 
                     'team': attacker_team,
                     'reflect_damage': 0,
-                    'poison_damage': 0
+                    'poison_damage': 0,
+                    'ability_damage': 0,
+                    'execute_damage': 0,
+                    'healing_done': 0
                 }
             damage_dealt[attacker_display]['total'] += damage
             damage_dealt[attacker_display]['hits'] += 1
@@ -763,48 +766,90 @@ def battle_analytics_view(request, fight_id):
                 effects_timeline[dino_display] = []
             effects_timeline[dino_display].append((tick, event, value))
             
-            # Update HP timeline if effect modifies HP
+            # Update HP timeline for all HP-affecting events
             if log['stat'] == 'hp':
                 # Get the last known HP value
                 last_hp = dino_hp_timeline[dino_display][-1][1]
-                # Add new HP point after effect
-                dino_hp_timeline[dino_display].append((tick, last_hp - log['value']))  # Subtract value since damage is positive
                 
-                # Track reflect and poison damage
-                if event == 'reflect_damage' or event == 'poison_damage':
-                    # Get the opposing team name
-                    dino_team_idx = team_names.index(dino_team)
-                    opposing_team_idx = 1 - dino_team_idx  # 0 becomes 1, 1 becomes 0
-                    opposing_team = team_names[opposing_team_idx]
+                # Determine if this is healing or damage based on event type
+                healing_events = ['dernier_souffle_heal', 'vol_de_vie', 'regeneration']
+                damage_events = ['poison_damage', 'reflect_damage', 'boureau_execute', 'bouclier_collectif_share']
+                
+                if event in healing_events:
+                    # Healing events: add value to HP
+                    new_hp = last_hp + value
+                elif event in damage_events:
+                    # Damage events: subtract value from HP  
+                    new_hp = last_hp - value
+                else:
+                    # For other events, use the sign of the value to determine
+                    if value > 0 and ('heal' in event.lower() or 'regen' in event.lower()):
+                        new_hp = last_hp + value
+                    else:
+                        new_hp = last_hp - abs(value)
+                
+                # Add new HP point after effect
+                dino_hp_timeline[dino_display].append((tick, max(0, new_hp)))
+                
+                # Track all damage sources for damage charts
+                if event in damage_events or ('damage' in event and value > 0):
+                    # Initialize damage tracking for ability effects
+                    if dino_display not in damage_dealt:
+                        damage_dealt[dino_display] = {
+                            'total': 0, 
+                            'hits': 0, 
+                            'crits': 0, 
+                            'team': dino_team,
+                            'reflect_damage': 0,
+                            'poison_damage': 0,
+                            'ability_damage': 0,
+                            'execute_damage': 0,
+                            'healing_done': 0
+                        }
                     
-                    # Find the appropriate source dino based on damage type
-                    source_dino_name = "Stegosaurus" if event == "reflect_damage" else "Dilophosaurus"
-                    source_found = False
+                    # Categorize different damage types
+                    if event == 'reflect_damage':
+                        damage_dealt[dino_display]['reflect_damage'] += value
+                    elif event == 'poison_damage':
+                        damage_dealt[dino_display]['poison_damage'] += value
+                    elif event == 'boureau_execute':
+                        damage_dealt[dino_display]['execute_damage'] += value
+                    else:
+                        damage_dealt[dino_display]['ability_damage'] += value
+                
+                # Track healing for healing done stats
+                elif event in healing_events:
+                    # Find who provided the healing (for abilities like vol_de_vie, dernier_souffle)
+                    # For healing events, the dino receiving healing is logged, but we want to track who healed
+                    if event == 'vol_de_vie':
+                        # Vol de vie: the dino healed themselves
+                        healer_display = dino_display
+                    elif event == 'dernier_souffle_heal':
+                        # Dernier souffle: find the dead ally who triggered it
+                        # This is more complex - for now we'll attribute to the team
+                        healer_display = dino_display  # Simplified for now
+                    elif event == 'regeneration':
+                        # Regeneration: the dino healed themselves
+                        healer_display = dino_display
+                    else:
+                        healer_display = dino_display
                     
-                    # Look for the source dino in the opposing team
-                    for dino in initial_state['initial_state'][opposing_team]:
-                        if dino['name'] == source_dino_name:
-                            source_display = f"{source_dino_name} (Team {opposing_team_idx+1})"
-                            source_found = True
-                            break
+                    if healer_display not in damage_dealt:
+                        # Find healer's team
+                        healer_team = dino_team
+                        damage_dealt[healer_display] = {
+                            'total': 0, 
+                            'hits': 0, 
+                            'crits': 0, 
+                            'team': healer_team,
+                            'reflect_damage': 0,
+                            'poison_damage': 0,
+                            'ability_damage': 0,
+                            'execute_damage': 0,
+                            'healing_done': 0
+                        }
                     
-                    if source_found:
-                        # Initialize if not exists
-                        if source_display not in damage_dealt:
-                            damage_dealt[source_display] = {
-                                'total': 0, 
-                                'hits': 0, 
-                                'crits': 0, 
-                                'team': opposing_team,
-                                'reflect_damage': 0,
-                                'poison_damage': 0
-                            }
-                            
-                        # Add to appropriate damage type
-                        if event == 'reflect_damage':
-                            damage_dealt[source_display]['reflect_damage'] += value
-                        elif event == 'poison_damage':
-                            damage_dealt[source_display]['poison_damage'] += value
+                    damage_dealt[healer_display]['healing_done'] += value
 
     # Initialize damage timeline
     dino_damage_timeline = {}
@@ -814,7 +859,7 @@ def battle_analytics_view(request, fight_id):
             display_name = f"{dino_name} (Team {team_idx+1})"
             dino_damage_timeline[display_name] = [(0, 0)]  # Start at tick 0 with 0 damage
             
-    # Process attacks to build damage timeline
+    # Process attacks and ability effects to build damage timeline
     for log in logs:
         if log['type'] == 'attack':
             tick = log['tick']
@@ -828,6 +873,28 @@ def battle_analytics_view(request, fight_id):
             # Add damage point to timeline
             last_damage = dino_damage_timeline[attacker_display][-1][1]
             dino_damage_timeline[attacker_display].append((tick, last_damage + damage))
+            
+        elif log['type'] == 'effect' and log['stat'] == 'hp':
+            # Handle ability damage for damage timeline
+            event = log['event']
+            value = log['value']
+            damage_events = ['poison_damage', 'reflect_damage', 'boureau_execute']
+            
+            if event in damage_events:
+                # For damage events, we need to find the source of the damage
+                dino_id = log['dino_id']
+                dino_team = dino_id_to_team[dino_id]
+                
+                # For ability damage, attribute to the affected dino's team as "ability damage"
+                if event == 'poison_damage':
+                    # Find the dino that applied poison (simplified - could be enhanced with more tracking)
+                    pass  # For now, we'll just track it in the damage categories
+                elif event == 'reflect_damage':
+                    # Reflect damage - attribute to the defender
+                    pass
+                elif event == 'boureau_execute':
+                    # Execute damage - find the attacker
+                    pass
 
     # Calculate KPIs
     fight_duration = final_state['tick']
@@ -835,17 +902,21 @@ def battle_analytics_view(request, fight_id):
     total_damage = sum(stats['total'] for stats in damage_dealt.values())
     total_crits = sum(stats['crits'] for stats in damage_dealt.values())
     
-    # Calculate team-specific KPIs
+    # Calculate team-specific KPIs including new damage types and healing
     team1_name = team_names[0]
     team2_name = team_names[1]
     
     team1_damage = sum(stats['total'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
     team1_hits = sum(stats['hits'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
     team1_crits = sum(stats['crits'] for _, stats in damage_dealt.items() if stats['team'] == team1_name)
+    team1_ability_damage = sum(stats.get('ability_damage', 0) + stats.get('poison_damage', 0) + stats.get('reflect_damage', 0) + stats.get('execute_damage', 0) for _, stats in damage_dealt.items() if stats['team'] == team1_name)
+    team1_healing = sum(stats.get('healing_done', 0) for _, stats in damage_dealt.items() if stats['team'] == team1_name)
 
     team2_damage = sum(stats['total'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
     team2_hits = sum(stats['hits'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
     team2_crits = sum(stats['crits'] for _, stats in damage_dealt.items() if stats['team'] == team2_name)
+    team2_ability_damage = sum(stats.get('ability_damage', 0) + stats.get('poison_damage', 0) + stats.get('reflect_damage', 0) + stats.get('execute_damage', 0) for _, stats in damage_dealt.items() if stats['team'] == team2_name)
+    team2_healing = sum(stats.get('healing_done', 0) for _, stats in damage_dealt.items() if stats['team'] == team2_name)
 
     kpis = {
         'duration': fight_duration / 100,  # Convert ticks to seconds
@@ -853,6 +924,8 @@ def battle_analytics_view(request, fight_id):
             'name': team1_name,
             'total_attacks': team1_hits,
             'total_damage': team1_damage,
+            'ability_damage': team1_ability_damage,
+            'healing_done': team1_healing,
             'avg_damage_per_hit': team1_damage / team1_hits if team1_hits > 0 else 0,
             'crit_rate': (team1_crits / team1_hits * 100) if team1_hits > 0 else 0
         },
@@ -860,6 +933,8 @@ def battle_analytics_view(request, fight_id):
             'name': team2_name,
             'total_attacks': team2_hits,
             'total_damage': team2_damage,
+            'ability_damage': team2_ability_damage,
+            'healing_done': team2_healing,
             'avg_damage_per_hit': team2_damage / team2_hits if team2_hits > 0 else 0,
             'crit_rate': (team2_crits / team2_hits * 100) if team2_hits > 0 else 0
         }

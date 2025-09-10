@@ -1,5 +1,6 @@
 {% extends 'Blog/layout/base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'Blog/dinowars/css/battle_analytics.css' %}">
@@ -35,6 +36,14 @@
                     <p>{{ kpis.team1.total_damage }}</p>
                 </div>
                 <div class="kpi-card">
+                    <h4>Ability Damage</h4>
+                    <p>{{ kpis.team1.ability_damage }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Healing Done</h4>
+                    <p>{{ kpis.team1.healing_done }}</p>
+                </div>
+                <div class="kpi-card">
                     <h4>Avg Damage/Hit</h4>
                     <p>{{ kpis.team1.avg_damage_per_hit|floatformat:1 }}</p>
                 </div>
@@ -54,6 +63,14 @@
                 <div class="kpi-card">
                     <h4>Total Damage</h4>
                     <p>{{ kpis.team2.total_damage }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Ability Damage</h4>
+                    <p>{{ kpis.team2.ability_damage }}</p>
+                </div>
+                <div class="kpi-card">
+                    <h4>Healing Done</h4>
+                    <p>{{ kpis.team2.healing_done }}</p>
                 </div>
                 <div class="kpi-card">
                     <h4>Avg Damage/Hit</h4>
@@ -91,7 +108,13 @@
                 <h3>{{ dino }}</h3>
                 <ul>
                     {% for tick, event, value in effects %}
-                    <li>{{ value }} {{ event }} at {{ tick|divisibleby:"100"|yesno:"second ,tick " }}{{ tick }}</li>
+                    <li>
+                        <span class="effect-time">{{ tick|floatformat:0|add:"0"|divisibleby:"100"|yesno:"s,ticks" }} {{ tick|floatformat:0|add:"0"|divisibleby:"100"|yesno:","|default:"" }}{{ tick|divisibleby:"100"|yesno:"",tick }}:</span>
+                        <span class="effect-description">{{ event|effect_description }}</span>
+                        {% if value != 0 %}
+                            <span class="effect-value">({{ value|floatformat:0 }})</span>
+                        {% endif %}
+                    </li>
                     {% endfor %}
                 </ul>
             </div>

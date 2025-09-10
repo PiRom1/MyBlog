@@ -52,3 +52,67 @@ def highlight_tag(value, tag):
 @register.filter(name='index')
 def index(indexable, i):
     return indexable[i]
+
+
+@register.filter(name='effect_description')
+def effect_description(event_name):
+    """Convert PvM ability event names to user-friendly descriptions"""
+    descriptions = {
+        # Healing effects
+        'dernier_souffle_heal': 'healed by Dernier souffle',
+        'vol_de_vie': 'healed by Vol de vie',
+        'regeneration': 'healed by Régénération',
+        
+        # Damage effects
+        'poison_damage': 'damaged by poison',
+        'reflect_damage': 'damaged by reflection',
+        'boureau_execute': 'executed by Boureau',
+        'bouclier_collectif_share': 'damage shared by Bouclier collectif',
+        
+        # Stat buffs/debuffs
+        'sprint_prehistorique_buff': 'speed boosted by Sprint préhistorique',
+        'sprint_prehistorique_debuff': 'speed boost expired',
+        'frenesie_start': 'speed boosted by Frénésie',
+        'frenesie_end': 'Frénésie effect ended',
+        'inspiration_heroique_buff': 'attack boosted by Inspiration héroïque',
+        'inspiration_heroique_debuff': 'attack boost expired',
+        'esprit_de_meute': 'attack modified by Esprit de meute',
+        'instinct_protecteur_buff': 'defense boosted by Instinct protecteur',
+        'instinct_protecteur_debuff': 'defense boost expired',
+        'pression_croissante': 'attack boosted by Pression croissante',
+        'seul_contre_tous': 'defense boosted by Seul contre tous',
+        'seul_contre_tous_remove': 'Seul contre tous effect removed',
+        'terreur_collective': 'attack boosted by Terreur collective',
+        'regard_petrifiant': 'speed reduced by Regard pétrifiant',
+        'regard_petrifiant_restore': 'speed restored from Regard pétrifiant',
+        
+        # Special abilities
+        'mort_vivant_start': 'became undead with Mort-vivant',
+        'mort_vivant_end': 'Mort-vivant effect ended',
+        'agilite_accrue_dodge': 'dodged with Agilitée accrue',
+        'peau_dure': 'damage reduced by Peau dure',
+        'bouclier_collectif_reduce': 'damage reduced by Bouclier collectif',
+        'chasseur_nocturne': 'crit chance boosted by Chasseur nocturne',
+        'carapace_robuste_start': 'damage resistance from Carapace robuste',
+        'carapace_robuste_block': 'damage blocked by Carapace robuste',
+        'carapace_robuste_amplify': 'extra damage from Carapace robuste',
+        'carapace_robuste_degrade': 'Carapace robuste resistance degraded',
+        
+        # Basic effects
+        'defense_buff': 'defense increased',
+        'defense_debuff': 'defense decreased',
+        'speed_buff': 'speed increased', 
+        'speed_debuff': 'speed decreased',
+        'bleed': 'bleeding started',
+        'bleed_remove': 'bleeding ended',
+        'poison': 'poisoned',
+        'poison_remove': 'poison ended',
+        'stun': 'stunned',
+        'dodge': 'dodge attempt',
+        'lac_putrefie': 'damaged by Lac putréfié terrain',
+        
+        # Special attack effects
+        'rapid_slash': 'multiple hits from Rapid slash',
+    }
+    
+    return descriptions.get(event_name, event_name.replace('_', ' ').title())
