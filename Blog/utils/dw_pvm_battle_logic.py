@@ -92,9 +92,10 @@ class GameState:
 
     def run(self):
         # Apply team abilities on battle start
-        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_battle_start
+        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_battle_start, apply_individual_abilities_on_battle_start
         for team_name, dinos in self.teams.items():
             apply_team_abilities_on_battle_start(dinos, self)
+            apply_individual_abilities_on_battle_start(dinos, self)
         
         # Schedule initial attacks for all dinos
         for team_name, dinos in self.teams.items():
@@ -162,6 +163,15 @@ class GameState:
             return
         if damage is None:
             stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
+            
+            # Apply individual abilities that modify attack parameters before damage calculation
+            from Blog.utils.dw_pvm_abilities import apply_individual_abilities_before_attack
+            attack_modifications = apply_individual_abilities_before_attack(attacker, defender, self)
+            
+            # Apply critical chance bonus (Chasseur nocturne)
+            if 'crit_bonus' in attack_modifications:
+                stats[3] += attack_modifications['crit_bonus']  # Add to crit_chance
+            
             if custom_stats:
                 for i, stat in enumerate(custom_stats):
                     if stat is not None:
@@ -172,7 +182,7 @@ class GameState:
         if "bleed" in defender.current_statuses:
             damage = int(damage * 1.2)
         
-        # Apply individual abilities that modify damage taken (Peau dure)
+        # Apply individual abilities that modify damage taken (Peau dure, Carapace robuste)
         from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken, apply_team_abilities_on_damage_taken
         damage = apply_individual_abilities_on_damage_taken(defender, damage, self)
         
@@ -180,6 +190,12 @@ class GameState:
         damage = apply_team_abilities_on_damage_taken(defender, damage, is_crit, self)
         
         miss = random.random() > attacker.stats.accuracy
+        
+        # Check for Agilitée accrue dodge
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_being_attacked
+        if not miss and apply_individual_abilities_on_being_attacked(defender, self):
+            miss = True
+        
         if "dodge" in defender.current_statuses and not miss:
             miss = random.random() < defender.stats.dodge
             defender.current_statuses.remove("dodge")

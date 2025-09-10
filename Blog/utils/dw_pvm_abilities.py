@@ -23,7 +23,14 @@ Individual dino abilities:
 - "Inspiration héroïque": +20% ATK for all allies for 1s on critical hit
 - "Vol de vie": Heals attacker for 15% of damage dealt after each attack
 - "Provocation": This dino is 2x more likely to be targeted by enemies
+- "Agilitée accrue": 20% chance to dodge attacks when this dino is attacked
+- "Regard pétrifiant": 25% chance on attack to reduce target's speed by 50% for 3s
+- "Régénération": Every 2 seconds, heals for 5% of maximum HP
+- "Chasseur nocturne": +30% critical chance against enemies with poison/bleed
+- "Carapace robuste": Starts at 90% damage resist, decreases by 20% per hit
 """
+
+import random
 
 
 def apply_dernier_souffle(dead_dino, team_dinos, game_state):
@@ -137,6 +144,26 @@ def apply_team_abilities_on_battle_start(team_dinos, game_state):
     # Apply Pression croissante if any dino has it
     if "Pression croissante" in team_abilities:
         apply_pression_croissante(team_dinos, game_state)
+
+
+def apply_individual_abilities_on_battle_start(team_dinos, game_state):
+    """
+    Apply individual dino abilities that trigger at battle start
+    
+    Args:
+        team_dinos: List of dinos in the team
+        game_state: Current game state
+    """
+    for dino in team_dinos:
+        dino_abilities = get_dino_abilities(dino, game_state)
+        
+        # Apply Régénération if the dino has it
+        if "Régénération" in dino_abilities:
+            apply_regeneration_start(dino, game_state)
+        
+        # Apply Carapace robuste if the dino has it
+        if "Carapace robuste" in dino_abilities:
+            apply_carapace_robuste_start(dino, game_state)
 
 
 def apply_team_abilities_on_death(dead_dino, team_dinos, game_state):
@@ -419,6 +446,10 @@ def apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, ga
     if "Boureau" in attacker_abilities:
         apply_boureau(attacker, defender, damage, game_state)
     
+    # Apply Regard pétrifiant if the attacker has it
+    if "Regard pétrifiant" in attacker_abilities:
+        apply_regard_petrifiant(attacker, defender, game_state)
+    
     # Apply Inspiration héroïque if the attacker has it and landed a crit
     if "Inspiration héroïque" in attacker_abilities and is_crit:
         # Find the attacker's team
@@ -450,7 +481,55 @@ def apply_individual_abilities_on_damage_taken(defender, damage, game_state):
     if "Peau dure" in defender_abilities:
         damage = apply_peau_dure_defense(defender, damage, game_state)
     
+    # Apply Carapace robuste if the defender has it
+    if "Carapace robuste" in defender_abilities:
+        damage = apply_carapace_robuste_damage_reduction(defender, damage, game_state)
+    
     return damage
+
+
+def apply_individual_abilities_on_being_attacked(defender, game_state):
+    """
+    Apply individual dino abilities that trigger when being attacked (before damage calculation)
+    
+    Args:
+        defender: The dino being attacked
+        game_state: Current game state
+        
+    Returns:
+        bool: True if the attack should be dodged
+    """
+    defender_abilities = get_dino_abilities(defender, game_state)
+    
+    # Apply Agilitée accrue if the defender has it
+    if "Agilitée accrue" in defender_abilities:
+        return apply_agilite_accrue_dodge(defender, game_state)
+    
+    return False
+
+
+def apply_individual_abilities_before_attack(attacker, defender, game_state):
+    """
+    Apply individual dino abilities that modify attack parameters before damage calculation
+    
+    Args:
+        attacker: The attacking dino
+        defender: The defending dino
+        game_state: Current game state
+        
+    Returns:
+        dict: Dictionary with modified attack parameters (e.g., {'crit_bonus': 0.3})
+    """
+    attacker_abilities = get_dino_abilities(attacker, game_state)
+    modifications = {}
+    
+    # Apply Chasseur nocturne if the attacker has it
+    if "Chasseur nocturne" in attacker_abilities:
+        crit_bonus = apply_chasseur_nocturne_crit_bonus(attacker, defender, game_state)
+        if crit_bonus > 0:
+            modifications['crit_bonus'] = crit_bonus
+    
+    return modifications
 
 
 def apply_team_abilities_on_damage_taken(defender, damage, is_crit, game_state):
@@ -668,3 +747,160 @@ def apply_terreur_collective(team_dinos, game_state):
             atk_boost = int(dino.stats.atk * 0.08)
             dino.stats.atk += atk_boost
             game_state.log_effect("terreur_collective", dino, "atk", atk_boost)
+
+
+# ------------------------- NEW INDIVIDUAL ABILITIES ------------------------- #
+
+def apply_agilite_accrue_dodge(dino, game_state):
+    """
+    Agilitée accrue ability: When this dino is attacked, it has 20% chance to dodge
+    This should be checked during damage calculation.
+    
+    Args:
+        dino: The dino with Agilitée accrue ability
+        game_state: Current game state
+        
+    Returns:
+        bool: True if the attack should be dodged
+    """
+    if random.random() < 0.2:  # 20% chance
+        game_state.log_effect("agilite_accrue_dodge", dino, "dodge", 1)
+        return True
+    return False
+
+
+def apply_regard_petrifiant(attacker, defender, game_state):
+    """
+    Regard pétrifiant ability: 25% chance on attack to reduce target's speed by 50% for 3 seconds
+    
+    Args:
+        attacker: The dino with Regard pétrifiant ability
+        defender: The target dino
+        game_state: Current game state
+    """
+    if random.random() < 0.25:  # 25% chance
+        # Store original speed if not already stored for this effect
+        if not hasattr(defender, '_regard_petrifiant_original_speed'):
+            defender._regard_petrifiant_original_speed = defender.stats.speed
+        
+        # Remove any existing regard pétrifiant effect first
+        if "regard_petrifiant" in defender.current_statuses:
+            if hasattr(defender, '_regard_petrifiant_reduction'):
+                defender.stats.speed += defender._regard_petrifiant_reduction
+        
+        # Apply new speed reduction (50% of original speed)
+        speed_reduction = defender._regard_petrifiant_original_speed * 0.5
+        defender.stats.speed -= speed_reduction
+        defender._regard_petrifiant_reduction = speed_reduction
+        
+        # Add status and log
+        if "regard_petrifiant" not in defender.current_statuses:
+            defender.current_statuses.append("regard_petrifiant")
+        game_state.log_effect("regard_petrifiant", defender, "speed", -speed_reduction)
+        
+        # Remove any existing scheduled restoration
+        new_queue = []
+        for action in game_state.action_queue:
+            if not (action.effect_name == "restore_regard_petrifiant" and action.dino_id == defender.id):
+                new_queue.append(action)
+        game_state.action_queue = new_queue
+        
+        def restore_speed():
+            if "regard_petrifiant" in defender.current_statuses:
+                defender.current_statuses.remove("regard_petrifiant")
+                if hasattr(defender, '_regard_petrifiant_reduction'):
+                    defender.stats.speed += defender._regard_petrifiant_reduction
+                    game_state.log_effect("regard_petrifiant_restore", defender, "speed", defender._regard_petrifiant_reduction)
+                    delattr(defender, '_regard_petrifiant_reduction')
+        
+        # Schedule restoration after 3 seconds (300 ticks)
+        game_state.schedule_action(300, 2, restore_speed, "regard_petrifiant", defender.id, "restore_regard_petrifiant")
+
+
+def apply_regeneration_start(dino, game_state):
+    """
+    Régénération ability: Every 2 seconds, heals for 5% of maximum HP
+    This should be called once at battle start to begin the regeneration cycle.
+    
+    Args:
+        dino: The dino with Régénération ability
+        game_state: Current game state
+    """
+    def regenerate():
+        if dino.is_alive():
+            heal_amount = int(dino.stats.hp * 0.05)
+            dino.current_hp = min(dino.stats.hp, dino.current_hp + heal_amount)
+            game_state.log_effect("regeneration", dino, "hp", heal_amount)
+            
+            # Schedule next regeneration in 2 seconds (200 ticks)
+            game_state.schedule_action(200, 2, regenerate, "regeneration", dino.id, "regenerate")
+    
+    # Start the first regeneration after 2 seconds
+    game_state.schedule_action(200, 2, regenerate, "regeneration", dino.id, "regenerate")
+
+
+def apply_chasseur_nocturne_crit_bonus(attacker, defender, game_state):
+    """
+    Chasseur nocturne ability: Gains +30% critical chance against enemies afflicted with status effects (poison & bleed)
+    
+    Args:
+        attacker: The dino with Chasseur nocturne ability
+        defender: The target dino
+        game_state: Current game state
+        
+    Returns:
+        float: Additional critical chance (0.0 to 0.3)
+    """
+    if "poison" in defender.current_statuses or "bleed" in defender.current_statuses:
+        game_state.log_effect("chasseur_nocturne", attacker, "crit_bonus", 0.3)
+        return 0.3
+    return 0.0
+
+
+def apply_carapace_robuste_start(dino, game_state):
+    """
+    Carapace robuste ability: Starts each fight at 90% damage resist. 
+    Damage resist drops by 20% each time this dino takes damage (can go negative).
+    This should be called once at battle start.
+    
+    Args:
+        dino: The dino with Carapace robuste ability
+        game_state: Current game state
+    """
+    dino._carapace_robuste_resist = 0.9  # Start at 90% damage resistance
+    dino.current_statuses.append("carapace_robuste")
+    game_state.log_effect("carapace_robuste_start", dino, "damage_resist", 0.9)
+
+
+def apply_carapace_robuste_damage_reduction(dino, damage, game_state):
+    """
+    Carapace robuste ability: Apply current damage resistance and then reduce it by 20%.
+    
+    Args:
+        dino: The dino with Carapace robuste ability
+        damage: The original damage amount
+        game_state: Current game state
+        
+    Returns:
+        int: The modified damage amount after resistance
+    """
+    if not hasattr(dino, '_carapace_robuste_resist'):
+        return damage
+    
+    # Apply current resistance
+    resistance = dino._carapace_robuste_resist
+    if resistance > 0:
+        reduced_damage = int(damage * (1 - resistance))
+        damage_blocked = damage - reduced_damage
+        game_state.log_effect("carapace_robuste_block", dino, "damage_blocked", damage_blocked)
+    else:
+        # Negative resistance means extra damage
+        extra_damage = int(damage * abs(resistance))
+        reduced_damage = damage + extra_damage
+        game_state.log_effect("carapace_robuste_amplify", dino, "extra_damage", extra_damage)
+    
+    # Reduce resistance by 20% (0.2) for next hit
+    dino._carapace_robuste_resist -= 0.2
+    game_state.log_effect("carapace_robuste_degrade", dino, "damage_resist", dino._carapace_robuste_resist)
+    
+    return max(0, reduced_damage)
