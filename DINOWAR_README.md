@@ -165,33 +165,6 @@ These advanced abilities are available in the PVM (Player vs Monster) roguelike 
 
 Here are balanced new ability suggestions that complement the existing system without being too similar.
 
-### Single Dino Abilities
-
-#### **Carapace adaptive** ⭐ *NEW*
-- **Effect**: Each time this dino takes damage, it gains +3% resistance to that damage type for the rest of the battle (stacks up to 30%)
-- **Type**: Adaptive defense
-- **Strategy**: Becomes stronger against repeated attack patterns; counters spam strategies
-
-#### **Regard pétrifiant** ⭐ *NEW*
-- **Effect**: 25% chance on attack to reduce target's speed by 50% for 2 seconds
-- **Cooldown**: 4 seconds
-- **Strategy**: Disrupts enemy timing without full stun; less powerful but more frequent than Horned Charge
-
-#### **Métamorphose** ⭐ *NEW*
-- **Effect**: When HP drops below 50%, this dino's ATK and SPD increase by 30% but DEF decreases by 20% for the rest of the battle
-- **Type**: One-time transformation
-- **Strategy**: Risk/reward transformation that changes playstyle mid-battle
-
-#### **Chasseur nocturne** ⭐ *NEW*
-- **Effect**: Gains +15% critical chance against enemies with status effects
-- **Type**: Status synergy
-- **Strategy**: Pairs well with poison, bleed, and other status-applying abilities
-
-#### **Régénération** ⭐ *NEW*
-- **Effect**: Every 4 seconds, heals for 8% of maximum HP
-- **Type**: Passive healing
-- **Strategy**: Provides consistent sustainability without requiring offensive actions
-
 ### All Team Abilities
 
 #### **Instinct de survie** ⭐ *NEW*
