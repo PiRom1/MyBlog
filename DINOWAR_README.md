@@ -117,6 +117,31 @@ These advanced abilities are available in the PVM (Player vs Monster) roguelike 
 - **Type**: Taunt/Tank
 - **Strategy**: Use on tanky dinos to protect fragile allies
 
+#### **Agilitée accrue** ⭐ *NEW*
+- **Effect**: When this dino is attacked, it has 20% chance to dodge the attack
+- **Type**: Passive dodge
+- **Strategy**: Provides consistent defensive capability; most effective on fragile but important dinos
+
+#### **Regard pétrifiant** ⭐ *NEW*
+- **Effect**: 25% chance on attack to reduce target's speed by 50% for 3 seconds
+- **Type**: Speed debuff
+- **Strategy**: Excellent for slowing down fast enemies and controlling battle tempo
+
+#### **Régénération** ⭐ *NEW*
+- **Effect**: Every 2 seconds, heals for 5% of maximum HP
+- **Type**: Passive regeneration
+- **Strategy**: Provides steady HP recovery throughout battle; synergizes well with defensive builds
+
+#### **Chasseur nocturne** ⭐ *NEW*
+- **Effect**: Gains +30% critical chance against enemies afflicted with status effects (poison & bleed)
+- **Type**: Status synergy
+- **Strategy**: Powerful when paired with poison/bleed infligers; rewards status-based team compositions
+
+#### **Carapace robuste** ⭐ *NEW*
+- **Effect**: Starts each fight at 90% damage resistance. Damage resistance drops by 20% each time this dino takes damage (can go negative, meaning extra damage taken)
+- **Type**: Degrading armor
+- **Strategy**: Extremely powerful early protection that weakens over time; best for absorbing initial burst damage
+
 ### All Team Abilities
 
 #### **Dernier souffle**
