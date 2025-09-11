@@ -335,8 +335,8 @@ class DWPvmNewRunAdmin(admin.ModelAdmin):
 
 @admin.register(DWPvmTerrain)
 class DWPvmTerrainAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name', 'description')
+    list_display = ('id', 'name', 'description')
+    search_fields = ('id', 'name', 'description')
 
 @admin.register(DWPvmLeaderboard)
 class DWPvmLeaderboardAdmin(admin.ModelAdmin):
