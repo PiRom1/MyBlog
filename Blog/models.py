@@ -633,3 +633,17 @@ class DWPvmTerrain(models.Model):
 
     def __str__(self):
         return self.name
+
+class DWPvmLeaderboard(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    terrain = models.ForeignKey(DWPvmTerrain, on_delete=models.CASCADE)
+    run_level = models.IntegerField()
+    team_dinos_stats = models.JSONField()  # Store dino stats as JSON
+    abilities_list = models.JSONField()    # Store abilities as JSON
+    
+    class Meta:
+        ordering = ['-run_level', '-date']  # Order by level desc, then date desc
+        
+    def __str__(self):
+        return f"{self.user.username} - Niveau {self.run_level} ({self.terrain.name})"

@@ -1,0 +1,307 @@
+{% extends 'Blog/layout/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pvm-container">
+    <div class="leaderboard-header">
+        <h1>🏆 Classement PVM DinoWar</h1>
+        <p>Top 10 des meilleures performances PVM</p>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="GET" class="filter-form">
+            <div class="filter-group">
+                <label for="user-filter">Filtrer par utilisateur:</label>
+                <input type="text" id="user-filter" name="user" value="{{ user_filter }}" placeholder="Nom d'utilisateur...">
+            </div>
+            <div class="filter-group">
+                <label for="terrain-filter">Filtrer par terrain:</label>
+                <select id="terrain-filter" name="terrain">
+                    <option value="">Tous les terrains</option>
+                    {% for terrain in terrains %}
+                        <option value="{{ terrain.name }}" {% if terrain_filter == terrain.name %}selected{% endif %}>
+                            {{ terrain.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="filter-btn">Filtrer</button>
+                <a href="{% url 'leaderboard_view' %}" class="reset-btn">Réinitialiser</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="leaderboard-table-container">
+        {% if error %}
+            <div class="error-message">
+                <p>Erreur: {{ error }}</p>
+            </div>
+        {% elif leaderboard_entries %}
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rang</th>
+                        <th>Joueur</th>
+                        <th>Niveau atteint</th>
+                        <th>Terrain</th>
+                        <th>Date</th>
+                        <th>Équipe</th>
+                        <th>Capacités</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in leaderboard_entries %}
+                        <tr class="leaderboard-row">
+                            <td class="rank">
+                                {% if forloop.counter == 1 %}🥇
+                                {% elif forloop.counter == 2 %}🥈
+                                {% elif forloop.counter == 3 %}🥉
+                                {% else %}{{ forloop.counter }}{% endif %}
+                            </td>
+                            <td class="username">{{ entry.user.username }}</td>
+                            <td class="level">Niveau {{ entry.run_level }}</td>
+                            <td class="terrain">{{ entry.terrain.name }}</td>
+                            <td class="date">{{ entry.date|date:"d/m/Y H:i" }}</td>
+                            <td class="team-dinos">
+                                <button class="details-btn" onclick="showTeamDetails({{ forloop.counter0 }})">
+                                    👥 Voir l'équipe
+                                </button>
+                                <div class="team-details" id="team-details-{{ forloop.counter0 }}" style="display: none;">
+                                    {% for dino in entry.team_dinos_stats %}
+                                        <div class="dino-info">
+                                            <strong>{{ dino.name }}</strong><br>
+                                            <small>
+                                                HP: {{ dino.hp }} (Niv.{{ dino.hp_lvl }}) | 
+                                                ATK: {{ dino.atk }} (Niv.{{ dino.atk_lvl }}) | 
+                                                DEF: {{ dino.defense }} (Niv.{{ dino.defense_lvl }})
+                                            </small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="abilities">
+                                <button class="details-btn" onclick="showAbilitiesDetails({{ forloop.counter0 }})">
+                                    ⚡ Voir capacités
+                                </button>
+                                <div class="abilities-details" id="abilities-details-{{ forloop.counter0 }}" style="display: none;">
+                                    {% for ability in entry.abilities_list %}
+                                        <div class="ability-info">
+                                            <strong>{{ ability.name }}</strong>
+                                            {% if ability.dino_name %} ({{ ability.dino_name }}){% endif %}<br>
+                                            <small>{{ ability.description }}</small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-results">
+                <p>Aucune entrée trouvée dans le classement.</p>
+                <p>Terminez une run PVM pour apparaître dans le classement!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="action-section">
+        <a href="{% url 'pvm_view' %}" class="back-btn">← Retour au PVM</a>
+    </div>
+</div>
+
+<style>
+.pvm-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+}
+
+.leaderboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.leaderboard-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #FFD700;
+}
+
+.filter-section {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.filter-form {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.filter-group input, .filter-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    color: black;
+}
+
+.filter-btn, .reset-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.filter-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.reset-btn {
+    background: #f44336;
+    color: white;
+}
+
+.leaderboard-table-container {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #555;
+}
+
+.leaderboard-table th {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    font-weight: bold;
+}
+
+.leaderboard-row:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.rank {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.details-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.details-btn:hover {
+    background: #1976D2;
+}
+
+.team-details, .abilities-details {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dino-info, .ability-info {
+    margin-bottom: 8px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.no-results, .error-message {
+    text-align: center;
+    padding: 40px;
+    color: #FFD700;
+}
+
+.action-section {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-btn {
+    background: #555;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.back-btn:hover {
+    background: #777;
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .leaderboard-table {
+        font-size: 0.8em;
+    }
+    
+    .details-btn {
+        padding: 3px 6px;
+        font-size: 0.8em;
+    }
+}
+</style>
+
+<script>
+function showTeamDetails(index) {
+    const details = document.getElementById('team-details-' + index);
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+}
+
+function showAbilitiesDetails(index) {
+    const details = document.getElementById('abilities-details-' + index);
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@ import math
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from Blog.models import DWFight, DWPvmTerrain, DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun, DWPvmAbility
+from Blog.models import DWFight, DWPvmTerrain, DWUserDino, DWUserTeam, DWUser, DWPvmRun, DWPvmRunAbility, DWPvmDino, DWPvmNextFightDino, DWPvmNextAbility, DWDino, DWPvmNewRun, DWPvmAbility, DWPvmLeaderboard
 from Blog.utils.dw_terrains import distorsion_terrain
 from Blog.utils.random_seed import get_daily_seed
 from Blog.utils.dw_pvm_battle_logic import load_dino_from_model, GameState
@@ -800,6 +800,48 @@ def start_battle_pvm(request):
             run_info.life -= 1
             run_info.save()
             if run_info.life <= 0:
+                # Save to leaderboard before deleting the run
+                terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+                
+                # Collect team dinos stats
+                team_dinos_stats = []
+                for dino in [run_info.dino1, run_info.dino2, run_info.dino3]:
+                    if dino:
+                        team_dinos_stats.append({
+                            'name': dino.dino.name,
+                            'hp': dino.hp,
+                            'atk': dino.atk,
+                            'defense': dino.defense,
+                            'spd': dino.spd,
+                            'crit': dino.crit,
+                            'crit_dmg': dino.crit_dmg,
+                            'hp_lvl': dino.hp_lvl,
+                            'atk_lvl': dino.atk_lvl,
+                            'defense_lvl': dino.defense_lvl,
+                            'spd_lvl': dino.spd_lvl,
+                            'crit_lvl': dino.crit_lvl,
+                            'crit_dmg_lvl': dino.crit_dmg_lvl,
+                        })
+                
+                # Collect abilities list
+                abilities_list = []
+                run_abilities = DWPvmRunAbility.objects.filter(run=run_info).select_related('ability', 'dino')
+                for run_ability in run_abilities:
+                    abilities_list.append({
+                        'name': run_ability.ability.name,
+                        'description': run_ability.ability.description,
+                        'dino_name': run_ability.dino.dino.name if run_ability.dino else None,
+                    })
+                
+                # Save to leaderboard
+                DWPvmLeaderboard.objects.create(
+                    user=request.user,
+                    terrain=terrain,
+                    run_level=run_info.level,
+                    team_dinos_stats=team_dinos_stats,
+                    abilities_list=abilities_list
+                )
+                
                 DWPvmDino.objects.filter(user=request.user).delete()
                 run_info.delete()
                 dw_user = DWUser.objects.get(user=request.user)
@@ -823,3 +865,43 @@ def start_battle_pvm(request):
     except Exception as e:
         print(f"Error in start_battle_pvm: {e}")
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def leaderboard_view(request):
+    """View function to display the PVM leaderboard."""
+    try:
+        # Get filter parameters
+        user_filter = request.GET.get('user', '')
+        terrain_filter = request.GET.get('terrain', '')
+        
+        # Base queryset - top 10 runs ordered by level and date
+        queryset = DWPvmLeaderboard.objects.select_related('user', 'terrain')
+        
+        # Apply filters
+        if user_filter:
+            queryset = queryset.filter(user__username__icontains=user_filter)
+        if terrain_filter:
+            queryset = queryset.filter(terrain__name__icontains=terrain_filter)
+        
+        # Get top 10 results
+        leaderboard_entries = queryset[:10]
+        
+        # Get all terrains for filter dropdown
+        terrains = DWPvmTerrain.objects.all()
+        
+        context = {
+            'leaderboard_entries': leaderboard_entries,
+            'terrains': terrains,
+            'user_filter': user_filter,
+            'terrain_filter': terrain_filter,
+        }
+        
+        return render(request, 'Blog/dinowars/leaderboard.html', context)
+        
+    except Exception as e:
+        print(f"Error in leaderboard_view: {e}")
+        return render(request, 'Blog/dinowars/leaderboard.html', {
+            'leaderboard_entries': [],
+            'terrains': [],
+            'error': str(e)
+        })
