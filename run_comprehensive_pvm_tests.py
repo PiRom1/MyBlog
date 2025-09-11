@@ -52,7 +52,7 @@ def main():
         "Dernier souffle: When ally dies, others recover 20% HP",
         "Sprint préhistorique: +15% SPD to whole team for first 5 seconds",
         "Esprit de meute: +20% ATK if all allies alive, -10% otherwise",
-        "Bouclier collectif: 10% damage shared among living allies",
+        "Bouclier collectif: 20% damage shared among living allies",
         "Instinct protecteur: +20% DEF for 1s when any team member takes crit",
         "Pression croissante: +5% ATK every 3 seconds",
         "Seul contre tous: +20% DEF when only one dino remains",

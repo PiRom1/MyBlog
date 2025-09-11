@@ -9,7 +9,7 @@ Currently handles team abilities:
 - "Dernier souffle": When an ally dies, others recover 20% HP immediately
 - "Sprint préhistorique": +15% SPD to whole team for first 5 seconds of battle
 - "Esprit de meute": +20% ATK if all allies alive, -10% otherwise
-- "Bouclier collectif": 10% of damage received is shared among all living allies
+- "Bouclier collectif": 20% of damage received is shared among all living allies
 - "Instinct protecteur": +20% DEF for 1s when any team member takes a critical hit
 - "Pression croissante": +5% ATK every 3 seconds
 - "Seul contre tous": +20% DEF when only one dino remains alive
@@ -618,7 +618,7 @@ def apply_esprit_de_meute(team_dinos, game_state, check_only=False):
 
 def apply_bouclier_collectif(defender, damage, team_dinos, game_state):
     """
-    Bouclier collectif ability: 10% of damage received is shared equally among all living allies
+    Bouclier collectif ability: 20% of damage received is shared equally among all living allies
     
     Args:
         defender: The dino taking the original damage
@@ -634,7 +634,7 @@ def apply_bouclier_collectif(defender, damage, team_dinos, game_state):
     if not alive_allies:
         return damage  # No allies to share with
     
-    shared_damage = int(damage * 0.1)
+    shared_damage = int(damage * 0.2)
     damage_per_ally = shared_damage // len(alive_allies)
     remaining_damage = damage - shared_damage
     

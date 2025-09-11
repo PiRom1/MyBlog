@@ -40,7 +40,7 @@ User-friendly test runner script that:
 1. **Dernier souffle**: When an ally dies, others recover 20% HP immediately
 2. **Sprint préhistorique**: +15% SPD to whole team for first 5 seconds of battle
 3. **Esprit de meute**: +20% ATK if all allies alive, -10% otherwise
-4. **Bouclier collectif**: 10% of damage received is shared among all living allies
+4. **Bouclier collectif**: 20% of damage received is shared among all living allies
 5. **Instinct protecteur**: +20% DEF for 1s when any team member takes a critical hit
 6. **Pression croissante**: +5% ATK every 3 seconds
 7. **Seul contre tous**: +20% DEF when only one dino remains alive

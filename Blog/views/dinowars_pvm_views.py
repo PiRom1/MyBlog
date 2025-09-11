@@ -289,18 +289,6 @@ def set_new_run_dinos(new_run, random_dinos):
                 'crit_dmg': dino.base_crit_dmg
             }
             
-            # Apply terrain-based stat modifications
-            if terrain.name == "Montagne Rocheuse":
-                if dino.classe == "tank":
-                    dino_stats['defense'] = int(dino_stats['defense'] * 1.10)  # +10% defense for tanks
-                elif dino.classe == "dps":
-                    dino_stats['atk'] = int(dino_stats['atk'] * 0.80)  # -20% attack for DPS
-            elif terrain.name == "Erruption Volcanique":
-                if dino.classe == "dps":
-                    dino_stats['atk'] = int(dino_stats['atk'] * 1.10)  # +10% attack for DPS
-                elif dino.classe == "tank":
-                    dino_stats['defense'] = int(dino_stats['defense'] * 0.80)  # -20% defense for tanks
-            
             dinos_stats[f'dino{i+1}'] = dino_stats
 
     new_run.dino1 = DWPvmDino.objects.create(
@@ -589,18 +577,6 @@ def set_next_fight_dinos(run, life=None):
                 'crit_dmg': round(dino.base_crit_dmg + lvl_add, 2)
             }
             
-            # Apply terrain-based stat modifications
-            if terrain.name == "Montagne Rocheuse":
-                if dino.classe == "tank":
-                    base_stats['defense'] = int(base_stats['defense'] * 1.10)  # +10% defense for tanks
-                elif dino.classe == "dps":
-                    base_stats['atk'] = int(base_stats['atk'] * 0.80)  # -20% attack for DPS
-            elif terrain.name == "Erruption Volcanique":
-                if dino.classe == "dps":
-                    base_stats['atk'] = int(base_stats['atk'] * 1.10)  # +10% attack for DPS
-                elif dino.classe == "tank":
-                    base_stats['defense'] = int(base_stats['defense'] * 0.80)  # -20% defense for tanks
-            
             DWPvmNextFightDino.objects.create(
                 run=run,
                 dino=dino,
@@ -668,23 +644,11 @@ def calculate_total_stats(dino):
             elif ability.ability.name == "Boost de % critique":
                 total_stats['crit'] += 0.08
                 total_stats['crit'] = round(total_stats['crit'], 2)
-            elif ability.ability.name == "Boost de dégats critiques":
+            elif ability.ability.name == "Boost de dégâts critiques":
                 total_stats['crit_dmg'] += 0.2
                 total_stats['crit_dmg'] = round(total_stats['crit_dmg'], 1)
     except:
         pass
-
-    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
-    if terrain.name == "Erruption Volcanique":
-        if dino.dino.classe == "DPS":
-            total_stats['atk'] += int(total_stats['atk'] * 0.1)
-        elif dino.dino.classe == "Tank":
-            total_stats['defense'] -= int(total_stats['defense'] * 0.2)
-    elif terrain.name == "Montagne Rocheuse":
-        if dino.dino.classe == "DPS":
-            total_stats['atk'] -= int(total_stats['atk'] * 0.2)
-        elif dino.dino.classe == "Tank":
-            total_stats['defense'] += int(total_stats['defense'] * 0.1)
     
     return total_stats
 

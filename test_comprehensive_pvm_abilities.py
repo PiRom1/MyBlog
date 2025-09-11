@@ -357,7 +357,7 @@ class ComprehensivePvMAbilitiesTestCase(unittest.TestCase):
             self.assertAlmostEqual(dino.stats.atk, expected_atk, places=2)
 
     def test_bouclier_collectif_ability(self):
-        """Test Bouclier collectif: 10% of damage received is shared among all living allies"""
+        """Test Bouclier collectif: 20% of damage received is shared among all living allies"""
         print("Testing Bouclier collectif ability...")
         
         damage = 100

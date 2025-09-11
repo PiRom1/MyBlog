@@ -42,7 +42,7 @@ def montagne_rocheuse_terrain():
     return None
 
 def erruption_volcanique_terrain():
-    """Erruption Volcanique: +10% d'attaque pour les Dinos DPS, -20% de défense pour les Dinos Tank"""
+    """Eruption Volcanique: +10% d'attaque pour les Dinos DPS, -20% de défense pour les Dinos Tank"""
     # This terrain effect is handled in the views and load_dino_from_model function
     return None
 

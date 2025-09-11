@@ -43,7 +43,7 @@ def populate_abilities():
         },
         {
             'name': 'Bouclier collectif',
-            'description': '10% des dégâts reçus sont partagés équitablement entre tous les alliés vivants.',
+            'description': '20% des dégâts reçus sont partagés équitablement entre tous les autres alliés vivants.',
             'to_dino': False
         },
         {
@@ -58,12 +58,12 @@ def populate_abilities():
         },
         {
             'name': 'Seul contre tous',
-            'description': 'Si un seul dino reste vivant, il gagne +20% de défense.',
+            'description': 'S\'il ne reste qu\'un seul allié vivant, il gagne +20% de défense.',
             'to_dino': False
         },
         {
             'name': 'Terreur collective',
-            'description': 'Quand un ennemi meurt, toute l\'équipe gagne +8% d\'attaque de façon permanente.',
+            'description': 'Quand un ennemi meurt, toute l\'équipe gagne +8% d\'attaque pour le reste du combat.',
             'to_dino': False
         }
     ]
@@ -112,7 +112,7 @@ def populate_abilities():
         },
         {
             'name': 'Regard pétrifiant',
-            'description': '25% de chance à l\'attaque de réduire la vitesse de la cible de 50% pendant 3 secondes.',
+            'description': 'Après avoir attaqué, 25% de chance de réduire la vitesse de la cible de 50% pendant 3 secondes.',
             'to_dino': True
         },
         {
@@ -127,7 +127,37 @@ def populate_abilities():
         },
         {
             'name': 'Carapace robuste',
-            'description': 'Commence chaque combat avec 90% de résistance aux dégâts. La résistance diminue de 20% à chaque coup reçu.',
+            'description': 'Commence chaque combat avec 90% de résistance aux dégâts. La résistance diminue de 20% à chaque coup reçu (peut descendre dans le négatif).',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost de vie',
+            'description': 'Au début du combat, augmente les PV maximum de 20%.',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost d\'attaque',
+            'description': 'Au début du combat, augmente l\'attaque de 20%.',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost de défense',
+            'description': 'Au début du combat, augmente la défense de 20%.',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost de vitesse',
+            'description': 'Au début du combat, augmente la vitesse de 0.2.',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost de % critique',
+            'description': 'Au début du combat, augmente les chances de coup critique de 0.08.',
+            'to_dino': True
+        },
+        {
+            'name': 'Boost de dégâts critiques',
+            'description': 'Au début du combat, augmente les dégâts critiques de 0.2.',
             'to_dino': True
         }
     ]
@@ -165,31 +195,31 @@ def populate_terrains():
     
     terrains = [
         {
-            'name': 'Distorsion',
-            'description': 'Les statistiques des dinos sont mélangées de manière aléatoire, créant des combinaisons imprévisibles.'
+            'name': 'Distorsion Spatio-Temporelle',
+            'description': 'Les statistiques des dinos sont mélangées de manière aléatoire entre tous les dinos.'
         },
         {
             'name': 'Lac Putréfié',
-            'description': 'Tous les dinos perdent 5% de leurs PV maximum chaque seconde, rendant les combats plus rapides et intenses.'
+            'description': 'Tous les dinos perdent 5% de leurs PV maximum chaque seconde.'
         },
         {
-            'name': 'Brouillard Épais',
-            'description': 'Réduit de 50% la précision de tous les dinos, augmentant les chances d\'esquive.'
+            'name': 'Brouillard Epais',
+            'description': 'Réduit de 50% la précision de tous les dinos.'
         },
         {
             'name': 'Jungle Perfide',
-            'description': 'Le cooldown des capacités est réduit de 20% pour les dinos de support, favorisant les stratégies d\'équipe.'
+            'description': 'Le cooldown des capacités est réduit de 20% pour les dinos de support.'
         },
         {
-            'name': 'Ère Glaciaire',
-            'description': 'Tous les dinos commencent le combat avec une vitesse de base de 1.0, égalisant les chances.'
+            'name': 'Ere Glaciaire',
+            'description': 'Tous les dinos ont une vitesse de base de 1.0.'
         },
         {
             'name': 'Montagne Rocheuse',
             'description': '+10% de défense pour les dinos Tank, mais -20% d\'attaque pour les dinos DPS.'
         },
         {
-            'name': 'Éruption Volcanique',
+            'name': 'Eruption Volcanique',
             'description': '+10% d\'attaque pour les dinos DPS, mais -20% de défense pour les dinos Tank.'
         }
     ]

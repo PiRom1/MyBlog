@@ -103,7 +103,7 @@ class GameState:
                 interval = int(100 / dino.stats.speed)
                 self.schedule_action(interval, 1, lambda d=dino: self.dino_action(d), "dino_action", dino.id)
 
-        if self.terrain == "Lac Putrefie":
+        if self.terrain == "Lac Putréfié":
             self.schedule_action(100, 1, self.lac_putrefie, "lac_putrefie", None, None)
 
         while self.action_queue and all(any(d.is_alive() for d in team) for team in self.teams.values()) and self.tick < 10000:
@@ -169,7 +169,7 @@ class GameState:
         if not already_scheduled:
             self.schedule_action(interval, 1, lambda d=attacker: self.dino_action(d), "dino_action", attacker.id)
 
-    def dino_attack(self, attacker: Dino, defender: Dino, custom_stats: tuple = None, damage: int = None):
+    def dino_attack(self, attacker: Dino, defender: Dino, custom_stats: tuple = None, damage: int = None, is_crit: bool = False):
         # Defensive guards: if defender is missing or either party is dead, return no-damage
         if defender is None:
             return 0, False
@@ -191,8 +191,7 @@ class GameState:
                     if stat is not None:
                         stats[i] = stat                
             damage, is_crit = self.calculate_damage(*stats)
-        else:
-            is_crit = False
+
         if "bleed" in defender.current_statuses:
             damage = int(damage * 1.2)
         
@@ -397,7 +396,7 @@ def apply_terrain_stats(stats: Dict[str, float], dino_class: str, terrain: str) 
         elif dino_class == "dps":
             modified_stats['atk'] = int(stats['atk'] * 0.80)  # -20% attack for DPS
     
-    elif terrain == "Erruption Volcanique":
+    elif terrain == "Eruption Volcanique":
         if dino_class == "dps":
             modified_stats['atk'] = int(stats['atk'] * 1.10)  # +10% attack for DPS
         elif dino_class == "tank":
@@ -494,18 +493,32 @@ def crushing_bite_before_effect(attacker: Dino, defender: Dino, game_state: Game
 # RAPID SLASH
 # Hits 2 to 5 times in a row, defense is applied at the end.
 def rapid_slash_before_effect(attacker: Dino, defender: Dino, game_state: GameState):
+    
+    stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
+    
+    # Apply individual abilities that modify attack parameters before damage calculation
+    from Blog.utils.dw_pvm_abilities import apply_individual_abilities_before_attack
+    attack_modifications = apply_individual_abilities_before_attack(attacker, defender, game_state)
+    
+    # Apply critical chance bonus (Chasseur nocturne)
+    if 'crit_bonus' in attack_modifications:
+        stats[3] += attack_modifications['crit_bonus']  # Add to crit_chance
+    
     # hit distribution : 45% 2 hits, 35% 3 hits, 15% 4 hits, 5% 5 hits
     hit_distribution = [2, 3, 4, 5]
     probabilities = [0.40, 0.35, 0.15, 0.10]
     hits = random.choices(hit_distribution, probabilities)[0]
     game_state.log_effect("rapid_slash", attacker, "hits", hits)  # Log the number of hits
     total_damage = 0
+    crit_nb = 0
     for _ in range(hits):
-        damage, is_crit = game_state.calculate_damage(attacker.stats.atk, attacker.attack.dmg_multiplier, 0, attacker.stats.crit_chance, attacker.stats.crit_damage)
+        damage, is_crit = game_state.calculate_damage(*stats)
         total_damage += damage
+        if is_crit:
+            crit_nb += 1
     total_damage -= defender.stats.defense  # Apply defense at the end
     total_damage = max(0, total_damage)  # Ensure damage is not negative
-    damage, miss = game_state.dino_attack(attacker, defender, None, total_damage)  # Apply the total damage to the defender
+    damage, miss = game_state.dino_attack(attacker, defender, None, total_damage, crit_nb>1)  # Apply the total damage to the defender
     return False, miss  # Skip the normal attack
 
 
