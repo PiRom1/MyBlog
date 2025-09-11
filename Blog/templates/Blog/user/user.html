@@ -18,11 +18,11 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{% static 'Blog/user/js/slider.js' %}"></script>
-  <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+
+  {% include "Blog/layout/base.html" %}
 
 </head>
 
-<div id="bg" bg="{{user_bg}}"></div>
 
 <a href="/">HOME</a>
 

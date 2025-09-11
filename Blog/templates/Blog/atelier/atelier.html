@@ -9,7 +9,9 @@
 
     <!-- CSS -->
     
+    
     {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
 
@@ -17,11 +19,12 @@
     <script src="{% static 'Blog/atelier/js/atelier.js' %}"></script>
 
     
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-    {% include "../bg.html" %}
 </head>
 
 <body>
+    {% include "Blog/layout/base.html" %}
+
+
     <h1>L'Atelier</h1>
 
     <div class="container">

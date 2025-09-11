@@ -12,18 +12,17 @@
         <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-        <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+
+        <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
+        <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script>
+        <script src="{% static 'Blog/soundbox/js/filter.js' %}" type="module"></script>
+
+        {% include "Blog/layout/base.html" %}
+
     </head>
 
-    <script src="{% static 'Blog/soundbox/js/play_sounds.js' %}" type="module"></script>
-    <script src="{% static 'Blog/soundbox/js/checkbox.js' %}" type="module"></script>
-    <script src="{% static 'Blog/soundbox/js/filter.js' %}" type="module"></script>
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-
     <body>
-        {{bg}}
-        {% include "../bg.html" %}
-
+      
         <h1>Paramètres de la soundbox </h1>
         <img src="{% static 'img/yoda.png' %}" width="150" id="yoda" nb_sounds={{nb_sounds}}/>
         <br><br>
@@ -31,11 +30,11 @@
         <a href="/add_sounds">Ajouter un son</a>
         <br><br>
         <input type="text" id="filter" placeholder="Filtrez par mots-clés ...">
+        
         <ul>
         <span id="url" url={{ media_path }}></span>
         {% for sound, checked, tags in all_sounds %}
             <li class="data" id="sound_{{forloop.counter0}}" tags="{{tags}}" name="{{sound}}">
-            
                 - <div class="tooltip">{{sound.name}}<span class="tooltiptext">cliqué {{sound.counter}} fois</span></div>
                 
                 <span style = "cursor:pointer;" id="id_{{forloop.counter}}" sound={{sound}} sound_id={{sound.id}} url={{sound.sound.url}}>&#128266</span>
@@ -44,7 +43,7 @@
                     <source src="" type="audio/mp3" id="source_{{forloop.counter}}">
                     Your browser does not support the audio element.
                 </audio>
-                
+                {{sound.name}}
             </li>
         {% endfor %}
         </ul>

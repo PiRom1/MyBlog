@@ -173,7 +173,7 @@ class SessionBotAdmin(admin.ModelAdmin):
 
 @admin.register(EnjoyTimestamp)
 class EnjoyTimestampAdmin(admin.ModelAdmin):
-    list_display = ('time', 'published_date', 'writer', 'comment')
+    list_display = ('time', 'published_date', 'writer', 'comment', 'note')
     list_filter = ('published_date', 'writer')
     search_fields = ('comment', 'writer__username')
 
@@ -230,6 +230,20 @@ class ObjectifForQuestAdmin(admin.ModelAdmin):
     list_display = ("quest", "objectif", "achieved", "objective_value", "current_value")
     list_filter = ("achieved", "objectif", "quest__user")
     search_fields = ("quest__user__username", "objectif__type")
+
+
+@admin.register(JournalEntryType)
+class JournalEntryTypeAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type")
+
+@admin.register(JournalEntryTypeForUser)
+class JournalEntryTypeForUserAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type", "user", "get_notification")
+
+@admin.register(JournalEntry)
+class JournalEntryAdmin(admin.ModelAdmin):
+    list_display = ("id", "entry_type", "user", "entry", "date", "is_viewed")
+    
 
 @admin.register(DWAttack)
 class DWAttackAdmin(admin.ModelAdmin):

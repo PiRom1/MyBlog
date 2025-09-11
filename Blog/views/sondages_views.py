@@ -3,6 +3,7 @@ from ..models import *
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from ..forms import *
 from django.contrib.auth.decorators import login_required
+from Blog.views.utils_views import write_journal_sondage_create
 
 from ..utils.stats import *
 import random as rd
@@ -40,13 +41,16 @@ def update_sondage(request, pk):
 
             
             # Si nouveau current et qu'il y en avait un autre : devient le seul nouveau current. 
-            
-            if form.data['current'] == 'on':
+            if form.data.get('current') == 'on':
                 for _sondage in Sondage.objects.all():
                     if _sondage.current and _sondage != sondage and _sondage.session == sondage.session:
                         _sondage.current = False
                         _sondage.save()
 
+            # Ajout JournalEntry
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Sondage'),
+                                        user = request.user,
+                                        entry = f"Vous avez modifié le sondage '{sondage.question}'.")
 
             return redirect('sondage_list')
         
@@ -82,6 +86,10 @@ def create_sondage(request):
                 if _sondage.current and _sondage != sondage and _sondage.session == sondage.session:
                     _sondage.current = False
                     _sondage.save()
+            
+
+            # Ajout JournalEntry
+            write_journal_sondage_create(user = request.user, sondage = sondage)
 
 
             return redirect('sondage_list')
@@ -134,6 +142,6 @@ def vote_sondage(request, sondage_id, choice_id):
     if can_vote:
         choice_user = ChoiceUser(choice = choice, user = user)
         choice_user.save()
-
+    
 
     return HttpResponseRedirect(f"{request.session.get('previous_url', '/')}#bottom")

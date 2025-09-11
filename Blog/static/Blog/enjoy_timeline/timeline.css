@@ -67,3 +67,30 @@
     top: 2%;
     right: 2%;
 }
+
+
+.colorize-texts {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+}
+
+.text-for-color{
+    cursor: pointer;
+}
+
+.last-stamps {
+    position: absolute;
+    background-color: rgba(227, 171, 107, 0.555);
+    border-radius: 5px;
+    margin-left: 10%;
+    width: 80%;
+    margin-bottom: 50px;
+    padding: 10px;
+    top: 85%;
+}
+
+.no-bullets {
+    list-style-type: none;
+    padding-left: 18px;
+}

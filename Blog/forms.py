@@ -121,7 +121,7 @@ class BackgroundForm(forms.ModelForm):
 class EnjoyTimestampForm(forms.ModelForm):
     class Meta:
         model = EnjoyTimestamp
-        fields = ['comment']
+        fields = ['comment', 'note']
 
 
 class PariForm(forms.ModelForm):

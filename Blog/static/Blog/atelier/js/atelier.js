@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
         item.addEventListener('click', function() {
             
                 
-            console.log(nb_items_recycles);
             if (item.parentElement.id === 'inventory-grid') {
                 if (nb_items_recycles < 10) {
                     recycled_items.prepend(item);
@@ -76,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     item.addEventListener('mouseenter', function() {
         popupTimeout = setTimeout(() => {
-            console.log(skin_type);
             context_popup.style.left = `${mouseX}px`;
             context_popup.style.top = `${mouseY}px`;
             context_popup.style.display = 'block';
@@ -87,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 context_popup.style.border = '';
             }
             else {
-                console.log('here');
                 context_popup.style.fontFamily = "";
                 context_popup.style.fontSize = '1.2em';
                 
@@ -111,9 +108,6 @@ document.addEventListener('DOMContentLoaded', function () {
         context_popup.style.display = 'none'; // Cache le popup si la souris part
     });
 }
-        else {
-            console.log(skin_type);
-        }
     }
 
 
@@ -136,6 +130,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     items.forEach(item => {
+        
+        // Manage favorite item
+        if (item.getAttribute('data-favorite') === 'True') {
+            const heartCircle = document.createElement('div');
+            heartCircle.classList.add('heart-circle');
+            heartCircle.innerHTML = '<i class="fas fa-heart"></i>';
+            item.appendChild(heartCircle);
+        }
+        
 
         // Manage color circle
         const pattern = item.getAttribute('data-pattern');
@@ -163,12 +166,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Manage font
-        console.log()
         if (item.getAttribute('data-skin-type') === 'font') {
             let font_family = item.getAttribute('data-pattern');
-            font_tab.push(font_family);
-            console.log(font_family);
-    
+            font_tab.push(font_family);    
         }
 
     
@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const popup = document.getElementById('popup');
 
     recycler.addEventListener('click', function() {
-        // Il faudra aussi ajouter la prévisu des fonts / border image et les couleurs d'items
         console.log(`fetch : ${items_a_recycler}`);   
 
         
@@ -207,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             console.log(data);
             if (data.success === false) {
-                console.log(data.error);
+                console.log(`Erreur : ${data.error}`);
                 popup.style.display = 'block';
                 popup.innerHTML = data.error;
 

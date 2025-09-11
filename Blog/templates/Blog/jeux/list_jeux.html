@@ -12,13 +12,14 @@
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/jeux/css/list_jeux.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     <script src="{% static 'Blog/jeux/js/list_jeux.js' %}" type="module" defer></script>
     {% load leaderboard_tags %}
-    {% include "../bg.html" %}
 </head>
 
 <body>
+
+    {% include "Blog/layout/base.html" %}
+
 
     <h1>Liste des jeux accessibles</h1>
     

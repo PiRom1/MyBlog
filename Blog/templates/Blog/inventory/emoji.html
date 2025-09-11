@@ -11,11 +11,13 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-    {% include "../bg.html" %}
+    
 </head>
 
 <body>
+
+    {% include "Blog/layout/base.html" %}
+
 
 
     <form action="" method="post" id="emoji_form" enctype="multipart/form-data">

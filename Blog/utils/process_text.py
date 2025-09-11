@@ -58,6 +58,8 @@ CALEMBOURS_PATTERNS = [(' quoi ', ' quoi(feur) '),
                        (' congés ', ' congés(nocide armenien) '),
                        (' facultatif ', ' facultatif(fany(ktamere)) '),
                        (' dino ', ' dino(rdahl Lelandais) '),
+                       (' vélo ', ' vélo(ciraptor) '),
+                       
 
                        ]
 

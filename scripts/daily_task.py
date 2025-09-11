@@ -1,8 +1,11 @@
-from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam
-from datetime import timedelta
+from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam, DWFight
+from datetime import timedelta, datetime
 from constance import config as constance_cfg
 import random as rd
-
+from Blog.views.utils_views import write_journal_quest_new
+from Blog.utils.analyse_chat import chat_score
+from constance import config
+from django.utils import timezone
 
 
 def generate_quest(user, type : str):
@@ -35,6 +38,14 @@ def change_DWPvm_terrain():
     new_id = (old_id  % 7) + 1
     constance_cfg.DW_DAILY_TERRAIN_ID = new_id
 
+def clear_fights_log():
+    for fight in DWFight.objects.filter(gamemode = 'arena', date__lt = timezone.now() - timedelta(days=30)):
+        fight.delete()
+    for fight in DWFight.objects.filter(gamemode = 'pvm', date__lt = timezone.now() - timedelta(days=2)):
+        fight.delete()
+    for fight in DWFight.objects.filter(gamemode = 'duel', date__lt = timezone.now() - timedelta(days=1)):
+        fight.delete()
+
 
 def run():
     
@@ -51,7 +62,17 @@ def run():
     #         UserInventory.objects.create(user=user, item=Item.objects.create(type='box', item_id=box_id))
 
     # print(f'{nb_drop} lootboxes dropped for each user | {nb_coins} coins added to each user')
-
+    delta = timezone.now() - config.last_daily_task_date
+    if delta < timedelta(hours=23):  # Si le script a déjà été lancé il y a moins de 23 heures, ne pas éxecuter la suite
+        total_seconds = int(delta.total_seconds())
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        print(f"Le script a déjà été lancé il y a {hours} heures, {minutes} minutes et {seconds} secondes.")
+        return
+    
+    # Sinon, mettre à jour le champ
+    config.last_daily_task_date = timezone.now()
 
     # generate quests
     for user in User.objects.all():
@@ -65,15 +86,16 @@ def run():
         dwuser = DWUser.objects.get(user = user)
         dwuser.arena_energy = 5
         dwuser.save()
-
-    for team in DWUserTeam.objects.filter(in_arena=True):
-        user = team.user
-        user.coins += 150
-        user.save()
-        print(f'150 coins added to {user.username}')
-        break
     
+    write_journal_quest_new()
     print("Quests generated for every user")
+
+
+    # Chat score
+    chat_score()
+
+    # Clear fights log
+    clear_fights_log()
 
     change_DWPvm_terrain()
 

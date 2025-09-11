@@ -27,13 +27,17 @@
 
 {% csrf_token %}
 <body>
-    {% include "../bg.html" %}
+    {% include "Blog/layout/base.html" %}
     <h1>Enjoy Timeline</h1>
 
     
     <div id="nb" nb="{{nb}}"></div>
-    <div id="colors" colors="{{colors}}"></div>
+    <div id="data" data="{{timestamps_data}}" default_stamp_color="{{default_stamp_color}}" default_note_color="{{default_note_color}}"></div>
 
+    <div class="colorize-texts">
+        <div class="text-for-color" id="stamps_color">Colorer la timeline selon <i>le nombre d'avis</i></div>
+        <div class="text-for-color" id="notes_color">Colorer la timeline selon <i>les notes</i></div>
+    </div>
 
 
     <div class="hour-container">
@@ -53,15 +57,33 @@
             {% endfor %}
             <br>
         {% endfor %}
+
+        
     </div>
+
+    <div class="last-stamps">
+        <h3 style="padding-bottom:10px;">Les derniers commentaires</h3>
+        <ul class="no-bullets">
+            {% for stamp in last_stamps %}
+            <li><u>{{stamp.writer|capfirst}}</u> ({{ stamp.published_date|date:"d/m/Y, H:i" }}) <strong class="hour_minute" hour="{{stamp.time.hour}}" minute="{{stamp.time.minute}}">{{stamp.time.hour}}h{{stamp.time.minute}}mn</strong> : [{{stamp.note}}/5] {{stamp.comment}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    
+
+
 
     <div id="hour-panel" class="hour-panel"></div>
 
     <div class="footer">
         <a href="/">Retour à la page d'accueil</a><br>
         <a href="http://www.quelleheureestilenjoy.com/" target="_blank" id="enjoy_link">Quelle Heure Est-Il Enjoy ?</a><br>
-        <a href="/enjoy_timeline/{{current_hour}}/{{current_minute}}">Ajouter un timestamp à l'heure actuelle</a>
+        <span id="add_stamp">Ajouter un timestamp à l'heure actuelle</span>
     </div>
+
+    
+    
 
 
 </body>

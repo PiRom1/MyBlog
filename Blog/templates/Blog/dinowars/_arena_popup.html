@@ -14,7 +14,7 @@
         <div class="champion-section">
             {% if arena_team %}
                 <div class="champion-info">
-                    <h4 id="championUsername">{{ arena_team.user.username }}</h4>
+                    <h4 id="championUsername">{{ arena_team.user.username }} ({{elo}})</h4>
                     {% if arena_info %}
                         <div class="arena-stats">
                             <p>Victoires consécutives: {{ arena_info.win_streak }}</p>

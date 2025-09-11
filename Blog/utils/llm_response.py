@@ -5,6 +5,10 @@ from groq import Groq
 from .llm_prompts import USERLIST, USERPROMPTS, USER_CONTEXTS
 from Blog.models import Bot, User, SessionUser, SessionBot
 from datetime import datetime
+import traceback
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # Fonction qui génère une réponse à partir d'un message et optionnellement d'un utilisateur
 def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) -> Optional[str]:
@@ -24,7 +28,7 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
    
         # Initialize Groq client with API key
         client = Groq(
-            api_key="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"
+            api_key = os.environ.get('GROQ_API_KEY')
         )
 
 
@@ -56,10 +60,9 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
             ],
             model=bot.model_name,
             temperature=bot.temperature,
-            max_tokens=bot.max_tokens,
+            max_completion_tokens=bot.max_tokens,
             top_p=bot.top_p,
             presence_penalty=bot.presence_penalty,
-            frequency_penalty=bot.frequence_penalty
         )
 
         # Return the generated response
@@ -67,6 +70,7 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
+        traceback.print_exc()
         return None, None
     
 
@@ -82,7 +86,7 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
         
             # Initialize Groq client with API key
             client = Groq(
-                api_key="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"
+                api_key = os.environ.get('GROQ_API_KEY')
             )
 
             prompt = f"""{bot.preprompt}\n\n Tu dois ecrire un nouveau message en incarnant le personnage de {bot.user}.
@@ -96,12 +100,11 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
                         "content": prompt
                     }
                 ],
-                model="mixtral-8x7b-32768",
+                model=bot.model_name,
                 temperature=bot.temperature,
-                max_tokens=bot.max_tokens,
+                max_completion_tokens=bot.max_tokens,
                 top_p=bot.top_p,
                 presence_penalty=bot.presence_penalty,
-                frequency_penalty=bot.frequence_penalty
             )
 
             # Return the generated response
@@ -109,4 +112,5 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
     
     except Exception as e:
         print(f"Error during LLM request: {str(e)}")
+        traceback.print_exc()
         return None, None

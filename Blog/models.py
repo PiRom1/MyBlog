@@ -334,6 +334,7 @@ class EnjoyTimestamp(models.Model):
     published_date = models.DateTimeField()
     writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     comment = models.TextField()
+    note = models.IntegerField("note", null = True, blank = True, default = None)
 
     def __str__(self):
         return f"{self.time} ({self.writer.username})"
@@ -434,6 +435,34 @@ class ObjectifForQuest(models.Model):
 
     def __str__(self):
         return f"{self.quest} - {self.objectif} ({self.objective_value})"
+
+
+class JournalEntryType(models.Model):
+    entry_type = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.entry_type
+
+
+class JournalEntryTypeForUser(models.Model):
+    entry_type = models.ForeignKey(JournalEntryType, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    get_notification = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.entry_type} for {self.user} (Notification : {self.get_notification})"
+
+class JournalEntry(models.Model):
+    entry_type = models.ForeignKey(JournalEntryType, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    entry = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    is_viewed = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"{self.entry} ({self.user}, {self.date})"
+
+
 
 class DWAttack(models.Model):
     name = models.CharField(max_length=100)

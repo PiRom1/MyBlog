@@ -83,3 +83,212 @@ def get_item(skin_id):
     
 
     return item, skin
+
+
+
+DIPLODOCOIN_STR = "pièces " #"<img src='{% static 'img/coin.png' %}' width='20'> "
+
+
+
+def write_journal_soundbox_add(user, sound):
+
+    for _user in User.objects.all():
+
+        if user != _user:
+            entry = f"{user.username} a ajouté le son '{sound.name}' à la soundbox"
+
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Soundbox'),
+                                        user = _user,
+                                        entry = entry)
+
+
+def write_journal_sondage_create(user, sondage):
+
+    session_users = User.objects.filter(sessionuser__session=sondage.session)
+
+    for _user in session_users:
+
+        if user != _user:
+            entry = f"{user.username} a créé le sondage '{sondage.question}' dans la session {sondage.session.session_name}"
+
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Sondage'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_recit_create(user, recit):
+
+    for _user in User.objects.all():
+
+        if user != _user:
+            entry = f"{user.username} a créé le récit '{recit.name}'"
+
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Récit'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_recit_contribute(user, recit):
+
+    users = User.objects.filter(texte__recit=recit).distinct()
+
+    for _user in users:
+
+        if _user != user:
+
+            entry = f"{user.username} a contribué au récit '{recit.name}'"
+
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Récit'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_ticket_create(user, ticket):
+
+    for _user in User.objects.all():
+
+        if user != _user:
+
+            entry = f"{user.username} a créé le ticket '{ticket.title}'"
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Ticket'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_ticket_update(user, ticket):
+
+    for _user in User.objects.all():
+
+        if user != _user:
+
+            entry = f"{user.username} a modifié le ticket '{ticket.title}'"
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Ticket'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_quest_new():
+
+    for user in User.objects.all():
+
+        entry = "Deux nouvelles quêtes sont disponibles"
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Quête'),
+                                        user = user,
+                                        entry = entry)
+
+
+
+def write_journal_pari_create(user, pari):
+
+    for _user in User.objects.all():
+
+        if user != _user:
+
+            entry = f"{user.username} a créé le pari '{pari.name}'"
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Pari'),
+                                        user = _user,
+                                        entry = entry)
+
+
+
+def write_journal_pari_bet(user, pari, user_for_issue):
+
+    pari_issues = PariIssue.objects.filter(pari = pari)
+    users = User.objects.filter(userforissue__pari_issue__in=pari_issues)
+
+    print("users : ", users, pari_issues)
+
+    for _user in users:
+
+        if user != _user:
+            
+            entry = f'''{user.username} a misé {user_for_issue.mise} ''' + DIPLODOCOIN_STR + f"sur le pari {pari.name}"
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Pari'),
+                                        user = _user,
+                                        entry = entry)
+    
+    if pari.creator not in users:
+
+        entry = f'''{user.username} a misé {user_for_issue.mise} ''' + DIPLODOCOIN_STR + f"sur le pari {pari.name}"
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Pari'),
+                                    user = pari.creator,
+                                    entry = entry)
+
+
+
+
+def write_journal_arena_get(user_in, user_out, coin_earned):
+
+    for _user in User.objects.all():
+
+        if _user == user_out:
+            entry = f"{user_in.username} vous a expulsé de l'arène. Vous avez gagné {coin_earned} " + DIPLODOCOIN_STR
+
+        elif _user == user_in:
+            entry = f"Vous avez expulsé {user_out.username} de l'arène. Il a gagné {coin_earned} " + DIPLODOCOIN_STR
+        
+        else:
+            entry = f"{user_in.username} a expulsé {user_out.username} de l'arène. {user_out.username} a gagné {coin_earned} " + DIPLODOCOIN_STR
+
+
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Arène'),
+                                    user = _user,
+                                    entry = entry)
+
+
+def write_journal_hdv_sold(seller, buyer, item, price):
+        
+        if item.type == 'box':
+            item_str = 'box'
+        else:
+            item_str = Skin.objects.get(id=item.item_id).name
+
+        entry = f"{buyer.username} vous a acheté {item_str} pour {price} " + DIPLODOCOIN_STR
+
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'HDV'),
+                                    user = seller,
+                                    entry = entry)
+
+
+def write_journal_hdv_is_selling(seller, item, price):
+        
+        if item.type == 'box':
+            item_str = 'box'
+        else:
+            item_str = Skin.objects.get(id=item.item_id).name
+
+        entry = f"{seller.username} a mis en vente {item_str} pour {price} " + DIPLODOCOIN_STR
+
+        for _user in User.objects.all():
+
+            if _user != seller:
+                JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'HDV'),
+                                            user = _user,
+                                            entry = entry)
+
+
+def write_journal_tag(writer, receiver, session):
+
+    if writer != receiver and receiver not in User.objects.filter(bot__isnull=False).distinct():
+
+        entry = f"Vous avez été tagué par {writer.username.capitalize()} dans la session {session.session_name}"
+
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Tag'),
+                                    user = receiver,
+                                    entry = entry)
+
+
+
+
+
+
+
+
+
+
+

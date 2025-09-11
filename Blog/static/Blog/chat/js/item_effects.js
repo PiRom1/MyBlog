@@ -32,10 +32,13 @@ document.addEventListener('DOMContentLoaded', function () {
     messages.forEach((message) => {
         // Get skins
         skins = message.getAttribute('skins');
-        console.log(skins);
+        console.log(skins, message, "id : ", message.id);
         if (skins === '') {
             skins = "{}";
         }
+        if (message.id === "example-text") {
+            return;
+        } // Pas de skin pour le message d'exemple
         skins = skins.replace(/'/g, '"');
         console.log(skins);
         skins = JSON.parse(skins);

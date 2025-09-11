@@ -214,3 +214,21 @@ h1 {
     position: absolute;
     margin-top: 10px;
 }
+
+
+.heart-circle {
+    position: absolute;
+    top: 3px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #ff3030; /* Optionnel : bordure blanche pour plus de visibilité */
+    background-color: rgba(86, 86, 86, 0.8); /* Fond rouge translucide */
+    color: #ff3030; /* Couleur du coeur */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px; /* Taille du coeur */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère pour l'effet de relief */
+}

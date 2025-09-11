@@ -107,7 +107,10 @@
             {% endif %}
         </p>
         <button id="confirmHatchBtn" class="action-btn">Faire éclore!</button>
+        
     </div>
+    <span style="position: absolute; left:1%; bottom:5%;">Il vous reste {{user.user.coins}} <img src="{% static 'img/coin.png' %}" width="20"></span>
+    
 </div>
 
 <div id="battlePopup" class="popup-overlay">
@@ -130,6 +133,11 @@
         <div id="dinoDetailContent"></div>
     </div>
 </div>
+
+<div style="left:2px; bottom:2px; position:absolute;">
+    <a href="/">HOME</a><br>
+</div>
+
 {% endblock %}
 
 {% block extra_css %}
@@ -141,4 +149,5 @@
 
 {% block extra_js %}
 <script src="{% static 'Blog/dinowars/js/user_dinos.js' %}"></script>
+<script src="{% static 'Blog/dinowars/js/get_dino_nb_to_evolve.js' %}"></script>
 {% endblock %}

@@ -20,6 +20,7 @@ from ..utils.stats import *
 import random as rd
 from groq import Groq
 from datetime import datetime
+from Blog.views.utils_views import write_journal_tag
 
 
 
@@ -163,7 +164,7 @@ def Index(request, id):
             'new_message': new_message})
         
         return JsonResponse(data={'messages_html': messages_html,
-                                  'last_message_id': post_last_message_id})
+                                  'last_message_id': messages[-1].id})
 
  # Get items
             
@@ -186,6 +187,13 @@ def Index(request, id):
         message_text = request.POST.get('message_html')
         print("text : ", message_text)
         if message_text:
+
+            # Journal
+            for _user in User.objects.filter(sessionuser__session = session):
+                if f"@{_user.username.lower()}" in message_text.lower():
+                    write_journal_tag(writer = user,
+                                      receiver = _user,
+                                      session = session)
            
             print("Before : \n", message_text)
             processed_message_text = process_text(message_text, user, session)
@@ -200,6 +208,8 @@ def Index(request, id):
 
             new_message.save()
             history.save()
+                    
+
             agent_called = ask_agent_question(message_text, session)
             # 1 chance sur 10 de déclencher une réponse de LLM
             if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
@@ -224,6 +234,7 @@ def Index(request, id):
                                 history = History(pub_date = timezone.now(), writer = llm_user, text = response, message = new_message)
                                 new_message.save()
                                 history.save()
+                    
 
             return HttpResponseRedirect('#bottom')
 
@@ -481,7 +492,7 @@ def tkt_view(request):
 def ask_heure_enjoy(request):
     # Initialize Groq client with API key
     client = Groq(
-        api_key="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"
+        api_key = os.environ.get('GROQ_API_KEY')
     )
     bot = Bot.objects.get(user__username='enjoy')
     user = request.user

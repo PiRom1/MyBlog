@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from django.utils import timezone
 
+# PARAMETERS
+os.environ["GROQ_API_KEY"] = os.getenv('GROQ_API_KEY', '')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +34,7 @@ DEBUG = True
 # Configuration des tokens
 TOKEN_EXPIRE_HOURS = 24
 TOKEN_EXPIRED_AFTER_SECONDS = 3600  # Durée de vie du token en secondes (par exemple, 1 heure)
+
 
 ALLOWED_HOSTS = [
     "https://diplo.pythonanywhere.com",
@@ -57,8 +61,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'clearcache',
     'channels',
+    'constance',
+    'constance.backends.database'
     # "corsheaders",
 ]
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +77,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CONSTANCE_CONFIG = {
+    'last_daily_task_date': (timezone.now(), "Last date where the daily_tasks scripts has been called.")
+}
+
 
 # MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
 

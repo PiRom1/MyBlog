@@ -10,7 +10,10 @@ from ..models import DWArena, DWDino, DWUserDino, DWUser, User
 from django.utils import timezone
 from datetime import datetime
 from Blog.utils.dw_battle_logic import load_dino_from_model, GameState
+from Blog.utils.dw_arena import get_minutes_in_arena, get_arena_coins
 from Blog.views.quests_views import validate_objective_quest
+from django.utils.timezone import now
+from Blog.views.utils_views import write_journal_arena_get
 
 
 @login_required
@@ -45,7 +48,8 @@ def user_dinos_view(request):
     context = {
         'user_dinos': user_dinos,
         'user_team': user_team,
-        'user_stats': user_stats
+        'user_stats': user_stats,
+        'user' : request.user,
     }
     return render(request, 'Blog/dinowars/user_dinos.html', context)
 
@@ -298,7 +302,6 @@ def runes_inventory_view(request):
     inventory_items = UserInventory.objects.filter(
         user=request.user,
         item__type='skin',
-        favorite=False 
     ).exclude(
         item__id__in=equipped_item_ids
     ).select_related('item')
@@ -527,13 +530,17 @@ def arena_view(request):
         time_diff = None
 
     arena_energy = DWUser.objects.get(user=request.user).arena_energy
+
+    elo = DWUser.objects.get(user = arena_team.user).elo
+    
     
     context = {
         'user_teams': user_teams,
         'arena_team': arena_team,
         'arena_info': arena_info,
         'arena_energy': arena_energy,
-        'time_diff': time_diff
+        'time_diff': time_diff,
+        'elo' : elo,
     }
     
     return render(request, 'Blog/dinowars/_arena_popup.html', context)
@@ -641,6 +648,22 @@ def start_battle(request):
                 attacker_user.save()
                 defender_user.save()
 
+                # Give a reward to team2 (the team who left the arena)
+                nb_minutes_in_arena = min(get_minutes_in_arena(current_arena), 540)
+                nb_victories = current_arena.win_streak
+                nb_coins = get_arena_coins(minutes = nb_minutes_in_arena, 
+                                           victories = nb_victories)
+                
+                # Restaurer l'énergie d'arène de l'attaquant
+                # attacker_user.arena_energy = 5
+                # attacker_user.save()
+                
+                print(f"L'utilisateur {defender_user.user} a gagné {nb_coins} pièces en restant {nb_minutes_in_arena}mn dans l'arène, et en encaissant {nb_victories} victoires !")
+                
+                defender_user.user.coins += nb_coins
+                defender_user.user.save()
+
+                write_journal_arena_get(user_in = attacker_user.user, user_out = defender_user.user, coin_earned = nb_coins)
 
 
             else:
@@ -982,9 +1005,10 @@ def battle_analytics_view(request, fight_id):
     
     return render(request, 'Blog/dinowars/battle_analytics.html', context)
 
+
 @login_required
-@require_POST
-def remove_runes(request):    
+def remove_runes(request):
+    
     data = json.loads(request.body)
 
     if 'dino_id' not in data:
@@ -996,3 +1020,24 @@ def remove_runes(request):
     runes.delete()
 
     return JsonResponse({'success' : True, 'runes_id' : runes_id})
+
+
+@login_required 
+def get_dino_nb_to_evolve(request, dino_id):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return JsonResponse({'success': False})
+    
+    user_dino = DWUserDino.objects.get(pk=dino_id)
+    all_user_dinos_of_this_type = DWUserDino.objects.filter(user=request.user, 
+                                                            dino=user_dino.dino,
+                                                            level__lte=user_dino.level)
+    
+    nb_to_reach = 2**user_dino.level
+    current_nb = sum([2**(dino.level-1) for dino in all_user_dinos_of_this_type])
+
+    if current_nb >= nb_to_reach:
+        message = "Vous pouvez faire évoluer ce dinosaure !"
+    else:
+        message = f"Il vous faut encore faire éclore {nb_to_reach - current_nb} {user_dino.dino.name} pour pouvoir le faire évoluer au niveau {user_dino.level + 1}"
+    
+    return JsonResponse({'success' : True, 'message' : message})

@@ -20,14 +20,16 @@
   <!-- JS -->
   <script src="{% static 'Blog/lootbox/js/opening.js' %}"></script>
   <meta name="csrf-token" content="{{ csrf_token }}">
-  <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
-  {% include "../bg.html" %}
+ 
 
 
 </head>
 
 
   <body>
+
+    {% include "Blog/layout/base.html" %}
+
     <div id="data" skins="{{skins}}"></div>
     <div id="box_id" box_id={{box_id}}></div>
 

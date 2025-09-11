@@ -27,14 +27,18 @@
 {% csrf_token %}
 <body>
 
+    {% include "Blog/layout/base.html" %}
+
+
     <h1>Enjoy Timeline</h1>
     <h2>- {{hour}}h{{minute}} -</h2>
+    {% if mean_note %}<h3>Note moyenne : {{mean_note}}</h3>{% endif %}
     <br>
     <ul>
         {% for timestamp in timestamps %}   
             <li>
                 <div class="comment">
-                    <i>(<span class="date">{{timestamp.published_date}}</span>)</i> <strong><u><a href="/user/{{timestamp.writer.id}}">{{timestamp.writer.username}}</a></strong></u> : {{timestamp.comment}}
+                    <i>(<span class="date">{{timestamp.published_date}}</span>)</i> <strong><u><a href="/user/{{timestamp.writer.id}}">{{timestamp.writer.username}}</a></strong></u> {% if timestamp.note %}<i>{{timestamp.note}}/5</i>{% endif %} : {{timestamp.comment}}
                 </div>
             </li>
         {% endfor %}

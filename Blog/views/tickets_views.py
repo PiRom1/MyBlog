@@ -4,7 +4,7 @@ from ..forms import *
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
-
+from Blog.views.utils_views import write_journal_ticket_create, write_journal_ticket_update
 
 from ..utils.stats import *
 
@@ -46,6 +46,8 @@ def create_ticket(request):
                 return redirect('ticket_list')
             send_mail( subject, message, email_from, recipient_list )
 
+            write_journal_ticket_create(user = request.user, ticket = ticket)
+
             return redirect('ticket_list')
     else:
         form = TicketForm()
@@ -64,6 +66,10 @@ def update_ticket(request, pk):
         form = TicketForm(request.POST, instance=ticket)
         if form.is_valid():
             form.save()
+
+            write_journal_ticket_update(user = request.user, ticket = ticket)
+
+
             return redirect('ticket_list')
     else:
         form = TicketForm(instance=ticket)

@@ -21,9 +21,9 @@
 </head>
 {% load custom_filters %}
 <body>
-  
-  {% include "../bg.html" %}
+  {% include "Blog/layout/base.html" %}
 
+  
   <h1>Statistiques sur la session {{session.session_name}}</h1>
   {% for user,stat in message_stats.items %}
     <ul><li>
