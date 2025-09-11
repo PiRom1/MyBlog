@@ -534,42 +534,48 @@ function showFightHistoryPopup() {
 function displayFightsList(fights, runLevel) {
     const fightsList = document.getElementById('fightsList');
     
-    let fightsHtml = `<div class="fights-header">
-        <p>Run niveau ${runLevel} - ${fights.length} combat${fights.length > 1 ? 's' : ''} effectué${fights.length > 1 ? 's' : ''}</p>
-    </div>`;
-    
+    // Compact header
+    let fightsHtml = `<div class="fights-header"><p>Run niveau ${runLevel} — ${fights.length} combat${fights.length > 1 ? 's' : ''}</p></div>`;
+
+    // Render each fight as a single compact line
     fights.forEach((fight, index) => {
         const resultClass = fight.is_victory ? 'victory' : 'defeat';
         const resultText = fight.is_victory ? 'Victoire' : 'Défaite';
-        const fightNumber = fights.length - index; // Reverse numbering (newest first)
-        
+        const fightNumber = fights.length - index; // newest first
+
         fightsHtml += `
-            <div class="fight-item ${resultClass}">
-                <div class="fight-info">
-                    <div class="fight-number">Combat #${fightNumber}</div>
-                    <div class="fight-date">${fight.date}</div>
-                    <div class="fight-teams">
-                        <div class="team-info">
-                            <strong>Votre équipe:</strong> ${fight.user1_team}
-                        </div>
-                        <div class="team-info">
-                            <strong>Équipe ennemie:</strong> ${fight.user2_team}
-                        </div>
-                    </div>
-                    <div class="fight-result ${resultClass}">
-                        <span class="result-text">${resultText}</span>
-                    </div>
-                </div>
-                <div class="fight-actions">
-                    <a href="/dinowars/battle/analytics/${fight.id}/" class="analytics-link" target="_blank">
-                        <i class="fi fi-rs-chart-line"></i> Voir les analytics
-                    </a>
-                </div>
+            <div class="fight-item compact ${resultClass}">
+            <div class="fight-line">
+                <span class="fight-number">#${fightNumber}</span>
+                <span class="fight-date">${fight.date.split(' ')[1]}</span>
+                <span class="fight-teams">${fight.user2_team}</span>
+                <span class="fight-result ${resultClass}">${resultText}</span>
+                <a href="/dinowars/battle/analytics/${fight.id}/" class="analytics-link" target="_blank" title="Voir les analytics" style="display: none;"></a>
+            </div>
             </div>
         `;
     });
-    
+
     fightsList.innerHTML = fightsHtml;
+
+    // Make each compact fight row clickable (open analytics). If the user clicks the actual analytics link,
+    // let the link handle the action instead.
+    const compactItems = fightsList.querySelectorAll('.fight-item.compact');
+    compactItems.forEach(item => {
+        const link = item.querySelector('.analytics-link');
+        const url = link ? link.href : null;
+        if (!url) return;
+
+        // set pointer cursor for better affordance
+        item.style.cursor = 'pointer';
+
+        item.addEventListener('click', (e) => {
+            // if the click originated on the analytics link (or its children), do nothing (allow default)
+            if (e.target.closest && e.target.closest('.analytics-link')) return;
+            // open analytics in a new tab
+            window.open(url, '_blank');
+        });
+    });
 }
 
 function closeFightHistoryPopup() {

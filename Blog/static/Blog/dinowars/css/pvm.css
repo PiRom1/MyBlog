@@ -722,6 +722,76 @@ button[type="submit"] {
     font-size: 1rem;
 }
 
+/* Compact layout for fight history rows (used by JS compact render) */
+.fight-item.compact {
+    padding: 8px 10px;
+    border-radius: 6px;
+    display: block;
+}
+
+.fight-item.compact .fight-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.fight-item.compact .fight-number {
+    font-weight: 700;
+    color: #333;
+    margin-right: 6px;
+}
+
+.fight-item.compact .fight-date {
+    color: #666;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.fight-item.compact .fight-teams {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #222;
+}
+
+.fight-item.compact .fight-result {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+}
+
+.fight-item.compact.victory .fight-result {
+    background-color: #4CAF50;
+}
+
+.fight-item.compact.defeat .fight-result {
+    background-color: #f44336;
+}
+
+.fight-item.compact .analytics-link {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+}
+
+.fight-item.compact .analytics-link i {
+    font-size: 0.95rem;
+}
+
+/* Show pointer cursor for whole compact fight rows (clickable) */
+.fight-item.compact {
+    cursor: pointer;
+}
+
+/* But keep analytics link pointer for consistency and keyboard focus */
+.fight-item.compact .analytics-link {
+    cursor: pointer;
+}
+
 .no-fights-message, .error-message {
     text-align: center;
     padding: 30px;
