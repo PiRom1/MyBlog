@@ -46,60 +46,46 @@
         }
 
 
-        isCellFree(coords) {
-            // console.log("array : ", array);
-            // console.log(array[coords[0]][coords[1]])
-
-            if (0 <= coords[0] < array.length && 0 <= coords[1] < array[0].length) {
-                if (array[coords[0]][coords[1]] === 1) {
-                    return true;
-                }
-            }
-            return false;
-
-        }
+        
 
 
 
-        getRandomMovement() {
+        getRandomMovement(taken_cells) {
             let movements = Array(Array(1, 0), Array(-1, 0), Array(0, 1), Array(0, -1));
-            console.log("random movemernt:  ");
-            movements.forEach(movement => {
-                if (this.isCellFree([this.y + movement[0], this.x + movement[1]])) {
-                    if (randint(1, 100) < 200) {
+            for (let movement of movements) {
+                if (isCellFree([this.y + movement[1], this.x + movement[0]], taken_cells, this.player.x, this.player.y)) {
+                    if (randint(1, 100) < 20) {
                         return movement;
                    }
                 }
-            })
+            }
         }
 
 
-        get_movement(a_star, player_x, player_y) {
+        get_movement(a_star, taken_cells) {
 
-            if (Math.abs(player_x - this.x) + Math.abs(player_y - this.y) <= ENEMY_PATHFINDING_RADIUS) { // Alors on utilise A Star
-                const movement = a_star.aStar(this.x, this.y, player_x, player_y);
+            if (Math.abs(this.player.x - this.x) + Math.abs(this.player.y - this.y) <= ENEMY_PATHFINDING_RADIUS) { // Alors on utilise A Star
+                const movement = a_star.aStar(this.x, this.y, this.player.x, this.player.y, taken_cells);
                 if (!movement) {
-                    return this.getRandomMovement();
+                    return this.getRandomMovement(taken_cells);
                     }
-                console.log("Moving enemy to : ", movement[1]);
+                console.log(movement);
                 return [movement[1][0] - this.x, movement[1][1] - this.y];
                 
             }
             else { // Sinon, mouvement aléatoire   
-                return this.getRandomMovement();
+                return this.getRandomMovement(taken_cells);
             }
         }
 
 
         // Move the player, or the dungeon of the offset is reached
-        move(a_star) {
-
+        move(a_star, taken_cells) {
             if (this.is_moving) {
                 return;
             }
 
-            let movement = this.get_movement(a_star, this.player.x, this.player.y);
-            
+            let movement = this.get_movement(a_star, taken_cells);
             if (movement) {
                 this.is_moving = true;
 
@@ -116,7 +102,7 @@
                     this.facing = "down";
                 }
                 if (dy === -1) {
-                    this.facing = "bottom";
+                    this.facing = "up";
                 }
                 
                 if (this.is_moving) {

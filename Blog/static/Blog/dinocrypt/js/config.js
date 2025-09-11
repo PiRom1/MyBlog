@@ -99,10 +99,27 @@ function generateRandomArray(rows, columns) {
 
 
 
-function isArrayInArray(containing_array, contained_array) {
-    
-    const result = containing_array.some(sub_array => JSON.stringify(sub_array) === JSON.stringify(contained_array));
-    return result;
 
-}
 
+function isCellFree(coords, taken_cells, player_x, player_y) {
+        
+
+            if (coords[0] >= 0 && coords[0] < array.length && coords[1] >= 0 && coords[1] < array[0].length) {
+                if (array[coords[0]][coords[1]] === 1) { // is cell ground
+                    // for (let enemy of enemies) { // Si aucun ennemi sur la cellule cible
+                    //     if (coords[1] === enemy.x && coords[0] === enemy.y) {
+                    //         return false;
+                    //     }
+                    // }
+                    
+                    // Si pas le joueur sur la cellule
+                    if (coords[1] !== player_x && coords[0] !== player_y) {
+                        if (!(taken_cells.includes(`${coords[0]}_${coords[1]}`))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+
+        }

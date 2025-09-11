@@ -451,6 +451,8 @@ def dungeon(request):
 
     dungeon_generator = DungeonGenerator()
     dungeon_size = [100, 100]
+    nb_enemies = 10
+
     while True:
         try:
             dungeon = dungeon_generator.generate_dungeon(dungeon_size = dungeon_size, room_size = (15, 15), nb_rooms = 10, stability = 1, nb_chests = 1)
@@ -463,7 +465,7 @@ def dungeon(request):
     
     index_random_start_coord = rd.randint(0, len(ground_cells[0]) - 1)
 
-    index_random_enemies_start_coord = [rd.randint(0, len(ground_cells[0]) - 1) for _ in range(100)]
+    index_random_enemies_start_coord = [rd.randint(0, len(ground_cells[0]) - 1) for _ in range(nb_enemies)]
     if index_random_start_coord in index_random_enemies_start_coord:
         index_random_enemies_start_coord.remove(index_random_start_coord) 
         

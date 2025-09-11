@@ -28,14 +28,14 @@ class AStar {
             const newY = cell.y + dir[1];
 
             // Check if newX and newY are in the array
-            if ( (0 <= newX < this.array.length) && (0 <= newY < this.array[0].length)) { 
+            if ( (newX >= 0 && newX < this.array.length && newY >= 0 && newY < this.array[0].length)) { 
 
                 // Check if the new cell is free
                 if (this.array[newY][newX] === 1) {
-                    // Check if the new cell is not already explored or to explore
-
-                    adjacent_cells.push({"x" : newX, "y" : newY, "distance" : cell.currentDistance + 1, "parent" : cell});
-
+                    // Check if the new cell is not in taken cells:
+                    if (!this.taken_cells.includes(`${newX}_${newY}`)) {
+                        adjacent_cells.push({"x" : newX, "y" : newY, "distance" : cell.currentDistance + 1, "parent" : cell});
+                    }
 
                 }
             }
@@ -102,11 +102,12 @@ class AStar {
     }
 
 
-    aStar(start_x, start_y, target_x, target_y) {
+    aStar(start_x, start_y, target_x, target_y, taken_cells) {
 
         // Init
         this.startCell = new Cell(start_x, start_y, 0, 0, null);
         this.targetCell = new Cell(target_x, target_y, 0, 0, null);
+        this.taken_cells = taken_cells;
 
         console.log(`A Star initialisation from ${this.startCell.toString()} to ${this.targetCell.toString()} ... `);
         this.cells = {};
@@ -116,14 +117,10 @@ class AStar {
         let adjacent_cells = this.getAdjacentCells(this.startCell);
         this.updateExploration(this.startCell, adjacent_cells);
 
-        console.log("First adjacent cells : ", adjacent_cells);
-        console.log("First cells to explore : ", this.cellsToExplore);
-       
 
         let n = 1;
         while (true) {
             const current_cell = this.getCurrentCell();
-            console.log("current cell : ", current_cell);
             if (!current_cell) { // Si pas de chemin optimal
                 return;
             }
