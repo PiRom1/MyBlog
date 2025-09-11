@@ -689,6 +689,49 @@ def calculate_total_stats(dino):
     return total_stats
 
 @login_required
+def get_run_fights_view(request):
+    """View function to get all fights for the current PVM run."""
+    try:
+        # Get current run info
+        run_info = get_object_or_404(DWPvmRun, user=request.user)
+        
+        # Get all PVM fights for this user since the run started
+        fights = DWFight.objects.filter(
+            user1=str(request.user),
+            gamemode='pvm',
+            date__gte=run_info.run_date
+        ).order_by('-date')
+        
+        # Prepare fight data for the popup
+        fights_data = []
+        for fight in fights:
+            fights_data.append({
+                'id': fight.id,
+                'date': fight.date.strftime('%d/%m/%Y %H:%M'),
+                'user1_team': fight.user1_team,
+                'user2_team': fight.user2_team,
+                'winner': fight.winner,
+                'is_victory': fight.winner == str(request.user)
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'fights': fights_data,
+            'run_level': run_info.level
+        })
+        
+    except DWPvmRun.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Aucune run active trouvée'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
+
+@login_required
 @require_POST
 def start_battle_pvm(request):
     try:

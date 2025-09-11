@@ -33,6 +33,7 @@
     <div class="user-actions-section">
         <button class="action-btn back-btn">Retour au PvP</button>
         <button class="action-btn next-fight-btn">Combattre</button>
+        <button class="action-btn fight-history-btn">Historique des combats</button>
     </div>
 
     <div class="run-dinos-section">
@@ -164,6 +165,17 @@
                     {% endif %}
                 </div>
                 <input type="hidden" id="currentAbilityId" value="">
+            </div>
+        </div>
+    </div>
+
+    <div id="fightHistoryPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closeFightHistoryPopup()">&times;</span>
+            <div id="fightHistoryContent">
+                <h2>Historique des combats de la run</h2>
+                <p class="loading-message">Chargement...</p>
+                <div id="fightsList" class="fights-list"></div>
             </div>
         </div>
     </div>

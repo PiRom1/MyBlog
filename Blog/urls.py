@@ -140,6 +140,7 @@ urlpatterns = [
     path('dinowars/pvm/new-run/', dinowars_pvm_views.new_run_view, name='new_run_view'),
     path('dinowars/pvm/select-run-dino/', dinowars_pvm_views.select_run_dino_view, name='select_run_dino_view'),
     path('dinowars/pvm/start_battle/', dinowars_pvm_views.start_battle_pvm, name='start_battle_pvm'),
+    path('dinowars/pvm/run-fights/', dinowars_pvm_views.get_run_fights_view, name='get_run_fights_view'),
 
     # Atelier
     path('atelier/', atelier_views.atelier, name='atelier'),
