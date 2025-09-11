@@ -47,7 +47,6 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'constance',
     'Blog.apps.BlogConfig',
     'convertor.apps.ConvertorConfig',
     'django.contrib.admin',
@@ -66,8 +65,6 @@ INSTALLED_APPS = [
     # "corsheaders",
 ]
 
-CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -77,12 +74,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-
-CONSTANCE_CONFIG = {
-    'last_daily_task_date': (timezone.now(), "Last date where the daily_tasks scripts has been called.")
-}
-
 
 # MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
 
@@ -269,6 +260,7 @@ CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
 
 CONSTANCE_CONFIG = {
     'DW_DAILY_TERRAIN_ID': (1, 'Id du terrain du jour', int),
+    'last_daily_task_date': (timezone.now(), "Last date where the daily_tasks scripts has been called."),
 }
 
 # Add/update the following cookie settings:
