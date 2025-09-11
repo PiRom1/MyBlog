@@ -90,36 +90,29 @@ def get_team_abilities(team_dinos, game_state=None):
     
     try:
         # Import here to avoid circular imports
-        from Blog.models import DWPvmRunAbility, DWPvmDino
+        from Blog.models import DWPvmRunAbility, DWPvmRun
         
-        for dino in team_dinos:
-            try:
-                # Get abilities for this dino based on the original dino ID
-                # The battle dino ID might be modified with team_identifier
-                original_dino_id = dino.id
-                if original_dino_id > 1000:
-                    original_dino_id = original_dino_id // 1000
-                
-                # Find the DWPvmDino object that corresponds to this battle dino
-                pvm_dino = DWPvmDino.objects.get(id=original_dino_id)
-                
-                # Get abilities for this PvM dino
-                abilities = DWPvmRunAbility.objects.filter(dino=pvm_dino).select_related('ability')
-                for ability in abilities:
-                    ability_name = ability.ability.name
-                    if ability_name not in team_abilities:
-                        team_abilities[ability_name] = []
-                    team_abilities[ability_name].append(dino)
-            except Exception as e:
-                # In case of any database access issues, continue
-                continue
+        try:
+            # Get abilities for this dino based on the original run ID
+            run_object = DWPvmRun.objects.get(id=game_state.run_id)
+            
+            # Get abilities for this PvM dino
+            abilities = DWPvmRunAbility.objects.filter(run=run_object).select_related('ability')
+            for ability in abilities:
+                for dino in team_dinos:
+                    if ability.ability.name not in team_abilities:
+                        team_abilities[ability.ability.name] = []
+                    team_abilities[ability.ability.name].append(dino)
+        except Exception as e:
+            # In case of any database access issues, continue
+            pass
     except ImportError:
         # Django models not available (e.g., in testing environment)
         pass
     except Exception as e:
         # Any other database-related errors
         pass
-    
+
     return team_abilities
 
 
@@ -547,12 +540,13 @@ def apply_team_abilities_on_damage_taken(defender, damage, is_crit, game_state):
     """
     # Find the defender's team
     defender_team = None
-    for team in game_state.teams.values():
+    for name, team in game_state.teams.items():
         if defender in team:
             defender_team = team
+            defender_team_name = name
             break
-    
-    if not defender_team:
+
+    if defender_team_name != "team_joueur":
         return damage
     
     team_abilities = get_team_abilities(defender_team, game_state)

@@ -109,11 +109,9 @@
                 <ul>
                     {% for tick, event, value in effects %}
                     <li>
-                        <span class="effect-time">{{ tick|floatformat:0|add:"0"|divisibleby:"100"|yesno:"s,ticks" }} {{ tick|floatformat:0|add:"0"|divisibleby:"100"|yesno:","|default:"" }}{{ tick|divisibleby:"100"|yesno:"",tick }}:</span>
+                        <span class="effect-time">{{ tick|format_ticks }}:</span>
                         <span class="effect-description">{{ event|effect_description }}</span>
-                        {% if value != 0 %}
-                            <span class="effect-value">({{ value|floatformat:0 }})</span>
-                        {% endif %}
+                        <span class="effect-value">({{ value }})</span>
                     </li>
                     {% endfor %}
                 </ul>
@@ -126,9 +124,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Pass data from Django to JavaScript
-    const hpTimelineData = {{ dino_hp_timeline|safe }};
-    const dinoTimelineData = {{ dino_damage_timeline|safe }};
-    const damageDealtData = {{ damage_dealt|safe }};
+    const hpTimelineData = JSON.parse('{{ dino_hp_timeline|escapejs }}');
+    const dinoTimelineData = JSON.parse('{{ dino_damage_timeline|escapejs }}');
+    const damageDealtData = JSON.parse('{{ damage_dealt|escapejs }}');
 </script>
 <script src="{% static 'Blog/dinowars/js/battle_analytics.js' %}"></script>
 {% endblock %}

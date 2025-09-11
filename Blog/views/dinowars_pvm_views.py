@@ -712,7 +712,7 @@ def start_battle_pvm(request):
                 dino_stats = calculate_total_stats(dino)
                 enemy_dinos.append(load_dino_from_model(dino, dino_stats, 2, terrain.name))
         
-        team1_name = "team_"+request.user.username
+        team1_name = "team_joueur"
         team2_name = "team_ennemie"
         
         # Start battle simulation
@@ -720,6 +720,7 @@ def start_battle_pvm(request):
             (team1_name, user_dinos),
             (team2_name, enemy_dinos),
             terrain=terrain.name,
+            run_id=run_info.id
         )
         battle_log = battle.run()
         winner = battle.get_winner()

@@ -116,3 +116,31 @@ def effect_description(event_name):
     }
     
     return descriptions.get(event_name, event_name.replace('_', ' ').title())
+
+
+@register.filter(name='format_ticks')
+def format_ticks(ticks):
+    """Format a tick count into a readable string like "12s 34 ticks".
+    Assumes 100 ticks = 1 second.
+    Examples:
+    - 0   -> "0 ticks"
+    - 75  -> "75 ticks"
+    - 100 -> "1s"
+    - 134 -> "1s 34 ticks"
+    """
+    try:
+        t = int(float(ticks))
+    except (TypeError, ValueError):
+        return ""
+
+    seconds = t // 100
+    remainder = t % 100
+
+    parts = []
+    if seconds > 0:
+        parts.append(f"{seconds}s")
+    if remainder > 0 or seconds == 0:
+        parts.append(f"{remainder}")
+    if seconds == 0:
+        parts.append("ticks")
+    return " ".join(parts)

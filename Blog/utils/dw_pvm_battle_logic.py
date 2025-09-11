@@ -2,7 +2,7 @@ import json
 import heapq
 import random
 from dataclasses import dataclass, field, asdict
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Optional
 from django.db.models import Model
 
 
@@ -59,7 +59,8 @@ class ScheduledAction:
 
 
 class GameState:
-    def __init__(self, team1: tuple[str, List[Dino]], team2: tuple[str, List[Dino]], terrain: str = None):
+    def __init__(self, team1: tuple[str, List[Dino]], team2: tuple[str, List[Dino]], terrain: str = None, run_id: int = 0):
+        self.run_id = run_id
         self.teams = {team1[0]: team1[1], team2[0]: team2[1]}
         self.terrain = terrain
         self.tick = 0
@@ -92,11 +93,10 @@ class GameState:
 
     def run(self):
         # Apply team abilities on battle start
-        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_battle_start, apply_individual_abilities_on_battle_start
-        for team_name, dinos in self.teams.items():
-            apply_team_abilities_on_battle_start(dinos, self)
-            apply_individual_abilities_on_battle_start(dinos, self)
-        
+        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_battle_start, apply_individual_abilities_on_battle_start    
+        apply_team_abilities_on_battle_start(self.teams['team_joueur'], self)
+        apply_individual_abilities_on_battle_start(self.teams['team_joueur'], self)
+
         # Schedule initial attacks for all dinos
         for team_name, dinos in self.teams.items():
             for dino in dinos:
@@ -136,6 +136,17 @@ class GameState:
         
         if defender is None:
             defender = self.choose_target(attacker)
+        # If no valid target was found, schedule the attack for later and exit safely
+        if defender is None:
+            interval = int(100 / attacker.stats.speed)
+            already_scheduled = False
+            for action in self.action_queue:
+                if action.action_type == "dino_action" and action.dino_id == attacker.id:
+                    already_scheduled = True
+                    break
+            if not already_scheduled:
+                self.schedule_action(interval, 1, lambda d=attacker: self.dino_action(d), "dino_action", attacker.id)
+            return
         if defender.is_alive():
             do_attack = True
             miss = False
@@ -159,8 +170,11 @@ class GameState:
             self.schedule_action(interval, 1, lambda d=attacker: self.dino_action(d), "dino_action", attacker.id)
 
     def dino_attack(self, attacker: Dino, defender: Dino, custom_stats: tuple = None, damage: int = None):
+        # Defensive guards: if defender is missing or either party is dead, return no-damage
+        if defender is None:
+            return 0, False
         if not attacker.is_alive() or not defender.is_alive():
-            return
+            return 0, False
         if damage is None:
             stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
             
@@ -216,17 +230,19 @@ class GameState:
         if defender.current_hp <= 0 and damage > 0:
             # Find the defender's team
             defender_team = next(team for team in self.teams.values() if defender in team)
-            
-            # Apply death-triggered abilities
             from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death, apply_individual_abilities_on_death, apply_team_abilities_on_enemy_death
-            apply_team_abilities_on_death(defender, defender_team, self)
-            apply_individual_abilities_on_death(defender, defender_team, self)
             
-            # Apply enemy death abilities for all other teams
-            for team in self.teams.values():
-                if team != defender_team:
-                    apply_team_abilities_on_enemy_death(defender, team, self)
-        
+            # Apply death-triggered abilities only if defender is on the player's team
+            if defender_team == self.teams['team_joueur']:
+                apply_team_abilities_on_death(defender, defender_team, self)
+                apply_individual_abilities_on_death(defender, defender_team, self)
+            
+            # Apply enemy death abilities
+            else:
+                for team in self.teams.values():
+                    if team != defender_team:
+                        apply_team_abilities_on_enemy_death(defender, team, self)
+
         log_entry = {
             "type": "attack",
             "tick": self.tick,
@@ -247,7 +263,8 @@ class GameState:
         if "reflect" in defender.current_statuses:
             reflected_damage = int(damage * 0.75)
             attacker.current_hp -= reflected_damage
-            self.log_effect("reflect_damage", attacker, "hp", reflected_damage)
+            # Source is the defender returning damage to the attacker
+            self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
             defender.current_statuses.remove("reflect")
 
         return damage, miss
@@ -282,7 +299,7 @@ class GameState:
         damage_after_def = int(base_dmg) - defense
         return max(0, damage_after_def), is_crit
     
-    def log_effect(self, event: str, dino: Dino, stat: str, value: float):
+    def log_effect(self, event: str, dino: Dino, stat: str, value: float, source: Optional['Dino'] = None):
         log_entry = {
             "type": "effect",
             "tick": self.tick,
@@ -293,6 +310,9 @@ class GameState:
             "value": value, # modifier value (e.g., -20 for debuff, +20 for buff)
             "new_value": getattr(dino.stats, stat, None) # new value after applying the effect
         }
+        if source is not None:
+            log_entry["source_dino"] = source.name
+            log_entry["source_dino_id"] = source.id
         self.fight_log.append(log_entry)
 
     def get_winner(self):
@@ -562,7 +582,8 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
         if defender.is_alive() and "poison" in defender.current_statuses:
             damage = int(defender.current_hp * 0.04)
             defender.current_hp -= damage
-            game_state.log_effect("poison_damage", defender, "hp", damage)
+            # Source is the attacker who applied poison initially
+            game_state.log_effect("poison_damage", defender, "hp", damage, source=attacker)
             if defender.is_alive():
                 game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, "poison_damage")
 
@@ -577,7 +598,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
     attacker.cooldown = True
     if "poison" not in defender.current_statuses:
         defender.current_statuses.append("poison")
-        game_state.log_effect("poison", defender, "poison", 0.04)  # Log the poison effect
+        game_state.log_effect("poison", defender, "poison", 0.04, source=attacker)  # Log the poison effect
         game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, "poison_damage") # Schedule the first poison damage
     else:
         new_queue = []
@@ -595,13 +616,13 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
 
 
 # SKY DIVE
-# Grants a 50% chance to dodge the next attack; 1,5s cooldown
+# Grants a 75% chance to dodge the next attack; 1,5s cooldown
 def sky_dive_effect(attacker: Dino, defender: Dino, game_state: GameState, damage: float):
     if attacker.cooldown or "dodge" in attacker.current_statuses:
         return
     attacker.cooldown = True
     attacker.current_statuses.append("dodge")
-    attacker.stats.dodge += 0.75  # Increase dodge chance by 50%
+    attacker.stats.dodge += 0.75  # Increase dodge chance by 75%
     game_state.log_effect("dodge_buff", attacker, "dodge", 0.75)  # Log the dodge effect
 
     def reset_cooldown():

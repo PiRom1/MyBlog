@@ -2,7 +2,7 @@ import json
 import heapq
 import random
 from dataclasses import dataclass, field, asdict
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Optional
 from django.db.models import Model
 
 
@@ -184,7 +184,7 @@ class GameState:
         if "reflect" in defender.current_statuses:
             reflected_damage = int(damage * 0.75)
             attacker.current_hp -= reflected_damage
-            self.log_effect("reflect_damage", attacker, "hp", reflected_damage)
+            self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
             defender.current_statuses.remove("reflect")
 
         return damage, miss
@@ -203,7 +203,7 @@ class GameState:
         damage_after_def = int(base_dmg) - defense
         return max(0, damage_after_def), is_crit
     
-    def log_effect(self, event: str, dino: Dino, stat: str, value: float):
+    def log_effect(self, event: str, dino: Dino, stat: str, value: float, source: Optional['Dino'] = None):
         log_entry = {
             "type": "effect",
             "tick": self.tick,
@@ -214,6 +214,9 @@ class GameState:
             "value": value, # modifier value (e.g., -20 for debuff, +20 for buff)
             "new_value": getattr(dino.stats, stat, None) # new value after applying the effect
         }
+        if source is not None:
+            log_entry["source_dino"] = source.name
+            log_entry["source_dino_id"] = source.id
         self.fight_log.append(log_entry)
 
     def get_winner(self):

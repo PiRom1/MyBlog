@@ -696,6 +696,7 @@ def battle_analytics_view(request, fight_id):
     # Create mappings from ID to team and name to ID
     dino_id_to_team = {}
     dino_name_to_id = {}
+    dino_id_to_display = {}
     team_names = list(initial_state['initial_state'].keys())
     
     # Initialize HP timeline with initial values and create mappings
@@ -711,6 +712,7 @@ def battle_analytics_view(request, fight_id):
             # Store mappings
             dino_id_to_team[dino_id] = team_name
             dino_name_to_id[display_name] = dino_id
+            dino_id_to_display[dino_id] = display_name
             
             # Initialize HP timeline
             dino_hp_timeline[display_name] = [(0, dino['stats']['hp'])]  # Start at tick 0
@@ -756,10 +758,16 @@ def battle_analytics_view(request, fight_id):
             dino_id = log['dino_id']
             event = log['event']
             value = log['value']
+            source_id = log.get('source_dino_id')
             
             # Get display name from ID
             dino_team = dino_id_to_team[dino_id]
             dino_display = f"{log['dino']} (Team {team_names.index(dino_team)+1})"
+            source_display = None
+            source_team = None
+            if source_id is not None and source_id in dino_id_to_team:
+                source_team = dino_id_to_team[source_id]
+                source_display = dino_id_to_display.get(source_id)
             
             # Track effects for timeline display
             if dino_display not in effects_timeline:
@@ -794,12 +802,20 @@ def battle_analytics_view(request, fight_id):
                 # Track all damage sources for damage charts
                 if event in damage_events or ('damage' in event and value > 0):
                     # Initialize damage tracking for ability effects
-                    if dino_display not in damage_dealt:
-                        damage_dealt[dino_display] = {
+                    # Determine who to attribute damage to
+                    target_display = dino_display
+                    target_team = dino_team
+                    if event in ['reflect_damage', 'poison_damage'] and source_display is not None:
+                        # Attribute reflect/poison to the source (defender or poison applier)
+                        target_display = source_display
+                        target_team = source_team
+                    
+                    if target_display not in damage_dealt:
+                        damage_dealt[target_display] = {
                             'total': 0, 
                             'hits': 0, 
                             'crits': 0, 
-                            'team': dino_team,
+                            'team': target_team,
                             'reflect_damage': 0,
                             'poison_damage': 0,
                             'ability_damage': 0,
@@ -809,13 +825,13 @@ def battle_analytics_view(request, fight_id):
                     
                     # Categorize different damage types
                     if event == 'reflect_damage':
-                        damage_dealt[dino_display]['reflect_damage'] += value
+                        damage_dealt[target_display]['reflect_damage'] += value
                     elif event == 'poison_damage':
-                        damage_dealt[dino_display]['poison_damage'] += value
+                        damage_dealt[target_display]['poison_damage'] += value
                     elif event == 'boureau_execute':
-                        damage_dealt[dino_display]['execute_damage'] += value
+                        damage_dealt[target_display]['execute_damage'] += value
                     else:
-                        damage_dealt[dino_display]['ability_damage'] += value
+                        damage_dealt[target_display]['ability_damage'] += value
                 
                 # Track healing for healing done stats
                 elif event in healing_events:
@@ -958,7 +974,7 @@ def battle_analytics_view(request, fight_id):
         'fight': fight,
         'dino_hp_timeline': json.dumps(dino_hp_timeline),
         'dino_damage_timeline': json.dumps(dino_damage_timeline),
-        'damage_dealt': sorted_damage_dealt,
+        'damage_dealt': json.dumps(sorted_damage_dealt),
         'effects_timeline': sorted_effects_timeline,
         'kpis': kpis,
         'winner': final_state['winner']
