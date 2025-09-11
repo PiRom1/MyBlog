@@ -11,21 +11,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    
-
-
-
-
     // Get data
     const data = document.getElementById('data');
     const array = JSON.parse(data.getAttribute("dungeon"));
     const start_coord = JSON.parse(data.getAttribute("start_coord"));
+
+    //// AStar
+    const a_star = new AStar(array);
+    
+
 
 
     // Initialize dungeon and player
     const dungeon = new Dungeon(array);
     const player = new Player();
     player.get_start_pos(start_coord, dungeon);
+
+    const enemies = Array();
+    const enemies_coords = JSON.parse(data.getAttribute("ennemies_coord"));
+    console.log(enemies_coords, data)
+
+    enemies_coords.forEach(enemy_coord => {
+        enemies.push(new Enemy(enemy_coord[1], enemy_coord[0], player));
+    })
+
 
     // Minimap
     minimap = new Minimap(MINIMAP_X_MIN_COORD, 
@@ -45,39 +54,57 @@ document.addEventListener('DOMContentLoaded', function() {
         dungeon.draw();
         player.draw();
         minimap.draw(player.x, player.y);
+        enemies.forEach(enemy => {
+            enemy.draw();
+        })
+        
+    }
+
+
+    // Fonction qui fait se déplacer les entités
+    function moveGame(player_movement) {
+        player.move(player_movement, dungeon);
+        if (player.is_moving) {
+            enemies.forEach(enemy => {
+                enemy.move(a_star);
+            })
+        };
+
     }
 
     // La boucle principale du jeu (appelée à chaque frame)
     function gameLoop() {
-       
 
+        let player_movement = false;
         // Move character
         move_right.forEach(key => {
             if (keys[key]) {
-                player.move("right", dungeon);
+                player_movement = "right";
             }
         });
 
         move_left.forEach(key => {
             if (keys[key]) {
-                player.move("left", dungeon);
+                player_movement = "left";
             }
         });
 
         move_up.forEach(key => {
             if (keys[key]) {
-                player.move("up", dungeon);
+                player_movement = "up";
             }
         });
 
         move_down.forEach(key => {
             if (keys[key]) {
-                player.move("down", dungeon);
+                player_movement = "down";
             }
         });
         
 
+        moveGame(player_movement);
         drawGame();
+        
         // Appelle gameLoop de nouveau au prochain rafraîchissement
         requestAnimationFrame(gameLoop);
 

@@ -29,6 +29,8 @@ const MOVE_THRESHOLD_y = MOVE_THRESHOLD * TILES_PER_COLUMN;
 
 const NB_MOVING_FRAMES = 5; // Nb frames for one deplacement
 
+const ENEMY_PATHFINDING_RADIUS = 5
+
 // Minimap parameters
 let minimap;
 
@@ -40,6 +42,10 @@ const MINIMAP_TILE_HEIGHT = (MINIMAP_Y_MAX_COORD - MINIMAP_Y_MIN_COORD) / DUNGEO
 const MINIMAP_TILE_WIDTH = (MINIMAP_X_MAX_COORD - MINIMAP_X_MIN_COORD) / DUNGEON_SIZE[1];
 const MINIMAP_BLINKING_PLAYER_RATE = 40 // Fréquence en frame du clignotement de la tile joueur sur la minimap
 const MINIMAP_PLAYER_TILE_COLOR = "#cd1040ff";
+const MINIMAP_CHEST_TILE_COLOR = "#d8b54200";
+const MINIMAP_WALL_TILE_COLOR = "#342d2f00";
+const MINIMAP_GROUND_TILE_COLOR = "#736b6d00";
+const MINIMAP_BORDER_TILE_COLOR = "#fdebdebb";
 
 console.log(`Minimap : x_min_coord : ${MINIMAP_X_MIN_COORD} / y_min_coord : ${MINIMAP_Y_MIN_COORD}`);
 console.log(`Minimap : y_max_coord : ${MINIMAP_X_MAX_COORD} / y_max_coord : ${MINIMAP_Y_MAX_COORD}`);
@@ -70,7 +76,7 @@ function distance(x1, y1, x2, y2) {
 
 // Returns a random integer number between max and min
 function randint(min, max) {
-    return Math.floor(min + Math.random() * (max - min));
+    return Math.floor(min + Math.random() * ((max+1) - min));
 }
 
 // Generate a random array for the dungeon
@@ -91,4 +97,12 @@ function generateRandomArray(rows, columns) {
     return arr;
 }
 
+
+
+function isArrayInArray(containing_array, contained_array) {
+    
+    const result = containing_array.some(sub_array => JSON.stringify(sub_array) === JSON.stringify(contained_array));
+    return result;
+
+}
 

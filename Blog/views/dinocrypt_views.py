@@ -453,18 +453,24 @@ def dungeon(request):
     dungeon_size = [100, 100]
     while True:
         try:
-            dungeon = dungeon_generator.generate_dungeon(dungeon_size = dungeon_size, room_size = (15, 15), nb_rooms = 10, stability = 1, nb_chests = 10)
+            dungeon = dungeon_generator.generate_dungeon(dungeon_size = dungeon_size, room_size = (15, 15), nb_rooms = 10, stability = 1, nb_chests = 1)
             print("Donjon géneré avec succès !")
             break
         except:
             print("Erreur lors de la génération du donjon... Tentative de re-géneration en cours.")
     
-    start_coord = np.where(dungeon.dungeon == 1)
-    index_random_start_coord = rd.randint(0, len(start_coord[0]) - 1)
+    ground_cells = np.where(dungeon.dungeon == 1) 
+    
+    index_random_start_coord = rd.randint(0, len(ground_cells[0]) - 1)
+
+    index_random_enemies_start_coord = [rd.randint(0, len(ground_cells[0]) - 1) for _ in range(100)]
+    if index_random_start_coord in index_random_enemies_start_coord:
+        index_random_enemies_start_coord.remove(index_random_start_coord) 
         
     context = {"dungeon" : json.dumps(dungeon.dungeon.tolist()),
                "dungeon_size" : json.dumps(dungeon_size),
-               "start_coord" : [int(start_coord[0][0]), int(start_coord[1][0])]}
+               "start_coord" : [int(ground_cells[0][0]), int(ground_cells[1][0])],
+               "ennemies_coord" : [[int(ground_cells[0][enemy_index]), int(ground_cells[1][enemy_index])] for enemy_index in index_random_enemies_start_coord]}
     print(context)
 
     url = "Blog/dinocrypt/dungeon.html"

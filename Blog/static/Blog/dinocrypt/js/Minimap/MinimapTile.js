@@ -15,16 +15,16 @@ class MinimapTile {
     // Get Tile color according to its type
     get_color() {
         if (this.type === "chest") {
-            this.color = "#d8b54200";
+            this.color = MINIMAP_CHEST_TILE_COLOR;
         }
         if (this.type === "wall") {
-            this.color = "#342d2f00";
+            this.color = MINIMAP_WALL_TILE_COLOR;
         }
         if (this.type === "ground") {
-            this.color = "#736b6d00";
+            this.color = MINIMAP_GROUND_TILE_COLOR;
         }
-        if (this.type === "player") {
-            this.color = "#e3625100";
+        if (this.type === "border") {
+            this.color = MINIMAP_BORDER_TILE_COLOR;
         }
     }
 
