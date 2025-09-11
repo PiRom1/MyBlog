@@ -1,4 +1,4 @@
-from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam
+from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam, DWFight
 from datetime import timedelta, datetime
 import random as rd
 from Blog.views.utils_views import write_journal_quest_new
@@ -32,6 +32,13 @@ def generate_quest(user, type : str):
                                         objectif = objective,
                                         objective_value = value)
         
+def clear_fights_log():
+    for fight in DWFight.objects.filter(gamemode = 'arena', date__lt = timezone.now() - timedelta(days=30)):
+        fight.delete()
+    for fight in DWFight.objects.filter(gamemode = 'pvm', date__lt = timezone.now() - timedelta(days=2)):
+        fight.delete()
+    for fight in DWFight.objects.filter(gamemode = 'duel', date__lt = timezone.now() - timedelta(days=1)):
+        fight.delete()
 
 
 def run():
@@ -80,6 +87,9 @@ def run():
 
     # Chat score
     chat_score()
+
+    # Clear fights log
+    clear_fights_log()
 
 
 
