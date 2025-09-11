@@ -402,19 +402,38 @@ class ComprehensivePvMAbilitiesTestCase(unittest.TestCase):
         """Test Seul contre tous: +20% DEF when only one dino remains alive"""
         print("Testing Seul contre tous ability...")
         
-        # Kill two dinos to leave only one alive
-        self.team1_dino2.current_hp = 0
-        self.team1_dino3.current_hp = 0
+        # Create a fresh team for this test
+        test_dino = Dino(
+            id=20, name="Last_Standing", user="test",
+            stats=DinoStats(hp=1000, atk=100, defense=50, speed=1.0, crit_chance=0.1, crit_damage=1.5),
+            attack=Attack(name="test_attack", dmg_multiplier=(0.8, 1.2))
+        )
+        dead_dino1 = Dino(
+            id=21, name="Dead_1", user="test",
+            stats=DinoStats(hp=0, atk=100, defense=50, speed=1.0, crit_chance=0.1, crit_damage=1.5),
+            attack=Attack(name="test_attack", dmg_multiplier=(0.8, 1.2))
+        )
+        dead_dino2 = Dino(
+            id=22, name="Dead_2", user="test",
+            stats=DinoStats(hp=0, atk=100, defense=50, speed=1.0, crit_chance=0.1, crit_damage=1.5),
+            attack=Attack(name="test_attack", dmg_multiplier=(0.8, 1.2))
+        )
         
-        original_defense = self.team1_dino1.stats.defense
+        # Make the other dinos dead
+        dead_dino1.current_hp = 0
+        dead_dino2.current_hp = 0
+        
+        test_team = [test_dino, dead_dino1, dead_dino2]
+        original_defense = test_dino.stats.defense
         
         # Mock team abilities
-        with patch('Blog.utils.dw_pvm_abilities.get_team_abilities', self.create_mock_team_abilities_for_team(self.team1, ["Seul contre tous"])):
-            apply_seul_contre_tous(self.team1, self.game_state)
+        with patch('Blog.utils.dw_pvm_abilities.get_team_abilities', self.create_mock_team_abilities_for_team(test_team, ["Seul contre tous"])):
+            apply_seul_contre_tous(test_team, self.game_state)
         
         # Verify defense increase for the last standing dino
-        expected_defense = original_defense * 1.2
-        self.assertAlmostEqual(self.team1_dino1.stats.defense, expected_defense, places=2)
+        expected_defense = original_defense + int(original_defense * 0.2)
+        self.assertEqual(test_dino.stats.defense, expected_defense)
+        self.assertIn("seul_contre_tous", test_dino.current_statuses)
 
     def test_terreur_collective_ability(self):
         """Test Terreur collective: +8% ATK permanently when an enemy dies"""
