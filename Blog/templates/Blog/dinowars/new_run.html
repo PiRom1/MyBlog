@@ -30,6 +30,12 @@
                 </div>
             {% endif %}
         </div>
+        {% if terrain %}
+        <div class="daily-terrain">
+            <h3 class="terrain-name">Terrain du jour : {{ terrain.name }}</h3>
+            <p class="terrain-desc">{{ terrain.description }}</p>
+        </div>
+        {% endif %}
         
         <div id="selected-dinos-container" class="selected-dinos">
             {% for dino in selected_dinos %}

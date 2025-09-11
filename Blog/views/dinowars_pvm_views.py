@@ -367,6 +367,7 @@ def new_run_view(request):
         try:
             existing_run = DWPvmRun.objects.get(user=request.user)
             new_run = DWPvmNewRun.objects.get(user=request.user)
+            terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
             if new_run.state < 4:  # Selection not completed
                 random_dinos = [new_run.dino1, new_run.dino2, new_run.dino3]
                 selected_dinos = [dino for dino in [existing_run.dino1, existing_run.dino2, existing_run.dino3] if dino is not None]
@@ -374,7 +375,8 @@ def new_run_view(request):
                 context = {
                     'random_dinos': random_dinos,
                     'selection_step': new_run.state,
-                    'selected_dinos': selected_dinos
+                    'selected_dinos': selected_dinos,
+                    'terrain': terrain,
                 }
                 return render(request, 'Blog/dinowars/new_run.html', context)
         except (DWPvmRun.DoesNotExist, DWPvmNewRun.DoesNotExist) as e:
@@ -391,11 +393,13 @@ def new_run_view(request):
         return JsonResponse({'error': 'Not enough dinos in database.'}, status=500)
     
     random_dinos = get_random_dinos(all_dinos, new_run)
-    
+    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+
     context = {
         'random_dinos': random_dinos,
         'selection_step': 1,
-        'selected_dinos': []
+        'selected_dinos': [],
+        'terrain': terrain,
     }
     return render(request, 'Blog/dinowars/new_run.html', context)
 
