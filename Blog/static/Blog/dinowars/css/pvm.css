@@ -577,3 +577,165 @@ button[type="submit"] {
     font-size: 0.8em;
     color: #0088cc;
 }
+
+/* Fight History Button */
+.fight-history-btn {
+    background-color: #1f4e3b;
+    color: white;
+}
+
+.fight-history-btn:hover {
+    background-color: #2a6649;
+}
+
+/* Fight History Popup Styles */
+#fightHistoryPopup .popup-content {
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.fights-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #999;
+}
+
+.fights-header p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.fights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fight-item {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    transition: transform 0.2s;
+}
+
+.fight-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.fight-item.victory {
+    border-color: #4CAF50;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e8 100%);
+}
+
+.fight-item.defeat {
+    border-color: #f44336;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffe8e8 100%);
+}
+
+.fight-info {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.fight-number {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.fight-date {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: right;
+}
+
+.fight-teams {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 8px 0;
+}
+
+.team-info {
+    font-size: 0.9rem;
+    padding: 4px 0;
+}
+
+.team-info strong {
+    color: #444;
+}
+
+.fight-result {
+    grid-column: 4;
+    text-align: center;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.fight-result.victory {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.fight-result.defeat {
+    background-color: #f44336;
+    color: white;
+}
+
+.fight-actions {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.analytics-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background-color: #2196F3;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.analytics-link:hover {
+    background-color: #1976D2;
+    color: white;
+    text-decoration: none;
+}
+
+.analytics-link i {
+    font-size: 1rem;
+}
+
+.no-fights-message, .error-message {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #666;
+}
+
+.error-message {
+    color: #f44336;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #666;
+}

@@ -45,6 +45,14 @@ function setupEventListeners() {
             startBattle();
         });
     }
+    
+    // Fight History button
+    const fightHistoryButton = document.querySelector('.fight-history-btn');
+    if (fightHistoryButton) {
+        fightHistoryButton.addEventListener('click', function() {
+            showFightHistoryPopup();
+        });
+    }
 }
 
 function initializeDinoCards() {
@@ -478,6 +486,111 @@ function initializeTerrainTooltip() {
         if (description) {
             terrainElement.setAttribute('title', description);
         }
+    }
+}
+
+function showFightHistoryPopup() {
+    const popup = document.getElementById('fightHistoryPopup');
+    const content = document.getElementById('fightHistoryContent');
+    const loadingMessage = content.querySelector('.loading-message');
+    const fightsList = document.getElementById('fightsList');
+    
+    // Show popup and loading message
+    popup.style.display = 'block';
+    loadingMessage.style.display = 'block';
+    fightsList.innerHTML = '';
+    
+    // Fetch fight history
+    fetch('/dinowars/pvm/run-fights/', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingMessage.style.display = 'none';
+        
+        if (data.success) {
+            if (data.fights.length === 0) {
+                fightsList.innerHTML = '<p class="no-fights-message">Aucun combat effectué dans cette run.</p>';
+            } else {
+                displayFightsList(data.fights, data.run_level);
+            }
+        } else {
+            fightsList.innerHTML = `<p class="error-message">Erreur: ${data.error}</p>`;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching fight history:', error);
+        loadingMessage.style.display = 'none';
+        fightsList.innerHTML = '<p class="error-message">Une erreur est survenue lors du chargement de l\'historique.</p>';
+    });
+    
+    // Add event listeners for popup interactions
+    document.addEventListener('mousedown', handleFightHistoryClickOutside);
+    document.addEventListener('keydown', handleFightHistoryEscKey);
+}
+
+function displayFightsList(fights, runLevel) {
+    const fightsList = document.getElementById('fightsList');
+    
+    let fightsHtml = `<div class="fights-header">
+        <p>Run niveau ${runLevel} - ${fights.length} combat${fights.length > 1 ? 's' : ''} effectué${fights.length > 1 ? 's' : ''}</p>
+    </div>`;
+    
+    fights.forEach((fight, index) => {
+        const resultClass = fight.is_victory ? 'victory' : 'defeat';
+        const resultText = fight.is_victory ? 'Victoire' : 'Défaite';
+        const fightNumber = fights.length - index; // Reverse numbering (newest first)
+        
+        fightsHtml += `
+            <div class="fight-item ${resultClass}">
+                <div class="fight-info">
+                    <div class="fight-number">Combat #${fightNumber}</div>
+                    <div class="fight-date">${fight.date}</div>
+                    <div class="fight-teams">
+                        <div class="team-info">
+                            <strong>Votre équipe:</strong> ${fight.user1_team}
+                        </div>
+                        <div class="team-info">
+                            <strong>Équipe ennemie:</strong> ${fight.user2_team}
+                        </div>
+                    </div>
+                    <div class="fight-result ${resultClass}">
+                        <span class="result-text">${resultText}</span>
+                    </div>
+                </div>
+                <div class="fight-actions">
+                    <a href="/dinowars/battle/analytics/${fight.id}/" class="analytics-link" target="_blank">
+                        <i class="fi fi-rs-chart-line"></i> Voir les analytics
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+    
+    fightsList.innerHTML = fightsHtml;
+}
+
+function closeFightHistoryPopup() {
+    const popup = document.getElementById('fightHistoryPopup');
+    popup.style.display = 'none';
+    document.removeEventListener('mousedown', handleFightHistoryClickOutside);
+    document.removeEventListener('keydown', handleFightHistoryEscKey);
+}
+
+function handleFightHistoryClickOutside(event) {
+    const popup = document.getElementById('fightHistoryPopup');
+    const content = popup.querySelector('.popup-content');
+    
+    if (popup && !content.contains(event.target) && !event.target.classList.contains('close-popup')) {
+        closeFightHistoryPopup();
+    }
+}
+
+function handleFightHistoryEscKey(event) {
+    if (event.key === 'Escape') {
+        closeFightHistoryPopup();
     }
 }
 
