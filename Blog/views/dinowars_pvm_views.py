@@ -759,9 +759,9 @@ def start_battle_pvm(request):
             if run_info.life <= 0:
                 DWPvmDino.objects.filter(user=request.user).delete()
                 run_info.delete()
-                # dw_user = DWUser.objects.get(user=request.user)
-                # dw_user.pvm_runs_td += 1
-                # dw_user.save()
+                dw_user = DWUser.objects.get(user=request.user)
+                dw_user.pvm_runs_td += 1
+                dw_user.save()
                 return JsonResponse({
                     'success': False, 
                     'redirect': '/dinowars/pvm/', 

@@ -1,5 +1,6 @@
 from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam
 from datetime import timedelta
+from constance import config as constance_cfg
 import random as rd
 
 
@@ -29,6 +30,10 @@ def generate_quest(user, type : str):
                                         objectif = objective,
                                         objective_value = value)
         
+def change_DWPvm_terrain():
+    old_id = constance_cfg.DW_DAILY_TERRAIN_ID 
+    new_id = (old_id  % 7) + 1
+    constance_cfg.DW_DAILY_TERRAIN_ID = new_id
 
 
 def run():
@@ -69,6 +74,8 @@ def run():
         break
     
     print("Quests generated for every user")
+
+    change_DWPvm_terrain()
 
 
 
