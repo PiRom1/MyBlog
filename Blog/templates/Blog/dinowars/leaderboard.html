@@ -4,7 +4,7 @@
 {% block content %}
 <div class="pvm-container">
     <div class="leaderboard-header">
-        <h1>🏆 Classement PVM DinoWar</h1>
+        <h1>🏆 Classement PVM DinoWars</h1>
         <p>Top 10 des meilleures performances PVM</p>
     </div>
 
@@ -28,6 +28,8 @@
             </div>
             <div class="filter-group">
                 <button type="submit" class="filter-btn">Filtrer</button>
+            </div>
+            <div class="filter-group">            
                 <a href="{% url 'leaderboard_view' %}" class="reset-btn">Réinitialiser</a>
             </div>
         </form>
@@ -75,8 +77,17 @@
                                             <strong>{{ dino.name }}</strong><br>
                                             <small>
                                                 HP: {{ dino.hp }} (Niv.{{ dino.hp_lvl }}) | 
-                                                ATK: {{ dino.atk }} (Niv.{{ dino.atk_lvl }}) | 
-                                                DEF: {{ dino.defense }} (Niv.{{ dino.defense_lvl }})
+                                                ATK: {{ dino.atk }} (Niv.{{ dino.atk_lvl }})
+                                            </small>
+                                            <br>
+                                            <small>
+                                                DEF: {{ dino.defense }} (Niv.{{ dino.defense_lvl }}) |
+                                                SPD: {{ dino.spd }} (Niv.{{ dino.spd_lvl }})
+                                            </small>
+                                            <br>
+                                            <small>
+                                                CRIT: {{ dino.crit }} (Niv.{{ dino.crit_lvl }}) | 
+                                                CRIT DMG: {{ dino.crit_dmg }} (Niv.{{ dino.crit_dmg_lvl }})
                                             </small>
                                         </div>
                                     {% endfor %}
@@ -91,7 +102,6 @@
                                         <div class="ability-info">
                                             <strong>{{ ability.name }}</strong>
                                             {% if ability.dino_name %} ({{ ability.dino_name }}){% endif %}<br>
-                                            <small>{{ ability.description }}</small>
                                         </div>
                                     {% endfor %}
                                 </div>

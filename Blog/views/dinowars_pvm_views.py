@@ -829,7 +829,6 @@ def start_battle_pvm(request):
                 for run_ability in run_abilities:
                     abilities_list.append({
                         'name': run_ability.ability.name,
-                        'description': run_ability.ability.description,
                         'dino_name': run_ability.dino.dino.name if run_ability.dino else None,
                     })
                 

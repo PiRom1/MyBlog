@@ -323,3 +323,9 @@ class DWPvmNewRunAdmin(admin.ModelAdmin):
 class DWPvmTerrainAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name', 'description')
+
+@admin.register(DWPvmLeaderboard)
+class DWPvmLeaderboardAdmin(admin.ModelAdmin):
+    list_display = ('user', 'terrain', 'date', 'run_level', 'team_dinos_stats', 'abilities_list')
+    list_filter = ('user', 'terrain')
+    search_fields = ('user__username', 'terrain__name')
