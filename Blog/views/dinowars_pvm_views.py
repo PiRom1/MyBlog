@@ -164,13 +164,13 @@ def level_up_stat_view(request, dino_id, stat_name):
         # Update the appropriate stat level and value
         if stat_name == 'hp':
             dino.hp_lvl += 1
-            dino.hp += int(0.1*dino.hp)
+            dino.hp = dino.dino.base_hp + int(dino.dino.base_hp * (0.1 * (dino.hp_lvl-1)))
         elif stat_name == 'atk':
             dino.atk_lvl += 1
-            dino.atk += int(0.1*dino.atk) 
+            dino.atk = dino.dino.base_atk + int(dino.dino.base_atk * (0.1 * (dino.atk_lvl-1)))
         elif stat_name == 'defense':
             dino.defense_lvl += 1
-            dino.defense += int(0.1*dino.defense)
+            dino.defense = dino.dino.base_def + int(dino.dino.base_def * (0.1 * (dino.defense_lvl-1)))
         elif stat_name == 'spd':
             dino.spd_lvl += 1
             dino.spd += 0.1
