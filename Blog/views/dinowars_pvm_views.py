@@ -11,6 +11,7 @@ import json
 import random
 from django.views.decorators.http import require_POST
 from django.db import transaction
+import datetime
 
 @login_required
 def pvm_view(request):
@@ -347,7 +348,9 @@ def set_new_run_dinos(new_run, random_dinos):
 
 def get_random_dinos(all_dinos, new_run):
     step = new_run.state
-    seed = get_daily_seed(purpose=f"dino_select_{step}")
+    date_day = str(datetime.date.today())
+    dw_user = DWUser.objects.get(user=new_run.user)
+    seed = get_daily_seed(purpose=f"dino_select_{step}", run_number=dw_user.pvm_runs_td, additional=date_day)
     rand = random.Random(seed)
     random_dinos = rand.sample(all_dinos, 3)
     return set_new_run_dinos(new_run, random_dinos)
