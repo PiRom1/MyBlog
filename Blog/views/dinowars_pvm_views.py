@@ -749,11 +749,11 @@ def start_battle_pvm(request):
 
         # Update run info
         if winner == team1_name:
-            run_info.stat_points += reward(run_info.level)
+            run_info.stat_points += reward(run_info.level) if run_info.level <= 20 else reward(run_info.level)/2
             run_info.level += 1
             run_info.save()
             set_next_fight_dinos(run_info)
-            if run_info.level % 2 == 0:
+            if run_info.level % 2 == 0 and run_info.level <= 20:
                 set_next_abilities(run_info)
             else:
                 DWPvmNextAbility.objects.filter(run=run_info).delete()
