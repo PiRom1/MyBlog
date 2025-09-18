@@ -97,7 +97,7 @@ def run():
     # Clear fights log
     clear_fights_log()
 
-    change_DWPvm_terrain()
+    # change_DWPvm_terrain()
 
 
 
