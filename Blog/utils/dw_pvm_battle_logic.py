@@ -488,7 +488,7 @@ def crushing_bite_before_effect(attacker: Dino, defender: Dino, game_state: Game
 # Hits 2 to 5 times in a row, defense is applied at the end.
 def rapid_slash_before_effect(attacker: Dino, defender: Dino, game_state: GameState):
     
-    stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
+    stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, 0, attacker.stats.crit_chance, attacker.stats.crit_damage]
     
     # Apply individual abilities that modify attack parameters before damage calculation
     from Blog.utils.dw_pvm_abilities import apply_individual_abilities_before_attack
