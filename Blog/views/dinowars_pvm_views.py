@@ -26,7 +26,7 @@ def pvm_view(request):
         next_abilities = DWPvmNextAbility.objects.filter(run=run_info).select_related('ability')
         life_counter = ''
         for _ in range(run_info.life): life_counter += '1'
-        terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+        terrain = run_info.terrain
     except (DWPvmRun.DoesNotExist, ValueError) as e:
         return redirect('new_run_view')
     else :    
@@ -263,8 +263,7 @@ def select_ability_dino_view(request, ability_id):
 
 def set_new_run_dinos(new_run, random_dinos):
     """Helper function to set new run dinos."""
-    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
-    print(terrain.name)
+    terrain = new_run.terrain
     dinos_stats = {'dino1': {}, 'dino2': {}, 'dino3': {}}
     if terrain.name == "Distorsion Spatio-Temporelle":
         ids, rearanged_stats = distorsion_terrain()
@@ -370,7 +369,7 @@ def new_run_view(request):
         try:
             existing_run = DWPvmRun.objects.get(user=request.user)
             new_run = DWPvmNewRun.objects.get(user=request.user)
-            terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+            terrain = new_run.terrain
             if new_run.state < 4:  # Selection not completed
                 random_dinos = [new_run.dino1, new_run.dino2, new_run.dino3]
                 selected_dinos = [dino for dino in [existing_run.dino1, existing_run.dino2, existing_run.dino3] if dino is not None]
@@ -387,8 +386,16 @@ def new_run_view(request):
     
     # Create a new DWPvmNewRun object for this user
     DWPvmNewRun.objects.filter(user=request.user).delete()  # Clear any existing entries
-    new_run = DWPvmNewRun.objects.create(user=request.user, state=1)
-    final_run = DWPvmRun.objects.create(user=request.user)
+    
+    dw_user = DWUser.objects.get(user=request.user)
+    seed = get_daily_seed(purpose=f"terrain_select", additional=str(datetime.date.today()))
+    rand = random.Random(seed)
+    all_terrains = list(DWPvmTerrain.objects.all())
+    rand.shuffle(all_terrains)
+    terrain = all_terrains[dw_user.pvm_runs_td % len(all_terrains)]
+
+    new_run = DWPvmNewRun.objects.create(user=request.user, state=1, terrain=terrain)
+    final_run = DWPvmRun.objects.create(user=request.user, terrain=terrain)
     
     # Get three random dinos for initial selection
     all_dinos = list(DWDino.objects.all())
@@ -396,7 +403,6 @@ def new_run_view(request):
         return JsonResponse({'error': 'Not enough dinos in database.'}, status=500)
     
     random_dinos = get_random_dinos(all_dinos, new_run)
-    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
 
     context = {
         'random_dinos': random_dinos,
@@ -413,16 +419,22 @@ def select_run_dino_view(request):
     try:
         data = json.loads(request.body)
         dino_id = data.get('dino_id')
+        dw_user = DWUser.objects.get(user=request.user)
+        seed = get_daily_seed(purpose=f"terrain_select", additional=str(datetime.date.today()))
+        rand = random.Random(seed)
+        all_terrains = list(DWPvmTerrain.objects.all())
+        rand.shuffle(all_terrains)
+        terrain = all_terrains[dw_user.pvm_runs_td % len(all_terrains)]
         
         # Retrieve or create the DWPvmNewRun object
         try:
             new_run = DWPvmNewRun.objects.get(user=request.user)
             final_run = DWPvmRun.objects.get(user=request.user)
         except DWPvmRun.DoesNotExist:
-            final_run = DWPvmRun.objects.create(user=request.user)
+            final_run = DWPvmRun.objects.create(user=request.user, terrain=terrain)
         except DWPvmNewRun.DoesNotExist:
-            new_run = DWPvmNewRun.objects.create(user=request.user, state=1)
-        
+            new_run = DWPvmNewRun.objects.create(user=request.user, state=1, terrain=terrain)
+
         # Get selected dino details for display
         selected_dinos = []
         if final_run.dino1:
@@ -555,8 +567,7 @@ def set_next_fight_dinos(run, life=None):
     rand = random.Random(seed)
     all_dinos = list(DWDino.objects.all())
     random_dinos = rand.sample(all_dinos, 3)
-    terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
-    print(terrain.name)
+    terrain = run.terrain
     if terrain.name == "Distorsion Spatio-Temporelle":
         ids, rearanged_stats = distorsion_terrain()
         for i, dino in enumerate(random_dinos):
@@ -708,7 +719,7 @@ def start_battle_pvm(request):
     try:
         # Fetch the run info and dino details
         run_info = get_object_or_404(DWPvmRun, user=request.user)
-        terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+        terrain = run_info.terrain
 
         user_dinos = []
         enemy_dinos = []
@@ -772,7 +783,7 @@ def start_battle_pvm(request):
             run_info.save()
             if run_info.life <= 0:
                 # Save to leaderboard before deleting the run
-                terrain = DWPvmTerrain.objects.get(id=constance_cfg.DW_DAILY_TERRAIN_ID)
+                terrain = run_info.terrain
                 
                 # Collect team dinos stats
                 team_dinos_stats = []
