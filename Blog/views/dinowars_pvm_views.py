@@ -55,10 +55,10 @@ def run_dino_details_view(request, dino_id):
         if enemy:
             if run_info.level < 3: lvl = -3 + run_info.level
             elif run_info.level < 5: lvl = run_info.level - 2
-            elif run_info.level < 10: lvl = 3 + 0.5 * (run_info.level - 5)
-            elif run_info.level < 15: lvl = 6 + 0.5 * (run_info.level - 10)
-            elif run_info.level < 20: lvl = 9 + 0.5 * (run_info.level - 15)
-            else: lvl = 12 + 0.5 * (run_info.level - 20)
+            elif run_info.level < 10: lvl = 2 + 0.5 * (run_info.level - 4)
+            elif run_info.level < 15: lvl = 5.5 + 0.5 * (run_info.level - 10)
+            elif run_info.level < 20: lvl = 8.5 + 1 * (run_info.level - 15)
+            else: lvl = 14 + 1 * (run_info.level - 20)
             # Fetch the enemy dino details
             dino = get_object_or_404(DWPvmNextFightDino, id=dino_id, run__user=request.user)
             hp_lvl = lvl
@@ -552,14 +552,14 @@ def set_next_fight_dinos(run, life=None):
         lvl_mult = 1.1 + 0.05 * (run.level - 4)
         lvl_add = 0.1 + 0.05 * (run.level - 4)
     elif run.level < 15:
-        lvl_mult = 1.4 + 0.05 * (run.level - 10)
-        lvl_add = 0.4 + 0.05 * (run.level - 10)
+        lvl_mult = 1.45 + 0.05 * (run.level - 10)
+        lvl_add = 0.45 + 0.05 * (run.level - 10)
     elif run.level < 20:
-        lvl_mult = 1.65 + 0.05 * (run.level - 15)
-        lvl_add = 0.65 + 0.05 * (run.level - 15)
+        lvl_mult = 1.75 + 0.1 * (run.level - 15)
+        lvl_add = 0.75 + 0.1 * (run.level - 15)
     else:
-        lvl_mult = 1.9 + 0.05 * (run.level - 20)
-        lvl_add = 0.9 + 0.05 * (run.level - 20)
+        lvl_mult = 2.3 + 0.1 * (run.level - 20)
+        lvl_add = 1.3 + 0.1 * (run.level - 20)
 
     dw_user = DWUser.objects.get(user=run.user)
 
