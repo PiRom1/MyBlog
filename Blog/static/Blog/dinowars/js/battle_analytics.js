@@ -2,15 +2,26 @@
 const hpData = hpTimelineData;
 const hpCtx = document.getElementById('hpChart').getContext('2d');
 
+// color palettes for timeline charts
+const blueShades = ['rgba(54, 235, 235, 1)', 'rgba(0, 128, 255, 1)', 'rgba(73, 10, 200, 1)'];
+const redOrangeShades = ['rgba(255, 127, 30, 1)', 'rgba(255, 72, 0, 1)', 'rgba(169, 0, 31, 1)'];
+
 new Chart(hpCtx, {
     type: 'line',
     data: {
-        datasets: Object.entries(hpData).map(([dino, data]) => ({
-            label: dino,
-            data: data.map(([tick, hp]) => ({x: tick/100, y: hp})),
-            borderWidth: 2,
-            tension: 0.1
-        }))
+        datasets: Object.entries(hpData).map(([dino, data], idx, arr) => {
+            // prefer first 3 as blue, last 3 as red/orange; fallback by modulo
+            const color = idx < 3 ? blueShades[idx % blueShades.length] : redOrangeShades[(idx - 3) % redOrangeShades.length];
+            return {
+                label: dino,
+                data: data.map(([tick, hp]) => ({x: tick/100, y: hp})),
+                borderColor: color,
+                backgroundColor: color.replace(/1\)$/, '0.1)'),
+                borderWidth: 2,
+                tension: 0.1,
+                fill: false
+            };
+        })
     },
     options: {
         responsive: true,
@@ -40,12 +51,18 @@ const damageTimelineCtx = document.getElementById('damageTimelineChart').getCont
 new Chart(damageTimelineCtx, {
     type: 'line',
     data: {
-        datasets: Object.entries(damageTimelineData).map(([dino, data]) => ({
-            label: dino,
-            data: data.map(([tick, damage]) => ({x: tick/100, y: damage})),
-            borderWidth: 2,
-            tension: 0.1
-        }))
+        datasets: Object.entries(damageTimelineData).map(([dino, data], idx) => {
+            const color = idx < 3 ? blueShades[idx % blueShades.length] : redOrangeShades[(idx - 3) % redOrangeShades.length];
+            return {
+                label: dino,
+                data: data.map(([tick, damage]) => ({x: tick/100, y: damage})),
+                borderColor: color,
+                backgroundColor: color.replace(/1\)$/, '0.1)'),
+                borderWidth: 2,
+                tension: 0.1,
+                fill: false
+            };
+        })
     },
     options: {
         responsive: true,

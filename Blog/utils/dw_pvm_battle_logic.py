@@ -412,12 +412,6 @@ def jungle_perfide_terrain(time: int, game_state: GameState, dino: 'Dino') -> in
         return time - int(0.2 * time)  # 20% of the time is removed for support dinos
     return time  # No change in time for other terrains or non-support dinos
 
-# SUPPORT PLACEHOLDER (deprecated - replaced by jungle_perfide_terrain)
-def support_placeholder_terrain(time: int, game_state: GameState):
-    if game_state.terrain == "Support Placeholder":
-        return time - int(0.2 * time)  # 20% of the time is removed
-    return time  # No change in time for other terrains
-
 # ------------------------- ATTACK EFFECTS ------------------------- #
 
 # ARMOR SLAM
