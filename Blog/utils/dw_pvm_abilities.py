@@ -709,15 +709,6 @@ def apply_seul_contre_tous(team_dinos, game_state):
     """
     alive_dinos = [dino for dino in team_dinos if dino.is_alive()]
     
-    # Remove existing seul_contre_tous effects first
-    for dino in team_dinos:
-        if "seul_contre_tous" in dino.current_statuses:
-            if hasattr(dino, '_seul_contre_tous_modifier'):
-                dino.stats.defense -= dino._seul_contre_tous_modifier
-                delattr(dino, '_seul_contre_tous_modifier')
-                game_state.log_effect("seul_contre_tous_remove", dino, "defense", -dino._seul_contre_tous_modifier)
-            dino.current_statuses.remove("seul_contre_tous")
-    
     # Apply buff if only one dino is alive
     if len(alive_dinos) == 1:
         last_dino = alive_dinos[0]
