@@ -38,6 +38,11 @@ def change_DWPvm_terrain():
     new_id = (old_id  % 7) + 1
     constance_cfg.DW_DAILY_TERRAIN_ID = new_id
 
+def reset_pvm_runs_td():
+    for dwuser in DWUser.objects.all():
+        dwuser.pvm_runs_td = 0
+        dwuser.save()
+
 def clear_fights_log():
     for fight in DWFight.objects.filter(gamemode = 'arena', date__lt = timezone.now() - timedelta(days=30)):
         fight.delete()
@@ -98,6 +103,7 @@ def run():
     clear_fights_log()
 
     # change_DWPvm_terrain()
+    reset_pvm_runs_td()
 
 
 

@@ -617,6 +617,7 @@ class DWPvmRun(models.Model):
     life = models.IntegerField(default=3)
     level = models.IntegerField(default=1)
     stat_points = models.IntegerField(default=0)
+    terrain = models.ForeignKey('DWPvmTerrain', on_delete=models.SET_NULL, null=True, blank=True)
     run_date = models.DateTimeField(auto_now_add=True)
     seen_abilities = models.TextField(default='[]')
 
@@ -655,6 +656,7 @@ class DWPvmNewRun(models.Model):
     dino2 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino2_new')
     dino3 = models.ForeignKey(DWPvmDino, null=True, blank=True, on_delete=models.SET_NULL, related_name='dino3_new')
     date = models.DateTimeField(auto_now_add=True)
+    terrain = models.ForeignKey('DWPvmTerrain', on_delete=models.SET_NULL, null=True, blank=True)
 
 class DWPvmTerrain(models.Model):
     id = models.IntegerField(primary_key=True)
