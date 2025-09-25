@@ -7,27 +7,27 @@ execution rather than in stat calculation.
 
 Currently handles team abilities:
 - "Dernier souffle": When an ally dies, others recover 20% HP immediately
-- "Sprint préhistorique": +15% SPD to whole team for first 5 seconds of battle
+- "Sprint préhistorique": +20% SPD to whole team for first 5 seconds of battle
 - "Esprit de meute": +20% ATK if all allies alive, -10% otherwise
-- "Bouclier collectif": 20% of damage received is shared among all living allies
-- "Instinct protecteur": +20% DEF for 1s when any team member takes a critical hit
+- "Bouclier collectif": 50% of damage received is shared among all other living allies
+- "Instinct protecteur": +30% DEF for 2s when any team member takes a critical hit
 - "Pression croissante": +5% ATK every 3 seconds
-- "Seul contre tous": +20% DEF when only one dino remains alive
-- "Terreur collective": +8% ATK permanently when an enemy dies
+- "Seul contre tous": +25% all stats when only one dino remains alive
+- "Terreur collective": +15% ATK permanently when an enemy dies
+- "Mort-vivant": When the first dino dies, it continues attacking for 2s without being targetable
 
 Individual dino abilities:
-- "Mort-vivant": Continue attacking for 2s after death without being targetable
-- "Frénésie": +20% attack speed when HP < 30%
-- "Boureau": Instant kill if target's remaining HP < damage dealt
-- "Peau dure": 15% damage reduction when HP > 70%
-- "Inspiration héroïque": +20% ATK for all allies for 1s on critical hit
-- "Vol de vie": Heals attacker for 15% of damage dealt after each attack
+- "Frénésie": +25% attack speed when HP < 50%
+- "Boureau": Probability-based instant kill based on target's remaining HP
+- "Peau dure": 20% damage reduction when HP > 50%
+- "Inspiration héroïque": +25% ATK for all allies for 1s on critical hit
+- "Vol de vie": Heals attacker for 30% of damage dealt after each attack
 - "Provocation": This dino is 2x more likely to be targeted by enemies
 - "Agilitée accrue": 20% chance to dodge attacks when this dino is attacked
-- "Regard pétrifiant": 25% chance on attack to reduce target's speed by 50% for 3s
+- "Regard pétrifiant": Always reduces target's speed by 25% for 3s after attacking
 - "Régénération": Every 2 seconds, heals for 5% of maximum HP
-- "Chasseur nocturne": +30% critical chance against enemies with poison/bleed
-- "Carapace robuste": Starts at 90% damage resist, decreases by 20% per hit
+- "Chasseur nocturne": 2x damage against enemies with poison/bleed
+- "Carapace robuste": Starts at 50% damage reduction, decreases by 3% per hit (min -25%)
 """
 
 import random

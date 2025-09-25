@@ -33,7 +33,7 @@ def populate_abilities():
         },
         {
             'name': 'Sprint préhistorique',
-            'description': '+15% de vitesse pour toute l\'équipe pendant les 5 premières secondes du combat.',
+            'description': '+20% de vitesse pour toute l\'équipe pendant les 5 premières secondes du combat.',
             'to_dino': False
         },
         {
@@ -43,12 +43,12 @@ def populate_abilities():
         },
         {
             'name': 'Bouclier collectif',
-            'description': '20% des dégâts reçus sont partagés équitablement entre tous les autres alliés vivants.',
+            'description': '50% des dégâts reçus sont partagés équitablement entre tous les autres alliés vivants.',
             'to_dino': False
         },
         {
             'name': 'Instinct protecteur',
-            'description': 'Quand un membre de l\'équipe subit un coup critique, toute l\'équipe gagne +20% de défense pendant 1 seconde.',
+            'description': 'Quand un membre de l\'équipe subit un coup critique, toute l\'équipe gagne +30% de défense pendant 2 secondes.',
             'to_dino': False
         },
         {
@@ -58,12 +58,12 @@ def populate_abilities():
         },
         {
             'name': 'Seul contre tous',
-            'description': 'S\'il ne reste qu\'un seul allié vivant, il gagne +20% de défense.',
+            'description': 'S\'il ne reste qu\'un seul allié vivant, il gagne +25% dans toutes les statistiques.',
             'to_dino': False
         },
         {
             'name': 'Terreur collective',
-            'description': 'Quand un ennemi meurt, toute l\'équipe gagne +8% d\'attaque pour le reste du combat.',
+            'description': 'Quand un ennemi meurt, toute l\'équipe gagne +15% d\'attaque pour le reste du combat.',
             'to_dino': False
         }
     ]
@@ -72,32 +72,32 @@ def populate_abilities():
     individual_abilities = [
         {
             'name': 'Mort-vivant',
-            'description': 'Après la mort, continue d\'attaquer pendant 2 secondes sans pouvoir être ciblé (sauf si c\'est le dernier dino).',
-            'to_dino': True
+            'description': 'Quand le premier allié meurt, il continue d\'attaquer pendant 2 secondes sans pouvoir être ciblé.',
+            'to_dino': False
         },
         {
             'name': 'Frénésie',
-            'description': '+20% de vitesse d\'attaque quand les PV sont inférieurs à 30%.',
+            'description': '+25% de vitesse d\'attaque quand les PV sont inférieurs à 50%.',
             'to_dino': True
         },
         {
             'name': 'Boureau',
-            'description': 'Exécution instantanée si les PV restants de la cible sont inférieurs aux dégâts infligés.',
+            'description': 'Plus les PV de la cible sont bas, plus cette dino a de chances de la tuer instantanément ((1-(PV restants/PV totaux)^2)/1.1).',
             'to_dino': True
         },
         {
             'name': 'Peau dure',
-            'description': '15% de réduction des dégâts quand les PV sont supérieurs à 70%.',
+            'description': '20% de réduction des dégâts quand les PV sont supérieurs à 50%.',
             'to_dino': True
         },
         {
             'name': 'Inspiration héroïque',
-            'description': 'En cas de coup critique, tous les alliés gagnent +20% d\'attaque pendant 1 seconde.',
+            'description': 'En cas de coup critique, tous les alliés gagnent +25% d\'attaque pendant 1 seconde.',
             'to_dino': True
         },
         {
             'name': 'Vol de vie',
-            'description': 'Récupère 15% des dégâts infligés sous forme de PV après chaque attaque.',
+            'description': 'Récupère 30% des dégâts infligés sous forme de PV après chaque attaque.',
             'to_dino': True
         },
         {
@@ -112,7 +112,7 @@ def populate_abilities():
         },
         {
             'name': 'Regard pétrifiant',
-            'description': 'Après avoir attaqué, 25% de chance de réduire la vitesse de la cible de 50% pendant 3 secondes.',
+            'description': 'Après avoir attaqué, réduit la vitesse de la cible de 25% pendant 3 secondes.',
             'to_dino': True
         },
         {
@@ -122,12 +122,12 @@ def populate_abilities():
         },
         {
             'name': 'Chasseur nocturne',
-            'description': '+30% de chance de coup critique contre les ennemis affectés par du poison ou des saignements.',
+            'description': 'Inflige 2x les dégâts contre les ennemis affectés par du poison ou des saignements.',
             'to_dino': True
         },
         {
             'name': 'Carapace robuste',
-            'description': 'Commence chaque combat avec 90% de résistance aux dégâts. La résistance diminue de 20% à chaque coup reçu (peut descendre dans le négatif).',
+            'description': 'Commence chaque combat avec 50% de réduction des dégâts. La réduction diminue de 3% à chaque coup reçu (minimum -25%).',
             'to_dino': True
         },
         {
