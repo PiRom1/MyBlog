@@ -68,6 +68,8 @@ function initializeDinoCards() {
 
 // Store ability click handlers in a map (abilityId -> function)
 const abilityClickHandlers = new Map();
+// Track whether any stats were updated during the current popup session
+let statsWereUpdated = false;
 
 function initializeAbilityCards() {
     const nextAbilityCards = document.querySelectorAll('#next-abilities-container .ability-card:not(.selected-ability):not(.discarded-ability)');
@@ -194,6 +196,9 @@ function levelUpStat(dinoId, statName, cost) {
             
             // Update the main page's stat points counter
             updateMainPageStatPoints(data.remaining_points);
+
+            // Mark that we have applied a stat change, so we can refresh main cards on close
+            statsWereUpdated = true;
         } else {
             alert('Erreur: ' + data.error);
         }
@@ -218,12 +223,13 @@ function closeStatAllocationPopup() {
     popup.style.display = 'none';
     document.removeEventListener('mousedown', handleStatAllocationClickOutside);
     document.removeEventListener('keydown', handleStatAllocationEscKey);
-    
-    // Refresh the dino details popup to show updated stats
-    const dinoDetailLevelUpBtn = document.getElementById('levelUpStatsBtn');
-    if (dinoDetailLevelUpBtn) {
-        const dinoId = dinoDetailLevelUpBtn.getAttribute('data-dino-id');
-        showDinoDetails(dinoId, 'false');
+
+    // If stats were updated, ensure main page dino cards reflect new values
+    if (statsWereUpdated) {
+        // reset flag and reload the page to refresh cards reliably
+        statsWereUpdated = false;
+        window.location.reload();
+        return;
     }
 }
 
