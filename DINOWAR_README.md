@@ -108,19 +108,19 @@ These advanced abilities are available in the PVM (Player vs Monster) roguelike 
 #### **Provocation**
 - **Effect**: This dino is 2x more likely to be targeted by enemies
 
-#### **Agilitée accrue** ⭐ *NEW*
+#### **Agilitée accrue** 
 - **Effect**: When this dino is attacked, it has 20% chance to dodge the attack
 
-#### **Regard pétrifiant** ⭐ *NEW*
+#### **Regard pétrifiant** 
 - **Effect**: 25% chance on attack to reduce target's speed by 50% for 3 seconds
 
-#### **Régénération** ⭐ *NEW*
+#### **Régénération** 
 - **Effect**: Every 2 seconds, heals for 5% of maximum HP
 
-#### **Chasseur nocturne** ⭐ *NEW*
+#### **Chasseur nocturne** 
 - **Effect**: Gains +30% critical chance against enemies afflicted with status effects (poison & bleed)
 
-#### **Carapace robuste** ⭐ *NEW*
+#### **Carapace robuste** 
 - **Effect**: Starts each fight at 90% damage resistance. Damage resistance drops by 20% each time this dino takes damage (can go negative, meaning extra damage taken)
 
 ### All Team Abilities
