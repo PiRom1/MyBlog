@@ -182,15 +182,17 @@ class GameState:
             from Blog.utils.dw_pvm_abilities import apply_individual_abilities_before_attack
             attack_modifications = apply_individual_abilities_before_attack(attacker, defender, self)
             
-            # Apply critical chance bonus (Chasseur nocturne)
-            if 'crit_bonus' in attack_modifications:
-                stats[3] += attack_modifications['crit_bonus']  # Add to crit_chance
+            # Apply damage multiplier (Chasseur nocturne)
+            damage_multiplier = attack_modifications.get('damage_multiplier', 1.0)
             
             if custom_stats:
                 for i, stat in enumerate(custom_stats):
                     if stat is not None:
                         stats[i] = stat                
             damage, is_crit = self.calculate_damage(*stats)
+            
+            # Apply damage multiplier after base damage calculation
+            damage = int(damage * damage_multiplier)
 
         if "bleed" in defender.current_statuses:
             damage = int(damage * 1.2)
@@ -498,9 +500,8 @@ def rapid_slash_before_effect(attacker: Dino, defender: Dino, game_state: GameSt
     from Blog.utils.dw_pvm_abilities import apply_individual_abilities_before_attack
     attack_modifications = apply_individual_abilities_before_attack(attacker, defender, game_state)
     
-    # Apply critical chance bonus (Chasseur nocturne)
-    if 'crit_bonus' in attack_modifications:
-        stats[3] += attack_modifications['crit_bonus']  # Add to crit_chance
+    # Apply damage multiplier (Chasseur nocturne)
+    damage_multiplier = attack_modifications.get('damage_multiplier', 1.0)
     
     # hit distribution : 45% 2 hits, 35% 3 hits, 15% 4 hits, 5% 5 hits
     hit_distribution = [2, 3, 4, 5]
