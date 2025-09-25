@@ -11,14 +11,20 @@ Usage: python manage.py runscript populate_pvm_data
 
 import os
 import sys
-import django
 
-# Setup Django environment
-sys.path.append('/home/runner/work/MyBlog/MyBlog')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MyBlog.settings')
-django.setup()
+# Setup Django environment (works both with manage.py runscript and direct run)
+try:
+    import django  # type: ignore
+    if not os.environ.get('DJANGO_SETTINGS_MODULE'):
+        # Assume project is at MyBlog/MyBlog
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MyBlog.settings')
+    django.setup()
+except Exception:
+    # In case this script is executed via manage.py runscript, the environment is already set
+    pass
 
 from Blog.models import DWPvmAbility, DWPvmTerrain
+from django.db import transaction
 
 
 def populate_abilities():
@@ -26,6 +32,11 @@ def populate_abilities():
     
     # Team abilities (to_dino=False)
     team_abilities = [
+        {
+            'name': 'Mort-vivant',
+            'description': 'Quand le premier allié meurt, il continue d\'attaquer pendant 2 secondes sans pouvoir être ciblé.',
+            'to_dino': False
+        },
         {
             'name': 'Dernier souffle',
             'description': 'Quand un allié meurt, les autres récupèrent 20% de leur PV immédiatement.',
@@ -70,11 +81,6 @@ def populate_abilities():
     
     # Individual dino abilities (to_dino=True)
     individual_abilities = [
-        {
-            'name': 'Mort-vivant',
-            'description': 'Quand le premier allié meurt, il continue d\'attaquer pendant 2 secondes sans pouvoir être ciblé.',
-            'to_dino': False
-        },
         {
             'name': 'Frénésie',
             'description': '+25% de vitesse d\'attaque quand les PV sont inférieurs à 50%.',
@@ -164,29 +170,43 @@ def populate_abilities():
     
     all_abilities = team_abilities + individual_abilities
     created_count = 0
-    existing_count = 0
+    updated_count = 0
+    unchanged_count = 0
     
     print("=== Ajout des capacités PvM ===")
     
-    for ability_data in all_abilities:
-        ability, created = DWPvmAbility.objects.get_or_create(
-            name=ability_data['name'],
-            defaults={
-                'description': ability_data['description'],
-                'to_dino': ability_data['to_dino']
-            }
-        )
-        
-        if created:
-            created_count += 1
-            print(f"✅ Créée: {ability.name} ({'Individuelle' if ability.to_dino else 'Équipe'})")
-        else:
-            existing_count += 1
-            print(f"⚠️  Existe déjà: {ability.name}")
+    with transaction.atomic():
+        for ability_data in all_abilities:
+            ability = DWPvmAbility.objects.filter(name=ability_data['name']).first()
+            if ability is None:
+                # Create new ability
+                ability = DWPvmAbility.objects.create(
+                    name=ability_data['name'],
+                    description=ability_data['description'],
+                    to_dino=ability_data['to_dino']
+                )
+                created_count += 1
+                print(f"✅ Créée: {ability.name} ({'Individuelle' if ability.to_dino else 'Équipe'})")
+            else:
+                changed_fields = []
+                if ability.description != ability_data['description']:
+                    ability.description = ability_data['description']
+                    changed_fields.append('description')
+                if ability.to_dino != ability_data['to_dino']:
+                    ability.to_dino = ability_data['to_dino']
+                    changed_fields.append('to_dino')
+                if changed_fields:
+                    ability.save(update_fields=changed_fields)
+                    updated_count += 1
+                    print(f"🔄 Mis à jour: {ability.name} -> {', '.join(changed_fields)}")
+                else:
+                    unchanged_count += 1
+                    print(f"⏭️  Inchangée: {ability.name}")
     
     print(f"\n📊 Résumé des capacités:")
     print(f"   - Nouvelles capacités créées: {created_count}")
-    print(f"   - Capacités déjà existantes: {existing_count}")
+    print(f"   - Capacités mises à jour: {updated_count}")
+    print(f"   - Capacités inchangées: {unchanged_count}")
     print(f"   - Total: {DWPvmAbility.objects.count()} capacités dans la base de données")
 
 
@@ -225,28 +245,38 @@ def populate_terrains():
     ]
     
     created_count = 0
-    existing_count = 0
+    updated_count = 0
+    unchanged_count = 0
     
     print("\n=== Ajout des terrains PvM ===")
     
-    for terrain_data in terrains:
-        terrain, created = DWPvmTerrain.objects.get_or_create(
-            name=terrain_data['name'],
-            defaults={
-                'description': terrain_data['description']
-            }
-        )
-        
-        if created:
-            created_count += 1
-            print(f"✅ Créé: {terrain.name}")
-        else:
-            existing_count += 1
-            print(f"⚠️  Existe déjà: {terrain.name}")
+    with transaction.atomic():
+        for terrain_data in terrains:
+            terrain = DWPvmTerrain.objects.filter(name=terrain_data['name']).first()
+            if terrain is None:
+                terrain = DWPvmTerrain.objects.create(
+                    name=terrain_data['name'],
+                    description=terrain_data['description']
+                )
+                created_count += 1
+                print(f"✅ Créé: {terrain.name}")
+            else:
+                changed_fields = []
+                if terrain.description != terrain_data['description']:
+                    terrain.description = terrain_data['description']
+                    changed_fields.append('description')
+                if changed_fields:
+                    terrain.save(update_fields=changed_fields)
+                    updated_count += 1
+                    print(f"🔄 Mis à jour: {terrain.name} -> {', '.join(changed_fields)}")
+                else:
+                    unchanged_count += 1
+                    print(f"⏭️  Inchangé: {terrain.name}")
     
     print(f"\n📊 Résumé des terrains:")
     print(f"   - Nouveaux terrains créés: {created_count}")
-    print(f"   - Terrains déjà existants: {existing_count}")
+    print(f"   - Terrains mis à jour: {updated_count}")
+    print(f"   - Terrains inchangés: {unchanged_count}")
     print(f"   - Total: {DWPvmTerrain.objects.count()} terrains dans la base de données")
 
 
