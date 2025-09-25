@@ -657,13 +657,13 @@ def calculate_total_stats(dino):
             elif ability.ability.name == "Boost de défense":
                 total_stats['defense'] += int(total_stats['defense'] * 0.2)
             elif ability.ability.name == "Boost de vitesse":
-                total_stats['spd'] += 0.2
+                total_stats['spd'] += total_stats['spd'] * 0.2
                 total_stats['spd'] = round(total_stats['spd'], 1)
             elif ability.ability.name == "Boost de % critique":
-                total_stats['crit'] += 0.08
+                total_stats['crit'] += 0.1
                 total_stats['crit'] = round(total_stats['crit'], 2)
             elif ability.ability.name == "Boost de dégâts critiques":
-                total_stats['crit_dmg'] += 0.2
+                total_stats['crit_dmg'] += total_stats['crit_dmg'] * 0.3  
                 total_stats['crit_dmg'] = round(total_stats['crit_dmg'], 1)
     except:
         pass

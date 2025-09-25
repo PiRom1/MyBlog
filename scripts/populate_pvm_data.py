@@ -147,17 +147,17 @@ def populate_abilities():
         },
         {
             'name': 'Boost de vitesse',
-            'description': 'Au début du combat, augmente la vitesse de 0.2.',
+            'description': 'Au début du combat, augmente la vitesse de 20%.',
             'to_dino': True
         },
         {
             'name': 'Boost de % critique',
-            'description': 'Au début du combat, augmente les chances de coup critique de 0.08.',
+            'description': 'Au début du combat, augmente les chances de coup critique de 0.1.',
             'to_dino': True
         },
         {
             'name': 'Boost de dégâts critiques',
-            'description': 'Au début du combat, augmente les dégâts critiques de 0.2.',
+            'description': 'Au début du combat, augmente les dégâts critiques de 30%.',
             'to_dino': True
         }
     ]
