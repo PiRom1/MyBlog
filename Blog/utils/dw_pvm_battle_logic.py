@@ -512,7 +512,6 @@ def rapid_slash_before_effect(attacker: Dino, defender: Dino, game_state: GameSt
     crit_nb = 0
     for _ in range(hits):
         damage, is_crit = game_state.calculate_damage(*stats)
-        damage = int(damage * damage_multiplier)  # Apply damage multiplier
         total_damage += damage
         if is_crit:
             crit_nb += 1

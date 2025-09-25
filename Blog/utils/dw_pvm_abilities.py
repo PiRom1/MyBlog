@@ -325,7 +325,7 @@ def apply_boureau(attacker, defender, damage, game_state):
     if defender.current_hp > 0:
         # Calculate execution probability based on remaining HP percentage
         hp_percentage = defender.current_hp / defender.stats.hp
-        execution_chance = (1 - (hp_percentage ** 2)) / 1.1
+        execution_chance = (1 - hp_percentage) ** 2 / 1.1
         
         if random.random() < execution_chance:
             # Instant kill
@@ -800,6 +800,7 @@ def apply_agilite_accrue_dodge(dino, game_state):
 def apply_regard_petrifiant(attacker, defender, game_state):
     """
     Regard pétrifiant ability: After attacking, reduce target's speed by 25% for 3 seconds
+    Effects can stack for multiple applications.
     
     Args:
         attacker: The dino with Regard pétrifiant ability
@@ -810,38 +811,37 @@ def apply_regard_petrifiant(attacker, defender, game_state):
     if not hasattr(defender, '_regard_petrifiant_original_speed'):
         defender._regard_petrifiant_original_speed = defender.stats.speed
     
-    # Remove any existing regard pétrifiant effect first
-    if "regard_petrifiant" in defender.current_statuses:
-        if hasattr(defender, '_regard_petrifiant_reduction'):
-            defender.stats.speed += defender._regard_petrifiant_reduction
-    
-    # Apply speed reduction (25% of original speed)
+    # Apply speed reduction (25% of original speed) - effects can stack
     speed_reduction = defender._regard_petrifiant_original_speed * 0.25
     defender.stats.speed -= speed_reduction
-    defender._regard_petrifiant_reduction = speed_reduction
+    
+    # Track multiple stacks for restoration
+    if not hasattr(defender, '_regard_petrifiant_stacks'):
+        defender._regard_petrifiant_stacks = []
+    
+    stack_id = len(defender._regard_petrifiant_stacks)
+    defender._regard_petrifiant_stacks.append(speed_reduction)
     
     # Add status and log
     if "regard_petrifiant" not in defender.current_statuses:
         defender.current_statuses.append("regard_petrifiant")
     game_state.log_effect("regard_petrifiant", defender, "speed", -speed_reduction)
     
-    # Remove any existing scheduled restoration
-    new_queue = []
-    for action in game_state.action_queue:
-        if not (action.effect_name == "restore_regard_petrifiant" and action.dino_id == defender.id):
-            new_queue.append(action)
-    game_state.action_queue = new_queue
-    
     def restore_speed():
-        if "regard_petrifiant" in defender.current_statuses:
-            defender.current_statuses.remove("regard_petrifiant")
-            if hasattr(defender, '_regard_petrifiant_reduction'):
-                defender.stats.speed += defender._regard_petrifiant_reduction
-                game_state.log_effect("regard_petrifiant_restore", defender, "speed", defender._regard_petrifiant_reduction)
-                delattr(defender, '_regard_petrifiant_reduction')
+        if hasattr(defender, '_regard_petrifiant_stacks') and stack_id < len(defender._regard_petrifiant_stacks):
+            # Restore this specific stack
+            stack_reduction = defender._regard_petrifiant_stacks[stack_id]
+            defender.stats.speed += stack_reduction
+            defender._regard_petrifiant_stacks[stack_id] = 0  # Mark as restored
+            game_state.log_effect("regard_petrifiant_restore", defender, "speed", stack_reduction)
+            
+            # Remove status only if all stacks are restored
+            if all(stack == 0 for stack in defender._regard_petrifiant_stacks):
+                if "regard_petrifiant" in defender.current_statuses:
+                    defender.current_statuses.remove("regard_petrifiant")
     
     # Schedule restoration after 3 seconds (300 ticks)
-    game_state.schedule_action(300, 2, restore_speed, "regard_petrifiant", defender.id, "restore_regard_petrifiant")
+    game_state.schedule_action(300, 2, restore_speed, "regard_petrifiant", defender.id, f"restore_regard_petrifiant_{stack_id}")
 
 
 def apply_regeneration_start(dino, game_state):
