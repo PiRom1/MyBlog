@@ -227,20 +227,7 @@ class GameState:
         
         # Check if defender died and trigger death abilities
         if defender.current_hp <= 0 and damage > 0:
-            # Find the defender's team
-            defender_team = next(team for team in self.teams.values() if defender in team)
-            from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death, apply_individual_abilities_on_death, apply_team_abilities_on_enemy_death
-            
-            # Apply death-triggered abilities only if defender is on the player's team
-            if defender_team == self.teams['team_joueur']:
-                apply_team_abilities_on_death(defender, defender_team, self)
-                apply_individual_abilities_on_death(defender, defender_team, self)
-            
-            # Apply enemy death abilities
-            else:
-                for team in self.teams.values():
-                    if team != defender_team:
-                        apply_team_abilities_on_enemy_death(defender, team, self)
+            self.apply_death_effects(defender)
 
         log_entry = {
             "type": "attack",
@@ -347,8 +334,25 @@ class GameState:
                 if dino.is_alive() and dino.stats.hp > 0:
                     dino.current_hp = max(0, dino.current_hp - int(dino.stats.hp * 0.05))
                     self.log_effect("lac_putrefie", dino, "hp", -int(dino.stats.hp * 0.05))
+                    if dino.current_hp == 0:
+                        self.apply_death_effects(dino)
         self.schedule_action(100, 1, self.lac_putrefie, "lac_putrefie", None, None)  # Schedule next effect application
-    
+
+    def apply_death_effects(self, dino: Dino):
+        dino_team = next(team for team in self.teams.values() if dino in team)
+        from Blog.utils.dw_pvm_abilities import apply_team_abilities_on_death, apply_individual_abilities_on_death, apply_team_abilities_on_enemy_death
+        
+        # Apply death-triggered abilities only if dino is on the player's team
+        if dino_team == self.teams['team_joueur']:
+            apply_team_abilities_on_death(dino, dino_team, self)
+            apply_individual_abilities_on_death(dino, dino_team, self)
+        
+        # Apply enemy death abilities
+        else:
+            for team in self.teams.values():
+                if team != dino_team:
+                    apply_team_abilities_on_enemy_death(dino, team, self)
+
 # ------------------------- LOADING DINOS ------------------------- #
     
 # Example of loading from Django models
@@ -593,6 +597,9 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
             game_state.log_effect("poison_damage", defender, "hp", damage, source=attacker)
             if defender.is_alive():
                 game_state.schedule_action(50, 2, poison_damage, "venom_spit", defender.id, "poison_damage")
+            else:
+                # If the defender dies from poison, apply death effects
+                game_state.apply_death_effects(defender)
 
     def remove_poison():
         if "poison" in defender.current_statuses:
