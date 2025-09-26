@@ -194,16 +194,6 @@ class GameState:
             # Apply damage multiplier after base damage calculation
             damage = int(damage * damage_multiplier)
 
-        if "bleed" in defender.current_statuses:
-            damage = int(damage * 1.2)
-        
-        # Apply individual abilities that modify damage taken (Peau dure, Carapace robuste)
-        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken, apply_team_abilities_on_damage_taken
-        damage = apply_individual_abilities_on_damage_taken(defender, damage, self)
-        
-        # Apply team abilities that modify damage taken (Bouclier collectif, Instinct protecteur)
-        damage = apply_team_abilities_on_damage_taken(defender, damage, is_crit, self)
-        
         miss = random.random() > attacker.stats.accuracy
         
         # Check for Agilitée accrue dodge
@@ -219,41 +209,53 @@ class GameState:
         if miss:
             damage = 0
             is_crit = False
-        defender.current_hp -= damage
-        
-        # Apply individual abilities on HP change (Frénésie)
-        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_hp_change
-        apply_individual_abilities_on_hp_change(defender, self)
-        # Also check attacker's HP for Frénésie (in case of reflect damage)
-        apply_individual_abilities_on_hp_change(attacker, self)
-        
-        # Check if defender died and trigger death abilities
-        if defender.current_hp <= 0 and damage > 0:
-            self.apply_death_effects(defender)
 
-        log_entry = {
-            "type": "attack",
-            "tick": self.tick,
-            "attacker": attacker.name,
-            "attacker_id": attacker.id,
-            "defender": defender.name,
-            "defender_id": defender.id,
-            "damage": damage,
-            "is_crit": is_crit,
-            "defender_hp": max(defender.current_hp, 0)
-        }
-        self.fight_log.append(log_entry)
-        
-        # Apply individual abilities that trigger on attacks (Boureau, Inspiration héroïque)
-        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_attack
-        apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, self)
-        
-        if "reflect" in defender.current_statuses:
-            reflected_damage = int(damage * 0.75)
-            attacker.current_hp -= reflected_damage
-            # Source is the defender returning damage to the attacker
-            self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
-            defender.current_statuses.remove("reflect")
+        else:
+            if "bleed" in defender.current_statuses:
+                damage = int(damage * 1.2)
+            
+            # Apply individual abilities that modify damage taken (Peau dure, Carapace robuste)
+            from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_damage_taken, apply_team_abilities_on_damage_taken
+            damage = apply_individual_abilities_on_damage_taken(defender, damage, self)
+            
+            # Apply team abilities that modify damage taken (Bouclier collectif, Instinct protecteur)
+            damage_taken = apply_team_abilities_on_damage_taken(defender, damage, is_crit, self)
+
+            defender.current_hp -= damage_taken
+
+            # Apply individual abilities on HP change (Frénésie)
+            from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_hp_change
+            apply_individual_abilities_on_hp_change(defender, self)
+            
+            # Check if defender died and trigger death abilities
+            if defender.current_hp <= 0 and damage_taken > 0:
+                self.apply_death_effects(defender)
+
+            log_entry = {
+                "type": "attack",
+                "tick": self.tick,
+                "attacker": attacker.name,
+                "attacker_id": attacker.id,
+                "defender": defender.name,
+                "defender_id": defender.id,
+                "damage": damage,
+                "is_crit": is_crit,
+                "defender_hp": max(defender.current_hp, 0)
+            }
+            self.fight_log.append(log_entry)
+            
+            # Apply individual abilities that trigger on attacks (Boureau, Inspiration héroïque)
+            from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_attack
+            apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, self)
+            
+            if "reflect" in defender.current_statuses:
+                reflected_damage = int(damage * 0.75)
+                attacker.current_hp -= reflected_damage
+                # Source is the defender returning damage to the attacker
+                self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
+                defender.current_statuses.remove("reflect")
+                # Also check attacker's HP for Frénésie (in case of reflect damage)
+                apply_individual_abilities_on_hp_change(attacker, self)
 
         return damage, miss
 

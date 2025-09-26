@@ -661,7 +661,7 @@ def apply_bouclier_collectif(defender, damage, team_dinos, game_state):
     # Apply shared damage to allies
     for ally in alive_allies:
         ally.current_hp -= damage_per_ally
-        game_state.log_effect("bouclier_collectif_share", ally, "hp", -damage_per_ally)
+        game_state.log_effect("bouclier_collectif_share", ally, "hp", damage_per_ally)
     
     game_state.log_effect("bouclier_collectif_reduce", defender, "damage_reduction", shared_damage)
     return remaining_damage
