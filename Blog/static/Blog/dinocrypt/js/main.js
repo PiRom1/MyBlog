@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     enemies_coords.forEach(enemy_coord => {
         enemies.push(new Enemy(enemy_coord[1], enemy_coord[0], player));
+        array[enemy_coord[0]][enemy_coord[1]] = -2;
     })
 
 
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         dungeon.draw();
         player.draw();
-        minimap.draw(player.x, player.y);
+        minimap.draw(player.x, player.y, enemies);
         enemies.forEach(enemy => {
             enemy.draw();
         })
@@ -63,12 +64,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction qui fait se déplacer les entités
     function moveGame(player_movement) {
         player.move(player_movement, dungeon);
-        let taken_cells = [];
         if (player.is_moving) {
             enemies.forEach(enemy => {
-                enemy.move(a_star, taken_cells);
-                taken_cells.push(`${enemy.x}_${enemy.y}`);
+                console.log(`Previous pos : ${enemy.x} / ${enemy.y}`);
+                array[Math.round(enemy.x)][Math.round(enemy.y)] = 1; // Free cell
+                enemy.move(a_star);
+                console.log("enemy : ", enemy)
+                array[Math.round(enemy.x)][Math.round(enemy.y)] = -2;
+                console.log(`New pos : ${enemy.x} / ${enemy.y}`);
             })
+            count = {}
+            array.flat().forEach(val => count[val] = count[val] ? count[val] + 1 : 1)
+
+            console.log(`Nombre d'ennemis : ${count[-2]}`)
         };
 
     }

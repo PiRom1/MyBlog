@@ -50,10 +50,10 @@
 
 
 
-        getRandomMovement(taken_cells) {
+        getRandomMovement() {
             let movements = Array(Array(1, 0), Array(-1, 0), Array(0, 1), Array(0, -1));
             for (let movement of movements) {
-                if (isCellFree([this.y + movement[1], this.x + movement[0]], taken_cells, this.player.x, this.player.y)) {
+                if (isCellFree([this.y + movement[1], this.x + movement[0]], this.player.x, this.player.y)) {
                     if (randint(1, 100) < 20) {
                         return movement;
                    }
@@ -62,19 +62,19 @@
         }
 
 
-        get_movement(a_star, taken_cells) {
+        get_movement(a_star) {
 
             if (Math.abs(this.player.x - this.x) + Math.abs(this.player.y - this.y) <= ENEMY_PATHFINDING_RADIUS) { // Alors on utilise A Star
-                const movement = a_star.aStar(this.x, this.y, this.player.x, this.player.y, taken_cells);
+                const movement = a_star.aStar(this.x, this.y, this.player.x, this.player.y);
                 if (!movement) {
-                    return this.getRandomMovement(taken_cells);
+                    return this.getRandomMovement();
                     }
                 console.log(movement);
                 return [movement[1][0] - this.x, movement[1][1] - this.y];
                 
             }
             else { // Sinon, mouvement aléatoire   
-                return this.getRandomMovement(taken_cells);
+                return this.getRandomMovement();
             }
         }
 

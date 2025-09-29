@@ -8,9 +8,10 @@ class Minimap {
         this.tile_width = tile_width;
         this.tile_height = tile_height;
         this.dungeon = dungeon;
-        this.type_dict = {0 : "wall", 1 : "ground", 2 : "chest"}
+        this.type_dict = {0 : "wall", 1 : "ground", 2 : "chest", "-2" : "ground"}
         this.get_tiles();
         this.player_color = MINIMAP_PLAYER_TILE_COLOR;
+        this.enemy_color = MINIMAP_ENEMY_TILE_COLOR;
 
     }
 
@@ -38,6 +39,8 @@ class Minimap {
                         tile.type = "border";
                     }
                     this.tiles.push(tile);
+                    
+                    
                 }
             }   
     }
@@ -78,14 +81,29 @@ class Minimap {
         ctx.fillStyle = this.player_color;  // couleur du carré
         ctx.fillRect(pos_x, pos_y, this.tile_width*2, this.tile_height*2); 
 
-
     }
 
-    draw(player_x, player_y) {
+
+    draw_enemies(enemies) {
+
+        enemies.forEach(enemy => {
+            
+            let [pos_y, pos_x] = this.compute_pos(enemy.y, enemy.x);
+            pos_y -= this.tile_height/2;
+            pos_x -= this.tile_width/2;
+            
+            ctx.fillStyle = this.enemy_color;  // couleur du carré
+            ctx.fillRect(pos_x, pos_y, this.tile_width*2, this.tile_height*2); 
+        })
+    }
+
+
+    draw(player_x, player_y, enemies) {
         this.tiles.forEach(tile => {
             tile.draw();
         })
         this.draw_player(player_x, player_y);
+        this.draw_enemies(enemies)
     }
 
 

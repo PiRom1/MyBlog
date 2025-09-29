@@ -179,6 +179,7 @@
                 requestAnimationFrame(animate);
             }
 
+            array[this.x][this.y] = -1;
             console.log(`offset x : ${this.offset_x} / offset y : ${this.offset_y} / pos_x : ${this.x} / pos_y : ${this.y}`)
 
 

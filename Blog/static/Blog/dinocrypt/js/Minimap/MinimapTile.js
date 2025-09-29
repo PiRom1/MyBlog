@@ -26,6 +26,9 @@ class MinimapTile {
         if (this.type === "border") {
             this.color = MINIMAP_BORDER_TILE_COLOR;
         }
+        if (this.type === "enemy") {
+            this.color = MINIMAP_ENEMY_TILE_COLOR;
+        }
     }
 
 

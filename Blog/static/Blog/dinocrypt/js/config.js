@@ -10,6 +10,7 @@ const canvas_height = canvas.getBoundingClientRect()["height"];
 //// Data
 const data = document.getElementById('data');
 const array = JSON.parse(data.getAttribute("dungeon"));
+// 0 = wall / 1 = ground / 2 = chest / -1 = player / -2 = enemy
 
 
 // Ajuster la résolution du canvas à la taille d'affichage :
@@ -46,6 +47,7 @@ const MINIMAP_CHEST_TILE_COLOR = "#d8b54200";
 const MINIMAP_WALL_TILE_COLOR = "#342d2f00";
 const MINIMAP_GROUND_TILE_COLOR = "#736b6d00";
 const MINIMAP_BORDER_TILE_COLOR = "#fdebdebb";
+const MINIMAP_ENEMY_TILE_COLOR = "#5d5bcfff";
 
 console.log(`Minimap : x_min_coord : ${MINIMAP_X_MIN_COORD} / y_min_coord : ${MINIMAP_Y_MIN_COORD}`);
 console.log(`Minimap : y_max_coord : ${MINIMAP_X_MAX_COORD} / y_max_coord : ${MINIMAP_Y_MAX_COORD}`);
@@ -101,7 +103,7 @@ function generateRandomArray(rows, columns) {
 
 
 
-function isCellFree(coords, taken_cells, player_x, player_y) {
+function isCellFree(coords, player_x, player_y) {
         
 
             if (coords[0] >= 0 && coords[0] < array.length && coords[1] >= 0 && coords[1] < array[0].length) {
@@ -114,9 +116,7 @@ function isCellFree(coords, taken_cells, player_x, player_y) {
                     
                     // Si pas le joueur sur la cellule
                     if (coords[1] !== player_x && coords[0] !== player_y) {
-                        if (!(taken_cells.includes(`${coords[0]}_${coords[1]}`))) {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
