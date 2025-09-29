@@ -1,4 +1,4 @@
-from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam, DWFight
+from Blog.models import User, Item, UserInventory, Box, Quest, ObjectifForQuest, ObjectifQuest, DWUser, DWUserTeam, DWFight, DWPvmRun, DWPvmNewRun, DWPvmDino
 from datetime import timedelta, datetime
 from constance import config as constance_cfg
 import random as rd
@@ -32,16 +32,17 @@ def generate_quest(user, type : str):
         ObjectifForQuest.objects.create(quest = quest, 
                                         objectif = objective,
                                         objective_value = value)
-        
-def change_DWPvm_terrain():
-    old_id = constance_cfg.DW_DAILY_TERRAIN_ID 
-    new_id = (old_id  % 7) + 1
-    constance_cfg.DW_DAILY_TERRAIN_ID = new_id
 
 def reset_pvm_runs_td():
     for dwuser in DWUser.objects.all():
         dwuser.pvm_runs_td = 0
         dwuser.save()
+        user = dwuser.user
+        run = DWPvmRun.objects.get(user = user)
+        if run and run.level == 1:
+            run.delete()
+            DWPvmNewRun.objects.filter(user=user).delete()
+            DWPvmDino.objects.filter(user=user).delete()
 
 def clear_fights_log():
     for fight in DWFight.objects.filter(gamemode = 'arena', date__lt = timezone.now() - timedelta(days=30)):
@@ -102,7 +103,6 @@ def run():
     # Clear fights log
     clear_fights_log()
 
-    # change_DWPvm_terrain()
     reset_pvm_runs_td()
 
 
