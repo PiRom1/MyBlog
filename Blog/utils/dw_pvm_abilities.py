@@ -314,7 +314,7 @@ def apply_boureau(attacker, defender, damage, game_state):
     """
     Boureau ability: When attacking, the more target's remaining HP is low, 
     the more chances this dino have to kill the target instantly 
-    Formula: (1-(remaining HP/total HP)^2)/1.1
+    Formula: (1-(remaining HP/total HP)^4)/1.5
     
     Args:
         attacker: The dino with Boureau ability
@@ -325,7 +325,7 @@ def apply_boureau(attacker, defender, damage, game_state):
     if defender.current_hp > 0:
         # Calculate execution probability based on remaining HP percentage
         hp_percentage = defender.current_hp / defender.stats.hp
-        execution_chance = (1 - hp_percentage) ** 2 / 1.1
+        execution_chance = (1 - hp_percentage) ** 4 / 1.5
         
         if random.random() < execution_chance:
             # Instant kill
