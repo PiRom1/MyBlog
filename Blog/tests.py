@@ -1,7 +1,7 @@
 from django.test import TestCase
 from Blog.utils.dw_pvm_abilities import (
     apply_frenesie, apply_peau_dure_defense, apply_inspiration_heroique,
-    apply_boureau, apply_mort_vivant, get_dino_abilities, apply_vol_de_vie
+    apply_bourreau, apply_mort_vivant, get_dino_abilities, apply_vol_de_vie
 )
 from Blog.utils.dw_pvm_battle_logic import Dino, DinoStats, Attack, GameState
 
@@ -77,8 +77,8 @@ class PvMAbilitiesTestCase(TestCase):
         
         self.assertEqual(normal_damage, 100)  # No reduction
 
-    def test_boureau_ability(self):
-        """Test that Boureau has probability-based execution"""
+    def test_bourreau_ability(self):
+        """Test that Bourreau has probability-based execution"""
         # Set target to very low HP for high execution chance
         self.dino2.current_hp = 10  # 1% of 1000, should have high execution chance
         damage = 50
@@ -88,13 +88,13 @@ class PvMAbilitiesTestCase(TestCase):
         executed = False
         for _ in range(10):  # Run 10 times to increase likelihood of execution
             self.dino2.current_hp = original_hp  # Reset HP
-            apply_boureau(self.dino1, self.dino2, damage, self.game_state)
+            apply_bourreau(self.dino1, self.dino2, damage, self.game_state)
             if self.dino2.current_hp == 0:
                 executed = True
                 break
         
         # With 1% HP, execution chance is (1-0.01^2)/1.1 ≈ 90.9%, should execute at least once in 10 attempts
-        self.assertTrue(executed, "Boureau should execute target with very low HP at least once in multiple attempts")
+        self.assertTrue(executed, "Bourreau should execute target with very low HP at least once in multiple attempts")
 
     def test_inspiration_heroique_ability(self):
         """Test that Inspiration héroïque increases team attack"""

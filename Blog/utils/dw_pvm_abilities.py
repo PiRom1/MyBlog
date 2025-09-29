@@ -18,7 +18,7 @@ Currently handles team abilities:
 
 Individual dino abilities:
 - "Frénésie": +25% attack speed when HP < 50%
-- "Boureau": Probability-based instant kill based on target's remaining HP
+- "Bourreau": Probability-based instant kill based on target's remaining HP
 - "Peau dure": 20% damage reduction when HP > 50%
 - "Inspiration héroïque": +25% ATK for all allies for 1s on critical hit
 - "Vol de vie": Heals attacker for 30% of damage dealt after each attack
@@ -310,14 +310,14 @@ def apply_frenesie(dino, game_state):
         dino.current_statuses.remove("frenesie")
 
 
-def apply_boureau(attacker, defender, damage, game_state):
+def apply_bourreau(attacker, defender, damage, game_state):
     """
-    Boureau ability: When attacking, the more target's remaining HP is low, 
+    Bourreau ability: When attacking, the more target's remaining HP is low, 
     the more chances this dino have to kill the target instantly 
     Formula: (1-(remaining HP/total HP)^4)/1.5
     
     Args:
-        attacker: The dino with Boureau ability
+        attacker: The dino with Bourreau ability
         defender: The target dino
         damage: The damage that was just dealt
         game_state: Current game state
@@ -330,7 +330,7 @@ def apply_boureau(attacker, defender, damage, game_state):
         if random.random() < execution_chance:
             # Instant kill
             defender.current_hp = 0
-            game_state.log_effect("boureau_execute", defender, "hp", -defender.current_hp)
+            game_state.log_effect("bourreau_execute", defender, "hp", -defender.current_hp)
 
 
 def apply_peau_dure_defense(dino, damage, game_state):
@@ -457,9 +457,9 @@ def apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, ga
     if "Vol de vie" in attacker_abilities:
         apply_vol_de_vie(attacker, damage, game_state)
     
-    # Apply Boureau if the attacker has it
-    if "Boureau" in attacker_abilities:
-        apply_boureau(attacker, defender, damage, game_state)
+    # Apply Bourreau if the attacker has it
+    if "Bourreau" in attacker_abilities:
+        apply_bourreau(attacker, defender, damage, game_state)
     
     # Apply Regard pétrifiant if the attacker has it
     if "Regard pétrifiant" in attacker_abilities:

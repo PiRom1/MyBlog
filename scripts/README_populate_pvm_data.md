@@ -38,7 +38,7 @@ python scripts/populate_pvm_data.py
 #### Capacités individuelles (12):
 1. **Mort-vivant** - Attaques posthumes
 2. **Frénésie** - Vitesse d'attaque accrue à bas PV
-3. **Boureau** - Exécution instantanée
+3. **Bourreau** - Exécution instantanée
 4. **Peau dure** - Réduction de dégâts à haut PV
 5. **Inspiration héroïque** - Bonus d'équipe après coup critique
 6. **Vol de vie** - Récupération de PV par attaque

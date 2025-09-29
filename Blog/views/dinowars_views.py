@@ -804,7 +804,7 @@ def battle_analytics_view(request, fight_id):
                 
                 # Determine if this is healing or damage based on event type
                 healing_events = ['dernier_souffle_heal', 'vol_de_vie', 'regeneration']
-                damage_events = ['poison_damage', 'reflect_damage', 'boureau_execute', 'bouclier_collectif_share']
+                damage_events = ['poison_damage', 'reflect_damage', 'bourreau_execute', 'bouclier_collectif_share']
                 
                 if event in healing_events:
                     # Healing events: add value to HP
@@ -851,7 +851,7 @@ def battle_analytics_view(request, fight_id):
                         damage_dealt[target_display]['reflect_damage'] += value
                     elif event == 'poison_damage':
                         damage_dealt[target_display]['poison_damage'] += value
-                    elif event == 'boureau_execute':
+                    elif event == 'bourreau_execute':
                         damage_dealt[target_display]['execute_damage'] += value
                     else:
                         damage_dealt[target_display]['ability_damage'] += value
@@ -917,7 +917,7 @@ def battle_analytics_view(request, fight_id):
             # Handle ability damage for damage timeline
             event = log['event']
             value = log['value']
-            damage_events = ['poison_damage', 'reflect_damage', 'boureau_execute']
+            damage_events = ['poison_damage', 'reflect_damage', 'bourreau_execute']
             
             if event in damage_events:
                 # For damage events, we need to find the source of the damage
@@ -931,7 +931,7 @@ def battle_analytics_view(request, fight_id):
                 elif event == 'reflect_damage':
                     # Reflect damage - attribute to the defender
                     pass
-                elif event == 'boureau_execute':
+                elif event == 'bourreau_execute':
                     # Execute damage - find the attacker
                     pass
 

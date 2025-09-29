@@ -63,7 +63,7 @@ These advanced abilities are available in the PVM (Player vs Monster) roguelike 
 - **Before**: +20% attack speed when HP drops below 30%
 - **After**: +25% attack speed when HP drops below 50%
 
-#### **Boureau**
+#### **Bourreau**
 - **Before**: After attacking, if target's remaining HP is lower than the damage dealt, the target dies instantly
 - **After**: When attacking, the more target's remaining HP is low, the more chances this dino have to kill the target instantly ((1-(remaining HP/total HP)^2)/1.1)
 

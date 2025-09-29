@@ -244,7 +244,7 @@ class GameState:
             }
             self.fight_log.append(log_entry)
             
-            # Apply individual abilities that trigger on attacks (Boureau, Inspiration héroïque)
+            # Apply individual abilities that trigger on attacks (Bourreau, Inspiration héroïque)
             from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_attack
             apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, self)
             

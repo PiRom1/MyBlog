@@ -93,7 +93,7 @@ These advanced abilities are available in the PVM (Player vs Monster) roguelike 
 #### **Frénésie**
 - **Effect**: +20% attack speed when HP drops below 30%
 
-#### **Boureau**
+#### **Bourreau**
 - **Effect**: After attacking, if target's remaining HP is lower than the damage dealt, the target dies instantly
 
 #### **Peau dure**

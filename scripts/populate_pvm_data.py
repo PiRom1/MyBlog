@@ -87,7 +87,7 @@ def populate_abilities():
             'to_dino': True
         },
         {
-            'name': 'Boureau',
+            'name': 'Bourreau',
             'description': 'Plus les PV de la cible sont bas, plus cette dino a de chances de la tuer instantanément (((1-PV restants/PV totaux)^4)/1.5).',
             'to_dino': True
         },

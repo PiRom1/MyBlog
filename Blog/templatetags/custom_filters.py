@@ -66,7 +66,7 @@ def effect_description(event_name):
         # Damage effects
         'poison_damage': 'damaged by poison',
         'reflect_damage': 'damaged by reflection',
-        'boureau_execute': 'executed by Boureau',
+        'bourreau_execute': 'executed by Bourreau',
         'bouclier_collectif_share': 'damage shared by Bouclier collectif',
         
         # Stat buffs/debuffs
