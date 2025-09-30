@@ -8,9 +8,9 @@ from django.db.models import Model
 
 @dataclass
 class DinoStats:
-    hp: float
-    atk: float
-    defense: float
+    hp: int
+    atk: int
+    defense: int
     speed: float  # attacks per second
     crit_chance: float
     crit_damage: float
@@ -34,12 +34,12 @@ class Dino:
     stats: DinoStats
     attack: Attack
     dino_class: str = "dps"  # Store the dino class for terrain effects
-    current_hp: float = field(init=False)
+    current_hp: int = field(init=False)
     current_statuses: List[str] = field(default_factory=list)
     cooldown: bool = False # Indicates if the dino's attack's special effect is on cooldown
 
     def __post_init__(self):
-        self.current_hp = self.stats.hp
+        self.current_hp = int(self.stats.hp)
 
     def is_alive(self):
         # Special case for Mort-vivant: dino is considered alive if it has mort_vivant status
@@ -222,6 +222,7 @@ class GameState:
             damage_taken = apply_team_abilities_on_damage_taken(defender, damage, is_crit, self)
 
             defender.current_hp -= damage_taken
+            defender.current_hp = int(defender.current_hp)
 
             # Apply individual abilities on HP change (Frénésie)
             from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_hp_change
@@ -251,6 +252,7 @@ class GameState:
             if "reflect" in defender.current_statuses:
                 reflected_damage = int(damage * 0.75)
                 attacker.current_hp -= reflected_damage
+                attacker.current_hp = int(attacker.current_hp)
                 # Source is the defender returning damage to the attacker
                 self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
                 defender.current_statuses.remove("reflect")
@@ -337,6 +339,7 @@ class GameState:
             for dino in dinos:
                 if dino.is_alive() and dino.stats.hp > 0:
                     dino.current_hp = max(0, dino.current_hp - int(dino.stats.hp * 0.05))
+                    dino.current_hp = int(dino.current_hp)
                     self.log_effect("lac_putrefie", dino, "hp", -int(dino.stats.hp * 0.05))
                     if dino.current_hp == 0:
                         self.apply_death_effects(dino)
@@ -410,6 +413,10 @@ def apply_terrain_stats(stats: Dict[str, float], dino_class: str, terrain: str) 
         elif dino_class == "tank":
             modified_stats['defense'] = int(stats['defense'] * 0.80)  # -20% defense for tanks
     
+    # Ensure integer types for core stats
+    for k in ['hp', 'atk', 'defense']:
+        if k in modified_stats:
+            modified_stats[k] = int(modified_stats[k])
     return modified_stats
 
 # ------------------------- TERRAIN EFFECTS ------------------------ #
@@ -596,6 +603,7 @@ def venom_spit_effect(attacker: Dino, defender: Dino, game_state: GameState, dam
         if defender.is_alive() and "poison" in defender.current_statuses:
             damage = int(defender.current_hp * 0.04)
             defender.current_hp -= damage
+            defender.current_hp = int(defender.current_hp)
             # Source is the attacker who applied poison initially
             game_state.log_effect("poison_damage", defender, "hp", damage, source=attacker)
             if defender.is_alive():
