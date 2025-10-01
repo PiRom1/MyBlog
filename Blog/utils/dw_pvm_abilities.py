@@ -837,12 +837,9 @@ def apply_regard_petrifiant(attacker, defender, game_state):
         defender: The target dino
         game_state: Current game state
     """
-    # Store original speed if not already stored for this effect
-    if not hasattr(defender, '_regard_petrifiant_original_speed'):
-        defender._regard_petrifiant_original_speed = defender.stats.speed
-    
-    # Apply speed reduction (25% of original speed) - effects can stack
-    speed_reduction = defender._regard_petrifiant_original_speed * 0.25
+    # Apply speed reduction based on CURRENT speed (25% of current speed) - multiplicative stacking
+    current_speed_before = defender.stats.speed
+    speed_reduction = current_speed_before * 0.25
     defender.stats.speed -= speed_reduction
     
     # Track multiple stacks for restoration

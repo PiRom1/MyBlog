@@ -760,7 +760,6 @@ def start_battle_pvm(request):
             gamemode="pvm",
             logs=battle_log
         )
-        winner = 'Pvm_Enemy'
 
         # Update run info
         if winner == team1_name:
@@ -780,7 +779,7 @@ def start_battle_pvm(request):
             })
 
         else:
-            run_info.life -= 0
+            run_info.life -= 1
             run_info.save()
             if run_info.life <= 0:
                 # Save to leaderboard before deleting the run
