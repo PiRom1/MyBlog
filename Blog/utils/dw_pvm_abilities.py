@@ -707,7 +707,34 @@ def apply_instinct_protecteur(team_dinos, game_state):
         game_state: Current game state
     """
     team_modifiers = {}
-    
+
+    # Identify team name for cooldown tracking (team_dinos list reference should match game_state.teams values)
+    team_id = None
+    if hasattr(game_state, 'teams'):
+        for name, members in game_state.teams.items():
+            if members is team_dinos:  # reference equality
+                team_id = name
+                break
+
+    # Initialize cooldown tracking storage
+    if not hasattr(game_state, '_instinct_protecteur_cooldown'):
+        game_state._instinct_protecteur_cooldown = set()
+
+    # If this team's ability is on cooldown, skip
+    if team_id is not None and team_id in game_state._instinct_protecteur_cooldown:
+        return
+
+    # Start cooldown immediately (50 ticks) regardless of buff duration
+    if team_id is not None:
+        game_state._instinct_protecteur_cooldown.add(team_id)
+
+        def end_cooldown(tid=team_id):
+            if hasattr(game_state, '_instinct_protecteur_cooldown'):
+                game_state._instinct_protecteur_cooldown.discard(tid)
+
+        # Schedule cooldown end after 50 ticks
+        game_state.schedule_action(50, 2, end_cooldown, "instinct_protecteur", None, f"cooldown_end_{team_id}")
+
     for dino in team_dinos:
         if dino.is_alive():
             # Store a base defense (only once) to ensure boost is based on original/base value
