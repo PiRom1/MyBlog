@@ -108,6 +108,10 @@ class GameState:
 
         while self.action_queue and all(any(d.is_alive() for d in team) for team in self.teams.values()) and self.tick < 10000:
             print("Tick:", self.tick, "Next action tick:", self.action_queue[0].tick, "Queue length:", len(self.action_queue))
+            if self.action_queue[0].tick < self.tick:
+                print("Error: Action scheduled in the past")
+                print(self.action_queue[0])
+                break
             next_tick = self.action_queue[0].tick
             self.tick = next_tick
 
