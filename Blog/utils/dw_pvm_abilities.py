@@ -710,7 +710,11 @@ def apply_instinct_protecteur(team_dinos, game_state):
     
     for dino in team_dinos:
         if dino.is_alive():
-            def_boost = int(dino.stats.defense * 0.3)
+            # Store a base defense (only once) to ensure boost is based on original/base value
+            if not hasattr(dino, '_instinct_protecteur_base_def'):
+                dino._instinct_protecteur_base_def = dino.stats.defense
+            base_def = dino._instinct_protecteur_base_def
+            def_boost = int(base_def * 0.3)
             team_modifiers[dino.id] = def_boost
             dino.stats.defense += def_boost
             game_state.log_effect("instinct_protecteur_buff", dino, "defense", def_boost)
