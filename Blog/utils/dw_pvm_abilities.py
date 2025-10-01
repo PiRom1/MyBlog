@@ -128,15 +128,24 @@ def apply_team_abilities_on_battle_start(team_dinos, game_state):
     
     # Apply Sprint préhistorique if any dino has it
     if "Sprint préhistorique" in team_abilities:
-        apply_sprint_prehistorique(team_dinos, game_state)
+        try:
+            apply_sprint_prehistorique(team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Sprint préhistorique: {e}")
     
     # Apply Esprit de meute if any dino has it
     if "Esprit de meute" in team_abilities:
-        apply_esprit_de_meute(team_dinos, game_state)
+        try:
+            apply_esprit_de_meute(team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Esprit de meute: {e}")
     
     # Apply Pression croissante if any dino has it
     if "Pression croissante" in team_abilities:
-        apply_pression_croissante(team_dinos, game_state)
+        try:
+            apply_pression_croissante(team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Pression croissante: {e}")
 
 
 def apply_individual_abilities_on_battle_start(team_dinos, game_state):
@@ -152,11 +161,17 @@ def apply_individual_abilities_on_battle_start(team_dinos, game_state):
         
         # Apply Régénération if the dino has it
         if "Régénération" in dino_abilities:
-            apply_regeneration_start(dino, game_state)
+            try:
+                apply_regeneration_start(dino, game_state)
+            except Exception as e:
+                print(f"[AbilityError] Régénération (dino {dino.id}): {e}")
         
         # Apply Carapace robuste if the dino has it
         if "Carapace robuste" in dino_abilities:
-            apply_carapace_robuste_start(dino, game_state)
+            try:
+                apply_carapace_robuste_start(dino, game_state)
+            except Exception as e:
+                print(f"[AbilityError] Carapace robuste (dino {dino.id}): {e}")
 
 
 def apply_team_abilities_on_death(dead_dino, team_dinos, game_state):
@@ -172,19 +187,31 @@ def apply_team_abilities_on_death(dead_dino, team_dinos, game_state):
     
     # Apply Dernier souffle if any dino has it
     if "Dernier souffle" in team_abilities:
-        apply_dernier_souffle(dead_dino, team_dinos, game_state)
+        try:
+            apply_dernier_souffle(dead_dino, team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Dernier souffle: {e}")
     
     # Apply Mort-vivant if any dino has it (team ability now)
     if "Mort-vivant" in team_abilities:
-        apply_mort_vivant(dead_dino, team_dinos, game_state)
+        try:
+            apply_mort_vivant(dead_dino, team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Mort-vivant: {e}")
     
     # Apply Esprit de meute if any dino has it (need to recalculate since team composition changed)
     if "Esprit de meute" in team_abilities:
-        apply_esprit_de_meute(team_dinos, game_state, check_only=True)
+        try:
+            apply_esprit_de_meute(team_dinos, game_state, check_only=True)
+        except Exception as e:
+            print(f"[AbilityError] Esprit de meute (recalc): {e}")
     
     # Apply Seul contre tous if any dino has it
     if "Seul contre tous" in team_abilities:
-        apply_seul_contre_tous(team_dinos, game_state)
+        try:
+            apply_seul_contre_tous(team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Seul contre tous: {e}")
 
 
 def apply_team_abilities_on_enemy_death(enemy_dino, team_dinos, game_state):
@@ -200,7 +227,10 @@ def apply_team_abilities_on_enemy_death(enemy_dino, team_dinos, game_state):
     
     # Apply Terreur collective if any dino has it
     if "Terreur collective" in team_abilities:
-        apply_terreur_collective(team_dinos, game_state)
+        try:
+            apply_terreur_collective(team_dinos, game_state)
+        except Exception as e:
+            print(f"[AbilityError] Terreur collective: {e}")
 
 
 # ------------------------- INDIVIDUAL DINO ABILITIES ------------------------- #
