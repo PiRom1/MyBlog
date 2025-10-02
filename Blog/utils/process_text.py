@@ -227,6 +227,8 @@ def process_text(text, user, session):
     text = calembours(text)
     text = reglys(text)
     text = replace_louise(text)
+    text = text.replace("&lt;", "<")
+    text = text.replace("&gt;", ">")
     
 
     return text
