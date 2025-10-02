@@ -32,11 +32,15 @@ class MessageForm(forms.Form):
 
 
 class MessageForm2(forms.Form):
-   
 
     message = forms.CharField(label="Message",
                               widget=forms.Textarea(attrs={'rows': 5, 'cols': 100})) 
 
+
+class chatWithBotForm(forms.Form):
+    message = forms.CharField(label="Message",
+                              widget=forms.Textarea(attrs={'rows': 5, 'cols': 100}))
+    use_user_context = forms.BooleanField(required=False)
 
 class LoginForm(forms.Form):
     try:

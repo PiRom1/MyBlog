@@ -6,17 +6,25 @@ from .llm_prompts import USERLIST, USERPROMPTS, USER_CONTEXTS
 from Blog.models import Bot, User, SessionUser, SessionBot
 from datetime import datetime
 import traceback
+import random as rd
 
 from dotenv import load_dotenv
 load_dotenv()
 
 # Fonction qui génère une réponse à partir d'un message et optionnellement d'un utilisateur
-def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) -> Optional[str]:
+def LLMResponse(username:str, message: str, session, use_user_context: bool = None, bot: Optional[Bot] = None) -> Optional[str]:
     
     user = User.objects.get(username=username)
     user_context = user.llm_context
-    print(user_context)
-    print(bot)
+    print(f"Asking bot {bot}...")
+    print(use_user_context)
+    if use_user_context:
+        print("Asking with user context ...")
+    else:
+        print("Asking without user context ...")
+
+    if use_user_context is None: # Si pas donné en argument, 1 chance sur 5 de l'utiliser
+        use_user_context = rd.random() < 0.2
     
 
     try:    
@@ -43,7 +51,9 @@ def LLMResponse(username:str, message: str, session, bot: Optional[Bot] = None) 
             message = ''
         
         else:
-            prompt = f"{bot.preprompt}\n\nTu parles à {user.username}. Fais mention des caractéristiques de cette personne dans ta réponse. Voici les caractéristiques de cette personne : {user_context}"
+            prompt = f"{bot.preprompt}\n\nTu parles à une personne nommée {user.username}. "
+            if use_user_context:
+                prompt += f"Fais mention des caractéristiques de cette personne dans ta réponse. Voici les caractéristiques de cette personne : {user_context}"
         
         print('ICI')
         # Send completion request to Groq with personalized prompt

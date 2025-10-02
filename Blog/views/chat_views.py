@@ -21,7 +21,7 @@ import random as rd
 from groq import Groq
 from datetime import datetime
 from Blog.views.utils_views import write_journal_tag
-
+import os
 
 
 
@@ -525,11 +525,19 @@ def chat_with_bot(request, id):
     answer = ''
 
     bot = Bot.objects.get(user_id=id)
-    form = MessageForm2()
+    form = chatWithBotForm()
 
     if request.method == "POST":
+        print(request.POST)
         message = request.POST.get('message')
-        answer, _ = LLMResponse(username = request.user.username, message = message, session = None, bot = bot)
+        use_user_context = request.POST.get('use_user_context')
+        use_user_context = True if use_user_context else False
+        print(use_user_context)
+        answer, _ = LLMResponse(username = request.user.username, 
+                                message = message, 
+                                session = None, 
+                                bot = bot, 
+                                use_user_context = use_user_context)
 
 
         
