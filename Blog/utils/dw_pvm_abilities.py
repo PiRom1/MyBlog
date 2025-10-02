@@ -360,7 +360,7 @@ def apply_bourreau(attacker, defender, damage, game_state):
         if random.random() < execution_chance:
             # Instant kill
             defender.current_hp = 0
-            game_state.log_effect("bourreau_execute", defender, "hp", -defender.current_hp)
+            game_state.log_effect("bourreau_execute", defender, "proba", execution_chance)
 
 
 def apply_peau_dure_defense(dino, damage, game_state):
@@ -688,10 +688,23 @@ def apply_bouclier_collectif(defender, damage, team_dinos, game_state):
     damage_per_ally = shared_damage // len(alive_allies)
     remaining_damage = damage - shared_damage
     
-    # Apply shared damage to allies
+    # Apply shared damage to allies (and trigger HP change / death side effects)
     for ally in alive_allies:
         ally.current_hp -= damage_per_ally
+        if ally.current_hp <= 0:
+            ally.current_hp = 0
         game_state.log_effect("bouclier_collectif_share", ally, "hp", damage_per_ally)
+        # Trigger HP change abilities (e.g., Frénésie)
+        try:
+            apply_individual_abilities_on_hp_change(ally, game_state)
+        except Exception as e:
+            print(f"[AbilityError] (Bouclier collectif -> HP change) Ally {ally.id}: {e}")
+        # If ally died from shared damage, trigger death-based team abilities
+        if ally.current_hp == 0:
+            try:
+                apply_team_abilities_on_death(ally, team_dinos, game_state)
+            except Exception as e:
+                print(f"[AbilityError] (Bouclier collectif -> Death) Ally {ally.id}: {e}")
     
     game_state.log_effect("bouclier_collectif_reduce", defender, "damage_reduction", shared_damage)
     return remaining_damage
