@@ -341,12 +341,13 @@ class GameState:
         return dino_dict
     
     def lac_putrefie(self):
+        from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_hp_change
         for team_name, dinos in self.teams.items():
             for dino in dinos:
-                if dino.is_alive() and dino.stats.hp > 0:
+                if dino.is_alive() and dino.stats.hp > 0 and "mort_vivant" not in dino.current_statuses:
                     dino.current_hp = max(0, dino.current_hp - int(dino.stats.hp * 0.05))
-                    dino.current_hp = int(dino.current_hp)
                     self.log_effect("lac_putrefie", dino, "hp", -int(dino.stats.hp * 0.05))
+                    apply_individual_abilities_on_hp_change(dino, self)
                     if dino.current_hp == 0:
                         self.apply_death_effects(dino)
         self.schedule_action(100, 1, self.lac_putrefie, "lac_putrefie", None, None)  # Schedule next effect application
