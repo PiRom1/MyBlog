@@ -38,11 +38,12 @@ def reset_pvm_runs_td():
         dwuser.pvm_runs_td = 0
         dwuser.save()
         user = dwuser.user
-        run = DWPvmRun.objects.get(user = user)
-        if run and run.level == 1:
-            run.delete()
-            DWPvmNewRun.objects.filter(user=user).delete()
-            DWPvmDino.objects.filter(user=user).delete()
+        run = DWPvmRun.objects.filter(user = user)
+        if run.exists():
+            if run.level == 1:
+                run.delete()
+                DWPvmNewRun.objects.filter(user=user).delete()
+                DWPvmDino.objects.filter(user=user).delete()
 
 def clear_fights_log():
     for fight in DWFight.objects.filter(gamemode = 'arena', date__lt = timezone.now() - timedelta(days=30)):
