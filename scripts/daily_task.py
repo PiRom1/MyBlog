@@ -40,6 +40,7 @@ def reset_pvm_runs_td():
         user = dwuser.user
         run = DWPvmRun.objects.filter(user = user)
         if run.exists():
+            run = run.first()
             if run.level == 1:
                 run.delete()
                 DWPvmNewRun.objects.filter(user=user).delete()
