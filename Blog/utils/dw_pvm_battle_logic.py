@@ -255,12 +255,15 @@ class GameState:
             if "reflect" in defender.current_statuses:
                 reflected_damage = int(damage * 0.75)
                 attacker.current_hp -= reflected_damage
-                attacker.current_hp = int(attacker.current_hp)
+                if attacker.current_hp < 0:
+                    attacker.current_hp = 0
                 # Source is the defender returning damage to the attacker
                 self.log_effect("reflect_damage", attacker, "hp", reflected_damage, source=defender)
                 defender.current_statuses.remove("reflect")
                 # Also check attacker's HP for Frénésie (in case of reflect damage)
                 apply_individual_abilities_on_hp_change(attacker, self)
+                if attacker.current_hp == 0:
+                    self.apply_death_effects(attacker)
 
         return damage, miss
 
