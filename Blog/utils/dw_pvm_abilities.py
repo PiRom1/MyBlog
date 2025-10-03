@@ -264,10 +264,6 @@ def apply_mort_vivant(dead_dino, team_dinos, game_state):
     
     # Mark the dino as "undead" and make it targetable again temporarily
     dead_dino.current_statuses.append("mort_vivant")
-    dead_dino.current_hp = 1  # Set to 1 HP to make it "alive" for targeting purposes
-    
-    # Make the dino untargetable by adding a special status
-    dead_dino.current_statuses.append("untargetable")
     
     # Schedule attacks for the next 2 seconds (200 ticks)
     interval = int(100 / dead_dino.stats.speed)
@@ -287,8 +283,6 @@ def apply_mort_vivant(dead_dino, team_dinos, game_state):
         dead_dino.current_hp = 0
         if "mort_vivant" in dead_dino.current_statuses:
             dead_dino.current_statuses.remove("mort_vivant")
-        if "untargetable" in dead_dino.current_statuses:
-            dead_dino.current_statuses.remove("untargetable")
         game_state.log_effect("mort_vivant_end", dead_dino, "hp", 0)
     
     game_state.schedule_action(200, 2, end_mort_vivant, "mort_vivant", dead_dino.id, "end_mort_vivant")

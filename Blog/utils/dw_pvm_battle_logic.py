@@ -42,9 +42,6 @@ class Dino:
         self.current_hp = int(self.stats.hp)
 
     def is_alive(self):
-        # Special case for Mort-vivant: dino is considered alive if it has mort_vivant status
-        if "mort_vivant" in self.current_statuses:
-            return True
         return self.current_hp > 0
 
 
@@ -134,7 +131,7 @@ class GameState:
         return json.dumps(self.fight_log, indent=2)
 
     def dino_action(self, attacker: Dino, defender: Dino = None):
-        if not attacker.is_alive():
+        if not attacker.is_alive() and "mort_vivant" not in attacker.current_statuses:
             return
         
         if defender is None:
@@ -174,9 +171,9 @@ class GameState:
 
     def dino_attack(self, attacker: Dino, defender: Dino, custom_stats: tuple = None, damage: int = None, is_crit: bool = False):
         # Defensive guards: if defender is missing or either party is dead, return no-damage
-        if defender is None:
+        if defender is None or not defender.is_alive():
             return 0, False
-        if not attacker.is_alive() or not defender.is_alive():
+        if not attacker.is_alive() and "mort_vivant" not in attacker.current_statuses:
             return 0, False
         if damage is None:
             stats = [attacker.stats.atk, attacker.attack.dmg_multiplier, defender.stats.defense, attacker.stats.crit_chance, attacker.stats.crit_damage]
@@ -251,8 +248,8 @@ class GameState:
             # Apply individual abilities that trigger on attacks (Bourreau, Inspiration héroïque)
             from Blog.utils.dw_pvm_abilities import apply_individual_abilities_on_attack
             apply_individual_abilities_on_attack(attacker, defender, damage, is_crit, self)
-            
-            if "reflect" in defender.current_statuses:
+
+            if "reflect" in defender.current_statuses and "mort_vivant" not in attacker.current_statuses:
                 reflected_damage = int(damage * 0.75)
                 attacker.current_hp -= reflected_damage
                 if attacker.current_hp < 0:
