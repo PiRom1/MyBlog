@@ -89,8 +89,13 @@ def run():
         generate_quest(user, type = "coins")
         generate_quest(user, type = "lootbox")
 
-        dwuser = DWUser.objects.get(user = user)
+        
+        dwuser, created = DWUser.objects.get_or_create(user = user)
         dwuser.arena_energy = 5
+        if created: # Si l'utilisater a été créé, lui donner des oeufs gratuits
+            dwuser.free_hatch = 50
+            print(f"Création de l'utilisateur DinoWars {user}")
+
         dwuser.save()
     
     write_journal_quest_new()
