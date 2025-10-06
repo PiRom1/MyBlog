@@ -33,6 +33,7 @@
     <script src="{% static 'Blog/chat/js/tkt.js' %}"></script>
     <script src="{% static 'Blog/chat/js/enjoy_heure.js' %}"></script>
     <script src="{% static 'Blog/chat/js/karma.js' %}"></script>
+    <script src="{% static 'Blog/chat/js/scroll_to_first_unseen_message.js' %}"></script>
     {% comment %} <script src="{% static 'Blog/js/journal.js' %}" type="module"></script> {% endcomment %}
     
     {% load custom_filters %}
@@ -42,6 +43,8 @@
     
     {% include "Blog/layout/base.html" %}
     <div id="items" text-color="{{text_color}}" border-color="{{border_color}}" background-color="{{background_color}}" fonts="{{favorite_fonts}}" background="{{background}}"></div>
+    <div id="data" first_unseen_message_id="{{first_unseen_message.id}}"></div>
+
 
 
     <div class="enjoy" id="enjoy">
@@ -100,7 +103,7 @@
                         {% endif %}
                         
                         {% if message.writer.username == user.username %}
-                        <div class="message">
+                        <div class="message" id_message="{{message.id}}">
                             <div class="message-content {{message.color}}" karma="{{message.karma}}>
                                 <span class="message-meta">
                                     <i>{{message.pub_date}}</i> 
@@ -113,7 +116,7 @@
                             </a>
                         </div>
                         {% else %}
-                        <div class="message">
+                        <div class="message" id_message="{{message.id}}">
                             <a href="/user/{{message.writer.id}}" class="user-avatar">
                                 <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}">
                             </a>

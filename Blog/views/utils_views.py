@@ -20,12 +20,10 @@ def getSession(request):
     if not connecte:
         return HttpResponseRedirect("/login/")
 
-    print(connecte)
+    session_data = [{"session" : session_for_user.session,
+                     "nb_unseen_messages" : session_for_user.unseen_messages_counter} for session_for_user in SessionUser.objects.filter(user=user)]
 
-    su = SessionUser.objects.filter(user = user)
-    sessions = Session.objects.filter(id__in = [session.session_id for session in su])
-    print(sessions)
-    context = {"sessions" : sessions, "user" : user}
+    context = {"session_data" : session_data, "user" : user}
     return render(request, "Blog/get_session.html", context)
 
 

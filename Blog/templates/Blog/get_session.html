@@ -19,8 +19,6 @@
   </head>
 
 
-
-
 <div class="container">
     
   <div class = 'colonne gauche'>
@@ -47,8 +45,16 @@
     <h3>Sessions disponibles &#9887; </h3>
     <br><br>
 
-    {% for session in sessions %}
-      <li><a href = "./{{session.id}}/#bottom">{{session.session_name}}</a></li>  
+      
+    {% for session in session_data %}
+      <li>
+        <a href = "./{{session.session.id}}/#bottom">{{session.session.session_name}}</a>
+          {% if session.nb_unseen_messages %}
+            <strong>
+              (+{{session.nb_unseen_messages}})
+            </strong>
+          {% endif %}
+        </li>  
     {% endfor %}
     <br><br>
     

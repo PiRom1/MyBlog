@@ -111,12 +111,14 @@ def Index(request, id):
 
     session = Session.objects.get(id = id)
 
+
     page_number = int(request.GET.get('page', 1))
 
     n_messages_par_page = 20
     messages = Message.objects.filter(session_id=session).order_by('-id')[:n_messages_par_page*page_number:-1]
 
     user = request.user
+    session_for_user = SessionUser.objects.filter(user = user, session = session).first()
 
     # Vérification de l'autorisation d'accès
     if not SessionUser.objects.get(user = user, session = session):
@@ -162,6 +164,11 @@ def Index(request, id):
             'day': day,
             'when_new_date': when_new_date,
             'new_message': new_message})
+        
+        session_for_user.first_unseen_message = None
+        session_for_user.unseen_messages_counter = 0
+        session_for_user.save()
+
         
         return JsonResponse(data={'messages_html': messages_html,
                                   'last_message_id': messages[-1].id})
@@ -300,8 +307,11 @@ def Index(request, id):
             background = background.image.url
             
     
-    
-
+    # Manage unseen_messages
+    first_unseen_message = None or session_for_user.first_unseen_message
+    session_for_user.unseen_messages_counter = 0
+    session_for_user.first_unseen_message = None
+    session_for_user.save()
     
     
     
@@ -327,6 +337,7 @@ def Index(request, id):
                "background" : background,
                "opening_logs": opening_logs,  # Ajout des opening logs
                "current_skins" : str(dict_items),
+               "first_unseen_message" : first_unseen_message
                }
     
     # rappel

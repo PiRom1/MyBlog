@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import datetime
 from django.utils import timezone
-from Blog.views.karma_views import *
 from django.conf import settings
 from asgiref.sync import sync_to_async
 
@@ -73,12 +72,6 @@ class Session(models.Model):
     def __str__(self):
         return f"{self.session_name}"
 
-class SessionUser(models.Model):
-    session = models.ForeignKey(Session, on_delete = models.CASCADE)
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
-
-    def __str__(self):
-        return f"{self.user} ({self.session})"
 
 
 class Message(models.Model):
@@ -94,11 +87,20 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.writer} ({self.pub_date}) : {self.text}"
-    
-    def save(self, *args, **kwargs):
-        if not self.karma:
-            self.karma = analyze_sentiment(self.text)
-        super().save(*args, **kwargs)
+
+
+
+class SessionUser(models.Model):
+    session = models.ForeignKey(Session, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    # Complementary informations for each couple user / session
+    first_unseen_message = models.ForeignKey(Message, on_delete=models.SET_NULL, default=None, null=True) # First message after the last you saw for a session user couple
+    unseen_messages_counter = models.IntegerField(default = 0)
+
+    def __str__(self):
+        return f"{self.user} ({self.session})"   
+
 
 class History(models.Model):
 

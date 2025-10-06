@@ -24,6 +24,7 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ('pub_date', 'writer', 'text')
     list_filter = ('pub_date', 'writer', 'session_id')
     search_fields = ('text', 'writer__username')
+
     
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
@@ -32,8 +33,8 @@ class SessionAdmin(admin.ModelAdmin):
 
 @admin.register(SessionUser)
 class SessionUserAdmin(admin.ModelAdmin):
-    list_display = ('session', 'user')
-    list_filter = ('session', 'user')
+    list_display = ('session', 'user', 'first_unseen_message', 'unseen_messages_counter')
+    list_filter = ('session', 'user', 'first_unseen_message', 'unseen_messages_counter')
     search_fields = ('session__session_name', 'user__username')
 
 @admin.register(Photo)

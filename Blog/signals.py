@@ -3,7 +3,8 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete, pre_save
 from rest_framework.authtoken.models import Token
-from .models import ChoiceUser, SondageChoice
+from Blog.models import ChoiceUser, SondageChoice, Message, SessionUser, User
+from Blog.views.karma_views import analyze_sentiment
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL, dispatch_uid="user_auth_token")
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -40,4 +41,24 @@ def handle_vote_change(sender, instance, **kwargs):
             instance.choice.votes += 1
             instance.choice.save()
 
+
+
+@receiver(post_save, sender=Message)
+def count_unseen_message(sender, instance, created, **kwargs):
+    if created:
+
+        for session_for_user in SessionUser.objects.filter(session=instance.session_id).exclude(user=instance.writer):
+            
+            if session_for_user.unseen_messages_counter == 0:
+                session_for_user.first_unseen_message = instance
+            session_for_user.unseen_messages_counter += 1
+            session_for_user.save()
+
+      
+
+
+@receiver(pre_save, sender = Message)
+def analyse_sentiments_message(sender, instance, **kwargs):
+    if not instance.karma:
+        instance.karma = analyze_sentiment(instance.text)
 
