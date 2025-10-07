@@ -50,6 +50,20 @@ document.addEventListener('DOMContentLoaded', function () {
             note_form.value = 5;
         }
     })
+
+
+    document.addEventListener('wheel', function(e) {
+        let note = parseInt(note_form.value);
+        if (e.deltaY > 0 && note > 1) {
+            note -= 1;
+        }
+        if (e.deltaY < 0 && note < 5) {
+            note += 1;
+        }
+
+        note_form.value = note;
+
+    })
     
 
 

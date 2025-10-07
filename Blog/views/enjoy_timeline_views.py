@@ -152,10 +152,21 @@ def enjoy_timeline_hour_minute(request, hour, minute):
 
         return HttpResponseRedirect(f'/enjoy_timeline/{hour}/{minute}')
     
+    if minute < 59:
+        next_minute = minute + 1
+        next_hour = hour
+    else:
+        next_minute = 0
+        next_hour = hour + 1
+        if next_hour == 24:
+            next_hour = 0
+
     
     url = "Blog/enjoy_timeline/enjoy_timeline_hour_minute.html"
     context = {'hour' : hour,
                'minute' : minute,
+               'next_hour' : next_hour,
+               'next_minute' : next_minute,
                'timestamps' : timestamps,
                'form' : enjoy_form,
                'mean_note' : mean_note
