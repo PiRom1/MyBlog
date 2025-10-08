@@ -293,13 +293,15 @@ def chat_score():
     Attribute a note and coins to each users of each sessions. Use every scribts above.
     """
     
+    print("Initialisation chat score ...")
+
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
     date = datetime.date.today() - datetime.timedelta(days=1)
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
-
+    print("Session data récupérée")
 
     if not sessions_data:
         print("Pas de donées récentes à analyser")
@@ -319,6 +321,8 @@ def chat_score():
             print(f"Pas de messages envoyés pour la session {session_name}")
             continue
 
+        print(f"Analyzing session {session_name}")
+
         for user, data in session_data.items():
             usr = User.objects.get(username=user)
             score = data['mean']
@@ -335,6 +339,7 @@ def chat_score():
                         user_data = session_data,
                         model = model,
                         session_name = session_name)
+        print("text récuperé")
         
         if session_name in PROMPTS:
             bot_name = PROMPTS.get(session_name).get("bot_name")
