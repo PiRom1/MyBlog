@@ -338,7 +338,6 @@ def chat_score():
                         user_data = session_data,
                         model = model,
                         session_name = session_name)
-        print("text récuperé")
         
         if session_name in PROMPTS:
             bot_name = PROMPTS.get(session_name).get("bot_name")
