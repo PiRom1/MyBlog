@@ -69,15 +69,19 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
         for message in messages:
             if message.writer not in users and message.writer.username != "moderaptor":
                 users.append(message.writer.username)
+        
+        print("All users got")
 
         messages_batch = [""]
         i = 0
         count = 0
         curr_batch_size = 0
         while i < len(messages):
+            print("first while")
             # Remove html tags from the message : replace any text between < and > by a space
             msg_text = messages[i].text
             while "<" in msg_text:
+                print("second while")
                 start = msg_text.find("<")
                 end = msg_text.find(">")
                 msg_text = msg_text[:start] + " " + msg_text[end+1:]
@@ -86,10 +90,12 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
                 pass
             count += len(msg_text.split()) * 1.5
             if count < 4500:
+                print("count < 4500")
                 messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + msg_text + "'''\n\n"
                 i += 1
                 curr_batch_size += 1
             else:
+                print("else")
                 if curr_batch_size < 3:
                     raise Exception("A message is too long to be analysed.")
                 messages_batch.append("")
