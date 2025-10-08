@@ -97,7 +97,8 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
                 curr_batch_size = 0
                 print("Break at message " + str(i))
                 i -= 2
-                
+        
+        print("messages bien récuperés !")
         # For each user, analyse the contribution to the conversation
         # Use groq to analyse the conversation, and give a score to the user
         # The score is based on the relevance of the user's messages to the conversation, the amount of reactions to the user's messages, and the amount of content the user has brought to the conversation.
@@ -128,7 +129,8 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
             user_dict += user + ": SCORE - BRIEF_REASON\n"
         user_dict += "}\n"
         "OUTPUT ONLY THE DICTIONARY, NOTHING ELSE"
-        
+
+        print("Asking groq ...")
         # Initialize Groq client with API key
         client = Groq(
             api_key = os.environ.get('GROQ_API_KEY')
