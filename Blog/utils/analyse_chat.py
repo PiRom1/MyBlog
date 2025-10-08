@@ -5,6 +5,7 @@ from groq import Groq
 from django.conf import settings
 import os
 import numpy as np
+import re
 
 
 """
@@ -70,33 +71,26 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
             if message.writer not in users and message.writer.username != "moderaptor":
                 users.append(message.writer.username)
         
-        print("All users got")
-
         messages_batch = [""]
         i = 0
         count = 0
         curr_batch_size = 0
         while i < len(messages):
-            print("first while")
-            # Remove html tags from the message : replace any text between < and > by a space
             msg_text = messages[i].text
-            while "<" in msg_text:
-                print("second while")
-                print(msg_text)
-                start = msg_text.find("<")
-                end = msg_text.find(">")
-                msg_text = msg_text[:start] + " " + msg_text[end+1:]
+            # Remove html tags from the message : replace any text between < and > by a space
+            balises = re.findall(r"<\/?\w+[^>]*>", msg_text)
+            for balise in balises:
+                msg_text.replace(balise, " ")
+            
             if msg_text == "":
                 i += 1
                 pass
             count += len(msg_text.split()) * 1.5
             if count < 4500:
-                print("count < 4500")
                 messages_batch[-1] += "USER : "+ messages[i].writer.username + "\nMESSAGE : '''" + msg_text + "'''\n\n"
                 i += 1
                 curr_batch_size += 1
             else:
-                print("else")
                 if curr_batch_size < 3:
                     raise Exception("A message is too long to be analysed.")
                 messages_batch.append("")
@@ -105,7 +99,6 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
                 print("Break at message " + str(i))
                 i -= 2
         
-        print("messages bien récuperés !")
         # For each user, analyse the contribution to the conversation
         # Use groq to analyse the conversation, and give a score to the user
         # The score is based on the relevance of the user's messages to the conversation, the amount of reactions to the user's messages, and the amount of content the user has brought to the conversation.
@@ -137,7 +130,6 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
         user_dict += "}\n"
         "OUTPUT ONLY THE DICTIONARY, NOTHING ELSE"
 
-        print("Asking groq ...")
         # Initialize Groq client with API key
         client = Groq(
             api_key = os.environ.get('GROQ_API_KEY')
@@ -302,7 +294,6 @@ def chat_score():
     Attribute a note and coins to each users of each sessions. Use every scribts above.
     """
     
-    print("Initialisation chat score ...")
 
     model = "llama-3.3-70b-versatile"
     # Date of yesterday
@@ -310,7 +301,6 @@ def chat_score():
 
     sessions = Session.objects.all()
     sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
-    print("Session data récupérée")
 
     if not sessions_data:
         print("Pas de donées récentes à analyser")
