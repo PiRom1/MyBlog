@@ -82,6 +82,7 @@ def analyse_chat(sessions, date=datetime.date.today(), model="mixtral-8x7b-32768
             msg_text = messages[i].text
             while "<" in msg_text:
                 print("second while")
+                print(msg_text)
                 start = msg_text.find("<")
                 end = msg_text.find(">")
                 msg_text = msg_text[:start] + " " + msg_text[end+1:]
