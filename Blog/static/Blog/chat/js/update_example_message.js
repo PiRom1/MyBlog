@@ -54,7 +54,6 @@ function update_example_message(document, message, box, name, avatar, skins) {
 
 
 
-
     // Loop on skins
     Object.keys(skins).forEach(function(key) {
 
@@ -110,7 +109,7 @@ function update_example_message(document, message, box, name, avatar, skins) {
         // Rainbow name
         else if (key === "name_rgb") {
             
-            document, name, user_avatar = name_rgb(document, name, avatar, skins[key]);
+            [document, name, user_avatar] = name_rgb(document, name, avatar, skins[key]);
         }
     });
 

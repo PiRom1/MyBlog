@@ -123,6 +123,8 @@ function border_rgb(document, message, pattern, example = '') {
         css.href = '/static/Blog/chat/css/rainbow.css';
         document.head.appendChild(css);
     }
+
+    return document
 }
 
 
@@ -137,6 +139,7 @@ function name_rgb(document, name, user_avatar, pattern, example = '') {
     user_avatar.classList.add('rainbow-border');
     
     if(pattern !== 'rainbow') {defineRGBAnimationName(pattern, name, user_avatar, rgb_tab);}
+    
     const rgbCss = document.getElementById('rainbow-css');
     if (rgbCss === null) {
         const css = document.createElement('link');
@@ -147,7 +150,7 @@ function name_rgb(document, name, user_avatar, pattern, example = '') {
     }
    
 
-    return document, name, user_avatar;
+    return [document, name, user_avatar];
 }
 
 

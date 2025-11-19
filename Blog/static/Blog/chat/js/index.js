@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let example_skins = document.getElementById('example-message').getAttribute('skins');
     example_skins = example_skins.replace(/'/g, '"');
     example_skins = JSON.parse(example_skins);
-    console.log(example_skins);
+    console.log("exemple skins : ", example_skins);
 
     document, message, box, name, avatar = update_example_message(document, message, box, name, avatar, example_skins);
     console.log('updated');
