@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var name;
     var pattern;
     var item_id;
+    var current_item;
     var id;
 
     items.forEach( item => {
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             pattern = item.getAttribute('data-pattern');
             item_id = item.getAttribute('data-id')
             id = item.getAttribute('id');
+            current_item = item;
 
         })
 
@@ -39,6 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
         sell_popup.style.display = 'block';
         item_name.innerHTML = name;
         item_pattern.innerHTML = pattern;
+        price.focus();
+
     })
 
     close.addEventListener('click', function() {
@@ -51,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
     sell.addEventListener('click', function() {
         
         var price_value = price.value;
-        console.log(price_value, item_id);
 
 
         const url = "/hdv/sell"
@@ -67,7 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            window.location.href="/inventory";            
+            if (data.success) {
+                current_item.remove();
+                sell_popup.style.display = 'none';
+                price.value = null;
+            }
     });
 
     })

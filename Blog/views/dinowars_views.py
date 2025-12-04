@@ -567,8 +567,7 @@ def start_battle(request):
                     'success': False,
                     'error': 'Not enough arena energy'
                 })
-            user_stats.arena_energy -= 1
-            user_stats.save()
+            
 
         # Load teams with their stats
         attacker_dinos = []
@@ -608,6 +607,8 @@ def start_battle(request):
 
         # Handle arena specific logic
         if gamemode == 'arena':
+            user_stats.arena_energy -= 1
+            user_stats.save()
             current_arena = DWArena.objects.filter(active=True).first()
             if winner == team1_name:
                 # If attacker wins, make their team the new arena team

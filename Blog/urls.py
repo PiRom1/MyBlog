@@ -69,6 +69,8 @@ urlpatterns = [
     path('hdv/buy', hdv_views.buy, name='buy'),
     path('hdv/sell', hdv_views.sell, name='sell'),
     path('hdv/remove', hdv_views.remove, name='remove'),
+    path('hdv/remove_all', hdv_views.remove_all, name='remove_all'),
+    path('hdv/get_market', hdv_views.get_market, name='get_market'),
 
     # Soundbox
     path('list_sounds', soundbox_views.list_sounds, name='list_sounds'),

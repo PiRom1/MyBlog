@@ -11,8 +11,13 @@
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/hdv/css/hdv.css' %}">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+
     
     <script src="{% static 'Blog/hdv/js/hdv.js' %}" type="module"></script>
+    <script src="{% static 'Blog/hdv/js/hdv_history.js' %}" type="module"></script>
     <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
     
     {% load custom_filters %}
@@ -23,12 +28,15 @@
     
     {% include "Blog/layout/base.html" %}
 
+    <div id="data" max-pages="{{max_pages}}"></div>
+
+
     <div id="user" user="{{user.username}}"></div>
 
     <h1>Hôtel des Ventes</h1>
     <a href="/">HOME</a> | <a href="/inventory">INVENTAIRE</a>
     <br><br>
-    <span style='padding-left: 5px;'>{{user.coins}}</span><img class="coin" src="{% static 'img/coin.png' %}" width="45px"/>
+    <span style='padding-left: 5px;' id="user-coins">{{user.coins}}</span><img class="coin" src="{% static 'img/coin.png' %}" width="45px"/>
     
     
     <div class="container">
@@ -50,33 +58,45 @@
 
         <!-- Column for Your Items -->
         <div class="your-items">
-            <h2>Vos Articles</h2>
+            <h2>Vos Articles <button class="remove-all-button" id="remove-all-button">Tout retirer</button></h2>
             <ul>
                 {% for item in your_items %}
-                    <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}" is_yours="True">
-                        {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
-                        <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
-                        <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
-                    </li>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <li class="item" style="cursor:pointer;" skin-type="{{item.type}}" price="{{item.price}}" seller="{{item.seller}}" pattern="{{item.pattern}}" item_id="{{item.item_id}}" market_id="{{item.market_id}}" url="{{item.url}}" is_yours="True">
+                            {{item.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> -  {{item.type}}<span id="name-{{item.item_id}}"></span> | <img id="img-{{item.item_id}}" src="{{item.url}}" width="25" height="25" style="display:none;">
+                            <span class="color-circle" id="color-circle-{{item.item_id}}"></span>
+                            <a id="pattern-{{item.item_id}}" style="font-family: '{{item.pattern}}'; color: #feefeb;">{{item.pattern}}</a>
+                            <span class="remove-item-icon" id="remove-item-icon-{{item.item_id}}">-</span>
+                        </li>
+                        
+                    </div>
                 {% endfor %}
             </ul>
         </div>
     </div>
 
+
+
     <div class="history-container">
         
             <div class="history-content">
-            <h2 class='history-title'>Historique du marché</h2>    
-            <ul>
-                {% for history in market_history %}
-                    {% if history.history.action == 'buy' %}
-                        <li class="buy"><span style="text-transform : capitalize;">{{history.history.user.username}}</span> a acheté <span class='skin' pattern='{{history.pattern}}'>{{history.skin}}</span> pour {{history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
-                    {% elif history.history.action == 'sell' %}
-                        <li class="sell"><span style="text-transform : capitalize;">{{history.history.user.username}}</span> a mis en vente <span class='skin' pattern='{{history.pattern}}'>{{history.skin}}</span> pour {{history.price}} <img class="coin" src="{% static 'img/coin.png' %}" width="30"/> ({{history.history.date|date:"d/m/Y H:i"}})</li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+                <h2 class='history-title'>Historique du marché</h2> 
+                
+                <ul id="history-items"></ul>
+            </div>
+
+            
+
+            <div class="history-pages">
+                <span class="previous-page" id="previous-page">
+                    <i class="fi fi-ss-arrow-alt-square-left"></i>
+                </span>
+                Page n°<span id="page-number">1</span>/{{ max_pages|add:"1"|floatformat:0 }}
+                <span class="next-page" id="next-page">
+                    <i class="fi fi-ss-arrow-alt-square-right"></i>
+                </span>
+            </div>
+
 
     </div>
 

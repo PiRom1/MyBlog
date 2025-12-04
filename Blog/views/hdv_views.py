@@ -6,6 +6,44 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from Blog.views.quests_views import validate_objective_quest
 from Blog.views.utils_views import write_journal_hdv_sold, write_journal_hdv_is_selling
+import numpy as np
+
+
+N_PER_PAGE = 10
+MAX_PAGES = np.ceil(MarketHistory.objects.all().count() / N_PER_PAGE) - 1
+
+
+def get_market_history(page = 0):
+    """
+    Return the history of the hdv for a certain page
+    
+    :param page: int, number of the page (the lower the more recent)
+    """
+
+    market_items = MarketHistory.objects.all().order_by('-date')
+
+    if page > MAX_PAGES:
+        raise("La page demandée n'existe pas")
+ 
+    market_items = market_items[(N_PER_PAGE * page) : (N_PER_PAGE * (page + 1))]
+    market_history = []
+
+    for history in market_items:
+        if history.item.type == 'skin':
+            skin = Skin.objects.get(id=history.item.item_id).name
+        else:
+            skin = 'box'
+        
+        market_history.append({'user' : history.user.username,
+                               'action' : history.action,
+                               'price' : history.price,
+                               'date' : history.date,
+                               'skin' : skin,
+                               'pattern' : history.item.pattern,
+                               'price' : history.price if history.action == 'sell' else -history.price})
+
+    return market_history
+
 
 
 def list_hdv(request):
@@ -57,27 +95,13 @@ def list_hdv(request):
         print(d)
         
         your_items.append(d) if seller == request.user else selling_items.append(d)
-    
-    market_history = []
-
-    for history in MarketHistory.objects.all().order_by('-date'):
-        if history.item.type == 'skin':
-            skin = Skin.objects.get(id=history.item.item_id).name
-        else:
-            skin = 'box'
         
-        market_history.append({'history' : history,
-                               'skin' : skin,
-                               'pattern' : history.item.pattern,
-                               'price' : history.price if history.action == 'sell' else -history.price})
-
-
 
     context = {
         'selling_items' : selling_items,
         'your_items' : your_items,
         'user' : request.user,
-        'market_history' : market_history,
+        'max_pages' : MAX_PAGES
     }
     
     return render(request, 'Blog/hdv/hdv.html', context)
@@ -131,7 +155,7 @@ def buy(request):
 
 
 
-    return JsonResponse({'success': 'success',
+    return JsonResponse({'success': True,
                          'item_id' : item.item_id,
                          'price' : transaction.price,
                          'buyer' : request.user.username,
@@ -181,7 +205,7 @@ def sell(request):
     write_journal_hdv_is_selling(seller = request.user, item = item, price = price)
 
 
-    return JsonResponse({'success': 'success',
+    return JsonResponse({'success': True,
                          'item_id' : item.item_id,
                          'price' : price,
                          'seller' : user.username,
@@ -204,6 +228,46 @@ def remove(request):
     UserInventory(user = request.user,
                   item = Item.objects.get(pk=item_id)).save()
     
-    return JsonResponse({'success' : 'success',
+    return JsonResponse({'success' : True,
                          'user' : request.user.username,
                          'item' : item_id})
+
+
+
+@login_required
+def remove_all(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    # Get data
+    user = request.user
+    
+    items = Market.objects.filter(seller=user)
+
+    for item in items:
+        UserInventory.objects.create(user = request.user,
+                                     item = item.item)
+        item.delete()
+    
+    return JsonResponse({'success' : True,
+                         'user' : request.user.username})
+
+
+
+
+@login_required
+def get_market(request):
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+    
+    page = int(request.POST.get('page'))
+    print(page, type(page))
+    try:
+        market = get_market_history(page = page)
+        print(market[0])
+        data = [{"item"}]
+        return JsonResponse({"success" : True,
+                             "market" : market})
+    except Exception as e:
+        print(f"Erreur : {e}")
+        return JsonResponse({"success" : False})

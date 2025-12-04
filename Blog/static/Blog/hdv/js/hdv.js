@@ -11,18 +11,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const remove = document.getElementById("remove");
     const user = document.getElementById("user").getAttribute("user");
     const fonts = [];
-    var item_id;
+    let user_coins = document.getElementById('user-coins');
 
     
 
     // Global variables for buy and detail
-    
+    let your_items = document.querySelectorAll('.item[is_yours="True"]');
     var item_id;
+    var item_price;
+    var current_item;
     var market_id;
     var font_tab = [];
 
     // Loop throughout every selling items
     items.forEach(item =>  {
+
+        
 
         // Get attributes 
         item_id = item.getAttribute("item_id");
@@ -36,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const circle = document.getElementById(`color-circle-${item_id}`);
         const patternText = document.getElementById(`pattern-${item_id}`); 
         // Si le pattern commence par un # 
-        console.log("pattern : ", pattern);
         if (pattern.startsWith('#')) {
             circle.style.backgroundColor = pattern;
             patternText.style.display = "none";
@@ -50,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         // Show emoji image
-        console.log(skin);
         if ( (skin === 'emoji' || skin === 'background_image') ) {
             var img = document.getElementById(`img-${item_id}`);
             img.style.display = 'inline';
@@ -62,20 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-        // if (skin === 'border_image') {
-        //     item.style.flex = '1';
-        //     item.style.borderImageSource = `url(${url})`;
-        //     item.style.borderImageSlice = '31 16 30 15 fill';
-        //     item.style.borderImageOutset = '0px';
-        //     item.style.borderImageRepeat = 'round';
-        //     item.style.borderStyle = 'solid';
-        //     item.style.borderWidth = '30px 15px';
-        //     item.style.setProperty('border-image-source', `url(${url})`, 'important'); // Avec priorité 'important'
-            
-
-        //     console.log("item : ", item);
-        // }
-
+      
 
 
 
@@ -84,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // show detail popup
             popup.style.display = "block";
             item_id = item.getAttribute("item_id");
-            console.log('item id : ', item_id);
+            current_item = item;
+            item_price = price;
             // assert attributes
             var popup_name = document.getElementById("seller-name");
             var popup_price = document.getElementById("item-price");
@@ -153,6 +143,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 remove.style.display = 'none';
             }
         })
+
+        if (item.getAttribute("is_yours") === "True") {
+            
+            let item_id = item.getAttribute("item_id");
+            const remove_item_icon = document.getElementById(`remove-item-icon-${item_id}`);
+
+            remove_item_icon.addEventListener('click', function(event) {
+                event.stopPropagation(); // <-- empêche l'ouverture de la popup
+                current_item = document.querySelector(`.item[item_id="${item_id}"]`);
+                console.log(current_item);
+
+                const url = "hdv/remove"
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+                    },
+                    body: `id=${item_id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        current_item.remove();
+                        popup.style.display = 'none';
+                        remove_item_icon.remove();
+                    }
+                });
+
+            })
+        }
+
+
     })
 
     // Charger les fonts
@@ -160,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function () {
     font.rel = 'stylesheet';
     font.href = 'https://fonts.googleapis.com/css2?' 
     font_tab.forEach(f => {        
-        console.log('font : ', f);
         font.href += 'family=' + f.replace(/ /g, '+') + '&';
     });
     font.href += 'display=swap';
@@ -196,8 +220,12 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            window.location.href="hdv";            
-    });
+            if (data.success) {
+                current_item.remove();
+                user_coins.innerHTML = `${parseInt(user_coins.innerHTML) - item_price}`;
+                popup.style.display = 'none';
+            }
+        })
 
     })
 
@@ -208,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function () {
         
         const url = "hdv/remove"
         
-        console.log(item_id);
         fetch(url, {
             method: 'POST',
             headers: {
@@ -220,8 +247,42 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            window.location.href="hdv";            
-    });
+            if (data.success) {
+                current_item.remove();
+                popup.style.display = 'none';
+            }
+        });
+
+    })
+
+    // Remove all
+    const remove_all_button = document.getElementById("remove-all-button");
+
+    remove_all_button.addEventListener('click', function() {
+        let your_items = document.querySelectorAll('.item[is_yours="True"]');
+        if (your_items.length === 0) {
+            alert("T'as aucun item en vente. T'es con ou quoi ?");
+        }
+        
+        const url = "hdv/remove_all"
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken // Inclure le token CSRF pour la sécurité
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                your_items.forEach(item => {
+                    item.remove();
+                })     
+                your_items = [];       
+            }
+        });
 
     })
 
@@ -252,9 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
     const selector_name = document.getElementById('selector-name');
-    console.log("items : ", items);
     selector_name.addEventListener('input', function() {
         
 
@@ -269,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             else {
                 let skin_type = item.getAttribute('skin-type');
-                console.log(skin_type);
                 if (skin_type.toLowerCase().includes(selector_name.value.toLowerCase())) {
                     item.style.display = 'block';
                 }
@@ -280,6 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
 
     })
+
 
 
 });

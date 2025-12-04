@@ -4,6 +4,16 @@
     padding-top: 3%;
 }
 
+
+.item {
+    transition: margin-left 0.3s ease;
+    margin-left: 10px;
+}
+
+.item:hover {
+    margin-left: 20px;
+}
+
 .selling-items {
     flex: 3;
     background-color: #e2c0c072;
@@ -13,7 +23,7 @@
 }
 
 .your-items {
-    flex: 1;
+    flex: 1.5;
     background-color: #e2c0c072;
     padding: 15px;
     border-radius: 8px;
@@ -96,19 +106,63 @@ h2 {
 }
 
 
+.remove-all-button {
+    background-color: #f5cb9a96;
+    color: ivory;
+    border-radius: 4px;
+    padding: 4px;
+    margin-left: 20px;
+}
+
+.remove-all-button:hover {
+    background-color: #f2c38d96;
+    cursor: pointer;
+}
+
+
+.remove-all-button:active {
+    background-color: #f4be8296;
+}
+
+
+.remove-item-icon {
+    font-size: 24px;
+    font-weight: none;
+    transition: text-shadow 0.3s ease;
+    margin-left: 10px;
+}
+
+.remove-item-icon:hover {
+    cursor: pointer;
+    text-shadow: 0 0 4px currentColor;
+
+}
+
+
 .history-container {
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-left: 25%;
+    margin-bottom: 30px;
 }
 
 .history-content {
+    flex: 9;
     width: 50%; /* Ajuste la largeur selon tes besoins */
     background: url('/static/img/panneau.png');
     background-size: 100% auto; /* Étire en largeur, hauteur auto pour répétition */
     border-radius: 10px;
-    margin-bottom: 30px;
+}
 
+
+.history-pages {
+    flex: 1;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 .history-title {
@@ -147,4 +201,25 @@ h2 {
     margin-right: 5px;
     padding: 6px;
 
+}
+
+
+.previous-page {
+    margin-right: 25px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.previous-page:active {
+    opacity: 50%;
+}
+
+.next-page {
+    margin-left: 25px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.next-page:active {
+    opacity: 50%;
 }

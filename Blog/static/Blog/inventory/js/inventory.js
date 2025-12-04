@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Price management
     const price_input = document.getElementById('price');
-    console.log(price_input);
 
     price_input.addEventListener('keydown', function(e) {
         if (e.key === '-' || e.key === 'e' || e.key === 'E') {
@@ -190,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     openOption.style.display = 'none';
                 }
                 
-                console.log(itemSkinType);
     
                 // Gérer l'option "Utiliser" des émojis 
                 if (itemSkinType === 'emoji') {
@@ -246,8 +244,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // Positionner le menu contextuel à l'endroit du clic
-            contextMenu.style.top = `${e.clientY}px`;
-            contextMenu.style.left = `${e.clientX}px`;
+            contextMenu.style.top = `${e.pageY}px`;
+            contextMenu.style.left = `${e.pageX}px`;
             contextMenu.classList.add('active');
         });
     });
@@ -364,7 +362,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             window.location.href='/inventory';
         })
 
@@ -384,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             window.location.href='/inventory';
         })
 
