@@ -607,8 +607,8 @@ def start_battle(request):
 
         # Handle arena specific logic
         if gamemode == 'arena':
-            user_stats.arena_energy -= 1
-            user_stats.save()
+            attacker_user.arena_energy -= 1
+            attacker_user.save()
             current_arena = DWArena.objects.filter(active=True).first()
             if winner == team1_name:
                 # If attacker wins, make their team the new arena team
