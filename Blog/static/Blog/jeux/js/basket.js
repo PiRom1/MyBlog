@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let COEFF_REBOND = 0.65;
     let FROTTEMENTS_HORIZONTAUX = 0.99;
     let nb_paniers = 0;
-    let MAX_TIME = 3; // Temps en secondes
+    let MAX_TIME = 10; // Temps en secondes
     let MAX_WIDTH = 1/2 * window.innerWidth;
 
     let LEFT_TERRAIN_COLOR = "#445B52"
