@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let BALL_Y = 3/5 * window.innerHeight;
     let BALL_COLOR = '#F7C59F'
     let BALL_RADIUS = screenDiagonal * 0.015;
+    let ball;
 
     // Player
     let PLAYER_WIDTH = screenDiagonal * 0.1;
@@ -137,6 +138,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                             else { // Collision par le haut
                                 nb_paniers += 1;
                                 text_paniers.innerHTML = `Points : ${nb_paniers}`;
+                                ball.x = BALL_X;
+                                ball.y = BALL_Y;
+                                ball.dx = 0;
+                                ball.dy = 0;
                                 basket = generate_random_basket();
                             }
 
@@ -240,6 +245,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             this.size = size;
             this.x = 10;
             this.y = 10;
+            this.first_x = 0;
+            this.first_y = 0;
+            this.last_x = 0;
+            this.last_y = 0;
             this.toss_color = TOSS_COLOR;
             this.catch_color = CATCH_COLOR;
             this.state = 'toss';
@@ -248,7 +257,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             this.dy = 0;
         }
 
-        get_pos(pos) {        
+        get_pos(pos) {     
+            
+            this.second_x = this.first_x;
+            this.second_y = this.first_y;
+            this.first_x = pos[0];
+            this.first_y = pos[1];
+            
+            this.dx = this.first_x - this.second_x;
+            this.dy = this.first_y - this.second_y;
+
+            
             
             
             if (pos[0] < MAX_WIDTH + this.size/2) {
@@ -264,9 +283,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             else if (pos[1] > window.innerHeight - this.size/2) {
                 pos[1] = window.innerHeight - this.size/2;
             }
-
-            this.dx = pos[0] - this.x;
-            this.dy = pos[1] - this.y;
 
             this.x = pos[0];
             this.y = pos[1];
@@ -332,6 +348,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     })
     document.addEventListener('mouseup', function() {
         player_state = 'toss';
+    })
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "r") {
+            ball = new Ball(BALL_X, BALL_Y, BALL_RADIUS, BALL_COLOR);
+        }
     })
 
 
@@ -415,7 +437,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         
         // Reset circle position, size and movement speed
         let player = new Player(PLAYER_WIDTH, PLAYER_HEIGHT);
-        let ball = new Ball(BALL_X, BALL_Y, BALL_RADIUS, BALL_COLOR);
+        ball = new Ball(BALL_X, BALL_Y, BALL_RADIUS, BALL_COLOR);
         basket = generate_random_basket();
        
 
