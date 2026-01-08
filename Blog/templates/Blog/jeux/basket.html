@@ -1,0 +1,75 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Basket</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <!-- CSS -->
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/jeux/css/basket.css' %}">
+    <script src="{% static 'Blog/js/bg.js' %}" type="module"></script>
+    <script src="{% static 'Blog/jeux/js/basket.js' %}" type="module"></script>
+    
+    {% include "../bg.html" %}
+</head>
+
+<body>
+
+    <h1>Basket, Le jeu où tu joues au ... bah au basket !</h1>
+    
+    <br>
+    
+
+    <h3>Les Règles Officielles du Jeu de Ballon-Panier</h3>
+
+    <p>
+        Bienvenue dans ce jeu où ton <span class="important">adresse</span>, ta <span class="important">vélocité</span> mais surtout <span class="important">tes nerfs</span> seront mis à l’épreuve !
+        Avant de commencer, il est crucial de bien comprendre chaque détail du déroulement afin de tirer le meilleur parti de cette expérience ludique et immersive.
+    </p>
+
+    <p>
+        Tout commencera à l'instant même où tu te décideras enfin d’appuyer sur le bouton intitulé <span class="highlight">"Commencer"</span>. 
+        Ce bouton, explicitement affiché en bas de l'écran afin d'être certain que tu ne le rates pas sera le point de départ officiel de ton aventure. 
+        Dès lors que tu auras cliqué, il sera trop tard pour faire demi tour, tu seras directement engagé dans le jeu de basket ! Il te faudra mobiliser tes <span class="important">4,77 points de QI</span> pour réaliser le meilleur score.
+    </p>
+
+    <p>
+        J'ai dit 'score' ? Ah, oui. Le but de ce jeu est de marquer le score le plus élevé afin de t'élever indéniablement et indubitablement comme <span class="important">LE PLUS GRAND BASKETTEUR</span> (ou chômeur, ça marche aussi) <span class="important"> DE CE SITE WEB !</span>
+        Comment incrémenter ton score ? <del>Tu peux notamment passer par l'inspecteur d'éléments</del> Il suffit pour cela d'attraper le ballon se présentant devant toi (par un modeste disque orangé) en <span class="important">appuyant sur le bouton gauche de ta souris</span>.
+        Une fois le ballon en ta possession, tu dois lui faire gagner en vélocité en déplaçant ta souris <span class="important">TOUT EN MAINTENANT LE CLIC APPUYÉ</span> sinon la balle choit comme la chevillette. 
+        Une fois la vélocité idéale atteinte, tu es invité à <span class="important">relâcher le clic afin de libérer le ballon</span> qui conservera l'inertie transmise par ton mouvement.
+        En gros ce jeu existe grâce à Newton quoi.
+    </p>
+
+    <p>
+        Mais ça ne s'arrête pas là, sinon ce jeu s'appellerait basiquement 'Jeter cailloux' (Le meilleur jeu au monde finalement. OUGAH BOUGAH)
+        Non, pour marquer des points, ton ballon doit traverser le petit rectangle dans la partie gauche de l'écran, qui représente le panier de basket (Aaaah c'est pour ça 'basket' ???) !
+        Si une telle action se produit (ce dont je doute au vu de tes facultés intellectuelles mais bon), alors tu marques 1 point.
+        Ces points s'accumulent progressivement au fur et à mesure des paniers marqués par l'opération fascinante qu'est l'addition.= (donc si tu as marqué 4 paniers, tu auras marqué 1 + 1 + 1 + 1 = 4 points).
+        <span class="important">CEPENDANT</span> tu n'as pas la vie devant toi (faut pas déconner). Tu es limité par un temps imparti de précisemment <span class="important">10 secondes</span> (le temps qu'environ 10 personnes cassent leur pipe dans le monde)
+        Ainsi, ton score est comptabilisé et gravé dans le marbre à l'issue de ce décompte, et <span class="important">tu ne peux en aucun cas continuer la partie après cela !</span>
+        Si l'expérience t'a cependant tellement bouleversé que tu souhaites raccorder une chance à ce jeu exceptionnel, tu es libre de recommencer une nouvelle partie !
+    </p>
+
+    <p>
+        Ah oui, et tu remarqueras que <span class="important">le terrain est divisé en 2 parties</span>. 
+        La première, à gauche, constitue la zone du panier. <span class="important">Tu ne peux en aucun cas y accéder</span>. La balle, une fois au sol dans cette zone, te sera renvoyée petit à petit.
+        La seconde, à droite, c'est <span class="important">TON TERRAIN DE JEU</span>. Tu y es libre comme l'air, ou comme un oiseau si tu es Grégory Lemarchal. Mais à ce moment-là je t'invite à te rapprocher des scientifiques tentant vainement de traiter la muccovicidose depuis 40 ans, car je pense que tu les intéresserais !
+    </p>
+
+    <p>
+        Maintenant que tu disposes de l'essentiel des règles, le reste réside entre tes mains ! Haha elle est bonne celle-là, c'est-ce pas ? Et encore, elle serait meilleure si c'était un jeu de handball !
+        Allez, bon jeu, et merci d'avoir lu les règles !
+    </p>
+
+    <p style="text-align:center;">
+        <button id='bouton'>Commencer</button>
+    </p>
+
+    
+</body>
