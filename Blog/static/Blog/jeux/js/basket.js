@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify({game: 'basket_2', score: nb_paniers})  // Envoie des données dans le corps de la requête
+            body: JSON.stringify({game: 'basket', score: nb_paniers})  // Envoie des données dans le corps de la requête
             })        
         .then(response => response.json())
         .then(data => {
