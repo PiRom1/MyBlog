@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Afficher popup texte
 
     // Get new text
-    console.log('hey !');
     tkt_button.addEventListener('click', function() {
 
         const url = '/tkt';

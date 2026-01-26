@@ -1,10 +1,7 @@
 
 
 function update_example_message(document, message, box, name, avatar, skins) {
-    console.log('here', skins);
-
-    // Reinitialize message
-    console.log(skins);
+  
 
     // Text color
     box.querySelectorAll('p').forEach((text) => {
@@ -31,7 +28,6 @@ function update_example_message(document, message, box, name, avatar, skins) {
 
     // Border Image
     let example_borderImage = document.getElementById("example-borderImage");
-    console.log("example border ", example_borderImage);
     if (example_borderImage) {
         messageContent = message.parentNode.parentNode;
         messageContent?.replaceWith(...messageContent.childNodes);
@@ -56,8 +52,6 @@ function update_example_message(document, message, box, name, avatar, skins) {
 
     // Loop on skins
     Object.keys(skins).forEach(function(key) {
-
-        console.log("key : ", key);
         
         // text color
         if (key === "text_color") {

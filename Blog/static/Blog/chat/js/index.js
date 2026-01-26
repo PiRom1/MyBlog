@@ -45,10 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let example_skins = document.getElementById('example-message').getAttribute('skins');
     example_skins = example_skins.replace(/'/g, '"');
     example_skins = JSON.parse(example_skins);
-    console.log("exemple skins : ", example_skins);
+    
 
     document, message, box, name, avatar = update_example_message(document, message, box, name, avatar, example_skins);
-    console.log('updated');
 
     // document.getElementById('message-meta').style.font-size=45;
 
@@ -62,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Requête AJAX pour obtenir plus de messages
         var url = `/${session}/?page=${page}`;
-        console.log("url : ", url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             var messagesContainer = document.querySelector('.messages');
             messagesContainer.innerHTML = '';
             // Ajouter les nouveaux messages au début
@@ -158,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
         font.rel = 'stylesheet';
         font.href = 'https://fonts.googleapis.com/css2?' 
         font_tab.forEach(f => {
+            console.log(`Ajout de la police ${f} ...`);
             font.href += 'family=' + f.replace(/ /g, '+') + '&';
         });
         font.href += 'display=swap';
@@ -268,13 +266,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function update_equipped(skinRadios) {
         skinRadios.forEach(radio => {
-            console.log('radio : ', radio.checked);
            
             radio.addEventListener('click', function (e) {
                 
                 const itemId = this.getAttribute('data-item-id'); // Récupérer l'ID du nouvel item sélectionné
                 const skinType = this.getAttribute('name'); // Récupérer le nom de la catégorie (skinType)
-                console.log('Item ID : ', itemId);
                 // Trouver l'ancien élément sélectionné dans la même catégorie (skinType)
                 const previousItemId = previousPerCategory[skinType];
     
@@ -294,7 +290,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.status === 'success') {
                         console.log('Item favori mis à jour');
-                        console.log(data);
                         previousPerCategory[skinType] = itemId;
                         if (data.action === 'unequip') {
                             radio.checked = false;
@@ -329,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.addEventListener('keydown', function(e) {
-        console.log(e);
         if (e.key === "AudioVolumeUp" && i < 3) {
             popup.innerHTML += ".";
             i += 1;

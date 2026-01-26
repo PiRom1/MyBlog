@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Change bg image
     var bg_image = document.getElementById('items').getAttribute('background');
-    console.log('bg : ', bg_image);
 
     if (bg_image != '') {
         document.body.style.backgroundImage = `url(${bg_image})`;
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
     messages.forEach((message) => {
         // Get skins
         skins = message.getAttribute('skins');
-        console.log(skins, message, "id : ", message.id);
         if (skins === '') {
             skins = "{}";
         }
@@ -40,9 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         } // Pas de skin pour le message d'exemple
         skins = skins.replace(/'/g, '"');
-        console.log(skins);
         skins = JSON.parse(skins);
-        console.log(skins);
 
         let box = boxes[i];
         let name = names[i];

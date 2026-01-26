@@ -32,10 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
         var randomNumber = Math.floor(Math.random() * yoda_sounds.length);
         var sound = yoda_sounds[randomNumber];
-        console.log("Sound : ", sound);
     
         audioSource.src = sound;
-        console.log(audioSource.src);
 
         fetch('/increment_sound/?sound='+sound, {
             method: 'POST',

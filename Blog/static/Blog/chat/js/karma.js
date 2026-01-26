@@ -4,17 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Get every messages
     const messages = document.querySelectorAll('.message-content');
     
-    console.log(messages);
     var i = 0;
     // Loop on messages
     messages.forEach((message) => {
         karma = message.getAttribute('karma');
-        console.log("karma : ", karma);
-        console.log(message);
         message.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             const karma = message.getAttribute('karma').split('>')[0];
-            console.log('karma du message : ', message.getAttribute('karma'));
             const texte = document.createElement("span");
             texte.textContent = karma;
             texte.style.position = "absolute";

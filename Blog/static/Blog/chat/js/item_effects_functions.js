@@ -37,7 +37,6 @@ function defineRGBAnimationName(pattern, nameDiv, avatarDiv, rgb_tab){
 
 
 function text_color(box, pattern) {
-    console.log(box.innerHTML);
     box.querySelectorAll('p').forEach((text) => {
         text.style.setProperty('color', pattern, 'important');    
     });
@@ -85,7 +84,6 @@ function font_message(box, pattern) {
 }
 
 function border_image(document, message, pattern, example = '') {
-    console.log("border image created");
     const borderDiv = document.createElement('div');
     borderDiv.id = `${example}borderImage`;
     borderDiv.className = 'message-border-image';
