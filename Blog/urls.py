@@ -20,6 +20,7 @@ urlpatterns = [
     # path("upvote/<int:message_id>/", views.upvote, name = "upvote"),
     # path("downvote/<int:message_id>/", views.downvote, name = "downvote"),
     # path("modify/<int:message_id>/", views.Modify, name = "modify"),
+    path('change_homepage_preference/', utils_views.change_homepage_preference, name='change_homepage_preference'),
 
     # TICKETS #
     path('tickets/', tickets_views.ticket_list, name='ticket_list'),

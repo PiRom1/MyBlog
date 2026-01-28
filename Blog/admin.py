@@ -15,6 +15,7 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets[1][1]['fields'] += ('coins',)
     fieldsets[1][1]['fields'] += ('tkt_counter',)
     fieldsets[1][1]['fields'] += ('llm_context',)
+    fieldsets[1][1]['fields'] += ('homepage_preference',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
 
 admin.site.register(User, UserAdmin)

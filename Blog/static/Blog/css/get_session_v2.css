@@ -19,6 +19,7 @@ html, body {
 }
 
 
+
 /* Canvas plein écran */
 .canvas2 {
   position: absolute;
@@ -162,3 +163,31 @@ html, body {
 .subcategories::-webkit-scrollbar-thumb:hover {
   background: rgba(209,113,113,1);
 }
+
+
+/* Drawing behind main circle */
+
+.drawing_main_circle {
+    position: fixed;
+
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);  /* centrage EXACT comme le cercle */
+
+    width: 70vmin;
+    height: 70vmin;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 35vmin;  /* proportionnel au cercle */
+    z-index: 1;         /* au-dessus du cercle */
+    pointer-events: none;
+    filter: blur(8px);
+    transition: transform 0.3s ease;
+
+    opacity: 60%;
+}
+
+

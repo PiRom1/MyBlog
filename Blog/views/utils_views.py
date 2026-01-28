@@ -12,6 +12,25 @@ import json
 
 
 @login_required
+def change_homepage_preference(request):
+
+    print(request)
+
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+
+    try:
+
+        request.user.homepage_preference = "v1" if request.user.homepage_preference == "v2" else "v2"
+        request.user.save()
+
+        return JsonResponse({'success' : True})
+
+    except Exception as e:
+        return JsonResponse({'success' : False, "error" : str(e)})
+
+
+@login_required
 def getSession(request):
     
     user = request.user
@@ -19,12 +38,92 @@ def getSession(request):
 
     if not connecte:
         return HttpResponseRedirect("/login/")
+    
+    if user.homepage_preference == "v1":
 
-    session_data = [{"session" : session_for_user.session,
-                     "nb_unseen_messages" : session_for_user.unseen_messages_counter} for session_for_user in SessionUser.objects.filter(user=user)]
+        session_data = [{"session" : session_for_user.session,
+                        "nb_unseen_messages" : session_for_user.unseen_messages_counter} for session_for_user in SessionUser.objects.filter(user=user)]
 
-    context = {"session_data" : session_data, "user" : user}
-    return render(request, "Blog/get_session.html", context)
+        context = {"session_data" : session_data, "user" : user}
+
+        template = "Blog/get_session.html"
+    
+
+    elif user.homepage_preference == "v2":
+
+        # Les catégories, sous catégories, textes à afficher et liens où rediriger
+        # Ex : [
+        #        {'category' : 'Sessions', 
+        #         'subcategory' : [
+        #                             {'name' : 'Chat Acelys (+5), 
+        #                              'link' : 'https://...'},
+        #                         ],
+        #         },
+        #      ]
+
+        # Catégories : Sessions, Objets, Jeux, Réclamations, Autres ??? À définir
+        categories = [
+    {
+        "category": "Objets & Progression",
+        "subcategory": [
+            {"name": "Inventaire", "link": "/inventory/", "icon": "<i class='fi fi-sr-sack'></i>"},
+            {"name": "Hôtel des ventes", "link": "/hdv", "icon": "<i class='fi fi-sr-shop'></i>"},
+            {"name": "Atelier", "link": "/atelier/", "icon": "<i class='fi fi-sr-hammer-crash'></i>"},
+            {"name": "Quêtes", "link": "/quêtes/", "icon": "<i class='fi fi-rs-scroll-old'></i>"},
+        ],
+    },
+    {
+        "category": "Compte",
+        "subcategory": [
+            {"name": "Profil", "link": f"/user/{user.id}/", "icon": "<i class='fi fi-sr-user'></i>"},
+            {"name": "Changer sa photo de profil", "link": "/change_photo", "icon": "<i class='fi fi-sr-camera'></i>"},
+            {"name": "Déconnexion", "link": "/logout/", "icon": "<i class='fi fi-sr-sign-out-alt'></i>"},
+        ],
+    },
+    {
+        "category": "Collaboration & Support",
+        "subcategory": [
+            {"name": "Sondages", "link": "/sondages/", "icon": "<i class='fi fi-rs-decision-choice'></i>"},
+            {"name": "Récits", "link": "/recits/", "icon": "<i class='fi fi-sr-book-open-cover'></i>"},
+            {"name": "Timeline Enjoy", "link": "/enjoy_timeline", "icon": "<i class='fi fi-sr-time-forward'></i>"},
+            {"name": "Soundbox", "link": "/list_sounds", "icon": "<i class='fi fi-sr-volume'></i>"},
+            {"name": "Tickets", "link": "/tickets/", "icon": "<i class='fi fi-sr-ticket-alt'></i>"},
+            {"name": "GitHub", "link": "https://github.com/PiRom1/MyBlog", "icon": "<i class='fi fi-sr-code-branch'></i>"},
+        ],
+    },
+    {
+        "category": "Jeux",
+        "subcategory": [
+            {"name": "DinoWars", "link": "/dinowars/", "icon": "<i class='fi fi-rs-t-rex'></i>"},
+            {"name": "Salle de jeux", "link": "/jeux/", "icon": "<i class='fi fi-sr-club'></i>"},
+            {"name": "Paris", "link": "/paris/", "icon": "<i class='fi fi-sr-dice-alt'></i>"},
+        ],
+    },
+]
+
+        
+        
+        session_data = []
+        for session_for_user in SessionUser.objects.filter(user=user):
+            nb_unseen_messages = session_for_user.unseen_messages_counter
+            session_name = session_for_user.session.session_name
+            link = f"/{session_for_user.session.id}/#bottom"
+            if nb_unseen_messages >= 1:
+                session_name += f" (+{nb_unseen_messages})"
+            
+            session_data.append({"name" : session_name,
+                                "link" : link})
+
+        categories.insert(0, {"category" : "Sessions", "subcategory" : session_data})
+
+
+        context = {"categories" : json.dumps(categories), "user" : user.username.capitalize()}
+    
+        template = "Blog/get_session_v2.html"
+
+
+
+    return render(request, template, context)
 
 
 @login_required
@@ -36,9 +135,7 @@ def getSession_v2(request):
     if not connecte:
         return HttpResponseRedirect("/login/")
 
-    session_data = [{"session" : session_for_user.session,
-                     "nb_unseen_messages" : session_for_user.unseen_messages_counter} for session_for_user in SessionUser.objects.filter(user=user)]
-
+    
     # Les catégories, sous catégories, textes à afficher et liens où rediriger
     # Ex : [
     #        {'category' : 'Sessions', 
@@ -61,10 +158,6 @@ def getSession_v2(request):
                                                                             {"name" : "Sondages", "link" : "/sondages/"},
                                                                             {"name" : "Récits", "link" : "/recits/"},
                                                                             {"name" : "Timeline Enjoy", "link" : "/enjoy_timeline"},
-                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
-                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
-                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
-                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
                                                                             {"name" : "Soundbox", "link" : "/list_sounds"},
                                                                             {"name" : "GitHub", "link" : "https://github.com/PiRom1/MyBlog"}]},
                   {"category" : "Jeux", "subcategory" : [{"name" : "DinoWars", "link" : "/dinowars/"},

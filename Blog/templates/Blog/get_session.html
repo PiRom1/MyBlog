@@ -5,6 +5,8 @@
 
     <title>{{session.session_name}}</title>
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
 
     <link
       href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
@@ -15,91 +17,102 @@
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/get_session.css' %}"/>
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}"/>
+    <link rel="stylesheet" href="{% static 'Blog/css/change_homepage_preference.css' %}"/>
+
+    <script src = "{% static 'Blog/js/change_homepage_preference.js' %}"></script>
 
   </head>
 
 
-<div class="container">
-    
-  <div class = 'colonne gauche'>
-    
-    <h1>Rejoindre une session de discussion </h1> 
-    <br>
+<body>
 
-    <canvas id="canvas2" style="border:0px solid #000000;" onmousemove="get_mouse_pos(event)" width="580" height="500"></canvas>
-      <script src = "{% static 'Blog/js/network.js' %}"></script>
-
-
-    <div class="bottom">
-      <h3>Connecté en tant que <span class='name'><u><a href="/user/{{user.id}}" style="text-decoration:none; color:inherit">{{ user }}</a></u></span></h3>
-
-      {% if user.is_staff %}
-        <a href = "/admin">Acceder à l'admin</a>
-      {% endif %}
-      <a href = "/change_photo">Changer sa photo de profil</a>
-      <a href = "/logout/">Déconnexion</a>
-    </div>
+  <div class="change_homepage_preference" id="change_homepage_preference">
+    Envie de nouveauté ?<br>Passer sur la page d'accueil V2
   </div>
 
-  <div class = 'colonne droite'>
-    <h3>Sessions disponibles &#9887; </h3>
-    <br><br>
 
+  <div class="container">
       
-    {% for session in session_data %}
-      <li style="list-style-type: none;">
-        <a href = "./{{session.session.id}}/#bottom">{{session.session.session_name}}</a>
-          {% if session.nb_unseen_messages %}
-            <strong>
-              (+{{session.nb_unseen_messages}})
-            </strong>
-          {% endif %}
-        </li>  
-    {% endfor %}
-    <br><br>
-    
+    <div class = 'colonne gauche'>
+      
+      <h1>Rejoindre une session de discussion </h1> 
+      <br>
 
-    <h3>La Salle de Jeux &#9830;&#9829;&#9827;&#9824;</h3>
-    <br>
-    <a href="/dinowars">Accéder à DinoWars</a>
-    <a href="/jeux">Accéder aux jeux</a>
-    <a href="/paris">Accéder aux paris</a>
-    <a href="/quêtes">Accéder aux quêtes &#128366;</a>
-    <br><br>
+      <canvas id="canvas2" style="border:0px solid #000000;" onmousemove="get_mouse_pos(event)" width="580" height="500"></canvas>
+        <script src = "{% static 'Blog/js/network.js' %}"></script>
 
 
-    <h3>Inventaire &#9874;</h3>
-    <br><br>
-    <a href="/inventory">Accéder à l'inventaire</a>
-    <a href="/atelier">Accéder à l'atelier &#x267B;</a> 
-    <br><br>
+      <div class="bottom">
+        <h3>Connecté en tant que <span class='name'><u><a href="/user/{{user.id}}" style="text-decoration:none; color:inherit">{{ user }}</a></u></span></h3>
 
-    <h3>Hôtel des Ventes &#x2696;</h3>
-    <br><br>
-    <a href="/hdv">Accéder à l'hôtel des ventes</a> 
-    <br><br>
- 
-    <h3>Accéder aux tickets &#9742;</h3>
-    <a href = "/tickets/">Tickets</a>
+        {% if user.is_staff %}
+          <a href = "/admin">Acceder à l'admin</a>
+        {% endif %}
+        <a href = "/change_photo">Changer sa photo de profil</a>
+        <a href = "/logout/">Déconnexion</a>
+      </div>
+    </div>
 
-    <br><br>
+    <div class = 'colonne droite'>
+      <h3>Sessions disponibles &#9887; </h3>
+      <br><br>
 
-    <h3>Accéder aux Récits collaboratifs &#9999;</h3>
-    <a href = "/recits/">Récits</a>
+        
+      {% for session in session_data %}
+        <li style="list-style-type: none;">
+          <a href = "./{{session.session.id}}/#bottom">{{session.session.session_name}}</a>
+            {% if session.nb_unseen_messages %}
+              <strong>
+                (+{{session.nb_unseen_messages}})
+              </strong>
+            {% endif %}
+          </li>  
+      {% endfor %}
+      <br><br>
+      
 
-    <br><br>
+      <h3>La Salle de Jeux &#9830;&#9829;&#9827;&#9824;</h3>
+      <br>
+      <a href="/dinowars">Accéder à DinoWars</a>
+      <a href="/jeux">Accéder aux jeux</a>
+      <a href="/paris">Accéder aux paris</a>
+      <a href="/quêtes">Accéder aux quêtes &#128366;</a>
+      <br><br>
 
-    {% if user.is_staff %}
-      <h3>Accéder aux sondages &#x26CF;</h3>
-      <a href = "/sondages/">Sondage</a>
+
+      <h3>Inventaire &#9874;</h3>
+      <br><br>
+      <a href="/inventory">Accéder à l'inventaire</a>
+      <a href="/atelier">Accéder à l'atelier &#x267B;</a> 
+      <br><br>
+
+      <h3>Hôtel des Ventes &#x2696;</h3>
+      <br><br>
+      <a href="/hdv">Accéder à l'hôtel des ventes</a> 
+      <br><br>
+  
+      <h3>Accéder aux tickets &#9742;</h3>
+      <a href = "/tickets/">Tickets</a>
 
       <br><br>
-    {% endif %}
 
-    <br><br><br><br>
-    <h3>Contribuez au site ! &#9773;</h3>
-    <a href="https://github.com/PiRom1/MyBlog" target="_blank">GitHub</a>
+      <h3>Accéder aux Récits collaboratifs &#9999;</h3>
+      <a href = "/recits/">Récits</a>
 
-    
+      <br><br>
+
+      {% if user.is_staff %}
+        <h3>Accéder aux sondages &#x26CF;</h3>
+        <a href = "/sondages/">Sondage</a>
+
+        <br><br>
+      {% endif %}
+
+      <br><br><br><br>
+      <h3>Contribuez au site ! &#9773;</h3>
+      <a href="https://github.com/PiRom1/MyBlog" target="_blank">GitHub</a>
+
+      
+    </div>
   </div>
-</div>
+</body>

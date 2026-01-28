@@ -59,6 +59,12 @@ class User(AbstractUser):
     coins = models.IntegerField("Diplodocoins", default = 0)    
     tkt_counter = models.IntegerField("tkt_counter", default=0)
     llm_context = models.TextField('llm_context', default='')
+
+    HOMEPAGE_PREFERENCE = [
+        ("v1", "V1"),
+        ("v2", "V2"),
+    ]
+    homepage_preference = models.CharField(max_length = 50, choices = HOMEPAGE_PREFERENCE, default = "v1")
     
     class Meta:
         verbose_name = 'Utilisateur'
