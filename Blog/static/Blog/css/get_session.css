@@ -50,12 +50,25 @@ h1 {
 }
 
 /* Colonne droite */
-.droite {
+.centre {
     align-items: flex-start;
     background-color: #fefeee; /* Couleur de fond rouge */
     flex: 0 0 70%;
-    color: #120221
+    color: #120221;
+    height: 100%;
 }
+
+.droite {
+    align-items: flex-start;
+    background-color: #fefeee;
+    flex: 0 0 70%;
+    color: #120221;
+
+    /* Sticky pour rester visible à l'écran */
+    position: sticky;
+    overflow-y: auto; /* permet de scroller à l'intérieur si le contenu dépasse */
+}
+
 
 /* Style pour les éléments qui se retrouvent en bas de la colonne
 les items doivent avoir un petit espace entre eux */

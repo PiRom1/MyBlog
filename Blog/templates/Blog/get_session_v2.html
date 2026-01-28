@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Diplo</title>
+    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One" rel="stylesheet" type="text/css"/>
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/css/get_session_v2.css' %}"/>
+    <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}"/>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css">
+
+
+    <script src = "{% static 'Blog/js/homepage.js' %}"></script>
+
+
+  </head>
+
+<body>
+  <div id="data" categories="{{categories}}"></div>
+
+  <div class="title">Diplo</div>
+
+
+  <canvas id="canvas2" style="border:0px solid #000000;" onmousemove="get_mouse_pos(event)"></canvas>
+  <script src = "{% static 'Blog/js/network_v2.js' %}"></script>
+  <div class="overlay"></div>
+
+
+  <div class="main_circle" id="main_circle"></div>
+  <div class="subcategories" id="subcategories">Bienvenue, {{user}}</div>
+
+
+
+</body>

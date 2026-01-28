@@ -27,6 +27,70 @@ def getSession(request):
     return render(request, "Blog/get_session.html", context)
 
 
+@login_required
+def getSession_v2(request):
+    
+    user = request.user
+    connecte = user.is_authenticated
+
+    if not connecte:
+        return HttpResponseRedirect("/login/")
+
+    session_data = [{"session" : session_for_user.session,
+                     "nb_unseen_messages" : session_for_user.unseen_messages_counter} for session_for_user in SessionUser.objects.filter(user=user)]
+
+    # Les catégories, sous catégories, textes à afficher et liens où rediriger
+    # Ex : [
+    #        {'category' : 'Sessions', 
+    #         'subcategory' : [
+    #                             {'name' : 'Chat Acelys (+5), 
+    #                              'link' : 'https://...'},
+    #                         ],
+    #         },
+    #      ]
+
+    # Catégories : Sessions, Objets, Jeux, Réclamations, Autres ??? À définir
+    categories = [{"category" : "Objets & Progression", "subcategory" : [{"name" : "Inventaire", "link" : "/inventory/"},
+                                                                         {"name" : "Hôtel des ventes", "link" : "/hdv"},
+                                                                         {"name" : "Atelier", "link" : "/atelier/"},
+                                                                         {"name" : "Quêtes", "link" : "/quêtes/"}]},
+                  {"category" : "Compte", "subcategory" : [{"name" : "Profil", "link" : f"/user/{user.id}/"},
+                                                           {"name" : "Changer sa photo de profil", "link" : "/change_photo"},
+                                                           {"name" : "Déconnexion", "link" : "/logout/"},]},
+                  {"category" : "Collaboration & Support", "subcategory" : [{"name" : "Tickets", "link" : "/tickets/"},
+                                                                            {"name" : "Sondages", "link" : "/sondages/"},
+                                                                            {"name" : "Récits", "link" : "/recits/"},
+                                                                            {"name" : "Timeline Enjoy", "link" : "/enjoy_timeline"},
+                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
+                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
+                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
+                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
+                                                                            {"name" : "Soundbox", "link" : "/list_sounds"},
+                                                                            {"name" : "GitHub", "link" : "https://github.com/PiRom1/MyBlog"}]},
+                  {"category" : "Jeux", "subcategory" : [{"name" : "DinoWars", "link" : "/dinowars/"},
+                                                         {"name" : "Salle de jeux", "link" : "/jeux/"},
+                                                         {"name" : "Paris", "link" : "/paris/"}]}
+                ]
+    
+    
+    session_data = []
+    for session_for_user in SessionUser.objects.filter(user=user):
+        nb_unseen_messages = session_for_user.unseen_messages_counter
+        session_name = session_for_user.session.session_name
+        link = f"/{session_for_user.session.id}/#bottom"
+        if nb_unseen_messages >= 1:
+            session_name += f" (+{nb_unseen_messages})"
+        
+        session_data.append({"name" : session_name,
+                             "link" : link})
+
+    categories.insert(0, {"category" : "Sessions", "subcategory" : session_data})
+
+
+    context = {"categories" : json.dumps(categories), "user" : user.username.capitalize()}
+    return render(request, "Blog/get_session_v2.html", context)
+
+
 
 @login_required
 def get_moderaptor(request):

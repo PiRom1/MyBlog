@@ -1,0 +1,164 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* empêche le scroll */
+    height: 100%;     /* assure que body prend tout l’écran */
+}
+
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(50, 50, 43, 0.5); /* ajuster opacité */
+  z-index: 2; /* au-dessus du canvas */
+  pointer-events: none; /* pour que la souris passe à travers */
+}
+
+
+/* Canvas plein écran */
+.canvas2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.title {
+    position: fixed;          /* référentiel = écran */
+    top: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: ivory;
+    font-weight: bolder;
+
+    text-align: center;
+    font-size: 4vmin;        /* s’adapte à la taille de l’écran */
+    width: 80%;
+    z-index: 5;
+}
+
+
+
+
+/* Cercle */
+
+.main_circle {
+    position: fixed;              /* référentiel = écran */
+    width: 70vmin;               /* toujours proportionnel à l'écran */
+    height: 70vmin;
+    border: 5px rgba(209, 113, 113, 0.797) solid;
+    border-radius: 50%;
+    z-index: 5;
+    background-color: rgba(165, 42, 42, 0.3);
+
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* centrage PARFAIT */
+    pointer-events: none;
+    box-shadow:
+        0 0 10px rgba(209,113,113,0.8),
+        0 0 25px rgba(209,113,113,0.6),
+        0 0 50px rgba(209,113,113,0.4);
+}
+
+
+.subcategories {
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    max-height: 55vmin;
+    overflow: auto;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+
+    display: flex;             /* empile les enfants verticalement */
+    flex-direction: column;    /* vertical */
+    align-items: center;       /* centrage horizontal */
+    gap: 15px;                 /* <-- espace entre les subcategory */
+
+    color: ivory;
+    font-size: 28px;
+    font-weight: bolder;
+    text-align: center;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(209,113,113,0.8) rgba(50,50,43,0.4);
+    padding-right: 5px;
+    padding-left: 5px;
+    
+}
+
+
+.subcategory {
+    border-radius: 10px;
+    transition: box-shadow 0.4s ease, margin-left 0.3s ease;
+    padding: 3px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.subcategory:hover {
+    box-shadow:
+        inset 0 0 10px rgba(175, 93, 93, 0.8),
+        inset 0 0 25px rgba(180, 95, 95, 0.6),
+        inset 0 0 50px rgba(156, 84, 84, 0.4);
+    margin-left: 12px;
+    }
+
+
+
+
+.small_circle {
+    position: fixed;              /* référentiel = écran */
+    width: 12vmin;               /* toujours proportionnel à l'écran */
+    height: 12vmin;
+    border: 5px rgba(209, 113, 113, 0.797) solid;
+    border-radius: 50%;
+    z-index: 5;
+    background-color: rgb(212, 145, 145);
+
+    transform: translate(-50%, -50%); /* centrage PARFAIT */    
+    transition: background-color 0.5s ease, box-shadow 0.8s ease, width 0.5s ease, height 0.5s ease;
+
+    color: ivory;
+    text-align: center;
+
+    display: flex;
+    align-items: center;      /* centre verticalement */
+    justify-content: center;  /* centre horizontalement */
+
+  
+}
+
+
+
+/* Scrollbar */
+
+
+/* Chrome, Edge, Safari */
+.subcategories::-webkit-scrollbar {
+  width: 10px;
+}
+
+.subcategories::-webkit-scrollbar-track {
+  background: rgba(50,50,43,0.4);
+  border-radius: 10px;
+}
+
+.subcategories::-webkit-scrollbar-thumb {
+  background: rgba(209,113,113,0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(209,113,113,0.6);
+}
+
+.subcategories::-webkit-scrollbar-thumb:hover {
+  background: rgba(209,113,113,1);
+}

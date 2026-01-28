@@ -5,6 +5,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
 
     path("", utils_views.getSession, name = "get_session"),
+    path("get_sessions", utils_views.getSession_v2, name = "get_session_v2"),
     path("<int:id>/", chat_views.Index, name="index"),
     path("login/", user_views.connexion, name = "login"),
     path("logout/", user_views.deconnexion, name = "logout"),
