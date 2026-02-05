@@ -173,7 +173,9 @@ def update_equipped(request):
             # Manage same item (unequip)
             if item_id:
                 item = UserInventory.objects.get(user=request.user, item_id=item_id)
+                print("item : ", item)
                 if item.equipped:
+                    print("équippé")
                     item.equipped = False
                     item.save()
 

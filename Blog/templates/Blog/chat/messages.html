@@ -4,6 +4,7 @@
         <strong>Nouveaux messages</strong>
     </div>
 {% endif %}
+
 {% for message in messages %}
     {% if when_new_date|slice:forloop.counter|last %}
         <div class="message-date">
@@ -18,7 +19,7 @@
                 <i>{{message.pub_date}}</i> 
                 <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
             </span>
-            <p class="text">{{message.text|safe}}</p>
+            <p class="text" skins="{{message.skin|safe}}">{{message.text|safe}}</p>
         </div>
         <a href="/user/{{message.writer.id}}" class="user-avatar">
             <img src="{{ message.writer.image.image.url }}" alt="{{ message.writer.image.image.name }}" style="margin-left: 21%;">
@@ -35,7 +36,7 @@
                 <i>{{message.pub_date}}</i>
                 <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
             </span>
-            <p class="text">{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
+            <p class="text" skins="{{message.skin|safe}}">{% autoescape off %}{{message.text|linebreaks}}{% endautoescape %}</p>
         </div>
     </div>
     {% endif %}

@@ -87,9 +87,8 @@ function border_image(document, message, pattern, example = '') {
     const borderDiv = document.createElement('div');
     borderDiv.id = `${example}borderImage`;
     borderDiv.className = 'message-border-image';
-    messageContent = message.parentNode;
-    messageContent.parentNode.insertBefore(borderDiv, messageContent);
-    borderDiv.appendChild(messageContent);
+    message.parentNode.insertBefore(borderDiv, message);
+    borderDiv.appendChild(message);
     borderDiv.style.setProperty('flex', '1');
     borderDiv.style.setProperty('border-image-slice', '31 16 30 15 fill');
     borderDiv.style.setProperty('border-image-outset', '0px');
@@ -109,9 +108,8 @@ function border_rgb(document, message, pattern, example = '') {
     const rgbDiv = document.createElement('div');
     rgbDiv.className = 'rainbow';
     rgbDiv.id = `${example}RgbBorder`;
-    messageContent = message.parentNode;
-    messageContent.parentNode.insertBefore(rgbDiv, messageContent);
-    rgbDiv.appendChild(messageContent);
+    message.parentNode.insertBefore(rgbDiv, message);
+    rgbDiv.appendChild(message);
     if(pattern !== 'rainbow') {defineRGBAnimation(pattern, rgbDiv, rgb_tab);}
     const rgbCss = document.getElementById('rainbow-css');
     if (rgbCss === null) {
@@ -153,3 +151,74 @@ function name_rgb(document, name, user_avatar, pattern, example = '') {
 
 
 
+function set_skins_to_message(message, skins) {
+
+
+    let font;
+    let box = message.querySelector(".message-content");
+    let name = message.querySelector(".name a")
+    let user_avatar = message.querySelector(".user-avatar img");
+
+
+
+    // Loop on skins
+    Object.keys(skins).forEach(function(key) {
+        
+        // text color
+        if (key === "text_color") {
+            
+            box = text_color(box, skins[key]);
+        }
+
+        // border color
+        else if (key === "border_color") {
+            
+            box = border_color(box, skins[key]);
+        }
+
+        // background color
+        else if (key === "background_color") {
+            
+            box = background_color(box, skins[key]);
+        }
+
+        // name color
+        else if (key === "name_color") {
+            name = name_color(name, skins[key]);
+            }
+
+        // avatar color
+        else if (key === "avatar_color") {
+            
+            user_avatar = avatar_color(user_avatar, skins[key]);
+            }
+
+        // font
+        else if (key === "font") {
+            box = font_message(box, skins[key]);
+            font = skins[key];
+        }
+
+        // border image
+        else if (key === "border_image") {
+            
+            document = border_image(document, box, skins[key]);
+        }
+
+        // Rainbow border
+        else if (key === "border_rgb") {
+            
+            document = border_rgb(document, box, skins[key]);
+        }
+        
+        // Rainbow name
+        else if (key === "name_rgb") {
+            
+            document, name, user_avatar = name_rgb(document, name, user_avatar, skins[key]);
+        }
+    });
+
+    return font;
+
+
+}

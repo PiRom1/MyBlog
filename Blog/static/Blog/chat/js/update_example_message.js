@@ -85,19 +85,20 @@ function update_example_message(document, message, box, name, avatar, skins) {
         // font
         else if (key === "font") {
             box = font_message(box, skins[key]);
+            console.log(skins[key])
         
         }
 
         // border image
         else if (key === "border_image") {
             
-            document = border_image(document, message, skins[key], example = 'example-');
+            document = border_image(document, box, skins[key], example = 'example-');
         }
 
         // Rainbow border
         else if (key === "border_rgb") {
             
-            document = border_rgb(document, message, skins[key], example = 'example-');
+            document = border_rgb(document, box, skins[key], example = 'example-');
         }
         
         // Rainbow name

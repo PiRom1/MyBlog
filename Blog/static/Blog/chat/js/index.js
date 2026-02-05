@@ -55,29 +55,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadMoreBtn.addEventListener('click', function () {
         console.log('Load more button clicked');
-        var page = parseInt(loadMoreBtn.getAttribute('data-next-page'), 10);
-        var session = document.querySelector('.container').id;
-        console.log(page);
 
-        // Requête AJAX pour obtenir plus de messages
-        var url = `/${session}/?page=${page}`;
+        const page = parseInt(loadMoreBtn.getAttribute('data-next-page'), 10);
+        const session = document.querySelector('.container').id;
+        const messagesContainer = document.querySelector('.messages');
+
+        const url = `/${session}/?page=${page}`;
+
         fetch(url, {
             method: 'GET',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'  // Ajoute cet en-tête pour indiquer qu'il s'agit d'une requête AJAX
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
         .then(data => {
-            var messagesContainer = document.querySelector('.messages');
-            messagesContainer.innerHTML = '';
-            // Ajouter les nouveaux messages au début
+
+            // Combien de messages AVANT insertion
+            const existingCount = messagesContainer.querySelectorAll('.message').length;
+
+            // On ajoute AU DÉBUT (anciens messages)
             messagesContainer.insertAdjacentHTML('afterbegin', data.messages_html);
 
-            // Met à jour l'offset
+            // Tous les messages
+            const allMessages = messagesContainer.querySelectorAll('.message');
+
+            // Ici on prend les NOUVEAUX du début
+            const newMessages = Array.from(allMessages).slice(0, allMessages.length - existingCount);
+
+            newMessages.forEach(message => {
+                let skins = message.querySelector(".text").getAttribute('skins') || "{}";
+                skins = skins.replace(/'/g, '"');
+                skins = JSON.parse(skins);
+
+                set_skins_to_message(message, skins);
+            });
+
+            // Page suivante
             loadMoreBtn.setAttribute('data-next-page', page + 1);
         });
     });
+
 
     function reloadMessages() {
         var session = document.querySelector('.container').id;
@@ -106,8 +124,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('New message received');
                 var nb_new_msg = data.last_message_id - last_message_id;
                 badger.value += nb_new_msg;
+
                 // Ajouter les nouveaux messages au début
+
+                const existingCount = messagesContainer.querySelectorAll('.message').length;
+
                 messagesContainer.insertAdjacentHTML('beforeend', data.messages_html);
+
+                const allMessages = messagesContainer.querySelectorAll('.message');
+                const newMessages = Array.from(allMessages).slice(existingCount);
+
+                newMessages.forEach(message => {
+                    let skins = message.querySelector(".text").getAttribute('skins') || "{}";
+                    skins = skins.replace(/'/g, '"');
+                    skins = JSON.parse(skins);
+
+                    set_skins_to_message(message, skins);
+                });
+
+
+
 
                 // Met à jour l'offset
                 var loadMoreBtn = document.getElementById('load-more');
@@ -268,6 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
         skinRadios.forEach(radio => {
            
             radio.addEventListener('click', function (e) {
+
+                console.log(radio)
                 
                 const itemId = this.getAttribute('data-item-id'); // Récupérer l'ID du nouvel item sélectionné
                 const skinType = this.getAttribute('name'); // Récupérer le nom de la catégorie (skinType)
@@ -289,6 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
+                        console.log(data);
                         console.log('Item favori mis à jour');
                         previousPerCategory[skinType] = itemId;
                         if (data.action === 'unequip') {
