@@ -5,19 +5,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const messages = document.querySelectorAll('.message');
     const font_tab = []
     const rgb_tab = ['#F00','#F80','#FF0','#8F0','#090','#0F8','#0FF','#08F','#00F','#80F','#F0F','#F08'];
-    var favorite_fonts = document.getElementById('items').getAttribute('fonts');
-    favorite_fonts = favorite_fonts.replace(/'/g,'"');
-    favorite_fonts = JSON.parse(favorite_fonts);
-
-    favorite_fonts.forEach((font) => {
-        font_tab.push(font);
-    })
+    var favorite_fonts = document.getElementById('items');
+    if (favorite_fonts) {
+        favorite_fonts = favorite_fonts.getAttribute('fonts');
+        favorite_fonts = favorite_fonts.replace(/'/g,'"');
+        favorite_fonts = JSON.parse(favorite_fonts);
+        
+        favorite_fonts.forEach((font) => {
+            font_tab.push(font);
+        })
+    };
 
 
     // Change bg image
-    var bg_image = document.getElementById('items').getAttribute('background');
+    var bg_image = document.getElementById('items');
 
-    if (bg_image != '') {
+    if (bg_image) {
+        bg_image = bg_image.getAttribute('background');
         document.body.style.backgroundImage = `url(${bg_image})`;
     }
 

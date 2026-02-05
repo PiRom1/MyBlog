@@ -7,6 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 import string
 import re
 import os
+from django.db.models import Avg
+from collections import Counter
+
+
 
 from ..utils.stats import *
 import random as rd
@@ -123,58 +127,17 @@ def change_photo(request):
 
 @login_required
 def UserView(request, id):
+    """
+    Show the user page : 
+        - User informations
+        - Most used words
+        - Number of message per day
+    """
     
     user = request.user
     viewed_user = User.objects.filter(id = id)[0]
 
-    # Condition si current user et viewed_user sont dans la même session
-    session_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=user.id))]
-    session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
-    
-    messages = Message.objects.filter(writer=viewed_user)
-    karma = messages.values_list('karma', flat=True)
-    mean_karma = np.mean(karma)
-    n_messages = len(messages)
-
-    messages = ' '.join([message.text for message in messages])
-    messages = get_tokens(messages)
-    messages = ' '.join(messages)
-    messages = messages.lower()
-    messages = messages.split()
-    words = list(set(messages))
-    w = words.copy()
-    for word in w:
-        if len(word) < 5:
-            words.remove(word)
-    count_words = {}
-
-    
-
-    for word in words:
-        count_words[word] = messages.count(word)
-    
-    n_max = 0
-
-    words = list(count_words.keys())
-    nb = list(count_words.values())
-
-    argsorts = np.argsort(nb)[-1: -6: -1]
-
-    words = np.array(words)[argsorts]
-    nb = np.array(nb)[argsorts]
-    
-    words = zip(words, nb)
-    
-
-    access = False
-
-    for user_id in session_user:
-        if user_id in session_viewed_user:
-            access = True
-
-    if not access:
-        return HttpResponseRedirect("/invalid_user/")
-
+    # Modify user informations
     form = ModifyUserForm(initial={'last_name' : user.last_name,
                                    'first_name' : user.first_name,
                                    'email' : user.email})
@@ -197,12 +160,43 @@ def UserView(request, id):
 
             return HttpResponseRedirect('.')
 
-        
+
+    # Condition si current user et viewed_user sont dans la même session
+    session_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=user.id))]
+    session_viewed_user = [session.session_id for session in list(SessionUser.objects.filter(user_id=viewed_user.id))]
+
+    access = False
+
+    for user_id in session_user:
+        if user_id in session_viewed_user:
+            access = True
+
+    if not access:
+        return HttpResponseRedirect("/invalid_user/")
+    
+
+    qs = Message.objects.filter(writer=viewed_user)
 
 
-    messages = Message.objects.filter(writer=viewed_user)
+    # Mean karma direct SQL
+    mean_karma = qs.aggregate(avg=Avg('karma'))['avg']
 
-    plot = get_messages_plot(messages, viewed_user)
+    # Ne récupère QUE le texte
+    texts = qs.values_list('text', flat=True)
+
+    # Tokenize au fil de l'eau, sans méga string
+    counter = Counter()
+
+    for text in texts:
+        tokens = get_tokens(text.lower())
+        tokens = [t for t in tokens if len(t) >= 5 and t != 'nbspp']
+        counter.update(tokens)
+
+    # Top 5
+    words = counter.most_common(5)
+
+
+    plot = get_messages_plot(qs, viewed_user)
 
 
     background_id = Skin.objects.get(type='background_image').id
@@ -218,9 +212,9 @@ def UserView(request, id):
 
     url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
-               'n_messages' : n_messages,
+               'n_messages' : qs.count(),
                'form' : form,
-               'messages' : messages,
+               'messages' : qs,
                'words' : words,
                'plot' : plot,
                'user_bg' : bg,

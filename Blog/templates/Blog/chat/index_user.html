@@ -15,6 +15,10 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+
+    {% comment %} JS {% endcomment %}
+    <script src="{% static 'Blog/chat/js/item_effects_functions.js' %}"></script>
+    <script src="{% static 'Blog/chat/js/item_effects.js' %}"></script>
 </head>
 
 {% load custom_filters %}
@@ -51,7 +55,7 @@
                                     <i>{{message.pub_date}}</i> 
                                     <strong><span class="name"><a href="/user/{{message.writer.id}}">{{message.writer.username}}</a></span></strong>
                                 </span>
-                                <p>{{message.text|highlight:word|safe}}</p>
+                                <p class="text" skins="{{message.skin}}">{{message.text|safe}}</p>
                             </div>
                         </div>
                          
