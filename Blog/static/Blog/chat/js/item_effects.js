@@ -52,7 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
     font.rel = 'stylesheet';
     font.href = 'https://fonts.googleapis.com/css2?' 
     for (var f in font_tab) {
-        font.href += 'family=' + font_tab[f].replace(/ /g, '+') + '&';
+        if (font_tab[f]) {
+            console.log("font : ", font_tab[f])
+            font.href += 'family=' + font_tab[f].replace(/ /g, '+') + '&';
+        }
     }
     font.href += 'display=swap';
     document.head.appendChild(font);
