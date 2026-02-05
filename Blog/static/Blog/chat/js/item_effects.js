@@ -35,14 +35,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (message.id === "example-text") {
             return;
         } // Pas de skin pour le message d'exemple
-        skins = skins.replace(/'/g, '"');
-        skins = JSON.parse(skins);
-
-        let message_font = set_skins_to_message(message, skins);
-
-        if (font_tab.includes(message_font) === false) {
-                    font_tab.push(message_font);
-                }
+        if (skins) {
+            skins = skins.replace(/'/g, '"');
+            skins = JSON.parse(skins);
+            let message_font = set_skins_to_message(message, skins);
+            if (font_tab.includes(message_font) === false) {
+                        font_tab.push(message_font);
+                    }
+        }
 
         
     });
