@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (bg_image) {
         bg_image = bg_image.getAttribute('background');
-        document.body.style.backgroundImage = `url(${bg_image})`;
+        if (bg_image) {
+            document.body.style.backgroundImage = `url(${bg_image})`;
+        }
     }
 
 
