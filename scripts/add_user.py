@@ -150,21 +150,19 @@ def run():
     sessions = Session.objects.all()
     create_session_for_user(user, sessions)
 
+    # DinoWars
     DWUser.objects.create(
         user=user, 
         free_hatch=DW_FREE_HATCH,
         arena_energy=5
     )
 
-    boxes = Item.objects.bulk_create(
-        [Item(type='box', item_id=1) for _ in range(DEFAULT_BOXES)]
-    )
-    UserInventory.objects.bulk_create(
-        [UserInventory(user=user, item=box) for box in boxes]
-    )
+    # Lootboxes
+    for _ in range(DEFAULT_BOXES):
+        box = Item.objects.create(type='box', item_id=1)
+        UserInventory.objects.create(user=user, item=box)
 
-    ## Quêtes
-
+    # Quêtes
     generate_quest(user, quest_type = "coins")
     generate_quest(user, quest_type = "lootbox")
 
