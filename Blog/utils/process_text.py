@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 import random as rd
 import re
+from html import escape
 import bleach
 from django.conf import settings
 from markdown import Markdown
@@ -207,6 +208,32 @@ def replace_louise(text):
     return text
 
 
+def replace_images(text):
+    '''
+    Replace certain words with images 
+    '''
+
+    EMOTES = {
+            "diplodocoin": "/static/img/coin.png",
+        }
+    
+    _EMOTE_RE = re.compile(
+        r"\b(" + "|".join(sorted(map(re.escape, EMOTES), key=len, reverse=True)) + r")s*\b",
+        re.IGNORECASE,
+    )
+    
+    
+    def render_emotes(text: str) -> str:
+        def _replace(m):
+            name = m.group(1).lower()
+            return f"<img src='{EMOTES[name]}' alt='{name}' width='30'>"
+        return _EMOTE_RE.sub(_replace, text)
+
+    return render_emotes(text)
+
+
+
+
 def process_text(text, user, session):
     
     res = enjoy(text, user, session)
@@ -229,6 +256,8 @@ def process_text(text, user, session):
     text = replace_louise(text)
     text = text.replace("&lt;", "<")
     text = text.replace("&gt;", ">")
+
+    text = replace_images(text)    
     
 
     return text
