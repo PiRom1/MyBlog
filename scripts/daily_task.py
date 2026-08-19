@@ -8,6 +8,9 @@ from constance import config
 from django.utils import timezone
 from django.db import transaction
 
+GROQ_MODEL_ANALYSE = "groq/compound-mini"
+GROQ_MODEL_PUNCHLINE = "qwen/qwen3.6-27b"
+
 
 def generate_quest(user, type : str):
 
@@ -103,7 +106,8 @@ def run():
 
         try:
             # Chat score
-            chat_score()
+            chat_score(groq_model_analyse = GROQ_MODEL_ANALYSE,
+                       groq_model_punchline = GROQ_MODEL_PUNCHLINE)
         except Exception as e:
             raise SystemError(f"Erreur lors du calcul des scores de chat : {e}")
 
@@ -125,6 +129,3 @@ def run():
     except Exception as e:
         transaction.set_rollback(True) # Annuler les imputations s'il y a eu une erreur
         print(e)
-
-
-

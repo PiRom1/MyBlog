@@ -221,8 +221,9 @@ def get_punchline(user_prompt, model, session_name):
                 }
             ],
             model=model,
-            temperature=1.5,
-            max_completion_tokens=8192,
+            temperature=1.1,
+            max_completion_tokens=256,
+            reasoning_effort='none',
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -240,8 +241,9 @@ def get_punchline(user_prompt, model, session_name):
                 }
             ],
             model=model,
-            temperature=1.5,
-            max_completion_tokens=8192,
+            temperature=1.1,
+            max_completion_tokens=256,
+            reasoning_effort='none',
             presence_penalty=0.0,
         )
         response = response.choices[0].message.content
@@ -269,6 +271,8 @@ def get_text(date, user_data, model, session_name):
 
     text = ""
     date_sentence = get_punchline(intro_prompt, model, session_name)
+    print(f"Punchline du jour : {date_sentence}")
+
     text += f"<p>{date_sentence}</p><br>"
     for user in user_data.keys():
         user_reward_prompt = reward_prompt
@@ -280,6 +284,7 @@ def get_text(date, user_data, model, session_name):
         score = np.round(user_data[user]['mean'], 2)
         coins_earned = user_data[user]['coins']
         user_text = get_punchline(user_reward_prompt, model, session_name)
+        print(f"Punchline de l'utilisateur {user} : {user_text}")
         user_text = user_text.replace("diplodocoins", "<img src='/static/img/coin.png' width='30'>")
         text += f"<p> - {user_text}</p>"
         
@@ -289,18 +294,20 @@ def get_text(date, user_data, model, session_name):
 
 
 
-def chat_score():
+def chat_score(groq_model_analyse: str, groq_model_punchline: str):
     """
     Attribute a note and coins to each users of each sessions. Use every scribts above.
     """
     
 
-    model = "llama-3.3-70b-versatile"
+
     # Date of yesterday
     date = datetime.date.today() - datetime.timedelta(days=1)
 
+    print(f"Analyse du chat au jour {date} ... ")
+
     sessions = Session.objects.all()
-    sessions_data = analyse_chat(date=date, sessions=sessions, model=model)
+    sessions_data = analyse_chat(date=date, sessions=sessions, model=groq_model_analyse)
 
     if not sessions_data:
         print("Pas de donées récentes à analyser")
@@ -334,9 +341,11 @@ def chat_score():
             usr.save()
             session_data[user]['coins'] = int(coins_earned)
 
+        print(f"Session name : {session_name}\nSession data : {session_data}")
+
         text = get_text(date = date, 
                         user_data = session_data,
-                        model = model,
+                        model = groq_model_punchline,
                         session_name = session_name)
         
         if session_name in PROMPTS:
