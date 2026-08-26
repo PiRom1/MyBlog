@@ -295,7 +295,7 @@ def Index(request, id):
         if item.item.item_id == emoji_item_id and item.item.pattern:
             emoji_id = item.item.pattern
             emoji = Emojis.objects.get(id=emoji_id)
-            emojis.append(emoji.image.url)
+            emojis.append(emoji)
         
 
         

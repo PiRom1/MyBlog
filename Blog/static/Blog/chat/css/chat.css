@@ -1,0 +1,23 @@
+.emoji-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.emoji-popup-name {
+    display: none;
+    position: absolute;
+    bottom: 100%;          /* au-dessus de l'emoji */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.emoji:hover + .emoji-popup-name {
+    display: block;
+}

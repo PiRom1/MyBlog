@@ -15,6 +15,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/chat/css/chat.css' %}">
     
     <!-- CKEditor CDN -->
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
@@ -183,9 +184,13 @@
                         <h2>Vos émojis possédés</h2>
                         <div id="emojis-list">
                             {% for emoji in emojis %}
-                                <img src="{{emoji}}" width="30px" height="30px" class="emoji" style="cursor:pointer;" emoji_name="{{emoji}}"/>
+                                <span class="emoji-wrapper">
+                                    <img src="{{emoji.image.url}}" width="30" height="30" class="emoji" style="cursor:pointer;" emoji_name="{{emoji.name}}"/>
+                                    <div class="emoji-popup-name">{{emoji.name}}</div>
+                                </span>
                             {% endfor %}
-                        </div> <!-- Les items équipés séparés par 'data-skin-type' seront affichés ici -->
+                        </div>
+
                     </div>
                 </div>
 
