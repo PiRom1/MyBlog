@@ -1,98 +1,169 @@
+{% load static %}
 <!doctype html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>{{session.session_name}}</title>
-    <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
+  <title>{{ session.session_name }}</title>
+  <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One"
-    rel="stylesheet"
-    type="text/css" />
-  
-  {% load static %}
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
   <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
+  <link rel="stylesheet" href="{% static 'Blog/user/css/user.css' %}">
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{% static 'Blog/user/js/slider.js' %}"></script>
 
   {% include "Blog/layout/base.html" %}
-
 </head>
 
+<body class="profile-page">
 
-<a href="/">HOME</a>
+<div class="container">
 
+  <nav class="profile-nav">
+    <a href="/"><i class="fa-solid fa-house"></i> Accueil</a>
+  </nav>
 
-<h1>Profil de <span class="name">{{viewed_user.username}} </span></h1>
-{% if user == viewed_user %} <span id="ouvrirFormulaire" style="color: blue; cursor: pointer;">✏️</span>{% endif %}
-<h2>{{answer}}</h2>
+  <!-- Carte d'identité -->
+  <header class="profile-header">
+    <div class="profile-avatar">
+      <img src="{{ viewed_user.image.image.url }}"
+           alt="Photo de profil de {{ viewed_user.username }}">
+    </div>
 
-<div id="formContainer" style="display: none;">
-  <form action="" method="post" id="monFormulaire">
-      {% csrf_token %}
-      
-      {{ form }}
-      <button type="submit">Envoyer</button>
-  </form>
+    <div class="profile-identity">
+      <h1>
+        <span class="name">{{ viewed_user.username }}</span>
+        {% if user == viewed_user %}
+          <button type="button" id="ouvrirFormulaire" class="profile-edit" title="Modifier mes informations">✏️</button>
+        {% endif %}
+      </h1>
+
+      {% if answer %}<p class="profile-answer">{{ answer }}</p>{% endif %}
+
+      <div id="fieldsContainer">
+        <dl class="profile-fields">
+          {% if viewed_user.first_name %}
+            <dt>Prénom</dt><dd>{{ viewed_user.first_name }}</dd>
+          {% endif %}
+          {% if viewed_user.last_name %}
+            <dt>Nom</dt><dd>{{ viewed_user.last_name }}</dd>
+          {% endif %}
+          {% if viewed_user.email %}
+            <dt>Mail</dt><dd>{{ viewed_user.email }}</dd>
+          {% endif %}
+        </dl>
+      </div>
+
+      <div id="formContainer" hidden>
+        <form action="" method="post" id="monFormulaire" class="profile-form">
+          {% csrf_token %}
+          {{ form }}
+          <button type="submit">Enregistrer</button>
+        </form>
+      </div>
+
+      <div class="profile-actions">
+        <a class="profile-btn" href="/user/{{ viewed_user.id }}/messages#bottom">
+          Voir les messages
+        </a>
+        {% if is_bot %}
+          <a class="profile-btn" href="/bot/{{ viewed_user.id }}/chat">Discuter avec le bot</a>
+        {% endif %}
+        {% if user == viewed_user %}
+          <a class="profile-btn profile-btn-ghost" href="/change_photo">Changer ma photo</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Chiffres clés -->
+  <section class="profile-stats">
+    <div class="stat-card">
+      <span class="stat-value">{{ n_messages }}</span>
+      <span class="stat-label">messages écrits</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ mean_karma }}</span>
+      <span class="stat-label">karma moyen</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ user_collection_skins|length }}</span>
+      <span class="stat-label">objets de collection</span>
+    </div>
+  </section>
+
+  <div class="profile-grid">
+
+    <!-- Mots les plus utilisés -->
+    <section class="profile-panel">
+      <h2>Mots les plus utilisés</h2>
+      {% if words %}
+        <ol class="word-list">
+          {% for word, nb in words %}
+            <li>
+              <a href="/user/{{ viewed_user.id }}/messages/{{ word }}">{{ word }}</a>
+              <span class="word-count">{{ nb }}</span>
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p class="profile-empty">Pas encore assez de messages pour en tirer quelque chose.</p>
+      {% endif %}
+    </section>
+
+    <!-- Collection -->
+    <section class="profile-panel">
+      <h2>Collection</h2>
+      {% if user_collection_skins %}
+        <div class="collection-items">
+          {% for collection_item in user_collection_skins %}
+            <div class="collection-item">
+              <img src="{{ collection_item.image.url }}" alt="{{ collection_item.name }}">
+              <span class="collection-name">{{ collection_item.name }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="profile-empty">T'as pas encore trouvé le moindre secret sur ce site ? Ah ouais... Je te confierais pas les rênes des services de DiploRenseignement toi ...</p>
+      {% endif %}
+    </section>
+
+  </div>
+
+  <!-- Activité -->
+  <section class="profile-panel profile-panel-wide">
+    <h2>Activité</h2>
+
+    {% if plot %}
+      <div class="graph-controls">
+        <label for="slider">Moyenner sur une fenêtre glissante de <span id="slider_value">1</span> jour(s)</label>
+        <input type="range" id="slider" min="1" max="7" value="1" step="1">
+      </div>
+
+      <div class="graph-frame">
+        <img src="data:image/png;base64,{{ plot|safe }}"
+             id="graph"
+             viewed_user="{{ viewed_user }}"
+             alt="Nombre de messages envoyés par jour par {{ viewed_user.username }}">
+      </div>
+    {% else %}
+      <p class="profile-empty">Pas encore de messages à afficher sur le graphe.</p>
+    {% endif %}
+  </section>
+
 </div>
 
-<div id="fieldsContainer" style="display: block;">
-<ul>
-    <li><u>Prénom</u> : {{viewed_user.first_name}} </li>
-    <li><u>Nom</u> : {{viewed_user.last_name}} </li>
-    <li><u>Mail</u> : {{viewed_user.email}} </li>
-</ul>
-</div>
-<br>
-Mot les plus utilisés : <br>
-{% for word, nb in words %}
-<ol>  
-    <li>{{forloop.counter}} - <strong><a href="/user/{{viewed_user.id}}/messages/{{word}}">{{word}}</a></strong> ({{nb}})</li>
-</ol>
-{% endfor %}
-<br>
-Karma moyen : {{mean_karma}}
-<br><br>
+<script src="{% static 'Blog/user/js/modify_info.js' %}"></script>
 
-<a href="/user/{{viewed_user.id}}/messages#bottom">Voir les messages de {{viewed_user.username}}</a>
-<br>
-{% if is_bot %}
-  <a href="/bot/{{viewed_user.id}}/chat">Discuter avec le bot</a>
-{% endif %}
-<br><br>
-{% if user == viewed_user %}
-<a href = "/change_photo">Changer sa photo de profil</a>
-{% endif %}
-<br><br>
-
-
-
-<script src = "{% static 'Blog/user/js/modify_info.js' %}"></script>
-
-
-
-A écrit {{n_messages}} messages
-<br><br>
-
-<input type="range" id="slider" min="1" max="7" value="1" step="1"> Moyenner sur une fenêtre glissante de <span id="slider_value">1</span>
-<br>
-<div style="background-color: rgba(131,106,83,0.8); text-align: center; display:inline-block; margin-left: 12px;" >
-  <img src="data:image/png;base64,{{ plot|safe }}" style="display:block" id="graph" viewed_user="{{viewed_user}}">
-</div>
-
-<br><br>
-<h2><u>Photo de profil</u> : </h2> <br>
-<img src="{{ viewed_user.image.image.url }}" alt= "{{ viewed_user.image.image.name }}" width="300" height="300">
-
-<!-- 
-<h3>Messages écris par {{viewed_user}} : </h3>
-
-<ul>
-  {% for message in messages %}
-    <li>{{message.text}}</li>
-  {% endfor %}
-</ul> -->
+</body>
+</html>

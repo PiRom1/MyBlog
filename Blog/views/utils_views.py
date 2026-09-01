@@ -192,7 +192,7 @@ def get_moderaptor(request):
     
     response = {'success' : True, 'log' : 'You got Moderaptor. Enjoy !'}
 
-    print('repsonse : ', response)
+    print('response : ', response)
     return JsonResponse(response)
 
 

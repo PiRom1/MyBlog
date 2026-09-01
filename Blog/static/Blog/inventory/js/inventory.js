@@ -1,4 +1,7 @@
 import autocomplete from './autocomplete.js';
+import { startParticles, stopParticles } from './particles.js';
+
+
 
 // JavaScript pour gérer les événements de clic
 document.addEventListener('DOMContentLoaded', function () {
@@ -7,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoModal = document.getElementById('info-modal');
     const itemInfo = document.getElementById('item-info');
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const itemBackdrop = document.getElementById('item-backdrop');
+
     let selectedItem = null;
 
     // Récupérer les éléments du menu contextuel
@@ -28,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     })
+
+    
 
    
     
@@ -76,7 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Set rarity color
         // Get the after pseudo of the item in jquery
-        item.style.setProperty('--RarityBorder', `6px solid ${itemRarityColor}`);
+        if (itemSkinType != 'collection') {
+            item.style.setProperty('--RarityBorder', `6px solid ${itemRarityColor}`);
+        }
                 
         const pattern = item.getAttribute('data-pattern');
         // Vérifier si le pattern commence par un '#' (hexadécimal)
@@ -237,6 +246,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     infoModal.style.borderStyle = '';
                     infoModal.style.borderWidth = '';
                 }
+
+                // Gérer le cas des objets de collection
+                if (itemSkinType === 'collection') {
+                    unequipOption.style.display = 'none';
+                    equipOption.style.display = 'none';
+                    sellOption.style.display = 'none';
+                    favoriteOption.style.display = 'none';
+                }
+
+                tradeOption.style.display = 'none';
             }
                 
 
@@ -287,6 +306,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeModal() {
         infoModal.classList.remove('active');
         blurBackground.classList.remove('active');
+        itemBackdrop.classList.remove('active');
+        stopParticles();
     }
 
 
@@ -296,18 +317,43 @@ document.addEventListener('DOMContentLoaded', function () {
             const name = selectedItem.getAttribute('data-name');
             const date = selectedItem.getAttribute('data-date');
             const type = selectedItem.getAttribute('data-type');
+            const image_url = selectedItem.getAttribute('data-image');
             let additionalInfo = '';
 
+            
+
             if (type === 'skin') {
+
                 const pattern = selectedItem.getAttribute('data-pattern');
                 const favorite = selectedItem.getAttribute('data-favorite');
                 const skin_type = selectedItem.getAttribute('data-skin-type');
                 const skin_rarity_name = selectedItem.getAttribute('data-rarity-name');
+                const skin_description = selectedItem.getAttribute('data-description');
 
-                additionalInfo = `<strong>Pattern:</strong> <a style="font-family: ${pattern}; color: #000;">${pattern}</a><br>
-                                  <strong>Type:</strong> ${skin_type}<br>
-                                  <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}<br>
-                                  <strong>Rareté:</strong> ${skin_rarity_name}`;
+                if (skin_type === 'collection') {
+                    itemBackdrop.style.setProperty('--item-image', `url("${image_url}")`);
+                    itemBackdrop.classList.add('active');
+                    startParticles(selectedItem.getAttribute('data-rarity-color'));
+                }
+
+                if (skin_type != 'collection' && skin_type != 'emoji' && skin_type != 'background_image' && skin_type != 'other') { // Ne pas afficher le pattern
+                    additionalInfo = `<strong>Pattern:</strong> <a style="font-family: ${pattern}; color: #000;">${pattern}</a><br>`;
+                }
+                
+                additionalInfo += `<strong>Type:</strong> ${skin_type}<br>
+                                   <strong>Statut:</strong> ${favorite === 'True' ? 'Favori' : 'Non favori'}<br>
+                                   <strong>Rareté:</strong> ${skin_rarity_name}`;
+
+                if (skin_type === 'emoji') {
+                    additionalInfo += `<br><strong>Nom de l'emoji:</strong> ${selectedItem.getAttribute('data-emoji-name')}`
+                }
+
+                if (skin_type === 'background_image') {
+                    additionalInfo += `<br><strong>Nom de l'image d'arrière-plan:</strong> ${selectedItem.getAttribute('data-image-name')}`
+                }
+
+                additionalInfo += `<br><br><strong>Description:</strong> ${skin_description}`;
+
             } else if (type === 'box') {
                 const openPrice = selectedItem.getAttribute('data-open-price');
                 additionalInfo = `<strong>Prix d'ouverture:</strong> ${openPrice} crédits`;

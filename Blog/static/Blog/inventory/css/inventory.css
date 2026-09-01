@@ -202,11 +202,28 @@ h1 {
 /* Styles du menu contextuel */
 .context-menu {
     position: absolute;
-    background-color: rgba(86, 86, 86, 0.8); /* Fond semi-transparent */
+    background-color: rgba(86, 86, 86, 0.8);
     backdrop-filter: blur(2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
     z-index: 1000;
     display: none;
+}
+
+.context-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.context-menu::before {
+    content: "";
+    position: absolute;
+    inset: -20px;              /* déborde pour que le flou ne laisse pas de bord net */
+    background-image: var(--item-image);
+    background-size: cover;
+    background-position: center;
+    filter: blur(6px);
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 .context-menu.active {
@@ -219,10 +236,6 @@ h1 {
     padding: 0;
 }
 
-.context-menu li {
-    padding: 10px 20px;
-    cursor: pointer;
-}
 
 /* les éléments vendre et échanger du context-menu doivent être grisés et non-clicables */
 .context-menu li.disabled {
@@ -274,15 +287,19 @@ h1 {
     border-radius: 8px;
     z-index: 1001; /* Assurez-vous que la modale soit au-dessus du flou */
     display: none;
+    --item-image: none;
 }
+
+
 
 .info-modal.active {
     display: block;
 }
 
 .modal-content {
-    position: relative;
+    position: relative;   /* déjà présent chez toi, il devient indispensable ici */
     text-align: left;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .close {
@@ -334,4 +351,43 @@ h1 {
 .coins {
     
     padding-left: 2%;
+}
+
+
+.item-backdrop {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(120vw, 1500px);
+    height: min(100vh, 1300px);
+    background-image: var(--item-image, none);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(3px);
+    opacity: 0.75;
+    z-index: 1000;          /* au-dessus du voile, sous la modale à 1001 */
+    display: none;
+    pointer-events: none;
+}
+
+.item-backdrop.active {
+    display: block;
+}
+
+.item-particles {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(120vw, 1500px);
+    height: min(100vh, 1300px);
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+.item-particles.active {
+    display: block;
 }

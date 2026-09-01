@@ -26,7 +26,9 @@ urlpatterns = [
     path('tickets/', tickets_views.ticket_list, name='ticket_list'),
     path('tickets/create/', tickets_views.create_ticket, name='create_ticket'),
     path('tickets/update/<int:pk>/', tickets_views.update_ticket, name='update_ticket'),
-   
+
+    # CHAT #
+    path('chat/fraude', chat_views.fraude, name='fraude'),
 
     # SONDAGES #
     path('sondages/', sondages_views.sondage_list, name='sondage_list'),
@@ -63,7 +65,7 @@ urlpatterns = [
     path('background/<int:pk>', inventory_views.use_bg, name='use_bg'),
     
     # Inventory_2
-    path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory'),
+    path('inventory_2/', inventory_2_views.user_inventory_view, name='inventory_2'),
     path('inventory_2/toggle_item_status', inventory_2_views.toggle_item_status, name='toggle_item_status'),
 
     # HDV

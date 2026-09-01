@@ -59,6 +59,7 @@ class User(AbstractUser):
     coins = models.IntegerField("Diplodocoins", default = 0)    
     tkt_counter = models.IntegerField("tkt_counter", default=0)
     llm_context = models.TextField('llm_context', default='')
+    nb_condamnations = models.IntegerField('nb_condamnations', default=0)
 
     HOMEPAGE_PREFERENCE = [
         ("v1", "V1"),
@@ -230,9 +231,10 @@ class Skin(models.Model):
     TYPE = [('text_color', 'Text color'), ('border_color', 'Border color'), ('avatar_color', 'Avatar color'),
             ('name_color', 'Name color'), ('background_color', 'Background color'), ('background_image', 'Background image'),
             ('font', 'Font'), ('emoji', 'Emoji'), ('border_image', 'Border image'),
-            ('name_rgb', 'Name RGB'), ('border_rgb', 'Border RGB'), 
-            ('other', 'Other')]
+            ('name_rgb', 'Name RGB'), ('border_rgb', 'Border RGB'),
+            ('other', 'Other'), ('collection', 'Collection')]
     type = models.CharField("type", max_length=64, choices = TYPE, default = 'other')
+    description = models.TextField("description", default = "")
 
     def __str__(self):
         return self.name

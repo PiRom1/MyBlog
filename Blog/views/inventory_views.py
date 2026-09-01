@@ -69,20 +69,24 @@ def get_items_list(user_inventory):
                 'favorite': inventory.favorite,
                 'obtained_date': inventory.obtained_date,
                 'skin_type': skin.type,
-                'rarity_name': skin.rarity.name,
-                'rarity_color': skin.rarity.color,
+                'rarity_name': getattr(skin.rarity, 'name', ''),
+                'rarity_color': getattr(skin.rarity, 'color', ''),
                 'equipped_on_dino': equipped_on_dino,
-                'equipped_on_arena_dino': equipped_on_arena_dino
+                'equipped_on_arena_dino': equipped_on_arena_dino,
+                'description' : skin.description
                 })
             
             if skin.type == 'emoji' and item.pattern != '':
                 emoji = Emojis.objects.get(id=item.pattern)
                 print(items[-1]['image'])
                 items[-1]['image'] = emoji.image.url
+                items[-1]['emoji_name'] = emoji.name
             
             if skin.type == 'background_image' and item.pattern != '':
                 background = Background.objects.get(id=item.pattern)
                 items[-1]['image'] = background.image.url
+                items[-1]['image_name'] = background.name
+
             
             if skin.type == 'border_image':
                 print("pattern : ", item.pattern)

@@ -14,6 +14,7 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets[1][1]['fields'] += ('enjoy_counter',)
     fieldsets[1][1]['fields'] += ('coins',)
     fieldsets[1][1]['fields'] += ('tkt_counter',)
+    fieldsets[1][1]['fields'] += ('nb_condamnations',)
     fieldsets[1][1]['fields'] += ('llm_context',)
     fieldsets[1][1]['fields'] += ('homepage_preference',)
     add_fieldsets = DefaultUserAdmin.add_fieldsets 
@@ -107,7 +108,7 @@ class RarityAdmin(admin.ModelAdmin):
 
 @admin.register(Skin)
 class SkinAdmin(admin.ModelAdmin):
-    list_display = ('id', 'box', 'name', 'image', 'rarity', 'type')
+    list_display = ('id', 'box', 'name', 'image', 'rarity', 'type', 'description')
     list_filter = ('box', 'rarity', 'type')
     search_fields = ('name', 'box__name')
     

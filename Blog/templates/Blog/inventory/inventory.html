@@ -47,11 +47,38 @@
     <div class="inventory-grid">
         <!-- Boucle pour tous les items mélangés -->
         {% for item in items %}
-        <div class="inventory-item" id="{{item.id}}" data-id="{{ item.item_id }}" data-name="{{ item.name }}" data-favorite="{{ item.favorite }}" 
-             data-date="{{ item.obtained_date }}" data-type="{{ item.type }}" data-equipped="{{ item.equipped }}" data-url="{{item.url}}"
-             {% if item.type == 'skin' %}data-pattern="{{ item.pattern }}" data-skin-type="{{ item.skin_type }}" data-rarity-name="{{item.rarity_name}}" data-rarity-color="{{item.rarity_color}}"
-             data-equipped-on-dino="{{ item.equipped_on_dino }}" data-equipped-on-arena-dino="{{ item.equipped_on_arena_dino }}"{% endif %}
-             {% if item.type == 'box' %}data-open-price="{{ item.open_price }}"{% endif %}>
+        <div class="inventory-item" id="{{item.id}}" 
+                data-id="{{ item.item_id }}" 
+                data-name="{{ item.name }}" 
+                data-favorite="{{ item.favorite }}" 
+                data-date="{{ item.obtained_date }}" 
+                data-type="{{ item.type }}" 
+                data-equipped="{{ item.equipped }}" 
+                data-url="{{item.url}}"
+                data-description="{{item.description}}"
+                data-image="{{item.image}}"
+                
+                {% if item.type == 'skin' %}
+                    data-pattern="{{ item.pattern }}" 
+                    data-skin-type="{{ item.skin_type }}" 
+                    data-rarity-name="{{item.rarity_name}}" 
+                    data-rarity-color="{{item.rarity_color}}"
+                    data-equipped-on-dino="{{ item.equipped_on_dino }}" 
+                    data-equipped-on-arena-dino="{{ item.equipped_on_arena_dino }}"
+                {% endif %}
+
+                {% if item.type == 'box' %}
+                    data-open-price="{{ item.open_price }}"
+                {% endif %}
+
+                {% if item.skin_type == 'emoji' %}
+                    data-emoji-name="{{ item.emoji_name}}"
+                {% endif %}
+
+                {% if item.skin_type == 'background_image' %}
+                    data-image-name="{{ item.image_name}}"
+                {% endif %}
+        >
 
             <img src="{{ item.image }}" alt="{{ item.name }}" id="img-{{item.item_id}}">
             <!-- <h3>{{ item.name }}</h3> -->
@@ -105,6 +132,10 @@
 
     <!-- Flou de fond -->
     <div class="blur-background" id="blur-background"></div>
+
+    <!-- Item flou -->
+    <div id="item-backdrop" class="item-backdrop"></div>
+    <canvas id="item-particles" class="item-particles"></canvas>
 
     <!-- Modale pour afficher les informations de l'item -->
     <div id="info-modal" class="info-modal">

@@ -181,6 +181,10 @@ def sell(request):
     
     item = Item.objects.get(pk=item_id)
 
+    if (Skin.objects.get(id = item.item_id)).type == 'collection':
+        return JsonResponse({'success' : False, 
+                             'error' : "Vous ne pouvez pas vendre un objet de collection !"})
+
     # Mettre en vente
     vente = Market(seller = user, 
                    item = item, 

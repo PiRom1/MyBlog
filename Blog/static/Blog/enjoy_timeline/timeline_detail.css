@@ -12,3 +12,20 @@
 .comment {
     padding-left:1%;
 }
+
+
+.barre {
+    position: relative;
+    display: inline-block;
+}
+.barre::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 130%;          /* longueur de la barre */
+    height: 0.08em;       /* épaisseur */
+    background: currentColor;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    pointer-events: none;
+}

@@ -209,6 +209,20 @@ def UserView(request, id):
     bot_ids = Bot.objects.all().values_list('user_id', flat=True)
     is_bot = viewed_user.id in bot_ids
 
+    # Get collection items
+    owned_skin_ids = UserInventory.objects.filter(
+        user=viewed_user,
+        item__type='skin',
+    ).values_list('item__item_id', flat=True)
+
+    # Les skins collection que l'user possède : En autorisant les doublons si l'user a réussi à bugué le site : Autant le féliciter !
+    user_collection_skins = [Skin.objects.filter(id=skin_id, type = 'collection').first() for skin_id in owned_skin_ids]
+    user_collection_skins = [i for i in user_collection_skins if i] * 10
+
+
+
+
+
 
     url = "Blog/user/user.html"
     context = {'viewed_user' : viewed_user,
@@ -220,6 +234,7 @@ def UserView(request, id):
                'user_bg' : bg,
                'is_bot' : is_bot,
                'mean_karma' : round(mean_karma, 2),
+               'user_collection_skins' : user_collection_skins
                }
 
     return render(request, url, context)

@@ -75,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 sell_popup.style.display = 'none';
                 price.value = null;
             }
+            else {
+                console.log(data.error)
+            }
     });
 
     })

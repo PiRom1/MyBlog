@@ -21,3 +21,42 @@
 .emoji:hover + .emoji-popup-name {
     display: block;
 }
+
+
+/* Commandes */
+
+.command-input {
+    display: none;               /* caché par défaut, JS le montre */
+    position: absolute;          /* positionné librement dans la page */
+    z-index: 1000;               /* passe au-dessus de l'éditeur */
+    min-width: 220px;
+    max-height: 200px;
+    overflow-y: auto;            /* scroll si beaucoup de commandes */
+    background-color: #2b2d31;
+    border: 1px solid #3f4147;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+    padding: 4px;
+}
+
+.command-input.visible {
+    display: block;
+}
+
+.command-line {
+    padding: 6px 10px;
+    border-radius: 5px;
+    color: #dbdee1;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.selected-command-line {
+    background-color: #404249;
+    color: #ffffff;
+}
+
+.command-line:hover {
+    background-color: #404249;
+    color: #ffffff;
+}

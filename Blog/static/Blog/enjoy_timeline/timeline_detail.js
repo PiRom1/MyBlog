@@ -136,20 +136,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
             
             hour1.addEventListener('click', function() {
-                hour1.innerHTML = '𝟔̸';
-                check_666[0] = true;
+                if (check_666[0]) {
+                    hour1.classList.remove('barre');
+                    check_666[0] = false;
+                }
+                else {
+                    hour1.classList.add('barre');
+                    check_666[0] = true;
+                }
 
             })
 
             hour2.addEventListener('click', function() {
-                hour2.innerHTML = '𝟔̸';
-                check_666[1] = true;
+                if (check_666[1]) {
+                    hour2.classList.remove('barre');
+                    check_666[1] = false;
+                }
+                else {
+                    hour2.classList.add('barre');
+                    check_666[1] = true;
+                }
 
             })
 
             minute.addEventListener('click', function() {
-                minute.innerHTML = '𝟔̸';
-                check_666[2] = true;
+                if (check_666[2]) {
+                    minute.classList.remove('barre');
+                    check_666[2] = false;
+                }
+                else {
+                    minute.classList.add('barre');
+                    check_666[2] = true;
+                }
 
             })
 

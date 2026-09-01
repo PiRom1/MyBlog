@@ -73,6 +73,7 @@ def LLMResponse(username:str, message: str, session, use_user_context: bool = No
             max_completion_tokens=bot.max_tokens,
             top_p=bot.top_p,
             presence_penalty=bot.presence_penalty,
+            reasoning_effort = 'none'
         )
 
         # Return the generated response
@@ -115,6 +116,7 @@ def LLMNewMessage(session, bot: Optional[str] = None) -> Optional[str]:
                 max_completion_tokens=bot.max_tokens,
                 top_p=bot.top_p,
                 presence_penalty=bot.presence_penalty,
+                reasoning_effort = 'none'
             )
 
             # Return the generated response

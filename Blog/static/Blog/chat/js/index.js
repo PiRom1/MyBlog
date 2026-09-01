@@ -361,25 +361,36 @@ document.addEventListener('DOMContentLoaded', function () {
         i = 0;
     })
 
+    let last_chars = '';
+    const CODE = 'moderaptor';
+
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === "AudioVolumeUp" && i < 3) {
-            popup.innerHTML += ".";
-            i += 1;
 
-            if (i === 3) {
-                popup.innerHTML = `
-                Lorsque voici l'heure du malin, <br>
-                Les cercles de l'enfer prennent vie. <br>
-                Sans prévenir, dirige-toi en leur sein, <br>
-                Guidé par Dante, le sage, l'érudit. <br>
-                Sois lucide, déjoue le mécanisme, <br> 
-                La ligne du temps vite s'émousse. <br>
-                Souviens-toi de ce bref aphorisme : <br>
-                Trois clics pour les modérer tous. <br>
-                `;
-            }
+        if (e.key.length !== 1) {
+            return
         }
+
+        last_chars += e.key.toLowerCase();
+
+        if (last_chars.length > 10) {
+            last_chars = last_chars.slice(1,)
+        }
+
+        if (last_chars == CODE) {
+
+            popup.innerHTML = `
+            Lorsque voici l'heure du malin, <br>
+            Les cercles de l'enfer prennent vie. <br>
+            Sans prévenir, dirige-toi en leur sein, <br>
+            Seulement trois sont présents aujourd'hui.<br>
+            Sois lucide, déjoue le mécanisme, <br>
+            Ne crains pas les mots qui te repoussent,<br>
+            Souviens-toi de ce bref aphorisme : <br>
+            Trois clics pour les modérer tous. <br>
+            `;
+        }
+
     })
 
     

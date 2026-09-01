@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render, redirect
+from django.db import transaction
 
 from ..models import *
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
@@ -7,6 +8,7 @@ from ..forms import *
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.template.loader import render_to_string
+from django.urls import reverse
 import string
 import re
 from nltk.corpus import stopwords
@@ -22,7 +24,7 @@ from groq import Groq
 from datetime import datetime
 from Blog.views.utils_views import write_journal_tag
 import os
-
+from django.templatetags.static import static
 
 
 
@@ -155,7 +157,7 @@ def Index(request, id):
                 return JsonResponse({'messages_html': '',
                                      'last_message_id': post_last_message_id})
             
-        print("new_message : ", messages)
+        
         messages_html = render_to_string('Blog/chat/messages.html', {
             'messages': messages,
             'user': user,
@@ -192,7 +194,7 @@ def Index(request, id):
     if request.method == "POST":
         # message_form = MessageForm(request.POST)
         message_text = request.POST.get('message_html')
-        print("text : ", message_text)
+        
         if message_text:
 
             # Journal
@@ -202,9 +204,9 @@ def Index(request, id):
                                       receiver = _user,
                                       session = session)
            
-            print("Before : \n", message_text)
+            # print("Before processing : \n", message_text)
             processed_message_text = process_text(message_text, user, session)
-            print("TEXTE : \n", processed_message_text)
+            # print("After processing : \n", processed_message_text)
             if not isinstance(processed_message_text, str):  # Si text est un HttpResponseRedirect
                 return processed_message_text
             
@@ -221,9 +223,16 @@ def Index(request, id):
             # 1 chance sur 10 de déclencher une réponse de LLM
             if (user.username == 'theophile' and theo_last_message.pub_date < timezone.now() - timezone.timedelta(hours=12)) or rd.random() < 0.1 or agent_called:
                 if agent_called:
-                    response, username = LLMResponse(user.username, message_text, session, agent_called)
+                    response, username = LLMResponse(username = user.username, 
+                                                     message = message_text, 
+                                                     session = session, 
+                                                     use_user_context = True, 
+                                                     bot = agent_called)
+                    print("Response bot : ", response, username)
                 else:
-                    response, username = LLMResponse(user.username, message_text, session)
+                    response, username = LLMResponse(username = user.username, 
+                                                     message = message_text, 
+                                                     session = session)
                 if response:
                     llm_user = User.objects.get(username=username)
                     new_message = Message(writer = llm_user, text = response, pub_date = timezone.now(), session_id = session, skin = "{}")
@@ -318,7 +327,40 @@ def Index(request, id):
     # Récupérer les 10 derniers opening logs
     
     opening_logs = OpeningLog.objects.filter(user_id__in=SessionUser.objects.filter(session=session).values('user')).order_by('-date')[:10]
-    
+
+    session_bots = SessionBot.objects.filter(session=session).values_list('bot__user__username', flat=True)    
+    session_users = {user.username : {'url' : getattr(getattr(user.image, 'image', None), 'url', None),
+                                      'is_bot' : user.username in session_bots}
+                      for user in User.objects.filter(username__in=SessionUser.objects.filter(session=session).values('user__username'))}
+
+    user_sounds = {us.sound.name: us.sound.sound.url
+                   for us in UserSound.objects.filter(user=user).order_by('sound__name').select_related('sound')}
+    user_sounds = {'Son aléatoire' : '', **user_sounds}
+
+    pages = {
+    'Accueil': reverse('get_session'),
+    'Tickets': reverse('ticket_list'),
+    'Sondages': reverse('sondage_list'),
+    'Récits': reverse('recit_list'),
+    'Inventaire': reverse('inventory'),
+    'HDV': reverse('hdv'),
+    'Jeux': reverse('list_jeux'),
+    'Paris': reverse('list_paris'),
+    'Quêtes': reverse('quest'),
+    'DinoWars': reverse('user_dinos_view'),
+    'Leaderboard': reverse('leaderboard_view'),
+    'Atelier': reverse('atelier'),
+    'Enjoy Timeline': reverse('enjoy_timeline'),
+    'Stats': reverse('stats', args=[session.id]),
+}
+
+
+    is_quest_done = Quest.objects.filter(
+        user=user,
+        start_date__date=timezone.now().date(),
+        achieved=True
+    ).exists()
+
     context = {"messages" : messages, 
                "user" : user, "years" : years, 
                "month" : month, "day" : day, 
@@ -337,7 +379,12 @@ def Index(request, id):
                "background" : background,
                "opening_logs": opening_logs,  # Ajout des opening logs
                "current_skins" : str(dict_items),
-               "first_unseen_message" : first_unseen_message
+               "first_unseen_message" : first_unseen_message,
+               "command_list" : json.dumps(['help', 'emoji', 'tag', 'bot', 'random', 'soundbox', 'kaomoji', 'page', 'get_diplodocoins']),
+               "session_users" : json.dumps(session_users),
+               'user_sounds' : json.dumps(user_sounds),
+               'pages': json.dumps(pages),
+               'is_quest_done': is_quest_done
                }
     
     # rappel
@@ -420,9 +467,6 @@ def Stats(request, id):
     
     message_stats, yoda_stats, enjoy_stats = get_stats(session)
 
-    print(message_stats)
-    print(yoda_stats)
-
     url = "Blog/chat/stats.html"
     context = {"message_stats" : message_stats,
                "yoda_stats" : yoda_stats,
@@ -483,7 +527,6 @@ def tkt_view(request):
              "Tu as bien mérité un petit cadeau alors !",
              "Tends l'oreille, je vais te confier un secret ...",
              "Écoute attentivement",
-            
 ]
     
 
@@ -539,11 +582,9 @@ def chat_with_bot(request, id):
     form = chatWithBotForm()
 
     if request.method == "POST":
-        print(request.POST)
         message = request.POST.get('message')
         use_user_context = request.POST.get('use_user_context')
         use_user_context = True if use_user_context else False
-        print(use_user_context)
         answer, _ = LLMResponse(username = request.user.username, 
                                 message = message, 
                                 session = None, 
@@ -563,3 +604,80 @@ def chat_with_bot(request, id):
                'answer' : answer}
     
     return render(request, url, context)
+
+
+@transaction.atomic()
+@login_required
+def fraude(request):
+
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+
+    data = json.loads(request.body)
+
+    try:
+        user = User.objects.get(id = data.get('user_id'))
+        session = Session.objects.get(id=data.get('session_id'))
+        COIN_STR = f"<img src='{static('img/coin.png')}' width='20'>"
+
+        nb_condamnations = user.nb_condamnations
+        
+        condamnation_texts = [
+            f"L'utilisateur {user.username} s'est senti plus malin qu'un marsouin, et a tenté - vainement - de contourner le système pour s'en mettre plein les fouilles. Je vous mets en garde pour cette fois, mais la fois suivante vous écoperez d'une méchante peine d'amende en vertu de l'article 148-B du DiplodoCode Civil... À bon entendeur !",
+            f"L'utilisateur {user.username} a été sanctionné pour tentative aggravée de détournement de fonds. Il est condamné, en vertu de l'article 148-B du DiplodoCode Civil, à verser la somme conséquente de {nb_condamnations} {COIN_STR} à la nation. C'était pas faute d'avoir prévenu ...",
+            f"L'utilisateur {user.username} n'a apparemment pas compris que détourner de l'argent DiploPublique n'était pas une bonne chose ! Soit tu es l'enfant de Bernard Tapie, soit tu es complètement con ! Quoi qu'il en soit, je te condamne à verser {nb_condamnations} {COIN_STR} en vertu de l'article 148-B du DiplodoCode Civil.",
+            f"L'utilisateur {user.username} a visiblement l'air d'avoir du temps et de l'argent à perdre. Grand bien lui fasse, je suis plus riche que lui, et dispose d'une infinité de temps ! En vertu de l'article 148-B du DiplodoCode Civil, je te retire {nb_condamnations} {COIN_STR}. À très bientôt, visiblement !",
+            f"AVIS À LA COMMUNAUTÉ DIPLO --- L'utilisateur {user.username} est en réalité un riche mécène qui a décidé de financer le système DiploJudiciaire en simulant des détournements de fonds afin de payer des amendes en continu en vertu de l'article 148-B du DiplodoCode Civil. De fait, nous lui prélevons encore une fois {nb_condamnations} {COIN_STR}. <br>Cependant, nous tenons à l'informer que nous disposons d'une planche à billets infinie, et ne souffrons d'aucun système d'inflation (au contraire de lui, qui prend cher chaque jour de sa vie à voir sa piteuse fortune perdre en valeur jour après jour). <br>De fait, bien que cette action était vraiment bienvenue, nous invitons celui-ci à CESSER de payer des amendes pour le bien de son portefeuille.",
+            f"L'utilisateur {user.username} en est donc à sa sixième tentative de fraude. À ce stade, ce n'est plus de la délinquance, c'est une vocation. Le tribunal a d'ailleurs ouvert un dossier RH à votre nom : malheureusement, le poste de `Fraudeur Diprofessionnel` n'est pas rémunéré, c'est même l'inverse, ce sera {nb_condamnations} {COIN_STR}, article 148-B du DiplodoCode Civil, vous commencez à le connaître je pense...",
+            f"Fascinant. L'utilisateur {user.username} présente tous les symptômes du joueur compulsif : mauvaise gestion financière, comportements erratiques, impulsifs voire irrationnels... Mais si au casino vous pouvez parfois être gagnants, ici c'est nous les gagnants ! {nb_condamnations} {COIN_STR} vous serons prélevés, en vertu de l'article 148-B du DiplodoCode Civil",
+            f"COMMUNIQUÉ OFFICIEL --- Le tribunal DiploJudiciaire informe la communauté que l'utilisateur {user.username} finance désormais À LUI SEUL la rénovation du palais de justice, la fontaine à eau du greffe et le pot de départ de la juge d'instruction. Nous le remercions chaleureusement de son don de {nb_condamnations} {COIN_STR} (article 148-B) et l'informons que la machine à café est encore en panne, au cas où il voudrait récidiver !",
+            f"Le tribunal DiploJudiciaire s'est réuni en une assemblée exceptionnelle pour discuter au sujet de l'utilisateur {user.username}. Celui-ci a été unanime pour la première fois depuis plusieurs décennies : vous êtes complètement con. Malheureusement, si lors d'un meurtre, vous pourriez plaider la folie, aujourd'hui rien ne vous empêchera de payer les {nb_condamnations} {COIN_STR} demandées en vertu de l'article 148-B du DiplodoCode Civil.",
+            f"Mauvaise nouvelle, {user.username} : si chez Action ou autre magasin de clochard dans lequel vous allez quotidiennement il existe des cartes de fidélité, l'article 148-B du DiplodoCode Judiciaire n'en prévoit aucune ! Ainsi, vous êtes encore et toujours condamné à verser {nb_condamnations} {COIN_STR} au tribunal !",
+            f"L'utilisateur {user.username} se ... Hmm... Bon. Écoutez, je ne suis même plus en colère, je suis inquiet. Vous avez cliqué sur la même commande en sachant PERTINEMMENT ce qui allait se passer, et vous l'avez refait. Einstein appelait ça la folie. Moi j'appelle ça de la connerie. Il existe un numéro, c'est le {nb_condamnations}. Non, ce n'est pas un numéro à appeler pour aller mieux, c'est le nombre de {COIN_STR} d'amende que vous devez payer en vertu de l'article 148-B du DiplodoCode Civil.",
+            f"BULLETIN MÉTÉO DIPLOJUDICIAIRE --- Ce jour : avis de tempête sur le portefeuille de l'utilisateur {user.username}, avec des rafales d'amendes atteignant les {nb_condamnations} {COIN_STR} (merci l'article 148-B). Les prévisions pour demain sont identiques, ainsi que celles d'après-demain, et ce jusqu'à ce que sa mère lui confisque son ordinateur...",
+            f"Le tribunal tient à féliciter l'utilisateur {user.username} : grâce à son assiduité remarquable, l'article 148-B du DiplodoCode Civil est désormais l'article de loi le plus appliqué de toute l'histoire du droit DiploCivil. Cette contribution au patrimoine juridique lui coûtera {nb_condamnations} {COIN_STR}. L'Histoire retiendra son nom. Son banquier aussi.",
+            f"ERRATUM --- Dans un précédent jugement, le tribunal avait qualifié l'utilisateur {user.username} de « complètement con ». Après réexamen approfondi du dossier et constatation de cette nouvelle tentative, le tribunal souhaite présenter ses excuses : le terme était très en-dessous de la réalité. La correction terminologique étant à la charge du demandeur, cela fera {nb_condamnations} {COIN_STR} en vertu de l'article 148-B, blablabla vous connaissez la chanson.",
+            f"Le saviez-vous ? À chaque clic de l'utilisateur {user.username} sur cette commande, un stagiaire du greffe DiploJudiciaire doit remplir à la main le formulaire 148-B en trois exemplaires, les plastifier, puis les emmener dans 3 bureaux distincts à 3 étages différents. Il a des sacrées crampes, et commence sérieusement à fatiguer. Ah oui et surtout il vous déteste. La prochaine fois, pensez à lui. En attendant, payez vos {nb_condamnations} {COIN_STR} et laissez-le rentrer chez lui svp",
+            f"OFFRE D'EMPLOI --- Le tribunal DiploJudiciaire recrute un psychologue spécialisé en comportements autodestructeurs. Le poste est intégralement financé par l'utilisateur {user.username}, qui vient encore de verser {nb_condamnations} {COIN_STR} au titre de l'article 148-B du DiplodoCode Civil. Le premier patient est déjà trouvé. Plotwist, c'est le financeur. La boucle est bouclée (avons-nous inventé le pitch du prochain Nolan ?).",
+            f"Le tribunal a longuement hésité entre plusieurs qualifications juridiques pour cette énième tentative de l'utilisateur {user.username} : `acharnement procédurier carnassier`, `auto-flagellation pécuniaire`, ou notre préférée, `Folie fiscalo-destructrice`. Le DiplodoConseil constitutionnel tranchera. En attendant, l'article 148-B, lui, a déjà tranché : {nb_condamnations} {COIN_STR}.",
+            f"MESSAGE PERSONNEL DU JUGE --- {user.username}, je vais être honnête avec vous. Ce matin, ma femme m'a demandé pourquoi je rentrais tard tous les soirs. Je lui ai parlé de vous. Elle ne m'a pas cru. `Personne n'est aussi bête`, m'a-t-elle dit. Alors ce soir, je lui apporte le dossier complet, merci d'avance au stagiaire qui va m'imprimer tout ça aujourd'hui ! Nous utiliserons vos {nb_condamnations} {COIN_STR} exigés par l'article 148-B pour payer les frais d'impression bien évidemment !",
+            f"STATISTIQUE DU JOUR --- Selon l'Institut des DiploSondages, 100% des utilisateurs ayant cliqué {nb_condamnations + 1} fois sur cette commande s'appellent {user.username}. L'échantillon est certes réduit, mais la significativité est TOTALE. En vertu de l'article 148-B et de la loi des grands nombres (que vous financez), ce sera {nb_condamnations} {COIN_STR}.",
+            f"Le tribunal informe l'utilisateur {user.username} qu'à ce niveau de récidive, l'article 148-B du DiplodoCode Civil ne suffit plus : nous avons dû créer POUR VOUS l'alinéa 148-B-bis, dit « clause {user.username} », qui stipule : « lorsqu'un utilisateur dépasse les limites de bienséance, le tribunal est autorisé à prélever {nb_condamnations} {COIN_STR} en soupirant très fort ». Félicitations, vous êtes entré dans la loi. Littéralement. Pour fêter cela, vous méritez bien cette médaille. Elle ne sert à rien et n'a aucune valeur. Remarquez, vous allez bien ensemble !",
+            f"Le tribunal DiploJudiciaire est en restructuration interne afin de gérer la charge de travail plus que conséquente générée par la stupidité crasse de l'utilisateur {user.username}, abusant de l'article 148-B du DiplodoCode Civil. Nous reviendrons prochainement avec une organisation interne plus adaptée, qui évitera aux stagiaires de partir en burnout après 2 jours, l'inspection du travail nous ayant déjà donné plusieurs avertissements. Néanmoins, nous ne manquerons pas de vous prélever {nb_condamnations} {COIN_STR} pour la peine !"
+        ]
+
+        
+
+        if nb_condamnations >= len(condamnation_texts): # Si on est arrivé au bout des messages
+            condamnation_text = condamnation_texts[-1]
+        else: # Sinon
+            condamnation_text = condamnation_texts[nb_condamnations]
+
+        user.coins -= nb_condamnations
+        user.nb_condamnations += 1
+        user.save()
+
+        # Récompense ??
+        if nb_condamnations == len(condamnation_texts) - 2: # Si on est à l'avant dernier message
+            # L'utilisateur gagne un objet de quête
+            medaille = Skin.objects.get(name = 'Médaille de la condamnation pour fraude DiploFiscale')
+            item = Item.objects.create(type = 'skin',
+                                        item_id = medaille.id)
+            UserInventory.objects.create(user = user,
+                                            item = item)
+
+        juge = User.objects.get(username='juge')
+        Message.objects.create(writer = juge, 
+                               text = condamnation_text,
+                               session_id = session,
+                               skin = {'font' : 'Marcellus'})
+        
+        print(f"Utilisateur {user.username} condamné !")
+        
+    except Exception as e:
+        print(f"Erreur lors du jugement de l'utilisateur {user.username}")
+        print(e)
+
+
+
+    return JsonResponse({'success' : True})
