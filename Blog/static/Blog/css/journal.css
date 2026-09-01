@@ -174,3 +174,10 @@
     pointer-events: none;
     transition: opacity 0.75s ease;
 }
+
+
+.coin-inline {
+    width: 20px !important;
+    height: auto !important;
+    vertical-align: -0.15em !important;
+}

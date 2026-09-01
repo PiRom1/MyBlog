@@ -618,7 +618,7 @@ def fraude(request):
     try:
         user = User.objects.get(id = data.get('user_id'))
         session = Session.objects.get(id=data.get('session_id'))
-        COIN_STR = f"<img src='{static('img/coin.png')}' width='20'>"
+        COIN_STR = f"<img class='coin-inline' src='{static('img/coin.png')}' width='20px'>"
 
         nb_condamnations = user.nb_condamnations
         
@@ -646,12 +646,30 @@ def fraude(request):
             f"Le tribunal DiploJudiciaire est en restructuration interne afin de gérer la charge de travail plus que conséquente générée par la stupidité crasse de l'utilisateur {user.username}, abusant de l'article 148-B du DiplodoCode Civil. Nous reviendrons prochainement avec une organisation interne plus adaptée, qui évitera aux stagiaires de partir en burnout après 2 jours, l'inspection du travail nous ayant déjà donné plusieurs avertissements. Néanmoins, nous ne manquerons pas de vous prélever {nb_condamnations} {COIN_STR} pour la peine !"
         ]
 
-        
+        # MESSAGES_PUBLICS = [
+        #     f"AVIS D'AUDIENCE - {user.username} : -{nb_condamnations} {COIN_STR}. Motif : article 148-B. Détail des faits : sous pli scellé, pour vous épargner la honte publique, je crois que vous en avez déjà bien assez ... ",
+        #     f"Le tribunal DiploJudiciaire confirme le prélèvement de {nb_condamnations} {COIN_STR} sur les avoirs de {user.username}. Aucun commentaire ne sera fait publiquement sur les motifs. Le dossier fourni par courrier, lui, s'exprime très bien tout seul.",
+        #     f"NOTIFICATION 148-B - Débiteur : {user.username}. Montant : {nb_condamnations} {COIN_STR}. Motif : consultable par l'intéressé uniquement, parvenu par voie postale. Recours : aucun. Bonne journée.",
+        #     f"Le tribunal DiploJudiciaire vous prélève la somme de {nb_condamnations} {COIN_STR} pour tentative de détournement de DiplodoFonds. Davantage d'information vous est envoyé par voie postale pour vous éviter la honte et la disgrâce publique. Vous devriez nous remercier ... "
+        # ]
 
         if nb_condamnations >= len(condamnation_texts): # Si on est arrivé au bout des messages
             condamnation_text = condamnation_texts[-1]
         else: # Sinon
             condamnation_text = condamnation_texts[nb_condamnations]
+
+
+        JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Collection'),
+                                            user = user,
+                                            entry = condamnation_text)
+
+
+        # if nb_condamnations >= 1:
+        #         juge = User.objects.get(username='juge')
+        #         Message.objects.create(writer = juge, 
+        #                                text = rd.choice(MESSAGES_PUBLICS),
+        #                                session_id = session,
+        #                                skin = {'font' : 'Marcellus'})
 
         user.coins -= nb_condamnations
         user.nb_condamnations += 1
@@ -662,15 +680,14 @@ def fraude(request):
             # L'utilisateur gagne un objet de quête
             medaille = Skin.objects.get(name = 'Médaille de la condamnation pour fraude DiploFiscale')
             item = Item.objects.create(type = 'skin',
-                                        item_id = medaille.id)
+                                       item_id = medaille.id)
             UserInventory.objects.create(user = user,
-                                            item = item)
+                                         item = item)
 
-        juge = User.objects.get(username='juge')
-        Message.objects.create(writer = juge, 
-                               text = condamnation_text,
-                               session_id = session,
-                               skin = {'font' : 'Marcellus'})
+            JournalEntry.objects.create(entry_type = JournalEntryType.objects.get(entry_type = 'Collection'),
+                                        user = user,
+                                        entry = "Félicitations, vous venez d'obtenir l'objet de collection `Médaille de la condamnation pour fraude DiploFiscale`. Retrouvez cette relique dans votre inventaire !")
+
         
         print(f"Utilisateur {user.username} condamné !")
         

@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                    'Arène' : 'fi fi-rs-t-rex',
                    'HDV' : 'fi fi-rs-shop',
                    'Tag' : 'fi fi-rs-at',
+                   'Collection' : 'fi fi-rs-treasure-chest'
                 }
 
     function add_entry(entry) {
