@@ -12,11 +12,15 @@ def atelier(request):
 
 
     non_legendary_item_id = Skin.objects.exclude(rarity__name = 'legendary').values_list('id', flat=True)
+    collection_item_ids = Skin.objects.filter(type = 'collection')
 
     user_inventory = UserInventory.objects.filter(user_id=request.user, item_id__type='skin', item__item_id__in=non_legendary_item_id)
-    items = get_items_list(user_inventory)
 
+    # Si moins de 10 items de collection, ne pas les afficher
+    if UserInventory.objects.filter(user_id=request.user, item__item_id__in=collection_item_ids).count() < 3:
+        user_inventory = user_inventory.exclude(item__item_id__in=collection_item_ids)
 
+    items = get_items_list(user_inventory) * 3
 
     url = "Blog/atelier/atelier.html"
     context = {'items' : items}
@@ -39,38 +43,47 @@ def recycler(request):
         return JsonResponse({"success" : False, "error" : f"Rajoutez encore {10 - len(item_ids)} {str_item} pour pouvoir recycler."})
     
     items = [Item.objects.get(id = item_id) for item_id in item_ids]
-    skins = [Skin.objects.get(id = item.item_id) for item in items]
-    rarities = [Rarity.objects.get(id = skin.rarity_id).name for skin in skins]
+    item_skin_type = Skin.objects.get(id=items[0].item_id).type
 
-    # Check if same rarity
-    if rarities.count(rarities[0]) != len(rarities):
-        return JsonResponse({'success' : False, 'error' : "Vous ne pouvez recycler que des équipements de même rareté."})
+    if item_skin_type != 'collection': # Voie classique : l'item évolue
+        
+        skins = [Skin.objects.get(id = item.item_id) for item in items]
+        rarities = [Rarity.objects.get(id = skin.rarity_id).name for skin in skins]
 
-    rarity = rarities[0]
-    if rarity == 'legendary':
-        return JsonResponse({'success' : False, 'error' : "Vous ne pouvez pas recycler d'équipements légendaires."})
-    
-    new_rarity = {'common' : 'uncommon',
-                  'uncommon' : 'rare',
-                  'rare' : 'legendary'}.get(rarity)
-    
-    new_skin = Skin.objects.filter(rarity_id = Rarity.objects.get(name=new_rarity))
+        # Check if same rarity
+        if rarities.count(rarities[0]) != len(rarities):
+            return JsonResponse({'success' : False, 'error' : "Vous ne pouvez recycler que des équipements de même rareté."})
 
-    skin_id = rd.choice(new_skin).id
+        rarity = rarities[0]
+        if rarity == 'legendary':
+            return JsonResponse({'success' : False, 'error' : "Vous ne pouvez pas recycler d'équipements légendaires."})
+        
+        new_rarity = {'common' : 'uncommon',
+                    'uncommon' : 'rare',
+                    'rare' : 'legendary'}.get(rarity)
+        
+        new_skin = Skin.objects.filter(rarity_id = Rarity.objects.get(name=new_rarity))
 
-    item, skin = get_item(skin_id)
+        skin_id = rd.choice(new_skin).id
 
-    item.save()
+        item, skin = get_item(skin_id)
 
-    UserInventory.objects.create(user = request.user,
-                                 item = item)
+        item.save()
 
-    for item in items:
-        item.delete()
-    
-    return JsonResponse({"success" : True, 
-                         "skin_url" : skin.image.url,
-                         "rarity_color" : skin.rarity.color,
-                         "rarity_name" : skin.rarity.name,
-                         "item_id" : item.id})
+        UserInventory.objects.create(user = request.user,
+                                    item = item)
+
+        for item in items:
+            item.delete()
+        
+        return JsonResponse({"success" : True, 
+                            "skin_url" : skin.image.url,
+                            "rarity_color" : skin.rarity.color,
+                            "rarity_name" : skin.rarity.name,
+                            "item_id" : item.id})
+
+    else: # Item de collection, initier le secret
+        return JsonResponse({'success' : False, 'error' : "Euuuh tu es en train de tenter de recycler tes items de collection là ???"})
+
+
 

@@ -38,7 +38,7 @@ def get_items_list(user_inventory):
                 dino__in_arena=True
             ).exists()
 
-        print(equipped_on_arena_dino)
+        # print(equipped_on_arena_dino)
         
         # Si l'item est un box
         if item.type == 'box':
@@ -57,8 +57,8 @@ def get_items_list(user_inventory):
         # Si l'item est un skin
         elif item.type == 'skin':
             skin = Skin.objects.get(id=item.item_id)
-            print(item)
-            print(item.id)
+            # print(item)
+            # print(item.id)
             items.append({
                 'type': 'skin',
                 'item_id': item.id,
@@ -78,7 +78,7 @@ def get_items_list(user_inventory):
             
             if skin.type == 'emoji' and item.pattern != '':
                 emoji = Emojis.objects.get(id=item.pattern)
-                print(items[-1]['image'])
+                # print(items[-1]['image'])
                 items[-1]['image'] = emoji.image.url
                 items[-1]['emoji_name'] = emoji.name
             
@@ -89,7 +89,7 @@ def get_items_list(user_inventory):
 
             
             if skin.type == 'border_image':
-                print("pattern : ", item.pattern)
+                # print("pattern : ", item.pattern)
                 border_image = BorderImage.objects.get(name=item.pattern)
                 items[-1]['url'] = border_image.image.url
     

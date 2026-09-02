@@ -298,12 +298,15 @@ def dino_runes_view(request, dino_id):
 @login_required
 def runes_inventory_view(request):
     # Get all runes/items from user's inventory that aren't equipped nor marked as favorite
+    collection_item_ids = Skin.objects.filter(type = 'collection')
     equipped_item_ids = DWDinoItem.objects.filter(dino__user=request.user).values_list('item_id', flat=True)
     inventory_items = UserInventory.objects.filter(
         user=request.user,
         item__type='skin',
     ).exclude(
         item__id__in=equipped_item_ids
+    ).exclude(
+        item__item_id__in=collection_item_ids
     ).select_related('item')
     
     # Define rarity order
@@ -335,6 +338,10 @@ def equip_rune(request, dino_id):
         data = json.loads(request.body)
         slot = data.get('slot')
         remove = data.get('remove', False)
+
+        # Collection verif
+        if get_object_or_404(Item, id=data.get('item_id')).item_id in Skin.objects.filter(type = 'collection').values_list('id', flat = True):
+            return JsonResponse({'success': False, 'error': "Impossible d'équipper un objet de collection..."})
         
         # Validate dino ownership
         dino = get_object_or_404(DWUserDino, id=dino_id, user=request.user)
@@ -348,6 +355,7 @@ def equip_rune(request, dino_id):
         DWDinoItem.objects.filter(dino=dino, slot=slot).delete()
         bonus = 0
         skin = None
+        item = None
         
         if not remove:
             item_id = data.get('item_id')
