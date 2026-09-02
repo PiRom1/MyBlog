@@ -217,7 +217,7 @@ def UserView(request, id):
 
     # Les skins collection que l'user possède : En autorisant les doublons si l'user a réussi à bugué le site : Autant le féliciter !
     user_collection_skins = [Skin.objects.filter(id=skin_id, type = 'collection').first() for skin_id in owned_skin_ids]
-    user_collection_skins = [i for i in user_collection_skins if i] * 10
+    user_collection_skins = [i for i in user_collection_skins if i]
 
 
 
