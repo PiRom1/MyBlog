@@ -5,7 +5,7 @@ def run():
 
     user = User.objects.get(username='romain')
 
-    skins = Skin.objects.all()
+    skins = Skin.objects.exclude(type='collection')
     
     for _ in range(10):
         for skin in skins:

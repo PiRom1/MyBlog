@@ -58,8 +58,9 @@ def view_lootbox(request, pk):
 def open_lootbox(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
         return HttpResponseBadRequest('<h1>400 Bad Request</h1><p>Requête non autorisée.</p>')
+
     
-    skins = list(Skin.objects.all())
+    skins = list(Skin.objects.exclude(type='collection'))
     skin_images = [skin.image.url for skin in skins]
     skin_probas = [skin.rarity.probability for skin in skins]
     # dictionnaire comptant le nombre de skins de chaque proba
