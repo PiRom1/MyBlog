@@ -20,7 +20,7 @@ def atelier(request):
     if UserInventory.objects.filter(user_id=request.user, item__item_id__in=collection_item_ids).count() < 3:
         user_inventory = user_inventory.exclude(item__item_id__in=collection_item_ids)
 
-    items = get_items_list(user_inventory) * 3
+    items = get_items_list(user_inventory)
 
     url = "Blog/atelier/atelier.html"
     context = {'items' : items}
