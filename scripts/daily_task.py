@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.db import transaction
 
 GROQ_MODEL_ANALYSE = "groq/compound-mini"
-GROQ_MODEL_PUNCHLINE = "qwen/qwen3.6-27b"
+GROQ_MODEL_PUNCHLINE = "qwen/qwen3.8-27b"
 
 
 def generate_quest(user, type : str):
