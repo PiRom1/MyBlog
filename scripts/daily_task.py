@@ -8,7 +8,7 @@ from constance import config
 from django.utils import timezone
 from django.db import transaction
 
-GROQ_MODEL_ANALYSE = "groq/compound-mini"
+GROQ_MODEL_ANALYSE = "qwen/qwen3.8-27b"
 GROQ_MODEL_PUNCHLINE = "qwen/qwen3.8-27b"
 
 

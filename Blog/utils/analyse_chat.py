@@ -237,7 +237,7 @@ def get_punchline(user_prompt, model, session_name):
                 }
             ],
             model=model,
-            temperature=1,
+            temperature=0.7,
             max_completion_tokens=256,
             reasoning_effort='none',
             presence_penalty=0.0,
@@ -257,7 +257,7 @@ def get_punchline(user_prompt, model, session_name):
                 }
             ],
             model=model,
-            temperature=1,
+            temperature=0.7,
             max_completion_tokens=256,
             reasoning_effort='none',
             presence_penalty=0.0,
