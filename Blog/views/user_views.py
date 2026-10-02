@@ -180,6 +180,7 @@ def UserView(request, id):
 
     # Mean karma direct SQL
     mean_karma = qs.aggregate(avg=Avg('karma'))['avg']
+    mean_karma = round(mean_karma, 2) if mean_karma else 0
 
     # Ne récupère QUE le texte
     texts = qs.values_list('text', flat=True)
@@ -233,7 +234,7 @@ def UserView(request, id):
                'plot' : plot,
                'user_bg' : bg,
                'is_bot' : is_bot,
-               'mean_karma' : round(mean_karma, 2),
+               'mean_karma' : mean_karma,
                'user_collection_skins' : user_collection_skins
                }
 
