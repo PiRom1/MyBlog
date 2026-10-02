@@ -11,9 +11,9 @@ import random as rd
 ##  - Generates him two quests
 
 
-DEFAULT_COINS = 5000
-DEFAULT_BOXES = 20
-DW_FREE_HATCH = 100
+DEFAULT_COINS = 20_000
+DEFAULT_BOXES = 100
+DW_FREE_HATCH = 250
 
 
 def create_user():
