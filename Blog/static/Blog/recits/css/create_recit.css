@@ -1,0 +1,17 @@
+
+
+.block {
+    width: 50%;
+    margin-left: 25%;
+    background-color: rgba(245, 245, 220, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 10%;
+}
+
+
+.recit-form {
+    text-align: center;
+    padding: 3px;
+}

@@ -1,0 +1,502 @@
+
+/* =========================================
+   RÉCITS COLLABORATIFS
+   Compact, lisible sur fond bois
+   ========================================= */
+
+.recits-page {
+    --ink: #292721;
+    --muted: #575248;
+    --accent: #754033;
+    --line: #d9cdbb;
+
+    /* Fonds opaques pour contraster avec le bois */
+    --write-bg: #f0f5e9;
+    --write-border: #b7c9aa;
+    --write-ink: #315434;
+
+    --read-bg: #fff0ef;
+    --read-border: #dfb9b7;
+    --read-ink: #813c3c;
+
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 28px 24px 20px;
+    color: var(--ink);
+    font-family: "DM Sans", sans-serif;
+}
+
+/* En-tête compact */
+
+.recits-header {
+    max-width: 650px;
+    margin: 0 auto 30px;
+    text-align: center;
+}
+
+.recits-eyebrow {
+    margin-bottom: 8px;
+    color: #f4d7a9;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-shadow: 0 1px 3px #39271d;
+}
+
+.recits-header h1 {
+    margin: 7px 0;
+    color: #fffaf0;
+    font-family: "Lora", Georgia, serif;
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.2;
+    text-shadow: 0 2px 5px #39271d;
+}
+
+.recits-intro {
+    margin: 8px auto 17px;
+    color: #fff8ed;
+    font-size: 0.9rem;
+    text-shadow: 0 1px 4px #39271d;
+}
+
+/* Boutons */
+
+.create-recit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border: 1px solid #f3e3d2;
+    border-radius: 6px;
+    background: #fff9f0;
+    color: #65392d;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 160ms ease;
+}
+
+.create-recit:hover {
+    background: #f0dfca;
+}
+
+.create-recit:focus-visible,
+.filter-btn:focus-visible,
+.sort-control select:focus-visible,
+.recit a:focus-visible,
+.recits-footer a:focus-visible {
+    outline: 3px solid #b87b46;
+    outline-offset: 3px;
+}
+
+/* En-tête de collection */
+
+.recits-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.recits-section-header h2 {
+    margin: 0;
+    color: #fffaf0;
+    font-family: "Lora", Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    text-shadow: 0 1px 4px #39271d;
+}
+
+.recits-count {
+    padding: 4px 9px;
+    border: 1px solid #e9d9c5;
+    border-radius: 20px;
+    background: #fff9f0;
+    color: #4b372a;
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+/* Filtre et tri */
+
+.recits-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 9px;
+    border: 1px solid #e1d2bf;
+    border-radius: 8px;
+    background: #fffaf2;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: transparent;
+    color: #51483e;
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background: #f1e8dc;
+}
+
+.filter-btn.active {
+    border-color: #d6c5ae;
+    background: #e9dfd0;
+    color: #392b20;
+    font-weight: 700;
+}
+
+.sort-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding-left: 6px;
+    color: #51483e;
+    font-size: 0.8rem;
+}
+
+.sort-control select {
+    max-width: 190px;
+    padding: 7px 5px;
+    border: 0;
+    background: transparent;
+    color: #392b20;
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+/* Grille : deux colonnes pour une vue d'ensemble */
+
+.recits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 10px;
+}
+
+/* Petites fiches */
+
+.recit {
+    --card-bg: var(--write-bg);
+    --card-border: var(--write-border);
+    --status-ink: var(--write-ink);
+
+    min-width: 0;
+    padding: 13px 15px 11px;
+    border: 1px solid var(--card-border);
+    border-radius: 5px 9px 6px 8px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 5px rgb(35 27 19 / 12%);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.recit.can-write {
+    --card-bg: var(--write-bg);
+    --card-border: var(--write-border);
+    --status-ink: var(--write-ink);
+}
+
+.recit.last-writer {
+    --card-bg: var(--read-bg);
+    --card-border: var(--read-border);
+    --status-ink: var(--read-ink);
+}
+
+.recit:hover {
+    border-color: var(--status-ink);
+    box-shadow: 0 3px 9px rgb(35 27 19 / 15%);
+}
+
+/* Masquer proprement les éléments filtrés */
+
+.recit[hidden] {
+    display: none !important;
+}
+
+/* Statut et numéro */
+
+.recit-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.recit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--status-ink);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+}
+
+.recit-number {
+    color: var(--status-ink);
+    font-family: "Lora", Georgia, serif;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* Titre manuscrit */
+
+.recit-title {
+    margin: 0 0 5px;
+    font-family: "Indie Flower", cursive;
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.recit-title a {
+    color: #292721;
+    text-decoration: none;
+    text-underline-offset: 3px;
+}
+
+.recit-title a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--status-ink);
+}
+
+/* Compteurs */
+
+.recit-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: #514a40;
+    font-size: 0.73rem;
+    line-height: 1.45;
+}
+
+.recit-meta i {
+    margin-right: 2px;
+    font-size: 0.68rem;
+}
+
+.meta-separator {
+    color: #827669;
+}
+
+/* Bas de fiche */
+
+.recit-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px solid var(--card-border);
+}
+
+.recit-hint {
+    color: #514a40;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+.recit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--status-ink);
+    font-size: 0.77rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.recit-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Liste vide */
+
+.recits-empty {
+    grid-column: 1 / -1;
+    padding: 25px 16px;
+    border: 1px solid #e1d2bf;
+    border-radius: 8px;
+    background: #fffaf2;
+    color: #302e2a;
+    text-align: center;
+}
+
+.recits-empty > i {
+    color: #754033;
+    font-size: 1.4rem;
+}
+
+.recits-empty h3 {
+    margin: 10px 0 5px;
+    font-family: "Lora", Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.recits-empty p {
+    margin: 5px 0 15px;
+    color: #575248;
+    font-size: 0.85rem;
+}
+
+.recits-no-results {
+    margin: 20px 0;
+    color: #fffaf0;
+    font-size: 0.9rem;
+    text-align: center;
+    text-shadow: 0 1px 3px #39271d;
+}
+
+/* Pied de page */
+
+.recits-footer {
+    margin-top: 22px;
+    padding-top: 12px;
+    border-top: 1px solid rgb(255 250 240 / 35%);
+    text-align: center;
+}
+
+.recits-footer a {
+    color: #fff8ed;
+    font-size: 0.82rem;
+    text-decoration: none;
+    text-shadow: 0 1px 3px #39271d;
+}
+
+.recits-footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Tablettes et mobiles */
+
+@media (max-width: 650px) {
+    .recits-page {
+        padding: 22px 13px 18px;
+    }
+
+    .recits-header {
+        margin-bottom: 25px;
+    }
+
+    .recits-section-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .recits-controls {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sort-control {
+        width: 100%;
+        padding: 4px 2px;
+    }
+
+    .sort-control select {
+        flex: 1;
+        max-width: 100%;
+    }
+
+    .recits-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recit,
+    .create-recit {
+        transition: none;
+    }
+}
+
+
+/* Aperçu du premier texte : caché par défaut */
+.recit-preview {
+    max-height: 0;
+    margin-top: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+        max-height 0.25s ease,
+        margin-top 0.25s ease,
+        opacity 0.2s ease,
+        transform 0.25s ease;
+}
+
+.recit-preview p {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #514a40;
+    font-family: "Lora", Georgia, serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* La carte se déplie légèrement au survol */
+.recit:hover .recit-preview,
+.recit:focus-within .recit-preview {
+    max-height: 1.5rem;
+    margin-top: 0.45rem;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Petit effet de relief */
+.recit {
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.recit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(35, 24, 15, 0.2);
+}
+
+/* Respecte les préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .recit,
+    .recit-preview {
+        transition: none;
+    }
+}

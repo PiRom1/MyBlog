@@ -6,7 +6,7 @@ from ..forms import *
 from django.contrib.auth.decorators import login_required
 from ..utils.stats import *
 import random as rd
-from Blog.views.utils_views import write_journal_recit_create, write_journal_recit_contribute
+from Blog.views.utils_views import write_journal_recit_create, write_journal_recit_contribute, username_to_rgb, complementary_color
 
 from Blog.views.quests_views import validate_objective_quest
 
@@ -16,14 +16,19 @@ from Blog.views.quests_views import validate_objective_quest
 def recit_list(request):
     recits = Recit.objects.all()
     nb_textes = []
+    nb_writers = []
+    are_you_last_writer = []
+    first_text = []
 
     for recit in recits:
-        texte = Texte.objects.filter(recit=recit)
-        nb_textes.append(len(texte))
+        textes = Texte.objects.filter(recit=recit)
+        nb_textes.append(len(textes))
+        nb_writers.append(len(set([texte.user.id for texte in textes])))
+        are_you_last_writer.append(list(textes)[-1].user == request.user)
+        first_text.append(textes[0].text)
     
 
-    context = {'recits' : zip(recits, nb_textes),
-               }
+    context = {'recits' : zip(recits, nb_textes, nb_writers, are_you_last_writer, first_text)}
     
     return render(request, 'Blog/recits/recit_list.html', context)
 
@@ -54,6 +59,19 @@ def detail_recit(request, pk):
     
     recit = Recit.objects.get(pk=pk)
     texts = Texte.objects.filter(recit = recit)
+    message_colors = [
+        f"rgb({r}, {g}, {b})"
+        for r, g, b in (username_to_rgb(text.user.username) for text in texts)
+    ]
+
+    text_colors = [    
+        f"rgb({r}, {g}, {b})"
+        for r, g, b in (
+            complementary_color(username_to_rgb(text.user.username))
+            for text in texts
+        )
+    ]
+
     user = request.user
 
     if request.method == 'POST':
@@ -83,7 +101,7 @@ def detail_recit(request, pk):
     print(is_last_writer)
     context = {'form' : form, 
                'recit' : recit,
-               'texts' : texts,
+               'texts' : zip(texts, message_colors, text_colors),
                'is_last_writer' : is_last_writer}
     
     return render(request, 'Blog/recits/detail_recit.html', context)

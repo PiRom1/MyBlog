@@ -9,6 +9,10 @@ from ..utils.stats import *
 import random as rd
 import json
 
+import hashlib
+import colorsys
+
+
 
 
 @login_required
@@ -439,11 +443,20 @@ def write_journal_tag(writer, receiver, session):
 
 
 
+def username_to_rgb(username):
+    hash_value = hashlib.sha256(username.encode("utf-8")).hexdigest()
+
+    hue = int(hash_value[:8], 16) / 0xFFFFFFFF
+
+    # Pastels doux : saturation faible, luminosité élevée
+    saturation = 0.70 + (int(hash_value[8:10], 16) / 255) * 0.12
+    lightness = 0.88 + (int(hash_value[10:12], 16) / 255) * 0.06
+
+    # HLS -> RGB
+    r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
+
+    return tuple(round(channel * 255) for channel in (r, g, b))
 
 
-
-
-
-
-
-
+def complementary_color(rgb):
+    return [255 - color for color in rgb]

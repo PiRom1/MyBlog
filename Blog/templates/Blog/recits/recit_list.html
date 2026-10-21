@@ -1,37 +1,273 @@
-<!-- templates/ticket_list.html -->
 
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recits List</title>
+
+    <title>Les récits collaboratifs</title>
+
     <link rel="icon" type="image/x-icon" href="/media/86_icon.svg">
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-    
-    {% include "Blog/layout/base.html" %}
+    <link rel="stylesheet" href="{% static 'Blog/recits/css/recit_list.css' %}">
 
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=DM+Sans:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap"
+          rel="stylesheet">
 </head>
 
-
-
 <body>
-    <h1>Récits déjà commencés</h1>
-    <br>
-    <a href="/recits/create/">Initier un nouveau récit ...</a>
-    <br><br>
-    <ul>
-        {% for recit, nb_textes in recits %}
-        <li><a href="/recits/detail/{{ recit.pk }}#bottom">[{{ recit.name }}]</a> ({{nb_textes}} {% if nb_textes >= 2 %}textes{% else %}texte{% endif %})
-           </li>
-        {% endfor %}
+    {% include "Blog/layout/base.html" %}
 
-    </ul>
-    <br><br><br>
-    <a href="/">Back to Home</a>
+    <main class="recits-page">
+
+        <header class="recits-header">
+            <div class="recits-eyebrow">L'ATELIER D'ÉCRITURE</div>
+            <h1>Les récits collaboratifs</h1>
+            <p class="recits-intro">
+                Des histoires qui se construisent à plusieurs.
+            </p>
+
+            <a class="create-recit" href="/recits/create/">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+                Nouveau récit
+            </a>
+        </header>
+
+        <section class="recits-section" aria-labelledby="recits-title">
+
+            <div class="recits-section-header">
+                <h2 id="recits-title">Les histoires en cours</h2>
+
+                <span class="recits-count" id="recits-count">
+                    {{ recits|length }} récits
+                </span>
+            </div>
+
+            <div class="recits-controls">
+
+                <div class="filter-buttons" aria-label="Filtrer les récits">
+                    <button type="button"
+                            class="filter-btn active"
+                            data-filter="all"
+                            aria-pressed="true">
+                        Tous
+                    </button>
+
+                    <button type="button"
+                            class="filter-btn"
+                            data-filter="can-write"
+                            aria-pressed="false">
+                        <i class="fas fa-pen" aria-hidden="true"></i>
+                        Je peux écrire
+                    </button>
+
+                    <button type="button"
+                            class="filter-btn"
+                            data-filter="last-writer"
+                            aria-pressed="false">
+                        <i class="fas fa-book-open" aria-hidden="true"></i>
+                        J'ai déjà écrit
+                    </button>
+                </div>
+
+                <label class="sort-control">
+                    <i class="fas fa-sort-amount-down" aria-hidden="true"></i>
+
+                    <select id="recits-sort" aria-label="Trier les récits">
+                        <option value="default">Ordre initial</option>
+                        <option value="texts-desc">Plus de textes</option>
+                        <option value="texts-asc">Moins de textes</option>
+                        <option value="writers-desc">Plus de contributeurs</option>
+                        <option value="writers-asc">Moins de contributeurs</option>
+                    </select>
+                </label>
+
+            </div>
+
+            <div class="recits-grid" id="recits-list">
+
+                {% for recit, nb_textes, nb_writers, are_you_last_writer, first_text in recits %}
+
+                    <article
+                        class="recit {% if are_you_last_writer %}last-writer{% else %}can-write{% endif %}"
+                        data-texts="{{ nb_textes }}"
+                        data-writers="{{ nb_writers }}"
+                        data-date=""
+                        data-order="{{ forloop.counter0 }}">
+
+                        <div class="recit-top">
+                            <span class="recit-status">
+                                {% if are_you_last_writer %}
+                                    <i class="fas fa-book-open" aria-hidden="true"></i>
+                                    À relire
+                                {% else %}
+                                    <i class="fas fa-pen" aria-hidden="true"></i>
+                                    À continuer
+                                {% endif %}
+                            </span>
+
+                            <span class="recit-number">
+                                {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+                        </div>
+
+                        <h3 class="recit-title">
+                            <a href="/recits/detail/{{ recit.pk }}#bottom">
+                                {{ recit.name }}
+                            </a>
+                        </h3>
+
+                        <div class="recit-meta">
+                            <span>
+                                <i class="fas fa-align-left" aria-hidden="true"></i>
+                                {{ nb_textes }}
+                                {% if nb_textes >= 2 %}textes{% else %}texte{% endif %}
+                            </span>
+
+                            <span class="meta-separator">·</span>
+
+                            <span>
+                                <i class="fas fa-users" aria-hidden="true"></i>
+                                {{ nb_writers }}
+                                {% if nb_writers >= 2 %}contributeurs{% else %}contributeur{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="recit-preview" aria-label="Aperçu du premier texte">
+                            <p>{{ first_text.text|default:first_text|striptags|truncatechars:180 }}</p>
+                        </div>
+
+                        <div class="recit-bottom">
+                            <span class="recit-hint">
+                                {% if are_you_last_writer %}
+                                    En attente d'un autre auteur
+                                {% else %}
+                                    À vous d'écrire la suite
+                                {% endif %}
+                            </span>
+
+                            <a class="recit-link"
+                               href="/recits/detail/{{ recit.pk }}#bottom">
+                                {% if are_you_last_writer %}
+                                    Relire
+                                {% else %}
+                                    Continuer
+                                {% endif %}
+                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+
+                    </article>
+
+                {% empty %}
+
+                    <div class="recits-empty">
+                        <i class="fas fa-feather-alt" aria-hidden="true"></i>
+                        <h3>Tout commence par quelques mots.</h3>
+                        <p>Aucun récit pour le moment.</p>
+                        <a class="create-recit" href="/recits/create/">
+                            Créer le premier récit
+                        </a>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <p class="recits-no-results" id="recits-no-results" hidden>
+                Aucun récit ne correspond à ce filtre.
+            </p>
+
+        </section>
+
+        <footer class="recits-footer">
+            <a href="/">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                Retour à l'accueil
+            </a>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const list = document.getElementById("recits-list");
+            const countLabel = document.getElementById("recits-count");
+            const sortSelect = document.getElementById("recits-sort");
+            const filterButtons = document.querySelectorAll(".filter-btn");
+            const noResults = document.getElementById("recits-no-results");
+
+            if (!list) return;
+
+            const cards = Array.from(list.querySelectorAll(".recit"));
+            let activeFilter = "all";
+
+            function updateList() {
+                const sort = sortSelect.value;
+
+                const visibleCards = cards.filter(card => {
+                    return activeFilter === "all"
+                        || card.classList.contains(activeFilter);
+                });
+
+                visibleCards.sort((a, b) => {
+                    const textsA = Number(a.dataset.texts || 0);
+                    const textsB = Number(b.dataset.texts || 0);
+                    const writersA = Number(a.dataset.writers || 0);
+                    const writersB = Number(b.dataset.writers || 0);
+
+                    switch (sort) {
+                        case "texts-desc":
+                            return textsB - textsA;
+                        case "texts-asc":
+                            return textsA - textsB;
+                        case "writers-desc":
+                            return writersB - writersA;
+                        case "writers-asc":
+                            return writersA - writersB;
+                        case "date-desc":
+                            return (b.dataset.date || "").localeCompare(a.dataset.date || "");
+                        case "date-asc":
+                            return (a.dataset.date || "").localeCompare(b.dataset.date || "");
+                        default:
+                            return Number(a.dataset.order) - Number(b.dataset.order);
+                    }
+                });
+
+                visibleCards.forEach(card => list.appendChild(card));
+
+                cards.forEach(card => {
+                    card.hidden = !visibleCards.includes(card);
+                });
+
+                const n = visibleCards.length;
+                countLabel.textContent = n + (n > 1 ? " récits" : " récit");
+                noResults.hidden = n > 0;
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    activeFilter = button.dataset.filter;
+
+                    filterButtons.forEach(btn => {
+                        const selected = btn === button;
+                        btn.classList.toggle("active", selected);
+                        btn.setAttribute("aria-pressed", String(selected));
+                    });
+
+                    updateList();
+                });
+            });
+
+            sortSelect.addEventListener("change", updateList);
+
+            updateList();
+        });
+    </script>
 </body>
 </html>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'Blog/css/utils.css' %}">
-    <link rel="stylesheet" href="{% static 'Blog/recits/css/recits.css' %}">
+    <link rel="stylesheet" href="{% static 'Blog/recits/css/detail_recit.css' %}">
     
     {% include "Blog/layout/base.html" %}
 
@@ -25,10 +25,12 @@
 {% if not texts %} Votre histoire n'a de limite que par votre imagination ! 
     {% else %} 
 <ul class="timeline">
-    {% for text in texts %}
-    <li class="timeline-item {% cycle 'left' 'right' %}">
-        <h3><a href="/user/{{text.user.id}}">{{ text.user }}</a></h3>
-        <p>{{ text.text|linebreaks }}</p>
+    {% for text, message_colors, text_colors in texts %}
+    <li class="timeline-item {% cycle 'left' 'right' %}" style="background-color: {{message_colors}} !important;">
+        <h3><a href="/user/{{text.user.id}}" style="color: black;">{{ text.user }}</a></h3>
+        <p style="color: {{ text_colors }} !important;">
+            {{ text.text|linebreaksbr }}
+        </p>
     </li>
     {% endfor %}
 </ul>
@@ -37,19 +39,27 @@
 
 
 <br><br>
-{% if is_last_writer %} Vous venez déjà d'écrire dans cette histoire. <br>
-Attendez que quelqu'un prolonge votre récit avant d'y participer à nouveau ! 
+
+{% if is_last_writer %}
+    <div class="recit-form">
+        Vous venez déjà d'écrire dans cette histoire. <br>
+        Attendez que quelqu'un prolonge votre récit avant d'y participer à nouveau ! 
+    </div>
 {% else %}
-Participez à la création de l'histoire ! 
-<form method="post" id="form">
+
+
+<form method="post" id="form" class="recit-form">
+    <strong class="holo-text">Participez à la création de l'histoire !</strong>
     {% csrf_token %}
 
-    {{ form.as_p }}
+    {{ form.message }}
             
     <button type="submit">Envoyer</button>
 </form>
 
 {% endif %}
+
+
 <div id="bottom"></div>
 <br><br><br><br>
 <a href="/recits/" style="margin: 20px;"><i class="fa-solid fa-chevron-left"></i>Retour à la liste des récits</a>
